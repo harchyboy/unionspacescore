@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/properties/:path*",
-      "destination": "/index.html"
+      "destination": "/app.html"
     }
   ]
 }
