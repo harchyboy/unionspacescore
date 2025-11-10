@@ -4,7 +4,7 @@ interface ActivityCommsTabProps {
   property: Property;
 }
 
-export function ActivityCommsTab({ property: _property }: ActivityCommsTabProps) {
+export function ActivityCommsTab(_props: ActivityCommsTabProps) {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">

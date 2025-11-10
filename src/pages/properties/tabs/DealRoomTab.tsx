@@ -4,7 +4,7 @@ interface DealRoomTabProps {
   property: Property;
 }
 
-export function DealRoomTab({ property: _property }: DealRoomTabProps) {
+export function DealRoomTab(_props: DealRoomTabProps) {
   // Mock deal room items
   const items = [
     { id: '1', type: 'HoTs', title: 'Heads of Terms - Unit 99B-5-B', updatedAt: '2024-12-15' },

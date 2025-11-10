@@ -4,7 +4,7 @@ interface CommercialsTabProps {
   property: Property;
 }
 
-export function CommercialsTab({ property: _property }: CommercialsTabProps) {
+export function CommercialsTab(_props: CommercialsTabProps) {
   return (
     <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
       <h2 className="text-xl font-semibold text-[#252525] mb-6">Commercials</h2>

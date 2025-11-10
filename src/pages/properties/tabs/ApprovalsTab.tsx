@@ -6,7 +6,7 @@ interface ApprovalsTabProps {
   property: Property;
 }
 
-export function ApprovalsTab({ property: _property }: ApprovalsTabProps) {
+export function ApprovalsTab(_props: ApprovalsTabProps) {
   // Mock approval data
   const approvals = [
     {

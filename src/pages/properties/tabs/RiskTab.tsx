@@ -6,7 +6,7 @@ interface RiskTabProps {
   property: Property;
 }
 
-export function RiskTab({ property: _property }: RiskTabProps) {
+export function RiskTab(_props: RiskTabProps) {
   // Mock risk data
   const risks = [
     {

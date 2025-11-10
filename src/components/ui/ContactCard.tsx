@@ -21,6 +21,9 @@ export function ContactCard({
   onCall,
   className = '',
 }: ContactCardProps) {
+  // Email and phone are available for future use
+  void _email;
+  void _phone;
   return (
     <div className={`bg-white border border-[#E6E6E6] rounded-lg p-4 ${className}`}>
       <div className="flex items-center space-x-3 mb-3">
