@@ -7,6 +7,8 @@ A modern React + TypeScript application for property and unit management in UNIO
 - **Node.js**: v20.11.1 (specified in `.nvmrc`)
 - **Package Manager**: pnpm (recommended)
 
+> **Note for Windows ARM64 users**: If you encounter esbuild platform errors, you may need to manually install `@esbuild/win32-arm64` or use `esbuild-wasm`. This is a known issue with optional dependencies on Windows ARM64. CI runs on Linux and is unaffected.
+
 ### Installing Node.js
 
 If you use `nvm` (Node Version Manager):
