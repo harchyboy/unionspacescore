@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts</title>
+    <script src='https://cdn.tailwindcss.com'></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                },
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                    serif: ["var(--font-serif)"],
+                    mono: ["var(--font-mono)"],
+                },
+                boxShadow: {
+                    '2xs': 'var(--shadow-2xs)',
+                    'xs': 'var(--shadow-xs)',
+                    'sm': 'var(--shadow-sm)',
+                    'DEFAULT': 'var(--shadow)',
+                    'md': 'var(--shadow-md)',
+                    'lg': 'var(--shadow-lg)',
+                    'xl': 'var(--shadow-xl)',
+                    '2xl': 'var(--shadow-2xl)',
+                },
+            },
+        }
+    }
+    </script>
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #FAFAFA;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --primary: #252525;
+            --primary-foreground: #ffffff;
+            --secondary: #8E8E8E;
+            --secondary-foreground: #ffffff;
+            --muted: #FAFAFA;
+            --muted-foreground: #0f172a;
+            --accent: #8E8E8E;
+            --accent-foreground: #ffffff;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #E6E6E6;
+            --input: #FFFFFF;
+            --ring: #94a3b8;
+            --font-sans: Inter, sans-serif;
+            --font-serif: Georgia, serif;
+            --font-mono: JetBrains Mono, monospace;
+            --radius: 10px;
+            --shadow: -2px 4px 12px 4px rgba(51,51,51,0.05);
+        }
+        
+        ::-webkit-scrollbar { display: none;}
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: #F0F0F0;
+            color: #252525;
+        }
+        
+        .transition-all-smooth {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<div id="app-shell" class="flex h-screen overflow-hidden">
+    
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col">
+        <div class="p-6 border-b border-[#E6E6E6]">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-primary rounded flex items-center justify-center">
+                    <span class="text-white font-semibold text-lg">U</span>
+                </div>
+                <div>
+                    <div class="font-semibold text-primary text-lg">UNION</div>
+                    <div class="text-xs text-secondary">Core Dashboard</div>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4">
+            <div class="px-3 mb-6">
+                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Deal Flow</div>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-chart-line w-5"></i>
+                    <span class="ml-3">Deals</span>
+                    <span class="ml-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-building w-5"></i>
+                    <span class="ml-3">Properties</span>
+                    <span class="ml-auto bg-secondary text-white text-xs px-2 py-0.5 rounded-full">24</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-door-open w-5"></i>
+                    <span class="ml-3">Units</span>
+                    <span class="ml-auto bg-secondary text-white text-xs px-2 py-0.5 rounded-full">58</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-folder-open w-5"></i>
+                    <span class="ml-3">Deal Room</span>
+                </a>
+            </div>
+            
+            <div class="px-3 mb-6">
+                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Operations</div>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-rocket w-5"></i>
+                    <span class="ml-3">Onboarding</span>
+                    <span class="ml-auto bg-secondary text-white text-xs px-2 py-0.5 rounded-full">3</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-concierge-bell w-5"></i>
+                    <span class="ml-3">Services</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-ticket w-5"></i>
+                    <span class="ml-3">Tickets</span>
+                    <span class="ml-auto bg-destructive text-white text-xs px-2 py-0.5 rounded-full">7</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-truck w-5"></i>
+                    <span class="ml-3">Suppliers</span>
+                </a>
+            </div>
+            
+            <div class="px-3 mb-6">
+                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Intelligence</div>
+                <a href="#" class="flex items-center px-3 py-2 text-sm bg-primary text-white rounded transition-all-smooth">
+                    <i class="fa-solid fa-users w-5"></i>
+                    <span class="ml-3">Contacts</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
+                    <i class="fa-solid fa-chart-bar w-5"></i>
+                    <span class="ml-3">Analytics</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="p-4 border-t border-[#E6E6E6]">
+            <div class="flex items-center space-x-3">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-9 h-9 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                    <div class="text-sm font-semibold text-primary truncate">Tom Harrison</div>
+                    <div class="text-xs text-secondary">Origination</div>
+                </div>
+                <button class="text-secondary hover:text-primary">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+    
+    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+        
+        <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-6 flex-1">
+                <div class="relative flex-1 max-w-xl">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <input type="text" placeholder="Search contacts, companies, brokers..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                </button>
+                <button class="p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-question-circle text-lg"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div id="page-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h1 class="text-3xl font-semibold text-primary mb-2">Contacts</h1>
+                    <p class="text-secondary text-sm">Manage brokers, tenants, landlords, and supplier relationships</p>
+                </div>
+                <button id="add-contact-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Contact</span>
+                </button>
+            </div>
+            
+            <div class="flex items-center space-x-4 mt-6">
+                <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">All Contacts</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Flex Brokers</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Disposal Agents</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Tenants</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Suppliers</button>
+                <div class="flex-1"></div>
+                <button class="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+                    <i class="fa-solid fa-filter"></i>
+                    <span>Filters</span>
+                </button>
+                <button class="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Export</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="filters-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
+            <div class="flex items-center space-x-3 flex-wrap gap-2">
+                <div class="relative">
+                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>All Types</option>
+                        <option>Flex Broker</option>
+                        <option>Disposal Agent</option>
+                        <option>Tenant/Prospect</option>
+                        <option>Landlord</option>
+                        <option>Supplier</option>
+                        <option>Internal</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>All Firms</option>
+                        <option>Knight Frank</option>
+                        <option>CBRE</option>
+                        <option>JLL</option>
+                        <option>Savills</option>
+                        <option>Cushman & Wakefield</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>All Submarkets</option>
+                        <option>City Core</option>
+                        <option>Shoreditch</option>
+                        <option>Mayfair</option>
+                        <option>Canary Wharf</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>All Activity</option>
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                        <option>Last 90 days</option>
+                        <option>Last year</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>All Relationship Health</option>
+                        <option>Excellent</option>
+                        <option>Good</option>
+                        <option>Fair</option>
+                        <option>Needs Attention</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <button class="text-secondary hover:text-primary text-sm ml-2">
+                    Clear all
+                </button>
+            </div>
+        </div>
+        
+        <div id="contacts-list" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
+            <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-muted border-b border-[#E6E6E6]">
+                            <tr>
+                                <th class="px-6 py-3 text-left">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Company</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Phone</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Last Activity</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Open Items</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Health</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#E6E6E6]">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="James Parker" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">James Parker</div>
+                                            <div class="text-xs text-secondary">Senior Partner</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">
+                                        <i class="fa-solid fa-handshake mr-1.5"></i>
+                                        Flex Broker
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">Knight Frank</td>
+                                <td class="px-6 py-4 text-sm text-primary">j.parker@knightfrank.com</td>
+                                <td class="px-6 py-4 text-sm text-secondary">+44 20 7629 8171</td>
+                                <td class="px-6 py-4 text-sm text-secondary">2 hours ago</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-chart-line mr-1"></i>
+                                            3 deals
+                                        </span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-eye mr-1"></i>
+                                            2 viewings
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+                                        Excellent
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-secondary hover:text-primary">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="Sarah Chen" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">Sarah Chen</div>
+                                            <div class="text-xs text-secondary">Head of Agency</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">
+                                        <i class="fa-solid fa-building mr-1.5"></i>
+                                        Disposal Agent
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">CBRE</td>
+                                <td class="px-6 py-4 text-sm text-primary">sarah.chen@cbre.com</td>
+                                <td class="px-6 py-4 text-sm text-secondary">+44 20 7182 2000</td>
+                                <td class="px-6 py-4 text-sm text-secondary">5 hours ago</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-building mr-1"></i>
+                                            4 properties
+                                        </span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-eye mr-1"></i>
+                                            1 viewing
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+                                        Good
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-secondary hover:text-primary">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Michael Roberts" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm flex items-center">
+                                                Michael Roberts
+                                                <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800">
+                                                    <i class="fa-solid fa-lock mr-1"></i>
+                                                    Confidential
+                                                </span>
+                                            </div>
+                                            <div class="text-xs text-secondary">CFO</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-accent text-white">
+                                        <i class="fa-solid fa-user-tie mr-1.5"></i>
+                                        Tenant
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">TechCorp Ltd</td>
+                                <td class="px-6 py-4 text-sm text-primary">m.roberts@techcorp.com</td>
+                                <td class="px-6 py-4 text-sm text-secondary">+44 20 8765 4321</td>
+                                <td class="px-6 py-4 text-sm text-secondary">1 day ago</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-file-contract mr-1"></i>
+                                            1 deal
+                                        </span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-ticket mr-1"></i>
+                                            2 tickets
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+                                        Good
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-secondary hover:text-primary">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg" alt="David Thompson" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">David Thompson</div>
+                                            <div class="text-xs text-secondary">Portfolio Director</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">
+                                        <i class="fa-solid fa-landmark mr-1.5"></i>
+                                        Landlord
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">British Land</td>
+                                <td class="px-6 py-4 text-sm text-primary">d.thompson@britishland.com</td>
+                                <td class="px-6 py-4 text-sm text-secondary">+44 20 7486 4466</td>
+                                <td class="px-6 py-4 text-sm text-secondary">3 days ago</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-building mr-1"></i>
+                                            6 properties
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+                                        Excellent
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-secondary hover:text-primary">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-6.jpg" alt="Emma Wilson" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">Emma Wilson</div>
+                                            <div class="text-xs text-secondary">Operations Manager</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">
+                                        <i class="fa-solid fa-wrench mr-1.5"></i>
+                                        Supplier
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">CleanPro Services</td>
+                                <td class="px-6 py-4 text-sm text-primary">emma@cleanpro.co.uk</td>
+                                <td class="px-6 py-4 text-sm text-secondary">+44 20 7123 4567</td>
+                                <td class="px-6 py-4 text-sm text-secondary">1 week ago</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-clipboard-check mr-1"></i>
+                                            5 work orders
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        <i class="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+                                        Fair
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-secondary hover:text-primary">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" alt="Oliver Martinez" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">Oliver Martinez</div>
+                                            <div class="text-xs text-secondary">Associate Director</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">
+                                        <i class="fa-solid fa-handshake mr-1.5"></i>
+                                        Flex Broker
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">JLL</td>
+                                <td class="px-6 py-4 text-sm text-primary">oliver.martinez@jll.com</td>
+                                <td class="px-6 py-4 text-sm text-secondary">+44 20 7493 4933</td>
+                                <td class="px-6 py-4 text-sm text-secondary">2 weeks ago</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-chart-line mr-1"></i>
+                                            1 deal
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        <i class="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+                                        Needs Attention
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-secondary hover:text-primary">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="bulk-actions-bar" class="mt-6 flex items-center justify-between">
+                <div class="text-sm text-secondary">
+                    Showing 6 of 142 contacts
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Send Email</span>
+                    </button>
+                    <button class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-tag"></i>
+                        <span>Add Tags</span>
+                    </button>
+                    <button class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-file-export"></i>
+                        <span>Export Selected</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="quick-stats" class="mt-8 grid grid-cols-4 gap-6">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-secondary text-sm font-medium">Total Contacts</div>
+                        <i class="fa-solid fa-users text-primary"></i>
+                    </div>
+                    <div class="text-3xl font-semibold text-primary">142</div>
+                    <div class="text-xs text-secondary mt-2">+8 this month</div>
+                </div>
+                
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-secondary text-sm font-medium">Active Brokers</div>
+                        <i class="fa-solid fa-handshake text-primary"></i>
+                    </div>
+                    <div class="text-3xl font-semibold text-primary">34</div>
+                    <div class="text-xs text-secondary mt-2">18 preferred</div>
+                </div>
+                
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-secondary text-sm font-medium">Active Tenants</div>
+                        <i class="fa-solid fa-user-tie text-primary"></i>
+                    </div>
+                    <div class="text-3xl font-semibold text-primary">28</div>
+                    <div class="text-xs text-secondary mt-2">12 in onboarding</div>
+                </div>
+                
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-secondary text-sm font-medium">Avg Response Time</div>
+                        <i class="fa-solid fa-clock text-primary"></i>
+                    </div>
+                    <div class="text-3xl font-semibold text-primary">4.2h</div>
+                    <div class="text-xs text-secondary mt-2">-0.8h vs last month</div>
+                </div>
+            </div>
+            
+            <div class="mt-8 grid grid-cols-2 gap-6">
+                <div id="broker-performance-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-primary">Top Broker Performance</h3>
+                        <button class="text-sm text-secondary hover:text-primary">View All</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="James Parker" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">James Parker</div>
+                                    <div class="text-xs text-secondary">Knight Frank</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-primary">£1.2M</div>
+                                <div class="text-xs text-secondary">8 conversions</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pb-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" alt="Oliver Martinez" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Oliver Martinez</div>
+                                    <div class="text-xs text-secondary">JLL</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-primary">£890K</div>
+                                <div class="text-xs text-secondary">6 conversions</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pb-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-7.jpg" alt="Rachel Green" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Rachel Green</div>
+                                    <div class="text-xs text-secondary">Savills</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-primary">£750K</div>
+                                <div class="text-xs text-secondary">5 conversions</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Tom Anderson" class="w-10 h-10 rounded-full object-cover">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Tom Anderson</div>
+                                    <div class="text-xs text-secondary">CBRE</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-semibold text-primary">£620K</div>
+                                <div class="text-xs text-secondary">4 conversions</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="relationship-health-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-primary">Relationship Health</h3>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-3 py-1.5 text-xs font-medium text-white bg-primary rounded-lg">30D</button>
+                            <button class="px-3 py-1.5 text-xs font-medium text-secondary hover:text-primary border border-[#E6E6E6] rounded-lg">90D</button>
+                        </div>
+                    </div>
+                    <div id="health-chart" style="height: 240px;"></div>
+                </div>
+            </div>
+            
+            <div id="recent-activity" class="mt-8">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Recent Activity</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-envelope text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm text-primary font-medium">Email logged with James Parker</div>
+                                <div class="text-xs text-secondary mt-1">Viewing scheduled for 99 Bishopsgate - 3rd floor suite</div>
+                                <div class="text-xs text-secondary mt-1">2 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-user-plus text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm text-primary font-medium">New contact added</div>
+                                <div class="text-xs text-secondary mt-1">Emma Wilson from CleanPro Services added as Supplier</div>
+                                <div class="text-xs text-secondary mt-1">5 hours ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-phone text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm text-primary font-medium">Call logged with Sarah Chen</div>
+                                <div class="text-xs text-secondary mt-1">Discussed floorplan updates for Principal Place</div>
+                                <div class="text-xs text-secondary mt-1">1 day ago</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-handshake text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm text-primary font-medium">Deal closed with Michael Roberts</div>
+                                <div class="text-xs text-secondary mt-1">TechCorp Ltd signed for The Leadenhall Building</div>
+                                <div class="text-xs text-secondary mt-1">3 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="communication-insights" class="mt-8">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Communication Insights</h3>
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-semibold text-primary mb-2">284</div>
+                            <div class="text-sm text-secondary">Emails This Month</div>
+                            <div class="text-xs text-green-600 mt-1">+12% vs last month</div>
+                        </div>
+                        <div class="text-center border-l border-r border-[#E6E6E6]">
+                            <div class="text-3xl font-semibold text-primary mb-2">127</div>
+                            <div class="text-sm text-secondary">Calls Logged</div>
+                            <div class="text-xs text-green-600 mt-1">+8% vs last month</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-semibold text-primary mb-2">45</div>
+                            <div class="text-sm text-secondary">Meetings Scheduled</div>
+                            <div class="text-xs text-red-600 mt-1">-3% vs last month</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+</div>
+
+<div id="add-contact-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-primary">Add Contact</h2>
+            <button id="close-modal" class="text-secondary hover:text-primary">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <div class="mb-6">
+                <p class="text-sm text-secondary">Add a new contact to your network. All fields marked with * are required.</p>
+            </div>
+            
+            <form id="add-contact-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Contact Type <span class="text-destructive">*</span></label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="type" value="broker" class="sr-only peer" required>
+                            <div class="text-center">
+                                <i class="fa-solid fa-handshake text-xl text-secondary peer-checked:text-primary mb-2"></i>
+                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Flex Broker</span>
+                            </div>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="type" value="disposal" class="sr-only peer">
+                            <div class="text-center">
+                                <i class="fa-solid fa-building text-xl text-secondary peer-checked:text-primary mb-2"></i>
+                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Disposal Agent</span>
+                            </div>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="type" value="tenant" class="sr-only peer">
+                            <div class="text-center">
+                                <i class="fa-solid fa-user-tie text-xl text-secondary peer-checked:text-primary mb-2"></i>
+                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Tenant</span>
+                            </div>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="type" value="landlord" class="sr-only peer">
+                            <div class="text-center">
+                                <i class="fa-solid fa-landmark text-xl text-secondary peer-checked:text-primary mb-2"></i>
+                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Landlord</span>
+                            </div>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="type" value="supplier" class="sr-only peer">
+                            <div class="text-center">
+                                <i class="fa-solid fa-wrench text-xl text-secondary peer-checked:text-primary mb-2"></i>
+                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Supplier</span>
+                            </div>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="type" value="internal" class="sr-only peer">
+                            <div class="text-center">
+                                <i class="fa-solid fa-user text-xl text-secondary peer-checked:text-primary mb-2"></i>
+                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Internal</span>
+                            </div>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Person Name <span class="text-destructive">*</span></label>
+                        <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., James Parker">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Company <span class="text-destructive">*</span></label>
+                        <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Knight Frank">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Role/Title <span class="text-destructive">*</span></label>
+                    <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Senior Partner">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Email <span class="text-destructive">*</span></label>
+                        <input type="email" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="email@company.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Phone</label>
+                        <input type="tel" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="+44 20 1234 5678">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">City/Region</label>
+                    <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., London">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Status</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="status" value="active" class="sr-only peer" checked>
+                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Active</span>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                            <input type="radio" name="status" value="dnc" class="sr-only peer">
+                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Do Not Contact</span>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Relationship Notes</label>
+                    <textarea rows="3" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none" placeholder="Add notes about relationship, tone guidance, preferences..."></textarea>
+                </div>
+                
+                <div id="broker-fields" class="hidden space-y-4 pt-4 border-t border-[#E6E6E6]">
+                    <h3 class="text-sm font-semibold text-primary">Broker-Specific Details</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Brokerage Territory</label>
+                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Central London">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Specialisms</label>
+                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Tech sector, Large floor plates">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Preferred Submarkets</label>
+                        <select multiple class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option>City Core</option>
+                            <option>Shoreditch</option>
+                            <option>Mayfair</option>
+                            <option>Canary Wharf</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Referral Source</label>
+                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="How did we connect?">
+                    </div>
+                    <div>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                            <span class="text-sm text-primary">Confidential requirements flag</span>
+                        </label>
+                        <p class="text-xs text-secondary mt-1">Contact often submits requirements without revealing tenant identity</p>
+                    </div>
+                </div>
+                
+                <div id="disposal-fields" class="hidden space-y-4 pt-4 border-t border-[#E6E6E6]">
+                    <h3 class="text-sm font-semibold text-primary">Disposal Agent-Specific Details</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Landlord Roster</label>
+                        <select multiple class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option>British Land</option>
+                            <option>Land Securities</option>
+                            <option>Derwent London</option>
+                            <option>Great Portland Estates</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Instruction Types</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                <span class="text-sm text-primary">Cat A+</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                <span class="text-sm text-primary">Fitted</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                <span class="text-sm text-primary">Cat A</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-3 pt-4 border-t border-[#E6E6E6]">
+                    <button type="submit" class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth">
+                        Add Contact
+                    </button>
+                    <button type="button" id="cancel-modal" class="flex-1 border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+<script>
+window.addEventListener('load', function() {
+    try {
+        const data = [{
+            type: 'bar',
+            x: ['Excellent', 'Good', 'Fair', 'Needs Attention'],
+            y: [45, 58, 28, 11],
+            marker: {
+                color: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
+            }
+        }];
+        
+        const layout = {
+            margin: { t: 20, r: 20, b: 40, l: 50 },
+            plot_bgcolor: '#ffffff',
+            paper_bgcolor: '#ffffff',
+            xaxis: {
+                gridcolor: '#E6E6E6',
+                showgrid: false
+            },
+            yaxis: {
+                title: 'Contacts',
+                gridcolor: '#E6E6E6',
+                showgrid: true
+            },
+            showlegend: false
+        };
+        
+        const config = {
+            responsive: true,
+            displayModeBar: false,
+            displaylogo: false
+        };
+        
+        Plotly.newPlot('health-chart', data, layout, config);
+    } catch(e) {
+        document.getElementById('health-chart').innerHTML = '<div class="flex items-center justify-center h-full text-secondary">Chart unavailable</div>';
+    }
+    
+    const addContactBtn = document.getElementById('add-contact-btn');
+    const modal = document.getElementById('add-contact-modal');
+    const closeModal = document.getElementById('close-modal');
+    const cancelModal = document.getElementById('cancel-modal');
+    const form = document.getElementById('add-contact-form');
+    const typeRadios = document.querySelectorAll('input[name="type"]');
+    const brokerFields = document.getElementById('broker-fields');
+    const disposalFields = document.getElementById('disposal-fields');
+    
+    addContactBtn.addEventListener('click', function() {
+        modal.classList.remove('hidden');
+    });
+    
+    closeModal.addEventListener('click', function() {
+        modal.classList.add('hidden');
+    });
+    
+    cancelModal.addEventListener('click', function() {
+        modal.classList.add('hidden');
+    });
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+    
+    typeRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            brokerFields.classList.add('hidden');
+            disposalFields.classList.add('hidden');
+            
+            if (this.value === 'broker') {
+                brokerFields.classList.remove('hidden');
+            } else if (this.value === 'disposal') {
+                disposalFields.classList.remove('hidden');
+            }
+        });
+    });
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        modal.classList.add('hidden');
+        
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+        toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Contact added successfully</span>';
+        document.body.appendChild(toast);
+        
+        setTimeout(function() {
+            toast.remove();
+        }, 3000);
+        
+        form.reset();
+        brokerFields.classList.add('hidden');
+        disposalFields.classList.add('hidden');
+    });
+});
+</script>
+
+</body>
+</html>
