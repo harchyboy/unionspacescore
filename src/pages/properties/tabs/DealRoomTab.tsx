@@ -5,6 +5,8 @@ interface DealRoomTabProps {
 }
 
 export function DealRoomTab(_props: DealRoomTabProps) {
+  // Props available for future use
+  void _props;
   // Mock deal room items
   const items = [
     { id: '1', type: 'HoTs', title: 'Heads of Terms - Unit 99B-5-B', updatedAt: '2024-12-15' },

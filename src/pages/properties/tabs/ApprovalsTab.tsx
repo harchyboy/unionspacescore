@@ -7,6 +7,8 @@ interface ApprovalsTabProps {
 }
 
 export function ApprovalsTab(_props: ApprovalsTabProps) {
+  // Props available for future use
+  void _props;
   // Mock approval data
   const approvals = [
     {

@@ -5,6 +5,8 @@ interface CommercialsTabProps {
 }
 
 export function CommercialsTab(_props: CommercialsTabProps) {
+  // Props available for future use
+  void _props;
   return (
     <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
       <h2 className="text-xl font-semibold text-[#252525] mb-6">Commercials</h2>

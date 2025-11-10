@@ -7,6 +7,8 @@ interface RiskTabProps {
 }
 
 export function RiskTab(_props: RiskTabProps) {
+  // Props available for future use
+  void _props;
   // Mock risk data
   const risks = [
     {
