@@ -97,8 +97,8 @@
         <div class="px-3 mb-6">
           <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Deal Flow</div>
           <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth"><i class="fa-solid fa-chart-line w-5" aria-hidden="true"></i><span class="ml-3">Deals</span><span class="ml-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span></a>
-          <a href="#" class="flex items-center px-3 py-2 text-sm bg-primary text-white rounded transition-all-smooth"><i class="fa-solid fa-building w-5" aria-hidden="true"></i><span class="ml-3">Properties</span><span class="ml-auto bg-white text-primary text-xs px-2 py-0.5 rounded-full">24</span></a>
-          <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth"><i class="fa-solid fa-door-open w-5" aria-hidden="true"></i><span class="ml-3">Units</span><span class="ml-auto bg-secondary text-white text-xs px-2 py-0.5 rounded-full">58</span></a>
+          <a href="Property List Dashboard.html" class="flex items-center px-3 py-2 text-sm bg-primary text-white rounded transition-all-smooth"><i class="fa-solid fa-building w-5" aria-hidden="true"></i><span class="ml-3">Properties</span><span class="ml-auto bg-white text-primary text-xs px-2 py-0.5 rounded-full">24</span></a>
+          <a href="Units Details Page.html" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth"><i class="fa-solid fa-door-open w-5" aria-hidden="true"></i><span class="ml-3">Units</span><span class="ml-auto bg-secondary text-white text-xs px-2 py-0.5 rounded-full">58</span></a>
           <a href="#deal-room" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth"><i class="fa-solid fa-folder-open w-5" aria-hidden="true"></i><span class="ml-3">Deal Room</span></a>
         </div>
         <div class="px-3 mb-6">
@@ -110,7 +110,7 @@
         </div>
         <div class="px-3 mb-6">
           <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Intelligence</div>
-          <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth"><i class="fa-solid fa-users w-5" aria-hidden="true"></i><span class="ml-3">Contacts</span></a>
+          <a href="Contacts List Page.html" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth"><i class="fa-solid fa-users w-5" aria-hidden="true"></i><span class="ml-3">Contacts</span></a>
           <a href="#analytics-section" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth"><i class="fa-solid fa-chart-bar w-5" aria-hidden="true"></i><span class="ml-3">Analytics</span></a>
         </div>
       </nav>
@@ -129,7 +129,7 @@
     <main id="main-content" class="flex-1 flex flex-col overflow-hidden" tabindex="-1">
       <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-6 flex-1">
-          <button class="text-secondary hover:text-primary text-sm flex items-center space-x-2" aria-label="Back to Properties"><i class="fa-solid fa-arrow-left"></i><span>Back to Properties</span></button>
+          <a href="Property List Dashboard.html" class="text-secondary hover:text-primary text-sm flex items-center space-x-2" aria-label="Back to Properties"><i class="fa-solid fa-arrow-left"></i><span>Back to Properties</span></a>
           <div class="relative flex-1 max-w-xl">
             <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-secondary"></i>
             <input aria-label="Search" type="text" placeholder="Search properties, units, contacts" class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
@@ -169,7 +169,7 @@
             <button id="btn-upload-doc" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-upload"></i><span>Upload Doc</span></button>
             <button id="btn-book-viewing" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-calendar-check"></i><span>Book Viewing</span></button>
             <button id="btn-publish" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-share-nodes"></i><span>Publish to Brokers</span></button>
-            <button class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-plus"></i><span>Add Unit</span></button>
+            <a href="Add Unit To Property Page.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-plus"></i><span>Add Unit</span></a>
           </div>
         </div>
         <div id="tabbar" class="flex items-center space-x-4 border-t border-[#E6E6E6] pt-4" role="tablist" aria-label="Property sections">
@@ -313,7 +313,7 @@
                   </select>
                   <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
-                <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-plus"></i><span>Add Unit</span></button>
+                <a href="Add Unit To Property Page.html" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-plus"></i><span>Add Unit</span></a>
               </div>
             </div>
             <div class="overflow-x-auto">
@@ -333,7 +333,7 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-[#E6E6E6]">
-                  <tr class="hover:bg-muted transition-all-smooth">
+                  <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Units More Detail Card.html'">
                     <td class="px-4 py-4"><div class="text-sm font-semibold text-primary">99B-3-A</div><div class="text-xs text-secondary">Suite A</div></td>
                     <td class="px-4 py-4 text-sm text-primary">3rd Floor</td>
                     <td class="px-4 py-4 text-sm text-primary">4,200 sq ft</td>
