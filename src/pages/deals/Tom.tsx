@@ -76,41 +76,13 @@ export function Tom() {
           </div>
           <div className="space-y-3">
             <Link
-              to="/deals"
+              to="/properties"
               className="block p-4 border border-[#E6E6E6] rounded-lg hover:bg-[#fafafa] transition-all"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium text-[#252525]">Pipeline Overview</div>
-                  <div className="text-sm text-[#8e8e8e]">View all deals in pipeline</div>
-                </div>
-                <svg className="w-5 h-5 text-[#8e8e8e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Link>
-            <Link
-              to="/deals/qualification"
-              className="block p-4 border border-[#E6E6E6] rounded-lg hover:bg-[#fafafa] transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-[#252525]">Qualification</div>
-                  <div className="text-sm text-[#8e8e8e]">Qualify new opportunities</div>
-                </div>
-                <svg className="w-5 h-5 text-[#8e8e8e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </Link>
-            <Link
-              to="/deals/viewings"
-              className="block p-4 border border-[#E6E6E6] rounded-lg hover:bg-[#fafafa] transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium text-[#252525]">Viewings</div>
-                  <div className="text-sm text-[#8e8e8e]">Manage property viewings</div>
+                  <div className="font-medium text-[#252525]">Properties</div>
+                  <div className="text-sm text-[#8e8e8e]">View all properties</div>
                 </div>
                 <svg className="w-5 h-5 text-[#8e8e8e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
