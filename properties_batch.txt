@@ -1,0 +1,744 @@
+<!-- Properties 3-10 -->
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/71ec98b403-4d78e412d1a56ddf8015.png" alt="Heron Tower" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">Heron Tower</div>
+                                            <div class="text-xs text-secondary">110 Bishopsgate, London EC2N</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">6</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">14</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 68%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">68%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">Internal Only</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">CBRE</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">14 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 87%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">87%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">3h ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/67fd6c1e72-86ec3a1c33a0cad7a78d.png" alt="The Gherkin" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">The Gherkin</div>
+                                            <div class="text-xs text-secondary">30 St Mary Axe, London EC3A</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">9</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">22</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">75%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Private</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-secondary">Private · 15 brokers</td>
+                                <td class="px-6 py-4 text-sm text-primary">British Land</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">22 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 94%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">94%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">6h ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2a04833416-c73dfcb3955e8c8d5f62.png" alt="Tower 42" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">Tower 42</div>
+                                            <div class="text-xs text-secondary">25 Old Broad St, London EC2N</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Fitted</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">5</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">12</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 48%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">48%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">JLL</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">12 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 82%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">82%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">4h ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/4a1fa12ae2-0df310617941ad5e1e43.png" alt="The Walkie Talkie" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">The Walkie Talkie</div>
+                                            <div class="text-xs text-secondary">20 Fenchurch St, London EC3M</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">7</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">16</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 58%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">58%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Private</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-secondary">Private · 12 brokers</td>
+                                <td class="px-6 py-4 text-sm text-primary">Land Securities</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">16 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 89%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">89%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">7h ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/71ec98b403-4d78e412d1a56ddf8015.png" alt="The Cheesegrater" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">The Cheesegrater</div>
+                                            <div class="text-xs text-secondary">122 Leadenhall St, London EC3V</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">10</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">24</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 65%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">65%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">Knight Frank</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">24 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 91%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">91%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">2d ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/67fd6c1e72-86ec3a1c33a0cad7a78d.png" alt="The Scalpel" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">The Scalpel</div>
+                                            <div class="text-xs text-secondary">52 Lime St, London EC3M</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">4</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">9</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 52%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">52%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">Internal Only</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">Cushman</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">9 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 79%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">79%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">1d ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2a04833416-c73dfcb3955e8c8d5f62.png" alt="30 St Mary Axe" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">30 St Mary Axe</div>
+                                            <div class="text-xs text-secondary">30 St Mary Axe, London EC3A</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">11</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">28</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">72%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Private</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-secondary">Private · 18 brokers</td>
+                                <td class="px-6 py-4 text-sm text-primary">British Land</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">28 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 93%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">93%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">8h ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/4a1fa12ae2-0df310617941ad5e1e43.png" alt="The Pinnacle" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">The Pinnacle</div>
+                                            <div class="text-xs text-secondary">22-24 Bishopsgate, London EC2N</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Fitted</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">6</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">13</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 46%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">46%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">Savills</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">13 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 84%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">84%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">3d ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/71ec98b403-4d78e412d1a56ddf8015.png" alt="The Willis Building" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">The Willis Building</div>
+                                            <div class="text-xs text-secondary">51 Lime St, London EC3M</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">3</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">7</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 57%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">57%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Private</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-secondary">Private · 6 brokers</td>
+                                <td class="px-6 py-4 text-sm text-primary">Land Securities</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">7 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 86%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">86%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">5h ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
+                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/67fd6c1e72-86ec3a1c33a0cad7a78d.png" alt="The Broadgate Tower" />
+                                        </div>
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">The Broadgate Tower</div>
+                                            <div class="text-xs text-secondary">201 Bishopsgate, London EC2M</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1 text-sm">
+                                        <span class="font-semibold text-primary">12</span>
+                                        <span class="text-secondary">/</span>
+                                        <span class="text-secondary">30</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 60%"></div>
+                                        </div>
+                                        <span class="text-xs text-secondary font-medium">60%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">JLL</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <span class="text-sm text-primary">Tom</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <span class="text-secondary">30 imgs</span>
+                                        <i class="fa-solid fa-check text-primary"></i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex-1 bg-muted rounded-full h-2 w-16">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 95%"></div>
+                                        </div>
+                                        <span class="text-xs text-primary font-medium">95%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-primary">Tom</div>
+                                    <div class="text-xs text-secondary">1d ago</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative inline-block">
+                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>

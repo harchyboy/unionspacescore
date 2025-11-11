@@ -191,96 +191,13 @@
             transform: translateY(-2px);
         }
     </style>
+    <script src="sidebar.js" defer></script>
 </head>
 <body class="antialiased">
 
 <div id="app-shell" class="flex h-screen overflow-hidden">
     
-    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col">
-        <div class="p-6 border-b border-[#E6E6E6]">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-primary rounded flex items-center justify-center">
-                    <span class="text-white font-semibold text-lg">U</span>
-                </div>
-                <div>
-                    <div class="font-semibold text-primary text-lg">UNION</div>
-                    <div class="text-xs text-secondary">Core Dashboard</div>
-                </div>
-            </div>
-        </div>
-        
-        <nav class="flex-1 overflow-y-auto py-4">
-            <div class="px-3 mb-6">
-                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Deal Flow</div>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-chart-line w-5"></i>
-                    <span class="ml-3">Deals</span>
-                    <span class="ml-auto bg-primary text-white text-xs px-2 py-0.5 rounded-full">12</span>
-                </a>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-building w-5"></i>
-                    <span class="ml-3">Properties</span>
-                    <span class="ml-auto bg-secondary text-white text-xs px-2 py-0.5 rounded-full">24</span>
-                </a>
-                <a href="#" class="flex items-center px-3 py-2 text-sm bg-primary text-white rounded transition-all-smooth">
-                    <i class="fa-solid fa-door-open w-5"></i>
-                    <span class="ml-3">Units</span>
-                    <span class="ml-auto bg-white text-primary text-xs px-2 py-0.5 rounded-full">58</span>
-                </a>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-folder-open w-5"></i>
-                    <span class="ml-3">Deal Room</span>
-                </a>
-            </div>
-            
-            <div class="px-3 mb-6">
-                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Operations</div>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-rocket w-5"></i>
-                    <span class="ml-3">Onboarding</span>
-                    <span class="ml-auto bg-secondary text-white text-xs px-2 py-0.5 rounded-full">3</span>
-                </a>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-concierge-bell w-5"></i>
-                    <span class="ml-3">Services</span>
-                </a>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-ticket w-5"></i>
-                    <span class="ml-3">Tickets</span>
-                    <span class="ml-auto bg-destructive text-white text-xs px-2 py-0.5 rounded-full">7</span>
-                </a>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-truck w-5"></i>
-                    <span class="ml-3">Suppliers</span>
-                </a>
-            </div>
-            
-            <div class="px-3 mb-6">
-                <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-2 px-3">Intelligence</div>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-users w-5"></i>
-                    <span class="ml-3">Contacts</span>
-                </a>
-                <a href="#" class="flex items-center px-3 py-2 text-sm text-secondary hover:bg-muted rounded transition-all-smooth">
-                    <i class="fa-solid fa-chart-bar w-5"></i>
-                    <span class="ml-3">Analytics</span>
-                </a>
-            </div>
-        </nav>
-        
-        <div class="p-4 border-t border-[#E6E6E6]">
-            <div class="flex items-center space-x-3">
-                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-9 h-9 rounded-full object-cover">
-                <div class="flex-1 min-w-0">
-                    <div class="text-sm font-semibold text-primary truncate">Tom Harrison</div>
-                    <div class="text-xs text-secondary">Origination</div>
-                </div>
-                <button class="text-secondary hover:text-primary">
-                    <i class="fa-solid fa-gear"></i>
-                </button>
-            </div>
-        </div>
-    </aside>
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="units"></aside>
     
     <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
         
@@ -308,18 +225,23 @@
         
         <div id="page-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
             <div class="flex items-start justify-between">
-                <div>
-                    <div class="flex items-center space-x-3 mb-2">
-                        <h1 class="text-3xl font-semibold text-primary">Add Unit</h1>
+                <div class="flex items-center space-x-4">
+                    <a href="Properties Detailed Card.html" class="text-secondary hover:text-primary transition-all-smooth">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <div>
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h1 class="text-3xl font-semibold text-primary">Add Unit</h1>
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-secondary">99 Bishopsgate</span>
                     </div>
-                    <p class="text-secondary text-sm">Create a new space within this property</p>
+                        <p class="text-secondary text-sm">Create a new space within this property</p>
+                    </div>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <button class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth">
+                    <button id="cancel-unit-btn" type="button" class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth">
                         Cancel
                     </button>
-                    <button id="save-unit-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <button id="save-unit-btn" type="button" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-check"></i>
                         <span>Save Unit</span>
                     </button>
@@ -728,52 +650,80 @@ window.addEventListener('load', function() {
     const allInclusiveFields = document.getElementById('all-inclusive-fields');
     const boltOnFields = document.getElementById('bolt-on-fields');
     
-    pricingModeInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            if (this.value === 'all-inclusive') {
-                allInclusiveFields.classList.remove('hidden');
-                boltOnFields.classList.add('hidden');
-            } else if (this.value === 'bolt-on') {
-                allInclusiveFields.classList.add('hidden');
-                boltOnFields.classList.remove('hidden');
-            }
+    if (pricingModeInputs.length && allInclusiveFields && boltOnFields) {
+        pricingModeInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                if (this.value === 'all-inclusive') {
+                    allInclusiveFields.classList.remove('hidden');
+                    boltOnFields.classList.add('hidden');
+                } else if (this.value === 'bolt-on') {
+                    allInclusiveFields.classList.add('hidden');
+                    boltOnFields.classList.remove('hidden');
+                }
+            });
         });
-    });
+    }
     
     const toggleAdvanced = document.getElementById('toggle-advanced');
     const advancedFields = document.getElementById('advanced-fields');
     
-    toggleAdvanced.addEventListener('click', function() {
-        advancedFields.classList.toggle('hidden');
-        const icon = this.querySelector('i');
-        if (advancedFields.classList.contains('hidden')) {
-            icon.classList.remove('fa-chevron-up');
-            icon.classList.add('fa-chevron-down');
-            this.querySelector('span').textContent = 'Expand';
-        } else {
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-chevron-up');
-            this.querySelector('span').textContent = 'Collapse';
-        }
-    });
-    
-    const boltOnInputs = boltOnFields.querySelectorAll('input[type="number"]');
-    boltOnInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            const rent = parseFloat(boltOnFields.querySelector('input[placeholder*="7500"]').value) || 0;
-            const service = parseFloat(boltOnFields.querySelector('input[placeholder*="3000"]').value) || 0;
-            const rates = parseFloat(boltOnFields.querySelector('input[placeholder*="2000"]').value) || 0;
-            const total = rent + service + rates;
-            const totalDisplay = boltOnFields.querySelector('.text-lg.font-semibold');
-            if (totalDisplay) {
-                totalDisplay.textContent = '£' + total.toLocaleString();
+    if (toggleAdvanced && advancedFields) {
+        toggleAdvanced.addEventListener('click', function() {
+            advancedFields.classList.toggle('hidden');
+            const icon = this.querySelector('i');
+            if (advancedFields.classList.contains('hidden')) {
+                if (icon) {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+                const label = this.querySelector('span');
+                if (label) {
+                    label.textContent = 'Expand';
+                }
+            } else {
+                if (icon) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+                const label = this.querySelector('span');
+                if (label) {
+                    label.textContent = 'Collapse';
+                }
             }
         });
-    });
+    }
+    
+    if (boltOnFields) {
+        const boltOnInputs = boltOnFields.querySelectorAll('input[type="number"]');
+        boltOnInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const rent = parseFloat(boltOnFields.querySelector('input[placeholder*="7500"]').value) || 0;
+                const service = parseFloat(boltOnFields.querySelector('input[placeholder*="3000"]').value) || 0;
+                const rates = parseFloat(boltOnFields.querySelector('input[placeholder*="2000"]').value) || 0;
+                const total = rent + service + rates;
+                const totalDisplay = boltOnFields.querySelector('.text-lg.font-semibold');
+                if (totalDisplay) {
+                    totalDisplay.textContent = '£' + total.toLocaleString();
+                }
+            });
+        });
+    }
     
     const saveUnitBtn = document.getElementById('save-unit-btn');
     const unitForm = document.getElementById('unit-form');
+    const cancelUnitBtn = document.getElementById('cancel-unit-btn');
     
+    if (cancelUnitBtn) {
+        cancelUnitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Navigate back to the property detail page (where user likely came from)
+            window.location.href = 'Properties Detailed Card.html';
+        });
+    } else {
+        console.error('Cancel button not found');
+    }
+
     saveUnitBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
