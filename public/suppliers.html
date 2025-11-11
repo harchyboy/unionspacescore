@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suppliers - UNION Core</title>
+    <script src='https://cdn.tailwindcss.com'></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "var(--border)",
+                        input: "var(--input)",
+                        ring: "var(--ring)",
+                        background: "var(--background)",
+                        foreground: "var(--foreground)",
+                        primary: {
+                            DEFAULT: "var(--primary)",
+                            foreground: "var(--primary-foreground)",
+                        },
+                        secondary: {
+                            DEFAULT: "var(--secondary)",
+                            foreground: "var(--secondary-foreground)",
+                        },
+                        destructive: {
+                            DEFAULT: "var(--destructive)",
+                            foreground: "var(--destructive-foreground)",
+                        },
+                        muted: {
+                            DEFAULT: "var(--muted)",
+                            foreground: "var(--muted-foreground)",
+                        },
+                        accent: {
+                            DEFAULT: "var(--accent)",
+                            foreground: "var(--accent-foreground)",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                    fontFamily: {
+                        sans: ["var(--font-sans)"],
+                    },
+                },
+            }
+        }
+    </script>
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #FAFAFA;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --primary: #252525;
+            --primary-foreground: #ffffff;
+            --secondary: #8E8E8E;
+            --secondary-foreground: #ffffff;
+            --muted: #FAFAFA;
+            --muted-foreground: #0f172a;
+            --accent: #8E8E8E;
+            --accent-foreground: #ffffff;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #E6E6E6;
+            --input: #FFFFFF;
+            --ring: #94a3b8;
+            --font-sans: Inter, sans-serif;
+            --radius: 10px;
+            --shadow: -2px 4px 12px 4px rgba(51,51,51,0.05);
+        }
+        
+        ::-webkit-scrollbar { display: none;}
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: #F0F0F0;
+            color: #252525;
+        }
+        
+        .transition-all-smooth {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Master-detail responsive layout */
+        #suppliers-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            height: 100%;
+        }
+        
+        @media (min-width: 1280px) {
+            #suppliers-container {
+                grid-template-columns: 420px 1fr;
+            }
+        }
+        
+        /* Mobile: hide detail when showing list */
+        @media (max-width: 1279px) {
+            #suppliers-container.show-detail #suppliers-list-section {
+                display: none;
+            }
+            #suppliers-container.show-list #supplier-detail-section {
+                display: none;
+            }
+        }
+        
+        /* Desktop: always show both */
+        @media (min-width: 1280px) {
+            #suppliers-container #suppliers-list-section,
+            #suppliers-container #supplier-detail-section {
+                display: flex !important;
+            }
+        }
+    </style>
+    <script src="sidebar.js" defer></script>
+    <script src="suppliers-data.js"></script>
+    <script src="suppliers-router.js"></script>
+</head>
+<body class="antialiased">
+
+<div id="app-shell" class="flex h-screen overflow-hidden">
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="suppliers"></aside>
+    
+    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+        <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-6 flex-1">
+                <div class="relative flex-1 max-w-xl">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <input type="text" id="search-input" placeholder="Search suppliers, contacts, categories..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                </button>
+                <button class="p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-question-circle text-lg"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div id="page-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h1 class="text-3xl font-semibold text-primary mb-2">Suppliers</h1>
+                    <p class="text-secondary text-sm">End-to-end vendor management with onboarding, SLAs, and performance tracking</p>
+                </div>
+                <button id="add-supplier-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Supplier</span>
+                </button>
+            </div>
+            
+            <div class="flex items-center space-x-4 mt-6">
+                <button data-tab="all" class="tab-btn px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">All Suppliers</button>
+                <button data-tab="active" class="tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Active Contracts</button>
+                <button data-tab="trial" class="tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Trial Period</button>
+                <button data-tab="renewals" class="tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Renewals Due</button>
+                <div class="flex-1"></div>
+                <button class="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+                    <i class="fa-solid fa-filter"></i>
+                    <span>Filters</span>
+                </button>
+                <button class="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Export</span>
+                </button>
+            </div>
+        </div>
+        
+        <div id="filters-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
+            <div class="flex items-center space-x-3 flex-wrap gap-2">
+                <div class="relative">
+                    <select id="filter-category" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Categories</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="AV & IT">AV & Tech</option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="R&M">Repairs & Maintenance</option>
+                        <option value="Plants">Plants & Landscaping</option>
+                        <option value="Coffee">Coffee & Catering</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Utilities">Utilities</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select id="filter-status" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Contract Status</option>
+                        <option value="none">None</option>
+                        <option value="trial">Trial</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select id="filter-sla" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All SLA Performance</option>
+                        <option value="95+">Excellent (95%+)</option>
+                        <option value="80-95">Good (85-94%)</option>
+                        <option value="below-80">Fair (75-84%)</option>
+                        <option value="below-80">Poor (<75%)</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select id="sort-by" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="name">Sort by Name</option>
+                        <option value="sla">Sort by SLA</option>
+                        <option value="renewal">Sort by Renewal</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <button id="clear-filters" class="text-secondary hover:text-primary text-sm ml-2">Clear all</button>
+            </div>
+        </div>
+        
+        <!-- Master-Detail Container -->
+        <div id="suppliers-container" class="flex-1 overflow-hidden show-list">
+            <!-- List Section -->
+            <section id="suppliers-list-section" class="flex flex-col overflow-hidden border-r border-[#E6E6E6] bg-[#F0F0F0]">
+                <div class="flex-1 overflow-y-auto px-8 py-6">
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-muted border-b border-[#E6E6E6]">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left">
+                                            <input type="checkbox" id="select-all" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Supplier</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Category</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Contract Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">SLA Performance</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Coverage</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Primary Contact</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Renewal Date</th>
+                                        <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suppliers-table-body" class="divide-y divide-[#E6E6E6]">
+                                    <!-- Populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="bulk-actions-bar" class="mt-6 flex items-center justify-between">
+                        <div class="text-sm text-secondary">
+                            <span id="suppliers-count">Showing 0 of 0 suppliers</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                                <i class="fa-solid fa-file-contract"></i>
+                                <span>Generate Work Order</span>
+                            </button>
+                            <button class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <span>Performance Report</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Detail Section -->
+            <section id="supplier-detail-section" class="flex flex-col overflow-hidden bg-[#F0F0F0] hidden xl:flex">
+                <div id="supplier-detail-content" class="flex-1 overflow-y-auto px-8 py-6">
+                    <!-- Back button for mobile -->
+                    <button id="back-to-list-btn" class="xl:hidden mb-4 text-secondary hover:text-primary flex items-center space-x-2" aria-label="Back to suppliers list">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Back to List</span>
+                    </button>
+                    
+                    <div id="supplier-detail-placeholder" class="flex items-center justify-center h-full text-secondary">
+                        <div class="text-center">
+                            <i class="fa-solid fa-hand-pointer text-4xl mb-4"></i>
+                            <p>Select a supplier from the list to view details</p>
+                        </div>
+                    </div>
+                    
+                    <div id="supplier-detail-loaded" class="hidden">
+                        <!-- Detail content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- Drawer for Create/Edit -->
+<div id="supplier-drawer" class="fixed inset-y-0 right-0 w-full max-w-3xl bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+    <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between">
+        <h2 id="drawer-title" class="text-xl font-semibold text-primary">Add Supplier</h2>
+        <button id="close-drawer" class="text-secondary hover:text-primary">
+            <i class="fa-solid fa-times text-xl"></i>
+        </button>
+    </div>
+    <div class="p-6">
+        <form id="supplier-form">
+            <input type="hidden" id="supplier-id" name="id">
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-primary mb-2">Supplier Name <span class="text-destructive">*</span></label>
+                <input type="text" id="supplier-name" name="name" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Thirdway AV">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Category <span class="text-destructive">*</span></label>
+                    <select id="supplier-category" name="category" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
+                        <option value="">Select category</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="AV & IT">AV & Tech</option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="R&M">Repairs & Maintenance</option>
+                        <option value="Plants">Plants & Landscaping</option>
+                        <option value="Coffee">Coffee & Catering</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Utilities">Utilities</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Contract Status <span class="text-destructive">*</span></label>
+                    <select id="supplier-status" name="status" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
+                        <option value="none">None</option>
+                        <option value="trial">Trial</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-primary mb-2">Primary Contact Name</label>
+                <input type="text" id="supplier-contact-name" name="contactName" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Ben Taylor">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Email</label>
+                    <input type="email" id="supplier-contact-email" name="contactEmail" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="contact@supplier.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Phone</label>
+                    <input type="tel" id="supplier-contact-phone" name="contactPhone" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="+44 20 1234 5678">
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-primary mb-2">Coverage Areas</label>
+                <input type="text" id="supplier-coverage" name="coverage" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Central London, EC1, EC2">
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-primary mb-2">SLA Baseline (%)</label>
+                <input type="number" id="supplier-sla" name="sla" min="0" max="100" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="95">
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-primary mb-2">Renewal Date</label>
+                <input type="date" id="supplier-renewal" name="renewalDate" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-primary mb-2">Description</label>
+                <textarea id="supplier-description" name="description" rows="3" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Brief description of the supplier..."></textarea>
+            </div>
+            
+            <div class="flex items-center space-x-3 pt-4 border-t border-[#E6E6E6]">
+                <button type="submit" class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth">
+                    Save Supplier
+                </button>
+                <button type="button" id="cancel-drawer" class="flex-1 border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Dialog -->
+<div id="delete-dialog" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <h3 class="text-lg font-semibold text-primary mb-4">Delete Supplier</h3>
+        <p class="text-secondary mb-6">Are you sure you want to delete this supplier? This action cannot be undone.</p>
+        <div class="flex items-center space-x-3">
+            <button id="confirm-delete" class="flex-1 bg-destructive text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth">
+                Delete
+            </button>
+            <button id="cancel-delete" class="flex-1 border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Main application logic
+(function() {
+    let currentSuppliers = [];
+    let selectedSupplierId = null;
+    let filters = { status: 'all', category: 'all', slaBand: 'all' };
+    let sort = 'name';
+    let query = '';
+    
+    // Initialize router
+    if (window.suppliersRouter) {
+        window.suppliersRouter.onRouteChange(handleRouteChange);
+    }
+    
+    // Initialize data
+    async function loadSuppliers() {
+        try {
+            const result = await window.SuppliersData.listSuppliers({
+                query,
+                filters,
+                sort,
+                page: 1,
+                pageSize: 50
+            });
+            currentSuppliers = result.items;
+            renderSuppliersList();
+            updateCount(result.total);
+        } catch (error) {
+            console.error('Error loading suppliers:', error);
+        }
+    }
+    
+    function renderSuppliersList() {
+        const tbody = document.getElementById('suppliers-table-body');
+        if (!tbody) return;
+        
+        if (currentSuppliers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-secondary">No suppliers found</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = currentSuppliers.map(supplier => {
+            const isSelected = selectedSupplierId === supplier.id;
+            const statusClass = supplier.status === 'active' ? 'bg-primary text-white' : 
+                               supplier.status === 'trial' ? 'bg-secondary text-white' : 
+                               'bg-muted text-primary';
+            const slaColor = supplier.sla >= 95 ? 'bg-primary' : supplier.sla >= 80 ? 'bg-primary opacity-75' : 'bg-destructive';
+            
+            return `
+                <tr class="hover:bg-muted transition-all-smooth cursor-pointer ${isSelected ? 'bg-muted' : ''}" 
+                    data-supplier-id="${supplier.id}" 
+                    role="button" 
+                    aria-selected="${isSelected}"
+                    tabindex="0">
+                    <td class="px-6 py-4" onclick="event.stopPropagation()">
+                        <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-${supplier.icon || 'truck'} text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-primary text-sm">${supplier.shortName || supplier.name}</div>
+                                <div class="text-xs text-secondary">${supplier.description || ''}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">${supplier.category}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${statusClass}">${supplier.status.charAt(0).toUpperCase() + supplier.status.slice(1)}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="flex-1 bg-muted rounded-full h-2 w-20">
+                                <div class="${slaColor} h-2 rounded-full" style="width: ${supplier.sla}%"></div>
+                            </div>
+                            <span class="text-xs text-primary font-medium">${supplier.sla}%</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-primary">${Array.isArray(supplier.coverage) ? supplier.coverage.join(', ') : supplier.coverage}</td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-primary">${supplier.primaryContact?.name || ''}</div>
+                        <div class="text-xs text-secondary">${supplier.primaryContact?.email || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-primary">${supplier.renewalDate ? new Date(supplier.renewalDate).toLocaleDateString() : 'N/A'}</td>
+                    <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
+                        <button class="text-secondary hover:text-primary supplier-actions" data-supplier-id="${supplier.id}">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        
+        // Attach click handlers
+        tbody.querySelectorAll('[data-supplier-id]').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (e.target.closest('input, button')) return;
+                const id = row.dataset.supplierId;
+                selectSupplier(id);
+            });
+            
+            // Keyboard support
+            row.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectSupplier(row.dataset.supplierId);
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const next = row.nextElementSibling;
+                    if (next) next.focus();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prev = row.previousElementSibling;
+                    if (prev) prev.focus();
+                }
+            });
+        });
+    }
+    
+    async function selectSupplier(id) {
+        selectedSupplierId = id;
+        console.log('[Suppliers] Selected supplier:', id);
+        
+        // Update URL
+        if (window.suppliersRouter) {
+            window.suppliersRouter.navigate('detail', id, {
+                status: filters.status,
+                category: filters.category,
+                sla: filters.slaBand,
+                sort: sort,
+                query: query
+            });
+        }
+        
+        // Update UI
+        renderSuppliersList();
+        await loadSupplierDetail(id);
+        
+        // Show detail on mobile
+        const container = document.getElementById('suppliers-container');
+        if (container) {
+            container.classList.remove('show-list');
+            container.classList.add('show-detail');
+        }
+    }
+    
+    async function loadSupplierDetail(id) {
+        try {
+            const supplier = await window.SuppliersData.getSupplierById(id);
+            if (!supplier) {
+                document.getElementById('supplier-detail-placeholder').classList.remove('hidden');
+                document.getElementById('supplier-detail-loaded').classList.add('hidden');
+                return;
+            }
+            
+            renderSupplierDetail(supplier);
+        } catch (error) {
+            console.error('Error loading supplier detail:', error);
+        }
+    }
+    
+    function renderSupplierDetail(supplier) {
+        const placeholder = document.getElementById('supplier-detail-placeholder');
+        const loaded = document.getElementById('supplier-detail-loaded');
+        
+        if (placeholder) placeholder.classList.add('hidden');
+        if (loaded) {
+            loaded.classList.remove('hidden');
+            loaded.innerHTML = `
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-primary mb-2">${supplier.name}</h2>
+                            <p class="text-secondary text-sm">${supplier.description || ''}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button id="copy-link-btn" class="px-4 py-2 border border-[#E6E6E6] text-primary rounded-lg hover:bg-muted transition-all-smooth flex items-center space-x-2" title="Copy link to supplier">
+                                <i class="fa-solid fa-link"></i>
+                                <span class="hidden sm:inline">Copy Link</span>
+                            </button>
+                            <button id="edit-supplier-btn" class="px-4 py-2 border border-[#E6E6E6] text-primary rounded-lg hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                                <i class="fa-solid fa-pencil"></i>
+                                <span class="hidden sm:inline">Edit</span>
+                            </button>
+                            <button id="delete-supplier-btn" class="px-4 py-2 border border-destructive text-destructive rounded-lg hover:bg-destructive hover:text-white transition-all-smooth">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Category</div>
+                            <div class="text-sm font-medium text-primary">${supplier.category}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Status</div>
+                            <div class="text-sm font-medium text-primary">${supplier.status.charAt(0).toUpperCase() + supplier.status.slice(1)}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">SLA Performance</div>
+                            <div class="text-sm font-medium text-primary">${supplier.sla}%</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Renewal Date</div>
+                            <div class="text-sm font-medium text-primary">${supplier.renewalDate ? new Date(supplier.renewalDate).toLocaleDateString() : 'N/A'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-[#E6E6E6] pt-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Primary Contact</h3>
+                        <div class="space-y-2">
+                            <div class="text-sm text-primary">${supplier.primaryContact?.name || 'N/A'}</div>
+                            <div class="text-xs text-secondary">${supplier.primaryContact?.email || ''}</div>
+                            <div class="text-xs text-secondary">${supplier.primaryContact?.phone || ''}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Attach event handlers
+            const copyBtn = document.getElementById('copy-link-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const url = window.suppliersRouter ? window.suppliersRouter.buildDeepLink(supplier.id, {
+                        status: filters.status,
+                        category: filters.category,
+                        sla: filters.slaBand,
+                        sort: sort,
+                        query: query
+                    }) : window.location.href;
+                    navigator.clipboard.writeText(url).then(() => {
+                        console.log('[Suppliers] Link copied:', url);
+                        // Show toast
+                        const toast = document.createElement('div');
+                        toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg z-50';
+                        toast.textContent = 'Link copied to clipboard';
+                        document.body.appendChild(toast);
+                        setTimeout(() => toast.remove(), 3000);
+                    });
+                });
+            }
+            
+            const editBtn = document.getElementById('edit-supplier-btn');
+            if (editBtn) {
+                editBtn.addEventListener('click', () => openDrawer(supplier));
+            }
+            
+            const deleteBtn = document.getElementById('delete-supplier-btn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => showDeleteDialog(supplier));
+            }
+        }
+    }
+    
+    function handleRouteChange(route) {
+        console.log('[Suppliers] Route changed:', route);
+        
+        // Update filters from URL params
+        if (route.params.status) filters.status = route.params.status;
+        if (route.params.category) filters.category = route.params.category;
+        if (route.params.sla) filters.slaBand = route.params.sla;
+        if (route.params.sort) sort = route.params.sort;
+        if (route.params.query) query = route.params.query;
+        
+        // Update UI
+        updateFiltersUI();
+        if (document.getElementById('search-input')) {
+            document.getElementById('search-input').value = query || '';
+        }
+        
+        // Load suppliers
+        loadSuppliers();
+        
+        // Show detail if ID is present
+        if (route.view === 'detail' && route.supplierId) {
+            selectSupplier(route.supplierId);
+        } else {
+            // Show list
+            selectedSupplierId = null;
+            const container = document.getElementById('suppliers-container');
+            if (container) {
+                container.classList.remove('show-detail');
+                container.classList.add('show-list');
+            }
+            document.getElementById('supplier-detail-placeholder').classList.remove('hidden');
+            document.getElementById('supplier-detail-loaded').classList.add('hidden');
+            renderSuppliersList();
+        }
+    }
+    
+    function updateFiltersUI() {
+        if (document.getElementById('filter-status')) {
+            document.getElementById('filter-status').value = filters.status;
+        }
+        if (document.getElementById('filter-category')) {
+            document.getElementById('filter-category').value = filters.category;
+        }
+        if (document.getElementById('filter-sla')) {
+            document.getElementById('filter-sla').value = filters.slaBand;
+        }
+        if (document.getElementById('sort-by')) {
+            document.getElementById('sort-by').value = sort;
+        }
+    }
+    
+    function updateCount(total) {
+        const countEl = document.getElementById('suppliers-count');
+        if (countEl) {
+            countEl.textContent = `Showing ${currentSuppliers.length} of ${total} suppliers`;
+        }
+    }
+    
+    // Filter handlers
+    document.getElementById('search-input')?.addEventListener('input', (e) => {
+        query = e.target.value;
+        if (window.suppliersRouter) {
+            window.suppliersRouter.navigate(
+                selectedSupplierId ? 'detail' : 'list',
+                selectedSupplierId,
+                { ...filters, query, sort }
+            );
+        }
+        loadSuppliers();
+    });
+    
+    document.getElementById('filter-status')?.addEventListener('change', (e) => {
+        filters.status = e.target.value;
+        updateURL();
+        loadSuppliers();
+    });
+    
+    document.getElementById('filter-category')?.addEventListener('change', (e) => {
+        filters.category = e.target.value;
+        updateURL();
+        loadSuppliers();
+    });
+    
+    document.getElementById('filter-sla')?.addEventListener('change', (e) => {
+        filters.slaBand = e.target.value;
+        updateURL();
+        loadSuppliers();
+    });
+    
+    document.getElementById('sort-by')?.addEventListener('change', (e) => {
+        sort = e.target.value;
+        updateURL();
+        loadSuppliers();
+    });
+    
+    document.getElementById('clear-filters')?.addEventListener('click', () => {
+        filters = { status: 'all', category: 'all', slaBand: 'all' };
+        query = '';
+        sort = 'name';
+        updateFiltersUI();
+        if (document.getElementById('search-input')) {
+            document.getElementById('search-input').value = '';
+        }
+        updateURL();
+        loadSuppliers();
+    });
+    
+    function updateURL() {
+        if (window.suppliersRouter) {
+            window.suppliersRouter.navigate(
+                selectedSupplierId ? 'detail' : 'list',
+                selectedSupplierId,
+                { ...filters, query, sort }
+            );
+        }
+    }
+    
+    // Drawer handlers
+    document.getElementById('add-supplier-btn')?.addEventListener('click', () => openDrawer());
+    document.getElementById('close-drawer')?.addEventListener('click', closeDrawer);
+    document.getElementById('cancel-drawer')?.addEventListener('click', closeDrawer);
+    
+    function openDrawer(supplier = null) {
+        const drawer = document.getElementById('supplier-drawer');
+        const title = document.getElementById('drawer-title');
+        const form = document.getElementById('supplier-form');
+        
+        if (drawer && title && form) {
+            if (supplier) {
+                title.textContent = 'Edit Supplier';
+                document.getElementById('supplier-id').value = supplier.id;
+                document.getElementById('supplier-name').value = supplier.name || '';
+                document.getElementById('supplier-category').value = supplier.category || '';
+                document.getElementById('supplier-status').value = supplier.status || 'none';
+                document.getElementById('supplier-contact-name').value = supplier.primaryContact?.name || '';
+                document.getElementById('supplier-contact-email').value = supplier.primaryContact?.email || '';
+                document.getElementById('supplier-contact-phone').value = supplier.primaryContact?.phone || '';
+                document.getElementById('supplier-coverage').value = Array.isArray(supplier.coverage) ? supplier.coverage.join(', ') : supplier.coverage || '';
+                document.getElementById('supplier-sla').value = supplier.sla || '';
+                document.getElementById('supplier-renewal').value = supplier.renewalDate || '';
+                document.getElementById('supplier-description').value = supplier.description || '';
+            } else {
+                title.textContent = 'Add Supplier';
+                form.reset();
+                document.getElementById('supplier-id').value = '';
+            }
+            
+            drawer.classList.remove('translate-x-full');
+            drawer.setAttribute('aria-hidden', 'false');
+            
+            // Focus first input
+            setTimeout(() => {
+                document.getElementById('supplier-name')?.focus();
+            }, 100);
+        }
+    }
+    
+    function closeDrawer() {
+        const drawer = document.getElementById('supplier-drawer');
+        if (drawer) {
+            drawer.classList.add('translate-x-full');
+            drawer.setAttribute('aria-hidden', 'true');
+        }
+    }
+    
+    // Form submission
+    document.getElementById('supplier-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const payload = {
+            id: formData.get('id') || undefined,
+            name: formData.get('name'),
+            category: formData.get('category'),
+            status: formData.get('status'),
+            description: formData.get('description'),
+            sla: parseInt(formData.get('sla')) || 0,
+            renewalDate: formData.get('renewalDate') || null,
+            coverage: formData.get('coverage')?.split(',').map(s => s.trim()).filter(Boolean) || [],
+            primaryContact: {
+                name: formData.get('contactName') || '',
+                email: formData.get('contactEmail') || '',
+                phone: formData.get('contactPhone') || ''
+            }
+        };
+        
+        try {
+            console.log('[Suppliers] Saving supplier:', payload);
+            const saved = await window.SuppliersData.upsertSupplier(payload);
+            closeDrawer();
+            await loadSuppliers();
+            
+            if (payload.id) {
+                // Reload detail if viewing this supplier
+                if (selectedSupplierId === payload.id) {
+                    await loadSupplierDetail(payload.id);
+                }
+            } else {
+                // Select newly created supplier
+                selectSupplier(saved.id);
+            }
+            
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg z-50';
+            toast.textContent = payload.id ? 'Supplier updated successfully' : 'Supplier created successfully';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        } catch (error) {
+            console.error('Error saving supplier:', error);
+            alert('Error saving supplier. Please try again.');
+        }
+    });
+    
+    // Delete dialog
+    let deleteTargetId = null;
+    
+    function showDeleteDialog(supplier) {
+        deleteTargetId = supplier.id;
+        const dialog = document.getElementById('delete-dialog');
+        if (dialog) {
+            dialog.classList.remove('hidden');
+        }
+    }
+    
+    document.getElementById('confirm-delete')?.addEventListener('click', async () => {
+        if (!deleteTargetId) return;
+        
+        try {
+            console.log('[Suppliers] Deleting supplier:', deleteTargetId);
+            await window.SuppliersData.deleteSupplier(deleteTargetId);
+            
+            const dialog = document.getElementById('delete-dialog');
+            if (dialog) dialog.classList.add('hidden');
+            
+            // Navigate back to list
+            if (window.suppliersRouter) {
+                window.suppliersRouter.navigate('list', null, {
+                    status: filters.status,
+                    category: filters.category,
+                    sla: filters.slaBand,
+                    sort: sort,
+                    query: query
+                });
+            }
+            
+            selectedSupplierId = null;
+            await loadSuppliers();
+            
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg z-50';
+            toast.textContent = 'Supplier deleted successfully';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        } catch (error) {
+            console.error('Error deleting supplier:', error);
+            alert('Error deleting supplier. Please try again.');
+        }
+    });
+    
+    document.getElementById('cancel-delete')?.addEventListener('click', () => {
+        deleteTargetId = null;
+        const dialog = document.getElementById('delete-dialog');
+        if (dialog) dialog.classList.add('hidden');
+    });
+    
+    // Back button
+    document.getElementById('back-to-list-btn')?.addEventListener('click', () => {
+        if (window.suppliersRouter) {
+            window.suppliersRouter.navigate('list', null, {
+                status: filters.status,
+                category: filters.category,
+                sla: filters.slaBand,
+                sort: sort,
+                query: query
+            });
+        }
+    });
+    
+    // Close drawer on backdrop click
+    document.getElementById('supplier-drawer')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+            closeDrawer();
+        }
+    });
+    
+    // Initialize
+    window.addEventListener('load', () => {
+        // Wait for router to initialize
+        setTimeout(() => {
+            const route = window.suppliersRouter?.getCurrentRoute();
+            if (route) {
+                handleRouteChange(route);
+            } else {
+                loadSuppliers();
+            }
+        }, 100);
+    });
+})();
+</script>
+
+</body>
+</html>
+
