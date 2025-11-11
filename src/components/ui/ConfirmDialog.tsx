@@ -1,3 +1,5 @@
+import { Button } from './Button';
+
 interface ConfirmDialogProps {
   isOpen: boolean;
   title: string;
@@ -23,37 +25,27 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
       onClick={onCancel}
     >
       <div
-        className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4"
+        className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="dialog-title" className="text-lg font-semibold text-[#252525] mb-2">
+        <h2 id="dialog-title" className="text-lg font-semibold text-primary mb-4">
           {title}
         </h2>
-        <p className="text-sm text-[#8e8e8e] mb-6">{message}</p>
+        <p className="text-sm text-secondary mb-6">{message}</p>
         <div className="flex justify-end space-x-3">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 text-sm text-[#252525] border border-[#E6E6E6] rounded-lg hover:bg-[#fafafa] transition-all"
-          >
+          <Button variant="outline" onClick={onCancel}>
             {cancelLabel}
-          </button>
-          <button
-            onClick={onConfirm}
-            className={`px-4 py-2 text-sm text-white rounded-lg transition-all ${
-              variant === 'destructive'
-                ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-[#252525] hover:bg-opacity-90'
-            }`}
-          >
+          </Button>
+          <Button variant={variant === 'destructive' ? 'destructive' : 'primary'} onClick={onConfirm}>
             {confirmLabel}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

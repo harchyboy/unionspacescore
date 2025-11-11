@@ -1,0 +1,159 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCreateContact } from '../../api/contacts';
+import { useToast } from '../../hooks/useToast';
+import { ToastContainer } from '../../components/ui/Toast';
+import { SlideOver } from '../../components/ui/SlideOver';
+import { Input } from '../../components/ui/Input';
+import { Select } from '../../components/ui/Select';
+import { Textarea } from '../../components/ui/Textarea';
+import { Button } from '../../components/ui/Button';
+import type { ContactType } from '../../types/contact';
+
+const contactTypes: { value: ContactType; label: string }[] = [
+  { value: 'flex-broker', label: 'Flex Broker' },
+  { value: 'disposal-agent', label: 'Disposal Agent' },
+  { value: 'tenant', label: 'Tenant/Prospect' },
+  { value: 'landlord', label: 'Landlord' },
+  { value: 'supplier', label: 'Supplier' },
+  { value: 'internal', label: 'Internal' },
+];
+
+export function ContactNew() {
+  const navigate = useNavigate();
+  const createContact = useCreateContact();
+  const { toasts, showToast, removeToast } = useToast();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    mobile: '',
+    company: '',
+    type: 'internal' as ContactType,
+    role: '',
+    territory: '',
+    notes: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const contact = await createContact.mutateAsync(formData);
+      showToast('Contact created successfully', 'success');
+      setTimeout(() => {
+        navigate(`/contacts/${contact.id}`);
+      }, 500);
+    } catch (error) {
+      console.error('Error creating contact:', error);
+      showToast('Failed to create contact', 'error');
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <SlideOver
+      isOpen={true}
+      title="Add Contact"
+      onClose={() => navigate('/contacts')}
+      size="lg"
+      footer={
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" onClick={() => navigate('/contacts')}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            isLoading={createContact.isPending}
+            disabled={!formData.firstName || !formData.lastName || !formData.email}
+          >
+            Save Contact
+          </Button>
+        </div>
+      }
+    >
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="First Name"
+            value={formData.firstName}
+            onChange={(e) => handleChange('firstName', e.target.value)}
+            required
+          />
+          <Input
+            label="Last Name"
+            value={formData.lastName}
+            onChange={(e) => handleChange('lastName', e.target.value)}
+            required
+          />
+        </div>
+
+        <Input
+          label="Email"
+          type="email"
+          value={formData.email}
+          onChange={(e) => handleChange('email', e.target.value)}
+          required
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="Phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+          />
+          <Input
+            label="Mobile"
+            type="tel"
+            value={formData.mobile}
+            onChange={(e) => handleChange('mobile', e.target.value)}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="Company"
+            value={formData.company}
+            onChange={(e) => handleChange('company', e.target.value)}
+          />
+          <Select
+            label="Type"
+            options={contactTypes}
+            value={formData.type}
+            onChange={(e) => handleChange('type', e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label="Role/Title"
+            value={formData.role}
+            onChange={(e) => handleChange('role', e.target.value)}
+            required
+          />
+          <Input
+            label="City/Region"
+            value={formData.territory}
+            onChange={(e) => handleChange('territory', e.target.value)}
+            placeholder="e.g., London"
+          />
+        </div>
+
+        <Textarea
+          label="Relationship Notes"
+          rows={4}
+          value={formData.notes}
+          onChange={(e) => handleChange('notes', e.target.value)}
+          placeholder="Add any relevant notes about this contact..."
+        />
+      </form>
+    </SlideOver>
+  );
+}
+
