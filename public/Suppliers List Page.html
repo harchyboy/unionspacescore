@@ -222,10 +222,10 @@
                     <h1 class="text-3xl font-semibold text-primary mb-2">Suppliers</h1>
                     <p class="text-secondary text-sm">End-to-end vendor management with onboarding, SLAs, and performance tracking</p>
                 </div>
-                <button id="add-supplier-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                <a id="add-supplier-btn" href="Suppliers Adding Card.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add Supplier</span>
-                </button>
+                </a>
             </div>
             
             <div class="flex items-center space-x-4 mt-6">
@@ -322,7 +322,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#E6E6E6]">
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" data-supplier-row>
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -364,7 +364,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" data-supplier-row>
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -406,7 +406,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" data-supplier-row>
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -448,7 +448,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" data-supplier-row>
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -490,7 +490,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" data-supplier-row>
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -532,7 +532,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" data-supplier-row>
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -1066,44 +1066,13 @@ window.addEventListener('load', function() {
         document.getElementById('sla-chart').innerHTML = '<div class="flex items-center justify-center h-full text-secondary">Chart unavailable</div>';
     }
     
-    const addSupplierBtn = document.getElementById('add-supplier-btn');
-    const modal = document.getElementById('add-supplier-modal');
-    const closeModal = document.getElementById('close-modal');
-    const cancelModal = document.getElementById('cancel-modal');
-    const form = document.getElementById('add-supplier-form');
-    
-    addSupplierBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-    });
-    
-    closeModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
-    
-    cancelModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
-    
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-        }
-    });
-    
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        modal.classList.add('hidden');
-        
-        const toast = document.createElement('div');
-        toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
-        toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Supplier added successfully</span>';
-        document.body.appendChild(toast);
-        
-        setTimeout(function() {
-            toast.remove();
-        }, 3000);
-        
-        form.reset();
+    document.querySelectorAll('[data-supplier-row]').forEach(function(row) {
+        row.addEventListener('click', function(event) {
+            if (event.target.closest('input, button, a, label')) {
+                return;
+            }
+            window.location.href = 'Suppliers Details Page.html';
+        });
     });
 });
 </script>
