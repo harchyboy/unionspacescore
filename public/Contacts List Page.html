@@ -774,7 +774,7 @@
 <!-- Contact Details Slide-Over Panel -->
 <div id="contact-details-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50" onclick="closeContactDetails()"></div>
 <div id="contact-details-panel" class="slide-over fixed right-0 top-0 bottom-0 w-5/6 max-w-7xl bg-white shadow-2xl z-50 overflow-y-auto">
-    <div id="contact-details-content" class="p-8">
+    <div id="contact-details-content">
         <div class="text-center py-12 text-secondary">
             <i class="fa-solid fa-user text-4xl mb-4"></i>
             <p>Select a contact to view details</p>
@@ -1012,35 +1012,75 @@ function showContactDetails(row) {
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
     
     document.getElementById('contact-details-content').innerHTML = `
-        <div class="flex items-center justify-between mb-6 pb-6 border-b border-[#E6E6E6]">
-            <div class="flex items-center space-x-4">
-                ${avatar ? `
-                <img src="${avatar}" alt="${name}" class="w-16 h-16 rounded-full object-cover">
-                ` : `
-                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-semibold">
-                    ${initials}
+        <div class="bg-white border-b border-[#E6E6E6] px-8 py-6 mb-0">
+            <div class="flex items-center space-x-4 mb-4">
+                <button onclick="closeContactDetails()" class="text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="flex items-center space-x-4 flex-1">
+                    ${avatar ? `
+                    <img src="${avatar}" alt="${name}" class="w-16 h-16 rounded-full object-cover">
+                    ` : `
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-semibold">
+                        ${initials}
+                    </div>
+                    `}
+                    <div>
+                        <div class="flex items-center space-x-3 mb-1">
+                            <h1 class="text-2xl font-semibold text-primary">${name}</h1>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${typeColors[type] || 'bg-muted text-primary'}">
+                                ${type}
+                            </span>
+                            ${type === 'Flex Broker' ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary">Top 10 Broker</span>' : ''}
+                            ${confidential ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><i class="fa-solid fa-lock mr-1"></i>Confidential</span>' : ''}
+                        </div>
+                        <div class="flex items-center space-x-4 text-sm text-secondary">
+                            <span class="flex items-center space-x-1">
+                                <i class="fa-solid fa-building"></i>
+                                <span>${company}</span>
+                            </span>
+                            ${type === 'Flex Broker' ? `
+                            <span class="flex items-center space-x-1">
+                                <i class="fa-solid fa-map-marker-alt"></i>
+                                <span>City Core, Shoreditch</span>
+                            </span>
+                            ` : ''}
+                        </div>
+                    </div>
                 </div>
-                `}
-                <div>
-                    <div class="flex items-center space-x-3 mb-1">
-                        <h2 class="text-2xl font-semibold text-primary">${name}</h2>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${typeColors[type] || 'bg-muted text-primary'}">
-                            ${type}
-                        </span>
-                        ${confidential ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><i class="fa-solid fa-lock mr-1"></i>Confidential</span>' : ''}
-                    </div>
-                    <div class="flex items-center space-x-4 text-sm text-secondary">
-                        <span class="flex items-center space-x-1">
-                            <i class="fa-solid fa-building"></i>
-                            <span>${company}</span>
-                        </span>
-                    </div>
+                <div class="flex items-center space-x-2">
+                    <button class="bg-primary text-white px-5 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>New Email</span>
+                    </button>
+                    <button class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>Log Call</span>
+                    </button>
+                    <button class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>Create Viewing</span>
+                    </button>
+                    <button class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add to Deal</span>
+                    </button>
+                    <button class="p-2.5 text-secondary hover:text-primary transition-all-smooth">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
                 </div>
             </div>
-            <button onclick="closeContactDetails()" class="text-secondary hover:text-primary p-2">
-                <i class="fa-solid fa-times text-xl"></i>
-            </button>
+            
+            <div class="flex items-center space-x-4">
+                <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">Overview</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Relationship Graph</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Performance</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Communications</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Documents</button>
+            </div>
         </div>
+        
+        <div class="bg-[#F0F0F0] p-8">
         
         <div class="grid grid-cols-3 gap-6">
             <div class="col-span-2 space-y-6">
@@ -1495,6 +1535,7 @@ function showContactDetails(row) {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     `;
     
