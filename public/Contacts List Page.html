@@ -242,10 +242,11 @@
             </div>
         </div>
         
-        <div id="contacts-list" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
-            <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
+        <div id="contacts-list" class="flex-1 overflow-hidden bg-[#F0F0F0] flex">
+            <div class="flex-1 overflow-y-auto px-8 py-6">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
                         <thead class="bg-muted border-b border-[#E6E6E6]">
                             <tr>
                                 <th class="px-6 py-3 text-left">
@@ -263,7 +264,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#E6E6E6]">
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Contacts Details Page.html'">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-id="james-parker" data-contact-name="James Parker" data-contact-role="Senior Partner" data-contact-type="Flex Broker" data-contact-company="Knight Frank" data-contact-email="j.parker@knightfrank.com" data-contact-phone="+44 20 7629 8171" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg">
                                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -311,7 +312,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Contacts Details Page.html'">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-id="sarah-chen" data-contact-name="Sarah Chen" data-contact-role="Head of Agency" data-contact-type="Disposal Agent" data-contact-company="CBRE" data-contact-email="sarah.chen@cbre.com" data-contact-phone="+44 20 7182 2000" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg">
                                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -359,7 +360,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-id="michael-roberts" data-contact-name="Michael Roberts" data-contact-role="CFO" data-contact-type="Tenant" data-contact-company="TechCorp Ltd" data-contact-email="m.roberts@techcorp.com" data-contact-phone="+44 20 8765 4321" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" data-contact-confidential="true">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -413,7 +414,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-id="david-thompson" data-contact-name="David Thompson" data-contact-role="Portfolio Director" data-contact-type="Landlord" data-contact-company="British Land" data-contact-email="d.thompson@britishland.com" data-contact-phone="+44 20 7486 4466" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -457,7 +458,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-id="emma-wilson" data-contact-name="Emma Wilson" data-contact-role="Operations Manager" data-contact-type="Supplier" data-contact-company="CleanPro Services" data-contact-email="emma@cleanpro.co.uk" data-contact-phone="+44 20 7123 4567" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-6.jpg">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -501,7 +502,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-id="oliver-martinez" data-contact-name="Oliver Martinez" data-contact-role="Associate Director" data-contact-type="Flex Broker" data-contact-company="JLL" data-contact-email="oliver.martinez@jll.com" data-contact-phone="+44 20 7493 4933" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -545,11 +546,11 @@
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            
-            <div id="bulk-actions-bar" class="mt-6 flex items-center justify-between">
+                
+                <div id="bulk-actions-bar" class="mt-6 flex items-center justify-between">
                 <div class="text-sm text-secondary">
                     Showing 6 of 142 contacts
                 </div>
@@ -569,7 +570,27 @@
                 </div>
             </div>
             
-            <div id="quick-stats" class="mt-8 grid grid-cols-4 gap-6">
+            <!-- Contact Details Panel -->
+            <div id="contact-details-panel" class="hidden w-96 bg-white border-l border-[#E6E6E6] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-primary">Contact Details</h2>
+                        <button id="close-details" class="text-secondary hover:text-primary">
+                            <i class="fa-solid fa-times text-lg"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="contact-details-content">
+                        <div class="text-center py-12 text-secondary">
+                            <i class="fa-solid fa-user text-4xl mb-4"></i>
+                            <p>Select a contact to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="quick-stats" class="px-8 pb-6 grid grid-cols-4 gap-6">
                 <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
                     <div class="flex items-center justify-between mb-4">
                         <div class="text-secondary text-sm font-medium">Total Contacts</div>
@@ -1039,7 +1060,7 @@ window.addEventListener('load', function() {
         });
     });
     
-    form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function(e) {
         e.preventDefault();
         modal.classList.add('hidden');
         
@@ -1055,6 +1076,107 @@ window.addEventListener('load', function() {
         form.reset();
         brokerFields.classList.add('hidden');
         disposalFields.classList.add('hidden');
+    });
+    
+    // Contact details panel functionality
+    const contactRows = document.querySelectorAll('.contact-row');
+    const detailsPanel = document.getElementById('contact-details-panel');
+    const detailsContent = document.getElementById('contact-details-content');
+    const closeDetailsBtn = document.getElementById('close-details');
+    
+    function showContactDetails(row) {
+        const name = row.dataset.contactName;
+        const role = row.dataset.contactRole;
+        const type = row.dataset.contactType;
+        const company = row.dataset.contactCompany;
+        const email = row.dataset.contactEmail;
+        const phone = row.dataset.contactPhone;
+        const avatar = row.dataset.contactAvatar;
+        const confidential = row.dataset.contactConfidential === 'true';
+        
+        const typeColors = {
+            'Flex Broker': 'bg-primary text-white',
+            'Disposal Agent': 'bg-secondary text-white',
+            'Tenant': 'bg-accent text-white',
+            'Landlord': 'bg-muted text-primary',
+            'Supplier': 'bg-muted text-primary'
+        };
+        
+        const typeIcon = {
+            'Flex Broker': 'fa-handshake',
+            'Disposal Agent': 'fa-building',
+            'Tenant': 'fa-user-tie',
+            'Landlord': 'fa-landmark',
+            'Supplier': 'fa-wrench'
+        };
+        
+        detailsContent.innerHTML = `
+            <div class="space-y-6">
+                <div class="flex items-center space-x-4 pb-6 border-b border-[#E6E6E6]">
+                    <img src="${avatar}" alt="${name}" class="w-16 h-16 rounded-full object-cover">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <h3 class="text-xl font-semibold text-primary">${name}</h3>
+                            ${confidential ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800"><i class="fa-solid fa-lock mr-1"></i>Confidential</span>' : ''}
+                        </div>
+                        <p class="text-sm text-secondary">${role}</p>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium mt-2 ${typeColors[type] || 'bg-muted text-primary'}">
+                            <i class="fa-solid ${typeIcon[type] || 'fa-user'} mr-1.5"></i>
+                            ${type}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-medium text-secondary uppercase tracking-wider mb-2 block">Company</label>
+                        <p class="text-sm text-primary">${company}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-medium text-secondary uppercase tracking-wider mb-2 block">Email</label>
+                        <a href="mailto:${email}" class="text-sm text-primary hover:underline">${email}</a>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-medium text-secondary uppercase tracking-wider mb-2 block">Phone</label>
+                        <a href="tel:${phone}" class="text-sm text-primary hover:underline">${phone}</a>
+                    </div>
+                </div>
+                
+                <div class="pt-6 border-t border-[#E6E6E6]">
+                    <div class="flex items-center space-x-2">
+                        <button class="flex-1 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all-smooth">
+                            <i class="fa-solid fa-envelope mr-2"></i>
+                            Send Email
+                        </button>
+                        <button class="flex-1 border border-[#E6E6E6] text-primary px-4 py-2 rounded-lg text-sm font-medium hover:bg-muted transition-all-smooth">
+                            <i class="fa-solid fa-phone mr-2"></i>
+                            Call
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        detailsPanel.classList.remove('hidden');
+        
+        // Highlight selected row
+        contactRows.forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
+        row.classList.add('bg-primary', 'bg-opacity-10');
+    }
+    
+    contactRows.forEach(function(row) {
+        row.addEventListener('click', function(e) {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+                showContactDetails(row);
+            }
+        });
+    });
+    
+    closeDetailsBtn.addEventListener('click', function() {
+        detailsPanel.classList.add('hidden');
+        contactRows.forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
     });
 });
 </script>
