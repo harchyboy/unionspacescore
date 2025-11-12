@@ -1057,7 +1057,7 @@ function showContactDetails(row) {
                         <div>
                             <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Email</label>
                             <div class="flex items-center space-x-2">
-                                <a href="mailto:${email}" class="text-sm text-primary hover:underline">${email}</a>
+                                <span class="text-sm text-primary">${email}</span>
                                 <button class="text-secondary hover:text-primary">
                                     <i class="fa-solid fa-copy text-xs"></i>
                                 </button>
@@ -1067,7 +1067,17 @@ function showContactDetails(row) {
                         <div>
                             <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Phone</label>
                             <div class="flex items-center space-x-2">
-                                <a href="tel:${phone}" class="text-sm text-primary hover:underline">${phone}</a>
+                                <span class="text-sm text-primary">${phone}</span>
+                                <button class="text-secondary hover:text-primary">
+                                    <i class="fa-solid fa-copy text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Mobile</label>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-primary">Not provided</span>
                                 <button class="text-secondary hover:text-primary">
                                     <i class="fa-solid fa-copy text-xs"></i>
                                 </button>
@@ -1079,10 +1089,35 @@ function showContactDetails(row) {
                             <span class="text-sm text-primary">${role}</span>
                         </div>
                         
+                        ${type === 'Flex Broker' ? `
                         <div>
-                            <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Company</label>
-                            <span class="text-sm text-primary">${company}</span>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Territory</label>
+                            <span class="text-sm text-primary">Central London</span>
                         </div>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Specialisms</label>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">Tech Sector</span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">Scale-ups</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Preferred Submarkets</label>
+                            <span class="text-sm text-primary">City Core, Shoreditch</span>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Referral Source</label>
+                            <span class="text-sm text-primary">Industry Event</span>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Commission Structure</label>
+                            <span class="text-sm text-primary">Standard - 10% first year rent</span>
+                        </div>
+                        ` : ''}
                         
                         <div>
                             <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Health</label>
@@ -1103,6 +1138,24 @@ function showContactDetails(row) {
                     <div class="mt-6 pt-6 border-t border-[#E6E6E6]">
                         <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Notes</label>
                         <p class="text-sm text-primary leading-relaxed">Key contact for ${company}. ${type === 'Flex Broker' ? 'Specializes in flexible office solutions and has a strong track record with quality referrals.' : type === 'Disposal Agent' ? 'Handles property disposals and has extensive market knowledge.' : 'Important relationship to maintain.'}</p>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-[#E6E6E6]">
+                        <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-3">Comms Preferences</label>
+                        <div class="flex items-center space-x-6">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" checked class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                <span class="text-sm text-primary">Email logging consent</span>
+                            </label>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm text-secondary">Updates cadence:</span>
+                                <select class="text-sm border border-[#E6E6E6] rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option>Weekly</option>
+                                    <option>Bi-weekly</option>
+                                    <option>Monthly</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -1133,8 +1186,15 @@ function showContactDetails(row) {
                         <div class="flex items-center space-x-2">
                             <div class="relative">
                                 <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary text-sm"></i>
-                                <input type="text" placeholder="Search..." class="pl-9 pr-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                <input type="text" placeholder="Search communications..." class="pl-9 pr-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                             </div>
+                            <select class="border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option>All Types</option>
+                                <option>Email</option>
+                                <option>Call</option>
+                                <option>Meeting</option>
+                                <option>Note</option>
+                            </select>
                         </div>
                     </div>
                     <div class="space-y-4">
@@ -1147,12 +1207,37 @@ function showContactDetails(row) {
                             <div class="flex-1">
                                 <div class="flex items-start justify-between mb-2">
                                     <div>
-                                        <div class="font-medium text-primary text-sm mb-1">Email: Recent Communication</div>
+                                        <div class="font-medium text-primary text-sm mb-1">Email: Property Discussion</div>
                                         <div class="text-xs text-secondary">From: ${email}</div>
                                     </div>
-                                    <div class="text-xs text-secondary">Recently</div>
+                                    <div class="text-xs text-secondary">2 days ago</div>
                                 </div>
-                                <p class="text-sm text-primary leading-relaxed">Recent communication with ${name} regarding business matters.</p>
+                                <p class="text-sm text-primary leading-relaxed mb-3">Recent communication with ${name} regarding property requirements and availability.</p>
+                                <div class="flex items-center space-x-3">
+                                    <button class="text-xs text-primary hover:underline">View Full Email</button>
+                                    <button class="text-xs text-primary hover:underline">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                                    <i class="fa-solid fa-phone text-white text-sm"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <div class="font-medium text-primary text-sm mb-1">Call: Requirement Discussion</div>
+                                        <div class="text-xs text-secondary">Duration: 15 minutes</div>
+                                    </div>
+                                    <div class="text-xs text-secondary">5 days ago</div>
+                                </div>
+                                <p class="text-sm text-primary leading-relaxed mb-3">Discussed new requirements and market conditions.</p>
+                                <div class="flex items-center space-x-3">
+                                    <button class="text-xs text-primary hover:underline">View Call Notes</button>
+                                    <button class="text-xs text-primary hover:underline">Schedule Follow-up</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1169,8 +1254,26 @@ function showContactDetails(row) {
                             Upload Document
                         </button>
                     </div>
-                    <div class="text-sm text-secondary text-center py-4">
-                        No documents available.
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth cursor-pointer">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-primary bg-opacity-10 rounded flex items-center justify-center">
+                                    <i class="fa-solid fa-file-contract text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Agreement Document</div>
+                                    <div class="text-xs text-secondary">Signed • 892 KB</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="text-secondary hover:text-primary p-2">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                                <button class="text-secondary hover:text-primary p-2">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1181,22 +1284,8 @@ function showContactDetails(row) {
                     <div class="space-y-2">
                         <button class="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth">
                             <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-envelope text-primary"></i>
-                                <span class="text-sm text-primary">Send Email</span>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
-                        </button>
-                        <button class="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-phone text-primary"></i>
-                                <span class="text-sm text-primary">Log Call</span>
-                            </div>
-                            <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
-                        </button>
-                        <button class="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-calendar text-primary"></i>
-                                <span class="text-sm text-primary">Create Viewing</span>
+                                <i class="fa-solid fa-calendar-plus text-primary"></i>
+                                <span class="text-sm text-primary">Book Viewing</span>
                             </div>
                             <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
                         </button>
@@ -1204,6 +1293,20 @@ function showContactDetails(row) {
                             <div class="flex items-center space-x-3">
                                 <i class="fa-solid fa-handshake text-primary"></i>
                                 <span class="text-sm text-primary">Create Deal</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
+                        </button>
+                        <button class="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-file-invoice-dollar text-primary"></i>
+                                <span class="text-sm text-primary">Generate Commission</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
+                        </button>
+                        <button class="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-share-nodes text-primary"></i>
+                                <span class="text-sm text-primary">Share Properties</span>
                             </div>
                             <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
                         </button>
@@ -1222,20 +1325,60 @@ function showContactDetails(row) {
                     <div class="space-y-6">
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-secondary uppercase tracking-wider">Relationship Health</span>
-                                <span class="text-lg font-semibold text-primary">${health}</span>
+                                <span class="text-xs text-secondary uppercase tracking-wider">Referral Volume</span>
+                                <span class="text-lg font-semibold text-primary">12</span>
                             </div>
-                            <div class="flex-1 bg-muted rounded-full h-2 mb-1">
-                                <div class="bg-primary h-2 rounded-full" style="width: ${health === 'Excellent' ? '85%' : health === 'Good' ? '70%' : health === 'Fair' ? '50%' : '30%'}"></div>
-                            </div>
+                            <div class="text-xs text-secondary">+3 vs previous period</div>
                         </div>
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-secondary uppercase tracking-wider">Last Activity</span>
-                                <span class="text-lg font-semibold text-primary">Recent</span>
+                                <span class="text-xs text-secondary uppercase tracking-wider">Conversion Rate</span>
+                                <span class="text-lg font-semibold text-primary">35%</span>
                             </div>
+                            <div class="flex-1 bg-muted rounded-full h-2 mb-1">
+                                <div class="bg-primary h-2 rounded-full" style="width: 35%"></div>
+                            </div>
+                            <div class="text-xs text-secondary">4 of 12 referrals converted</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs text-secondary uppercase tracking-wider">Revenue Attribution</span>
+                                <span class="text-lg font-semibold text-primary">£245k</span>
+                            </div>
+                            <div class="text-xs text-secondary">Annual contract value from deals</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs text-secondary uppercase tracking-wider">Commission Paid</span>
+                                <span class="text-lg font-semibold text-primary">£24.5k</span>
+                            </div>
+                            <div class="text-xs text-secondary">10% of first year rent</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs text-secondary uppercase tracking-wider">Avg Deal Size</span>
+                                <span class="text-lg font-semibold text-primary">6,500 sq ft</span>
+                            </div>
+                            <div class="text-xs text-secondary">Across 4 closed deals</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs text-secondary uppercase tracking-wider">Quality Score</span>
+                                <span class="text-lg font-semibold text-primary">4.5/5.0</span>
+                            </div>
+                            <div class="flex items-center space-x-1 mb-1">
+                                <i class="fa-solid fa-star text-primary text-xs"></i>
+                                <i class="fa-solid fa-star text-primary text-xs"></i>
+                                <i class="fa-solid fa-star text-primary text-xs"></i>
+                                <i class="fa-solid fa-star text-primary text-xs"></i>
+                                <i class="fa-solid fa-star-half-stroke text-primary text-xs"></i>
+                            </div>
+                            <div class="text-xs text-secondary">Based on referral quality assessment</div>
                         </div>
                     </div>
+                    <button class="w-full mt-6 pt-6 border-t border-[#E6E6E6] text-sm text-primary hover:underline font-medium">
+                        View Detailed Performance Report
+                    </button>
                 </div>
                 
                 <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
@@ -1244,16 +1387,110 @@ function showContactDetails(row) {
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <div class="text-xs text-secondary uppercase tracking-wider">Properties</div>
-                                <span class="text-xs font-semibold text-primary">0</span>
+                                <span class="text-xs font-semibold text-primary">3</span>
                             </div>
-                            <div class="text-xs text-secondary">No linked properties</div>
+                            <div class="space-y-2">
+                                <a href="#" class="flex items-center justify-between p-2 border border-[#E6E6E6] rounded hover:border-primary transition-all-smooth">
+                                    <span class="text-sm text-primary">Sample Property</span>
+                                    <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
+                                </a>
+                                <button class="w-full text-xs text-primary hover:underline text-left">View all 3 properties</button>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-[#E6E6E6]">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="text-xs text-secondary uppercase tracking-wider">Units</div>
+                                <span class="text-xs font-semibold text-primary">8</span>
+                            </div>
+                            <div class="space-y-2">
+                                <a href="#" class="flex items-center justify-between p-2 border border-[#E6E6E6] rounded hover:border-primary transition-all-smooth">
+                                    <span class="text-sm text-primary">Sample Unit</span>
+                                    <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
+                                </a>
+                                <button class="w-full text-xs text-primary hover:underline text-left">View all 8 units</button>
+                            </div>
                         </div>
                         <div class="pt-4 border-t border-[#E6E6E6]">
                             <div class="flex items-center justify-between mb-3">
                                 <div class="text-xs text-secondary uppercase tracking-wider">Active Deals</div>
+                                <span class="text-xs font-semibold text-primary">2</span>
+                            </div>
+                            <div class="space-y-2">
+                                <a href="#" class="flex items-center justify-between p-2 border border-[#E6E6E6] rounded hover:border-primary transition-all-smooth">
+                                    <div>
+                                        <div class="text-sm text-primary">Active Deal</div>
+                                        <div class="text-xs text-secondary">In Progress</div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
+                                </a>
+                                <button class="w-full text-xs text-primary hover:underline text-left">View all 2 deals</button>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-[#E6E6E6]">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="text-xs text-secondary uppercase tracking-wider">Suppliers</div>
                                 <span class="text-xs font-semibold text-primary">0</span>
                             </div>
-                            <div class="text-xs text-secondary">No active deals</div>
+                            <div class="text-xs text-secondary">No linked suppliers</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h3 class="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Upcoming Actions</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3 p-3 bg-muted rounded-lg">
+                            <div class="w-8 h-8 bg-primary rounded flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-calendar text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-medium text-primary mb-1">Follow-up Scheduled</div>
+                                <div class="text-xs text-secondary mb-2">Property discussion</div>
+                                <div class="text-xs text-primary font-medium">Tomorrow at 10:00 AM</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 p-3 bg-muted rounded-lg">
+                            <div class="w-8 h-8 bg-primary rounded flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-phone text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-medium text-primary mb-1">Call Reminder</div>
+                                <div class="text-xs text-secondary mb-2">Check on requirements</div>
+                                <div class="text-xs text-primary font-medium">Friday at 2:00 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 text-sm text-primary hover:underline font-medium">
+                        View All Actions
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h3 class="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Relationship Timeline</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                            <div class="flex-1">
+                                <div class="text-xs text-secondary mb-1">Recently</div>
+                                <div class="text-sm text-primary font-medium mb-1">New Requirement Added</div>
+                                <div class="text-xs text-secondary">Property inquiry</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                            <div class="flex-1">
+                                <div class="text-xs text-secondary mb-1">Last Month</div>
+                                <div class="text-sm text-primary font-medium mb-1">Deal Closed</div>
+                                <div class="text-xs text-secondary">Successful placement</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-secondary rounded-full mt-2 flex-shrink-0"></div>
+                            <div class="flex-1">
+                                <div class="text-xs text-secondary mb-1">3 Months Ago</div>
+                                <div class="text-sm text-primary font-medium mb-1">Relationship Established</div>
+                                <div class="text-xs text-secondary">Initial contact</div>
+                            </div>
                         </div>
                     </div>
                 </div>
