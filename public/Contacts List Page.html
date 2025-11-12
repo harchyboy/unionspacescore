@@ -1923,26 +1923,6 @@ window.addEventListener('load', function() {
         });
     }
     
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            modal.classList.add('hidden');
-            
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
-            toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Contact added successfully</span>';
-            document.body.appendChild(toast);
-            
-            setTimeout(function() {
-                toast.remove();
-            }, 3000);
-            
-            form.reset();
-            brokerFields.classList.add('hidden');
-            disposalFields.classList.add('hidden');
-        });
-    }
-    
     // Contact row click handlers
     document.querySelectorAll('.contact-row').forEach(function(row) {
         row.addEventListener('click', function(e) {
