@@ -187,10 +187,10 @@
                     <h1 class="text-3xl font-semibold text-primary mb-2">Contacts</h1>
                     <p class="text-secondary text-sm">Manage brokers, tenants, landlords, and supplier relationships</p>
                 </div>
-                <a href="Contacts Adding Card.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                <button id="add-contact-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add Contact</span>
-                </a>
+                </button>
             </div>
             
             <div class="flex items-center space-x-4 mt-6">
@@ -1863,10 +1863,8 @@ window.addEventListener('load', function() {
     
     if (modal) {
         modal.addEventListener('click', function(e) {
-            if (e.target === modal || e.target.closest('.min-h-screen')) {
-                if (e.target === modal) {
-                    closeAddContactModal();
-                }
+            if (e.target === modal) {
+                closeAddContactModal();
             }
         });
     }
