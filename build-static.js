@@ -25,11 +25,12 @@ files.forEach(file => {
   }
 });
 
-// Copy root index.html to dist if it exists
+// Only copy root index.html if public/index.html doesn't exist
+const publicIndex = path.join(publicDir, 'index.html');
 const rootIndex = path.join(__dirname, 'index.html');
-if (fs.existsSync(rootIndex)) {
+if (!fs.existsSync(publicIndex) && fs.existsSync(rootIndex)) {
   fs.copyFileSync(rootIndex, path.join(distDir, 'index.html'));
-  console.log('Copied: index.html (root)');
+  console.log('Copied: index.html (root - fallback)');
 }
 
 console.log('Static build complete!');
