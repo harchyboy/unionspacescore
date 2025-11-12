@@ -782,200 +782,334 @@
     </div>
 </div>
 
-<div id="add-contact-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-primary">Add Contact</h2>
-            <button id="close-modal" class="text-secondary hover:text-primary">
-                <i class="fa-solid fa-times text-xl"></i>
-            </button>
+<div id="add-contact-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+    <div class="min-h-screen bg-[#F0F0F0]">
+        <div class="bg-white border-b border-[#E6E6E6] px-8 py-4 sticky top-0 z-10">
+            <div class="max-w-4xl mx-auto flex items-center justify-between">
+                <button id="back-button" class="flex items-center space-x-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="text-sm font-medium">Back to Contacts</span>
+                </button>
+                <button id="close-modal" class="text-secondary hover:text-primary p-2">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
         </div>
         
-        <div class="p-6">
-            <div class="mb-6">
-                <p class="text-sm text-secondary">Add a new contact to your network. All fields marked with * are required.</p>
+        <div class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl font-semibold text-primary mb-2">Add Contact</h1>
+                <p class="text-secondary text-sm">Expand your network. Fill in the details below to create a new contact record.</p>
             </div>
-            
-            <form id="add-contact-form" class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Contact Type <span class="text-destructive">*</span></label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="type" value="broker" class="sr-only peer" required>
-                            <div class="text-center">
-                                <i class="fa-solid fa-handshake text-xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Flex Broker</span>
-                            </div>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="type" value="disposal" class="sr-only peer">
-                            <div class="text-center">
-                                <i class="fa-solid fa-building text-xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Disposal Agent</span>
-                            </div>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="type" value="tenant" class="sr-only peer">
-                            <div class="text-center">
-                                <i class="fa-solid fa-user-tie text-xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Tenant</span>
-                            </div>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="type" value="landlord" class="sr-only peer">
-                            <div class="text-center">
-                                <i class="fa-solid fa-landmark text-xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Landlord</span>
-                            </div>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="type" value="supplier" class="sr-only peer">
-                            <div class="text-center">
-                                <i class="fa-solid fa-wrench text-xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Supplier</span>
-                            </div>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="type" value="internal" class="sr-only peer">
-                            <div class="text-center">
-                                <i class="fa-solid fa-user text-xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="block text-sm font-medium text-secondary peer-checked:text-primary">Internal</span>
-                            </div>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Person Name <span class="text-destructive">*</span></label>
-                        <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., James Parker">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Company <span class="text-destructive">*</span></label>
-                        <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Knight Frank">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Role/Title <span class="text-destructive">*</span></label>
-                    <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Senior Partner">
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Email <span class="text-destructive">*</span></label>
-                        <input type="email" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="email@company.com">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Phone</label>
-                        <input type="tel" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="+44 20 1234 5678">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">City/Region</label>
-                    <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., London">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Status</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="status" value="active" class="sr-only peer" checked>
-                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Active</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="status" value="dnc" class="sr-only peer">
-                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Do Not Contact</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Relationship Notes</label>
-                    <textarea rows="3" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none" placeholder="Add notes about relationship, tone guidance, preferences..."></textarea>
-                </div>
-                
-                <div id="broker-fields" class="hidden space-y-4 pt-4 border-t border-[#E6E6E6]">
-                    <h3 class="text-sm font-semibold text-primary">Broker-Specific Details</h3>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Brokerage Territory</label>
-                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Central London">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Specialisms</label>
-                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Tech sector, Large floor plates">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Preferred Submarkets</label>
-                        <select multiple class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            <option>City Core</option>
-                            <option>Shoreditch</option>
-                            <option>Mayfair</option>
-                            <option>Canary Wharf</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Referral Source</label>
-                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="How did we connect?">
-                    </div>
-                    <div>
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                            <span class="text-sm text-primary">Confidential requirements flag</span>
-                        </label>
-                        <p class="text-xs text-secondary mt-1">Contact often submits requirements without revealing tenant identity</p>
-                    </div>
-                </div>
-                
-                <div id="disposal-fields" class="hidden space-y-4 pt-4 border-t border-[#E6E6E6]">
-                    <h3 class="text-sm font-semibold text-primary">Disposal Agent-Specific Details</h3>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Landlord Roster</label>
-                        <select multiple class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                            <option>British Land</option>
-                            <option>Land Securities</option>
-                            <option>Derwent London</option>
-                            <option>Great Portland Estates</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-2">Instruction Types</label>
-                        <div class="space-y-2">
-                            <label class="flex items-center space-x-2">
-                                <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                <span class="text-sm text-primary">Cat A+</span>
+        </div>
+        
+        <div class="px-8 py-8">
+            <div class="max-w-4xl mx-auto">
+                <form id="add-contact-form" class="space-y-8">
+                    <div id="contact-type-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Contact Type</h2>
+                            <p class="text-sm text-secondary">Define the relationship and role of this contact</p>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="broker" class="sr-only peer" required>
+                                <i class="fa-solid fa-handshake text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Broker</span>
+                                <span class="text-xs text-secondary mt-1">Tenant representative</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
-                            <label class="flex items-center space-x-2">
-                                <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                <span class="text-sm text-primary">Fitted</span>
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="disposal-agent" class="sr-only peer">
+                                <i class="fa-solid fa-building text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Disposal Agent</span>
+                                <span class="text-xs text-secondary mt-1">Landlord representative</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
-                            <label class="flex items-center space-x-2">
-                                <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                <span class="text-sm text-primary">Cat A</span>
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="tenant" class="sr-only peer">
+                                <i class="fa-solid fa-user-tie text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Tenant</span>
+                                <span class="text-xs text-secondary mt-1">Occupier contact</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                            </label>
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="landlord" class="sr-only peer">
+                                <i class="fa-solid fa-landmark text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Landlord</span>
+                                <span class="text-xs text-secondary mt-1">Property owner</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                            </label>
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="supplier" class="sr-only peer">
+                                <i class="fa-solid fa-tools text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Supplier</span>
+                                <span class="text-xs text-secondary mt-1">Service provider</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                            </label>
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="internal" class="sr-only peer">
+                                <i class="fa-solid fa-user-shield text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Internal</span>
+                                <span class="text-xs text-secondary mt-1">Team member</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
                         </div>
                     </div>
-                </div>
-                
-                <div class="flex items-center space-x-3 pt-4 border-t border-[#E6E6E6]">
-                    <button type="submit" class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth">
-                        Add Contact
-                    </button>
-                    <button type="button" id="cancel-modal" class="flex-1 border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
-                        Cancel
-                    </button>
-                </div>
-            </form>
+                    
+                    <div id="personal-details-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Personal Details</h2>
+                            <p class="text-sm text-secondary">Basic contact information</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">First Name <span class="text-destructive">*</span></label>
+                                    <input type="text" name="first_name" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="John">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Last Name <span class="text-destructive">*</span></label>
+                                    <input type="text" name="last_name" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="Smith">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Role / Title <span class="text-destructive">*</span></label>
+                                <input type="text" name="role" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Partner, Director, Head of Property">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="company-details-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Company Details</h2>
+                            <p class="text-sm text-secondary">Organisation and firm information</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Company Name <span class="text-destructive">*</span></label>
+                                <input type="text" name="company" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Knight Frank, CBRE, JLL">
+                                <p class="text-xs text-secondary mt-2">If the firm doesn't exist, we'll create it automatically</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">City / Region</label>
+                                <input type="text" name="city" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="London">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="contact-information-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Contact Information</h2>
+                            <p class="text-sm text-secondary">How to reach this contact</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Email Address <span class="text-destructive">*</span></label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="john.smith@example.com">
+                                <p class="text-xs text-secondary mt-2">Primary email for all communications</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Phone Number</label>
+                                <input type="tel" name="phone" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="+44 20 1234 5678">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="broker-specific-section" class="hidden bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Broker Details</h2>
+                            <p class="text-sm text-secondary">Additional information for broker contacts</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Brokerage Territory</label>
+                                <input type="text" name="territory" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., City Core, West End">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Specialisms</label>
+                                <input type="text" name="specialisms" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Tech, Finance, Creative">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Preferred Submarkets</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="flex items-center space-x-2 px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                        <input type="checkbox" name="submarket" value="city-core" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        <span class="text-sm text-primary">City Core</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                        <input type="checkbox" name="submarket" value="shoreditch" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        <span class="text-sm text-primary">Shoreditch</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                        <input type="checkbox" name="submarket" value="mayfair" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        <span class="text-sm text-primary">Mayfair</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                        <input type="checkbox" name="submarket" value="canary-wharf" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        <span class="text-sm text-primary">Canary Wharf</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Referral Source</label>
+                                <input type="text" name="referral_source" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="How did this broker find UNION?">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Commission Structure</label>
+                                <textarea name="commission_notes" rows="2" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="Reference notes on commission agreement"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="disposal-agent-section" class="hidden bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Disposal Agent Details</h2>
+                            <p class="text-sm text-secondary">Additional information for disposal agent contacts</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Landlord Roster</label>
+                                <input type="text" name="landlord_roster" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., British Land, Landsec, Derwent">
+                                <p class="text-xs text-secondary mt-2">Comma-separated list of landlords this agent represents</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Instruction Types</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="flex items-center space-x-2 px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                        <input type="checkbox" name="instruction_type" value="cat-a" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        <span class="text-sm text-primary">Cat A</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                        <input type="checkbox" name="instruction_type" value="cat-a-plus" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        <span class="text-sm text-primary">Cat A+</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                        <input type="checkbox" name="instruction_type" value="fitted" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                        <span class="text-sm text-primary">Fitted</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="supplier-specific-section" class="hidden bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Supplier Details</h2>
+                            <p class="text-sm text-secondary">Service provider information</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Service Category</label>
+                                <select name="service_category" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth appearance-none">
+                                    <option value="">Select category</option>
+                                    <option value="cleaning">Cleaning</option>
+                                    <option value="av">AV & Technology</option>
+                                    <option value="it">IT Support</option>
+                                    <option value="maintenance">Repairs & Maintenance</option>
+                                    <option value="plants">Plants & Greenery</option>
+                                    <option value="coffee">Coffee & Beverages</option>
+                                    <option value="furniture">Furniture</option>
+                                    <option value="utilities">Utilities</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Coverage Areas</label>
+                                <input type="text" name="coverage_areas" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Central London, EC1-EC4">
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Rate Card (£/hour)</label>
+                                    <input type="number" name="rate_card" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="50">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Lead Time (days)</label>
+                                    <input type="number" name="lead_time" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="relationship-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Relationship & Notes</h2>
+                            <p class="text-sm text-secondary">Context for future interactions</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Relationship Notes</label>
+                                <textarea name="relationship_notes" rows="4" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="Add context about this relationship—how you met, communication preferences, past interactions..."></textarea>
+                                <p class="text-xs text-secondary mt-2">This helps shape tone and approach in future communications</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="preferences-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Communication Preferences</h2>
+                            <p class="text-sm text-secondary">How this contact prefers to engage</p>
+                        </div>
+                        <div class="space-y-4">
+                            <label class="flex items-start space-x-3 p-4 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                <input type="checkbox" name="email_logging" class="w-5 h-5 text-primary border-[#E6E6E6] rounded focus:ring-primary mt-0.5">
+                                <div class="flex-1">
+                                    <span class="text-sm font-semibold text-primary block">Email logging consent</span>
+                                    <span class="text-xs text-secondary mt-1 block">Automatically associate emails with this contact's record</span>
+                                </div>
+                            </label>
+                            <label class="flex items-start space-x-3 p-4 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
+                                <input type="checkbox" name="confidential_requirement" class="w-5 h-5 text-primary border-[#E6E6E6] rounded focus:ring-primary mt-0.5">
+                                <div class="flex-1">
+                                    <span class="text-sm font-semibold text-primary block">Confidential requirement flag</span>
+                                    <span class="text-xs text-secondary mt-1 block">This broker typically works with confidential tenant identities</span>
+                                </div>
+                            </label>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Communication Cadence</label>
+                                <select name="updates_cadence" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth appearance-none">
+                                    <option value="weekly">Weekly updates</option>
+                                    <option value="fortnightly">Fortnightly updates</option>
+                                    <option value="monthly" selected>Monthly updates</option>
+                                    <option value="on-demand">On-demand only</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Contact Status</label>
+                                <select name="status" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth appearance-none">
+                                    <option value="active" selected>Active</option>
+                                    <option value="do-not-contact">Do not contact</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="form-actions" class="flex items-center justify-between pt-6 field-group">
+                        <button type="button" id="cancel-button" class="px-8 py-3 border-2 border-[#E6E6E6] text-primary rounded-lg font-semibold hover:bg-muted transition-all-smooth">
+                            Cancel
+                        </button>
+                        <div class="flex items-center space-x-4">
+                            <button type="button" id="save-draft-button" class="px-8 py-3 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-muted transition-all-smooth">
+                                Save Draft
+                            </button>
+                            <button type="submit" class="px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                                <span>Add Contact</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
+</div>
+
+<div id="success-toast" class="hidden fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50">
+    <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+        <i class="fa-solid fa-check text-white"></i>
+    </div>
+    <div>
+        <div class="font-semibold">Contact added successfully</div>
+        <div class="text-xs opacity-90">Record created and ready to use</div>
     </div>
 </div>
 
@@ -1663,50 +1797,105 @@ window.addEventListener('load', function() {
     const addContactBtn = document.getElementById('add-contact-btn');
     const modal = document.getElementById('add-contact-modal');
     const closeModal = document.getElementById('close-modal');
-    const cancelModal = document.getElementById('cancel-modal');
+    const backButton = document.getElementById('back-button');
+    const cancelButton = document.getElementById('cancel-button');
+    const saveDraftButton = document.getElementById('save-draft-button');
     const form = document.getElementById('add-contact-form');
     const typeRadios = document.querySelectorAll('input[name="type"]');
-    const brokerFields = document.getElementById('broker-fields');
-    const disposalFields = document.getElementById('disposal-fields');
+    const brokerSection = document.getElementById('broker-specific-section');
+    const disposalSection = document.getElementById('disposal-agent-section');
+    const supplierSection = document.getElementById('supplier-specific-section');
+    const successToast = document.getElementById('success-toast');
     
     if (addContactBtn) {
         addContactBtn.addEventListener('click', function() {
             modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         });
+    }
+    
+    function closeAddContactModal() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
     }
     
     if (closeModal) {
-        closeModal.addEventListener('click', function() {
-            modal.classList.add('hidden');
-        });
+        closeModal.addEventListener('click', closeAddContactModal);
     }
     
-    if (cancelModal) {
-        cancelModal.addEventListener('click', function() {
-            modal.classList.add('hidden');
+    if (backButton) {
+        backButton.addEventListener('click', closeAddContactModal);
+    }
+    
+    if (cancelButton) {
+        cancelButton.addEventListener('click', function() {
+            if (confirm('Discard changes and return to contacts list?')) {
+                closeAddContactModal();
+            }
         });
     }
     
     if (modal) {
         modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
+            if (e.target === modal || e.target.closest('.min-h-screen')) {
+                if (e.target === modal) {
+                    closeAddContactModal();
+                }
             }
         });
     }
     
-    typeRadios.forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            brokerFields.classList.add('hidden');
-            disposalFields.classList.add('hidden');
-            
-            if (this.value === 'broker') {
-                brokerFields.classList.remove('hidden');
-            } else if (this.value === 'disposal') {
-                disposalFields.classList.remove('hidden');
-            }
+    if (typeRadios.length > 0) {
+        typeRadios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                brokerSection.classList.add('hidden');
+                disposalSection.classList.add('hidden');
+                supplierSection.classList.add('hidden');
+                
+                if (this.value === 'broker') {
+                    brokerSection.classList.remove('hidden');
+                } else if (this.value === 'disposal-agent') {
+                    disposalSection.classList.remove('hidden');
+                } else if (this.value === 'supplier') {
+                    supplierSection.classList.remove('hidden');
+                }
+            });
         });
-    });
+    }
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (successToast) {
+                successToast.classList.remove('hidden');
+            }
+            
+            setTimeout(function() {
+                if (successToast) {
+                    successToast.classList.add('hidden');
+                }
+                closeAddContactModal();
+                form.reset();
+                brokerSection.classList.add('hidden');
+                disposalSection.classList.add('hidden');
+                supplierSection.classList.add('hidden');
+            }, 2000);
+        });
+    }
+    
+    if (saveDraftButton) {
+        saveDraftButton.addEventListener('click', function() {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-secondary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+            toast.innerHTML = '<div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center"><i class="fa-solid fa-save text-white"></i></div><div><div class="font-semibold">Draft saved</div><div class="text-xs opacity-90">You can complete this later</div></div>';
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.remove();
+            }, 2500);
+        });
+    }
     
     if (form) {
         form.addEventListener('submit', function(e) {
