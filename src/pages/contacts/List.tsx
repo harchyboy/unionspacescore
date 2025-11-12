@@ -3,16 +3,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useContacts } from '../../api/contacts';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
-import { MasterDetailLayout } from '../../components/layout/MasterDetailLayout';
 import { Button } from '../../components/ui/Button';
 import { SearchInput } from '../../components/ui/SearchInput';
 import { Select } from '../../components/ui/Select';
-import { FilterSection } from '../../components/ui/FilterSection';
 import { Table, TableHeader, TableHeaderCell, TableBody } from '../../components/ui/Table';
 import { ContactRow } from '../../components/contacts/ContactRow';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
-import { ContactDetails } from './Details';
+import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import type { ContactType, RelationshipHealth } from '../../types/contact';
 
 const contactTypes: { value: ContactType | 'all'; label: string }[] = [
@@ -36,13 +34,14 @@ const healthOptions: { value: RelationshipHealth | 'all'; label: string }[] = [
 export function ContactsList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedContactId, setSelectedContactId] = useState<string | null>(
-    searchParams.get('id') || null
-  );
+  const [selectedTab, setSelectedTab] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('query') || '');
   const [typeFilter, setTypeFilter] = useState<ContactType | 'all'>(
     (searchParams.get('type') as ContactType | 'all') || 'all'
   );
+  const [firmFilter, setFirmFilter] = useState<string>('all');
+  const [submarketFilter, setSubmarketFilter] = useState<string>('all');
+  const [activityFilter, setActivityFilter] = useState<string>('all');
   const [healthFilter, setHealthFilter] = useState<RelationshipHealth | 'all'>(
     (searchParams.get('health') as RelationshipHealth | 'all') || 'all'
   );
@@ -98,25 +97,27 @@ export function ContactsList() {
   const handleClearFilters = () => {
     setSearchQuery('');
     setTypeFilter('all');
+    setFirmFilter('all');
+    setSubmarketFilter('all');
+    setActivityFilter('all');
     setHealthFilter('all');
     setSearchParams({});
   };
 
-  const handleSelectContact = (id: string) => {
-    setSelectedContactId(id);
-    const params = new URLSearchParams(searchParams);
-    params.set('id', id);
-    setSearchParams(params);
+  const handleTabChange = (tab: string) => {
+    setSelectedTab(tab);
+    if (tab === 'all') {
+      setTypeFilter('all');
+    } else if (tab === 'flex-brokers') {
+      setTypeFilter('flex-broker');
+    } else if (tab === 'disposal-agents') {
+      setTypeFilter('disposal-agent');
+    } else if (tab === 'tenants') {
+      setTypeFilter('tenant');
+    } else if (tab === 'suppliers') {
+      setTypeFilter('supplier');
+    }
   };
-
-  const handleBackToList = () => {
-    setSelectedContactId(null);
-    const params = new URLSearchParams(searchParams);
-    params.delete('id');
-    setSearchParams(params);
-  };
-
-  const showDetail = !!selectedContactId;
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -139,64 +140,153 @@ export function ContactsList() {
 
         {/* Tabs */}
         <div className="flex items-center space-x-4 mt-6">
-          <button className="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">
+          <button
+            onClick={() => handleTabChange('all')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
+              selectedTab === 'all'
+                ? 'text-primary border-primary'
+                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
+            }`}
+          >
             All Contacts
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">
+          <button
+            onClick={() => handleTabChange('flex-brokers')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
+              selectedTab === 'flex-brokers'
+                ? 'text-primary border-primary'
+                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
+            }`}
+          >
             Flex Brokers
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">
+          <button
+            onClick={() => handleTabChange('disposal-agents')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
+              selectedTab === 'disposal-agents'
+                ? 'text-primary border-primary'
+                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
+            }`}
+          >
             Disposal Agents
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">
+          <button
+            onClick={() => handleTabChange('tenants')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
+              selectedTab === 'tenants'
+                ? 'text-primary border-primary'
+                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
+            }`}
+          >
             Tenants
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">
+          <button
+            onClick={() => handleTabChange('suppliers')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
+              selectedTab === 'suppliers'
+                ? 'text-primary border-primary'
+                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
+            }`}
+          >
             Suppliers
+          </button>
+          <div className="flex-1"></div>
+          <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+            <i className="fa-solid fa-filter"></i>
+            <span>Filters</span>
+          </button>
+          <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+            <i className="fa-solid fa-download"></i>
+            <span>Export</span>
           </button>
         </div>
       </div>
 
       {/* Filters */}
-      <FilterSection onClear={handleClearFilters}>
-        <Select
-          options={contactTypes}
-          value={typeFilter}
-          onChange={(e) => handleTypeFilter(e.target.value)}
-          className="w-48"
-        />
-        <Select
-          options={healthOptions}
-          value={healthFilter}
-          onChange={(e) => handleHealthFilter(e.target.value)}
-          className="w-56"
-        />
-      </FilterSection>
+      <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
+        <div className="flex items-center space-x-3 flex-wrap gap-2">
+          <Select
+            options={contactTypes}
+            value={typeFilter}
+            onChange={(e) => handleTypeFilter(e.target.value)}
+            className="w-48"
+          />
+          <Select
+            options={[
+              { value: 'all', label: 'All Firms' },
+              { value: 'knight-frank', label: 'Knight Frank' },
+              { value: 'cbre', label: 'CBRE' },
+              { value: 'jll', label: 'JLL' },
+              { value: 'savills', label: 'Savills' },
+              { value: 'cushman', label: 'Cushman & Wakefield' },
+            ]}
+            value={firmFilter}
+            onChange={(e) => setFirmFilter(e.target.value)}
+            className="w-48"
+          />
+          <Select
+            options={[
+              { value: 'all', label: 'All Submarkets' },
+              { value: 'city-core', label: 'City Core' },
+              { value: 'shoreditch', label: 'Shoreditch' },
+              { value: 'mayfair', label: 'Mayfair' },
+              { value: 'canary-wharf', label: 'Canary Wharf' },
+            ]}
+            value={submarketFilter}
+            onChange={(e) => setSubmarketFilter(e.target.value)}
+            className="w-48"
+          />
+          <Select
+            options={[
+              { value: 'all', label: 'All Activity' },
+              { value: '7d', label: 'Last 7 days' },
+              { value: '30d', label: 'Last 30 days' },
+              { value: '90d', label: 'Last 90 days' },
+              { value: '1y', label: 'Last year' },
+            ]}
+            value={activityFilter}
+            onChange={(e) => setActivityFilter(e.target.value)}
+            className="w-48"
+          />
+          <Select
+            options={healthOptions}
+            value={healthFilter}
+            onChange={(e) => handleHealthFilter(e.target.value)}
+            className="w-56"
+          />
+          <button
+            onClick={handleClearFilters}
+            className="text-secondary hover:text-primary text-sm ml-2"
+          >
+            Clear all
+          </button>
+        </div>
+      </div>
 
-      {/* Master-Detail Layout */}
-      <MasterDetailLayout
-        master={
-          <div className="flex-1 overflow-y-auto px-8 py-6">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-64">
-                <LoadingSpinner size="lg" />
-              </div>
-            ) : error ? (
-              <div className="text-center py-12">
-                <p className="text-destructive">Error loading contacts</p>
-              </div>
-            ) : !data || data.items.length === 0 ? (
-              <EmptyState
-                title="No contacts found"
-                description="Get started by adding a new contact"
-                icon="fa-users"
-                action={{
-                  label: 'Add Contact',
-                  onClick: () => navigate('/contacts/new'),
-                }}
-              />
-            ) : (
-              <div className="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+      {/* Contacts List */}
+      <div className="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-64">
+            <LoadingSpinner size="lg" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-destructive">Error loading contacts</p>
+          </div>
+        ) : !data || data.items.length === 0 ? (
+          <EmptyState
+            title="No contacts found"
+            description="Get started by adding a new contact"
+            icon="fa-users"
+            action={{
+              label: 'Add Contact',
+              onClick: () => navigate('/contacts/new'),
+            }}
+          />
+        ) : (
+          <>
+            <div className="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+              <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableHeaderCell>
@@ -220,33 +310,247 @@ export function ContactsList() {
                       <ContactRow
                         key={contact.id}
                         contact={contact}
-                        isSelected={selectedContactId === contact.id}
-                        onSelect={handleSelectContact}
+                        onSelect={() => navigate(`/contacts/${contact.id}`)}
                       />
                     ))}
                   </TableBody>
                 </Table>
               </div>
-            )}
-          </div>
-        }
-        detail={
-          selectedContactId ? (
-            <div className="flex-1 overflow-y-auto">
-              <ContactDetails id={selectedContactId} />
             </div>
-          ) : (
-            <div className="flex items-center justify-center h-full text-secondary">
-              <div className="text-center">
-                <i className="fa-solid fa-hand-pointer text-4xl mb-4"></i>
-                <p>Select a contact from the list to view details</p>
+
+            {/* Bulk Actions Bar */}
+            <div className="mt-6 flex items-center justify-between">
+              <div className="text-sm text-secondary">
+                Showing {data.items.length} of {data.total || data.items.length} contacts
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button variant="outline" size="sm" icon="fa-envelope">
+                  Send Email
+                </Button>
+                <Button variant="outline" size="sm" icon="fa-tag">
+                  Add Tags
+                </Button>
+                <Button variant="outline" size="sm" icon="fa-file-export">
+                  Export Selected
+                </Button>
               </div>
             </div>
-          )
-        }
-        showDetail={showDetail}
-        onBack={handleBackToList}
-      />
+
+            {/* Quick Stats */}
+            <div className="mt-8 grid grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Total Contacts</div>
+                    <i className="fa-solid fa-users text-primary"></i>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary">{data.total || 142}</div>
+                  <div className="text-xs text-secondary mt-2">+8 this month</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Active Brokers</div>
+                    <i className="fa-solid fa-handshake text-primary"></i>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary">34</div>
+                  <div className="text-xs text-secondary mt-2">18 preferred</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Active Tenants</div>
+                    <i className="fa-solid fa-user-tie text-primary"></i>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary">28</div>
+                  <div className="text-xs text-secondary mt-2">12 in onboarding</div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Avg Response Time</div>
+                    <i className="fa-solid fa-clock text-primary"></i>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary">4.2h</div>
+                  <div className="text-xs text-secondary mt-2">-0.8h vs last month</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Top Broker Performance & Relationship Health */}
+            <div className="mt-8 grid grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Top Broker Performance</CardTitle>
+                    <button className="text-sm text-secondary hover:text-primary">View All</button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {data.items
+                      .filter((c) => c.type === 'flex-broker')
+                      .slice(0, 4)
+                      .map((contact, idx) => (
+                        <div
+                          key={contact.id}
+                          className={`flex items-center justify-between ${
+                            idx < 3 ? 'pb-3 border-b border-[#E6E6E6]' : ''
+                          }`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            {contact.avatar ? (
+                              <img
+                                src={contact.avatar}
+                                alt={contact.fullName}
+                                className="w-10 h-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                {contact.firstName[0]}
+                                {contact.lastName[0]}
+                              </div>
+                            )}
+                            <div>
+                              <div className="text-sm font-medium text-primary">
+                                {contact.fullName}
+                              </div>
+                              <div className="text-xs text-secondary">{contact.company}</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm font-semibold text-primary">£1.2M</div>
+                            <div className="text-xs text-secondary">8 conversions</div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Relationship Health</CardTitle>
+                    <div className="flex items-center space-x-2">
+                      <button className="px-3 py-1.5 text-xs font-medium text-white bg-primary rounded-lg">
+                        30D
+                      </button>
+                      <button className="px-3 py-1.5 text-xs font-medium text-secondary hover:text-primary border border-[#E6E6E6] rounded-lg">
+                        90D
+                      </button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-60 flex items-center justify-center text-secondary">
+                    <div className="text-center">
+                      <i className="fa-solid fa-chart-bar text-4xl mb-2"></i>
+                      <p>Chart placeholder</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity */}
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle>Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fa-solid fa-envelope text-white text-xs"></i>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-primary font-medium">
+                        Email logged with James Parker
+                      </div>
+                      <div className="text-xs text-secondary mt-1">
+                        Viewing scheduled for 99 Bishopsgate - 3rd floor suite
+                      </div>
+                      <div className="text-xs text-secondary mt-1">2 hours ago</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fa-solid fa-user-plus text-white text-xs"></i>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-primary font-medium">New contact added</div>
+                      <div className="text-xs text-secondary mt-1">
+                        Emma Wilson from CleanPro Services added as Supplier
+                      </div>
+                      <div className="text-xs text-secondary mt-1">5 hours ago</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fa-solid fa-phone text-white text-xs"></i>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-primary font-medium">Call logged with Sarah Chen</div>
+                      <div className="text-xs text-secondary mt-1">
+                        Discussed floorplan updates for Principal Place
+                      </div>
+                      <div className="text-xs text-secondary mt-1">1 day ago</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fa-solid fa-handshake text-white text-xs"></i>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-primary font-medium">Deal closed with Michael Roberts</div>
+                      <div className="text-xs text-secondary mt-1">
+                        TechCorp Ltd signed for The Leadenhall Building
+                      </div>
+                      <div className="text-xs text-secondary mt-1">3 days ago</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Communication Insights */}
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle>Communication Insights</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-semibold text-primary mb-2">284</div>
+                    <div className="text-sm text-secondary">Emails This Month</div>
+                    <div className="text-xs text-green-600 mt-1">+12% vs last month</div>
+                  </div>
+                  <div className="text-center border-l border-r border-[#E6E6E6]">
+                    <div className="text-3xl font-semibold text-primary mb-2">127</div>
+                    <div className="text-sm text-secondary">Calls Logged</div>
+                    <div className="text-xs text-green-600 mt-1">+8% vs last month</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-semibold text-primary mb-2">45</div>
+                    <div className="text-sm text-secondary">Meetings Scheduled</div>
+                    <div className="text-xs text-red-600 mt-1">-3% vs last month</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
+      </div>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );

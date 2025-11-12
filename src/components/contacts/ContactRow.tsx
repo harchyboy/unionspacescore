@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import type { Contact } from '../../types/contact';
-import { Badge } from '../ui/Badge';
 import { ContactActionsMenu } from './ContactActionsMenu';
 import { useDeleteContact } from '../../api/contacts';
 import { ConfirmModal } from '../ui/Modal';
@@ -9,7 +8,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 interface ContactRowProps {
   contact: Contact;
-  isSelected?: boolean;
   onSelect?: (id: string) => void;
 }
 
@@ -24,10 +22,10 @@ const typeLabels: Record<Contact['type'], string> = {
 
 const typeIcons: Record<Contact['type'], string> = {
   'flex-broker': 'fa-handshake',
-  'disposal-agent': 'fa-user-tie',
-  tenant: 'fa-building',
-  landlord: 'fa-key',
-  supplier: 'fa-truck',
+  'disposal-agent': 'fa-building',
+  tenant: 'fa-user-tie',
+  landlord: 'fa-landmark',
+  supplier: 'fa-wrench',
   internal: 'fa-user',
 };
 
@@ -38,7 +36,7 @@ const healthColors: Record<Contact['relationshipHealth'], 'success' | 'warning' 
   'needs-attention': 'destructive',
 };
 
-export function ContactRow({ contact, isSelected, onSelect }: ContactRowProps) {
+export function ContactRow({ contact, onSelect }: ContactRowProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const deleteContact = useDeleteContact();
@@ -58,17 +56,13 @@ export function ContactRow({ contact, isSelected, onSelect }: ContactRowProps) {
 
   return (
     <tr
-      className={`hover:bg-muted transition-all-smooth cursor-pointer ${
-        isSelected ? 'bg-muted' : ''
-      }`}
-      onClick={() => onSelect?.(contact.id)}
+      className="hover:bg-muted transition-all-smooth cursor-pointer"
+      onClick={() => navigate(`/contacts/${contact.id}`)}
     >
       <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
         <input
           type="checkbox"
           className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary"
-          checked={isSelected}
-          onChange={() => onSelect?.(contact.id)}
         />
       </td>
       <td className="px-6 py-4">
@@ -95,10 +89,20 @@ export function ContactRow({ contact, isSelected, onSelect }: ContactRowProps) {
         </Link>
       </td>
       <td className="px-6 py-4">
-        <Badge variant="primary" size="sm">
+        <span
+          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+            contact.type === 'flex-broker'
+              ? 'bg-primary text-white'
+              : contact.type === 'disposal-agent'
+                ? 'bg-secondary text-white'
+                : contact.type === 'tenant'
+                  ? 'bg-accent text-white'
+                  : 'bg-muted text-primary'
+          }`}
+        >
           <i className={`fa-solid ${typeIcons[contact.type]} mr-1.5`}></i>
           {typeLabels[contact.type]}
-        </Badge>
+        </span>
       </td>
       <td className="px-6 py-4 text-sm text-primary">{contact.company || '-'}</td>
       <td className="px-6 py-4 text-sm text-primary">{contact.email}</td>
@@ -121,23 +125,24 @@ export function ContactRow({ contact, isSelected, onSelect }: ContactRowProps) {
         </div>
       </td>
       <td className="px-6 py-4">
-        <div className="flex items-center space-x-2">
-          <div className="flex-1 bg-muted rounded-full h-2 w-20">
-            <div
-              className={`h-2 rounded-full ${
-                contact.relationshipHealthScore && contact.relationshipHealthScore >= 80
-                  ? 'bg-primary'
-                  : contact.relationshipHealthScore && contact.relationshipHealthScore >= 60
-                    ? 'bg-yellow-500'
-                    : 'bg-destructive'
-              }`}
-              style={{
-                width: `${contact.relationshipHealthScore || 0}%`,
-              }}
-            ></div>
-          </div>
-          <span className="text-xs text-secondary capitalize">{contact.relationshipHealth}</span>
-        </div>
+        <span
+          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+            contact.relationshipHealth === 'excellent' || contact.relationshipHealth === 'good'
+              ? 'bg-green-100 text-green-800'
+              : contact.relationshipHealth === 'fair'
+                ? 'bg-yellow-100 text-yellow-800'
+                : 'bg-red-100 text-red-800'
+          }`}
+        >
+          <i className="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+          {contact.relationshipHealth === 'excellent'
+            ? 'Excellent'
+            : contact.relationshipHealth === 'good'
+              ? 'Good'
+              : contact.relationshipHealth === 'fair'
+                ? 'Fair'
+                : 'Needs Attention'}
+        </span>
       </td>
       <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
         <ContactActionsMenu
