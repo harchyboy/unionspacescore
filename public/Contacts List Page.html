@@ -125,6 +125,32 @@
         .slide-over.open {
             transform: translateX(0);
         }
+        
+        .field-group {
+            opacity: 0;
+            animation: fadeInUp 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .field-group:nth-child(1) { animation-delay: 0.05s; }
+        .field-group:nth-child(2) { animation-delay: 0.1s; }
+        .field-group:nth-child(3) { animation-delay: 0.15s; }
+        .field-group:nth-child(4) { animation-delay: 0.2s; }
+        .field-group:nth-child(5) { animation-delay: 0.25s; }
+        .field-group:nth-child(6) { animation-delay: 0.3s; }
+        .field-group:nth-child(7) { animation-delay: 0.35s; }
+        .field-group:nth-child(8) { animation-delay: 0.4s; }
+        .field-group:nth-child(9) { animation-delay: 0.45s; }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
