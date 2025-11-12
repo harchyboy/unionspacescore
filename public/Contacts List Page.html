@@ -188,64 +188,64 @@
         <div id="filters-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
             <div class="flex items-center space-x-3 flex-wrap gap-2">
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Types</option>
-                        <option>Flex Broker</option>
-                        <option>Disposal Agent</option>
-                        <option>Tenant/Prospect</option>
-                        <option>Landlord</option>
-                        <option>Supplier</option>
-                        <option>Internal</option>
+                    <select id="filter-type" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Types</option>
+                        <option value="Flex Broker">Flex Broker</option>
+                        <option value="Disposal Agent">Disposal Agent</option>
+                        <option value="Tenant">Tenant/Prospect</option>
+                        <option value="Landlord">Landlord</option>
+                        <option value="Supplier">Supplier</option>
+                        <option value="Internal">Internal</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Firms</option>
-                        <option>Knight Frank</option>
-                        <option>CBRE</option>
-                        <option>JLL</option>
-                        <option>Savills</option>
-                        <option>Cushman & Wakefield</option>
+                    <select id="filter-firm" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Firms</option>
+                        <option value="Knight Frank">Knight Frank</option>
+                        <option value="CBRE">CBRE</option>
+                        <option value="JLL">JLL</option>
+                        <option value="Savills">Savills</option>
+                        <option value="Cushman & Wakefield">Cushman & Wakefield</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Submarkets</option>
-                        <option>City Core</option>
-                        <option>Shoreditch</option>
-                        <option>Mayfair</option>
-                        <option>Canary Wharf</option>
+                    <select id="filter-submarket" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Submarkets</option>
+                        <option value="City Core">City Core</option>
+                        <option value="Shoreditch">Shoreditch</option>
+                        <option value="Mayfair">Mayfair</option>
+                        <option value="Canary Wharf">Canary Wharf</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Activity</option>
-                        <option>Last 7 days</option>
-                        <option>Last 30 days</option>
-                        <option>Last 90 days</option>
-                        <option>Last year</option>
+                    <select id="filter-activity" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Activity</option>
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                        <option value="365">Last year</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Relationship Health</option>
-                        <option>Excellent</option>
-                        <option>Good</option>
-                        <option>Fair</option>
-                        <option>Needs Attention</option>
+                    <select id="filter-health" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Relationship Health</option>
+                        <option value="Excellent">Excellent</option>
+                        <option value="Good">Good</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Needs Attention">Needs Attention</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
-                <button class="text-secondary hover:text-primary text-sm ml-2">
+                <button id="clear-filters" class="text-secondary hover:text-primary text-sm ml-2">
                     Clear all
                 </button>
             </div>
@@ -272,7 +272,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#E6E6E6]">
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="James Parker" data-contact-role="Senior Partner" data-contact-type="Flex Broker" data-contact-company="Knight Frank" data-contact-email="j.parker@knightfrank.com" data-contact-phone="+44 20 7629 8171" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="James Parker" data-contact-role="Senior Partner" data-contact-type="Flex Broker" data-contact-company="Knight Frank" data-contact-email="j.parker@knightfrank.com" data-contact-phone="+44 20 7629 8171" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" data-contact-health="Excellent" data-contact-activity-hours="2">
                                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -320,7 +320,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Sarah Chen" data-contact-role="Head of Agency" data-contact-type="Disposal Agent" data-contact-company="CBRE" data-contact-email="sarah.chen@cbre.com" data-contact-phone="+44 20 7182 2000" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Sarah Chen" data-contact-role="Head of Agency" data-contact-type="Disposal Agent" data-contact-company="CBRE" data-contact-email="sarah.chen@cbre.com" data-contact-phone="+44 20 7182 2000" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" data-contact-health="Good" data-contact-activity-hours="5">
                                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -368,7 +368,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Michael Roberts" data-contact-role="CFO" data-contact-type="Tenant" data-contact-company="TechCorp Ltd" data-contact-email="m.roberts@techcorp.com" data-contact-phone="+44 20 8765 4321" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" data-contact-confidential="true">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Michael Roberts" data-contact-role="CFO" data-contact-type="Tenant" data-contact-company="TechCorp Ltd" data-contact-email="m.roberts@techcorp.com" data-contact-phone="+44 20 8765 4321" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" data-contact-confidential="true" data-contact-health="Good" data-contact-activity-hours="24">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -422,7 +422,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="David Thompson" data-contact-role="Portfolio Director" data-contact-type="Landlord" data-contact-company="British Land" data-contact-email="d.thompson@britishland.com" data-contact-phone="+44 20 7486 4466" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="David Thompson" data-contact-role="Portfolio Director" data-contact-type="Landlord" data-contact-company="British Land" data-contact-email="d.thompson@britishland.com" data-contact-phone="+44 20 7486 4466" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-9.jpg" data-contact-health="Excellent" data-contact-activity-hours="72">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -466,7 +466,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Emma Wilson" data-contact-role="Operations Manager" data-contact-type="Supplier" data-contact-company="CleanPro Services" data-contact-email="emma@cleanpro.co.uk" data-contact-phone="+44 20 7123 4567" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-6.jpg">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Emma Wilson" data-contact-role="Operations Manager" data-contact-type="Supplier" data-contact-company="CleanPro Services" data-contact-email="emma@cleanpro.co.uk" data-contact-phone="+44 20 7123 4567" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-6.jpg" data-contact-health="Fair" data-contact-activity-hours="168">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -510,7 +510,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Oliver Martinez" data-contact-role="Associate Director" data-contact-type="Flex Broker" data-contact-company="JLL" data-contact-email="oliver.martinez@jll.com" data-contact-phone="+44 20 7493 4933" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Oliver Martinez" data-contact-role="Associate Director" data-contact-type="Flex Broker" data-contact-company="JLL" data-contact-email="oliver.martinez@jll.com" data-contact-phone="+44 20 7493 4933" data-contact-avatar="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" data-contact-health="Needs Attention" data-contact-activity-hours="336">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -559,7 +559,7 @@
             </div>
             
             <div id="bulk-actions-bar" class="mt-6 flex items-center justify-between">
-                <div class="text-sm text-secondary">
+                <div id="contact-count" class="text-sm text-secondary">
                     Showing 6 of 142 contacts
                 </div>
                 <div class="flex items-center space-x-2">
@@ -1079,6 +1079,75 @@ function closeContactDetails() {
     document.querySelectorAll('.contact-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
 }
 
+function filterContacts() {
+    const typeFilter = document.getElementById('filter-type').value;
+    const firmFilter = document.getElementById('filter-firm').value;
+    const submarketFilter = document.getElementById('filter-submarket').value;
+    const activityFilter = document.getElementById('filter-activity').value;
+    const healthFilter = document.getElementById('filter-health').value;
+    
+    const contactRows = document.querySelectorAll('.contact-row');
+    let visibleCount = 0;
+    
+    contactRows.forEach(function(row) {
+        const contactType = row.dataset.contactType;
+        const contactCompany = row.dataset.contactCompany;
+        const contactHealth = row.dataset.contactHealth;
+        const contactActivityHours = parseInt(row.dataset.contactActivityHours) || 0;
+        
+        let shouldShow = true;
+        
+        // Filter by type
+        if (typeFilter !== 'all' && contactType !== typeFilter) {
+            shouldShow = false;
+        }
+        
+        // Filter by firm/company
+        if (firmFilter !== 'all' && contactCompany !== firmFilter) {
+            shouldShow = false;
+        }
+        
+        // Filter by health
+        if (healthFilter !== 'all' && contactHealth !== healthFilter) {
+            shouldShow = false;
+        }
+        
+        // Filter by activity (hours)
+        if (activityFilter !== 'all') {
+            const hoursLimit = parseInt(activityFilter);
+            if (contactActivityHours > hoursLimit) {
+                shouldShow = false;
+            }
+        }
+        
+        // Note: Submarket filter would need data attributes on rows to work
+        // For now, we'll skip it since we don't have that data
+        
+        if (shouldShow) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Update the count display
+    const countDisplay = document.getElementById('contact-count');
+    if (countDisplay) {
+        const totalContacts = contactRows.length;
+        countDisplay.textContent = `Showing ${visibleCount} of ${totalContacts} contacts`;
+    }
+}
+
+function clearAllFilters() {
+    document.getElementById('filter-type').value = 'all';
+    document.getElementById('filter-firm').value = 'all';
+    document.getElementById('filter-submarket').value = 'all';
+    document.getElementById('filter-activity').value = 'all';
+    document.getElementById('filter-health').value = 'all';
+    filterContacts();
+}
+
 window.addEventListener('load', function() {
     try {
         const data = [{
@@ -1193,6 +1262,21 @@ window.addEventListener('load', function() {
             }
         });
     });
+    
+    // Filter functionality
+    const filterType = document.getElementById('filter-type');
+    const filterFirm = document.getElementById('filter-firm');
+    const filterSubmarket = document.getElementById('filter-submarket');
+    const filterActivity = document.getElementById('filter-activity');
+    const filterHealth = document.getElementById('filter-health');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    
+    if (filterType) filterType.addEventListener('change', filterContacts);
+    if (filterFirm) filterFirm.addEventListener('change', filterContacts);
+    if (filterSubmarket) filterSubmarket.addEventListener('change', filterContacts);
+    if (filterActivity) filterActivity.addEventListener('change', filterContacts);
+    if (filterHealth) filterHealth.addEventListener('change', filterContacts);
+    if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearAllFilters);
 });
 </script>
 
