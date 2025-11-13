@@ -58,9 +58,29 @@
             top: 0;
             z-index: 40;
             background: white;
+            /* Prevent horizontal scrolling of header */
+            overflow-x: visible;
+            overflow-y: visible;
+            width: 100%;
+            max-width: 100%;
         }
         #header, #pipeline-controls, #pipeline-stats {
             background: white;
+            /* Ensure header doesn't scroll horizontally */
+            overflow-x: visible;
+            overflow-y: visible;
+            width: 100%;
+            max-width: 100%;
+        }
+        /* Keep New Requirement button fixed and visible */
+        #new-requirement-btn {
+            position: relative;
+            z-index: 41;
+        }
+        /* Ensure header button container doesn't scroll */
+        #header > div > div:last-child {
+            position: relative;
+            z-index: 41;
         }
         .slide-over-panel {
             transform: translateX(100%);
@@ -93,7 +113,14 @@
         }
         /* Ensure parent containers don't clip overflow */
         .flex-1.ml-64 {
-            overflow: visible;
+            overflow-x: visible;
+            overflow-y: auto;
+            width: 100%;
+        }
+        /* Ensure header wrapper doesn't scroll horizontally */
+        .flex-1.ml-64 > #pipeline-header-wrapper {
+            overflow-x: visible !important;
+            overflow-y: visible !important;
         }
         #pipeline-board > .flex {
             min-width: max-content !important;
@@ -135,11 +162,11 @@
 <div class="flex min-h-screen">
     <aside id="sidebar" class="w-64 bg-white border-r border-concrete/20 flex flex-col fixed left-0 top-0 bottom-0 z-50" data-sidebar-placeholder data-active="deals"></aside>
 
-    <div class="flex-1 ml-64">
-    <div id="pipeline-header-wrapper">
-    <header id="header" class="bg-white border-b border-concrete/30">
-        <div class="px-8 py-4">
-            <div class="flex items-center justify-between">
+    <div class="flex-1 ml-64" style="overflow-x: visible; width: 100%;">
+    <div id="pipeline-header-wrapper" style="overflow-x: visible; width: 100%;">
+    <header id="header" class="bg-white border-b border-concrete/30" style="overflow-x: visible; width: 100%;">
+        <div class="px-8 py-4" style="overflow-x: visible; width: 100%;">
+            <div class="flex items-center justify-between" style="overflow-x: visible; width: 100%;">
                 <div>
                     <h1 class="text-2xl font-semibold text-slate">Pipeline Overview</h1>
                     <p class="text-sm text-concrete mt-0.5">Control centre for all active deals and opportunities</p>
