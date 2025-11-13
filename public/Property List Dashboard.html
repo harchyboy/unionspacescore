@@ -1454,23 +1454,47 @@ window.addEventListener('load', function() {
         form.reset();
     });
     
-    // Property details slide-over functionality
-    const propertyRows = document.querySelectorAll('.property-row');
-    
-    propertyRows.forEach(row => {
-        row.addEventListener('click', function(e) {
-            // Don't open if clicking on checkbox or action button
+    // Property details slide-over functionality - use event delegation
+    const tableBody = document.querySelector('tbody');
+    if (tableBody) {
+        tableBody.addEventListener('click', function(e) {
+            // Find the closest property row
+            const row = e.target.closest('.property-row');
+            if (!row) return;
+            
+            // Get the clicked cell
+            const clickedCell = e.target.closest('td');
+            
+            // Don't open if clicking on checkbox cell (first cell) or actions cell (last cell)
+            if (clickedCell) {
+                const isFirstCell = clickedCell === row.querySelector('td:first-child');
+                const isLastCell = clickedCell === row.querySelector('td:last-child');
+                
+                if (isFirstCell || isLastCell) {
+                    return;
+                }
+            }
+            
+            // Don't open if clicking directly on checkbox or action button
             if (e.target.closest('input[type="checkbox"]') || e.target.closest('.row-actions-btn')) {
                 return;
             }
+            
             openPropertyDetails(row);
         });
-    });
+    }
 });
 
 function openPropertyDetails(row) {
     const iframe = document.getElementById('property-details-iframe');
     const content = document.getElementById('property-details-content');
+    const overlay = document.getElementById('property-details-overlay');
+    const panel = document.getElementById('property-details-panel');
+    
+    if (!iframe || !content || !overlay || !panel) {
+        console.error('Property details slide-over elements not found');
+        return;
+    }
     
     // Hide content placeholder, show iframe
     content.style.display = 'none';
@@ -1480,8 +1504,8 @@ function openPropertyDetails(row) {
     iframe.src = 'Properties Detailed Card.html';
     
     // Show overlay and panel
-    document.getElementById('property-details-overlay').classList.remove('hidden');
-    document.getElementById('property-details-panel').classList.add('open');
+    overlay.classList.remove('hidden');
+    panel.classList.add('open');
     
     // Highlight selected row
     document.querySelectorAll('.property-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
