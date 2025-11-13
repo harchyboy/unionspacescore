@@ -113,33 +113,77 @@
 
       <section id="property-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6" aria-labelledby="prop-title">
         <div class="flex items-start justify-between mb-6">
-          <div class="flex items-start space-x-6">
-            <div class="w-32 h-32 bg-muted rounded-lg overflow-hidden flex-shrink-0"><img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2a04833416-c73dfcb3955e8c8d5f62.png" alt="Property hero" /></div>
-            <div>
+          <div class="flex items-start space-x-6 flex-1">
+            <div class="w-32 h-32 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+              <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/2a04833416-c73dfcb3955e8c8d5f62.png" alt="Property hero" />
+            </div>
+            <div class="flex-1">
               <div class="flex items-center space-x-3 mb-2">
                 <h1 id="prop-title" class="text-3xl font-semibold text-primary">99 Bishopsgate</h1>
                 <span id="badge-publish" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white" title="Marketing status">Broker-Ready</span>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary" title="Fit-out">Cat A+</span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]" title="Fit-out">Cat A+</span>
                 <span id="badge-visibility" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white" title="Visibility">Private</span>
               </div>
-              <p class="text-secondary mb-3">99 Bishopsgate, London EC2M 3XD</p>
-              <div class="flex items-center space-x-6 text-sm">
-                <div class="flex items-center space-x-2"><i class="fa-solid fa-building text-secondary" aria-hidden="true"></i><span class="text-primary"><strong id="summary-units">8</strong> Units</span></div>
-                <div class="flex items-center space-x-2"><i class="fa-solid fa-chart-line text-secondary" aria-hidden="true"></i><span class="text-primary"><strong id="summary-occ">62%</strong> Occupancy</span></div>
-                <div class="flex items-center space-x-2"><i class="fa-solid fa-calendar text-secondary" aria-hidden="true"></i><span class="text-primary">Updated <time datetime="2025-11-10T08:00:00Z">2 hours ago</time></span></div>
+              <p class="text-secondary mb-4">99 Bishopsgate, London EC2M 3XD</p>
+              <div class="flex items-center space-x-6 text-sm mb-4">
+                <div class="flex items-center space-x-2">
+                  <i class="fa-solid fa-building text-secondary" aria-hidden="true"></i>
+                  <span class="text-primary"><strong id="summary-units">8</strong> Units</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fa-solid fa-chart-line text-secondary" aria-hidden="true"></i>
+                  <span class="text-primary"><strong id="summary-occ">62%</strong> Occupancy</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fa-solid fa-calendar text-secondary" aria-hidden="true"></i>
+                  <span class="text-primary">Updated <time datetime="2025-11-10T08:00:00Z">2 hours ago</time></span>
+                </div>
               </div>
-              <div class="mt-4 grid grid-cols-3 gap-3 max-w-3xl">
-                <div class="p-3 bg-muted rounded-lg flex items-center justify-between" aria-live="polite"><div><div class="text-xs text-secondary">Data Health</div><div class="text-sm font-semibold text-primary"><span id="health-score">92%</span></div></div><button id="btn-health-details" class="text-xs text-primary underline">View drivers</button></div>
-                <div class="p-3 bg-muted rounded-lg flex items-center justify-between"><div><div class="text-xs text-secondary">Valve Sync</div><div class="text-sm font-semibold text-primary flex items-center space-x-2"><span id="valve-state" class="inline-flex items-center px-2 py-0.5 rounded-full bg-primary text-white">Pushed</span><span class="text-secondary text-xs">Last sync <time datetime="2025-11-09T17:30:00Z">yesterday 17:30</time></span></div></div><button id="btn-sync" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs">Sync now</button></div>
-                <div class="p-3 bg-muted rounded-lg flex items-center justify-between"><div><div class="text-xs text-secondary">Broker Set</div><div class="text-sm font-semibold text-primary" id="broker-set-name">Private · 10 brokers</div></div><button id="btn-broker-set" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs">Manage</button></div>
+              <div class="grid grid-cols-3 gap-3 max-w-3xl">
+                <div class="p-3 bg-muted rounded-lg flex items-center justify-between" aria-live="polite">
+                  <div>
+                    <div class="text-xs text-secondary mb-1">Data Health</div>
+                    <div class="text-sm font-semibold text-primary"><span id="health-score">92%</span></div>
+                  </div>
+                  <button id="btn-health-details" class="text-xs text-primary underline hover:no-underline">View drivers</button>
+                </div>
+                <div class="p-3 bg-muted rounded-lg flex items-center justify-between">
+                  <div class="flex-1">
+                    <div class="text-xs text-secondary mb-1">Valve Sync</div>
+                    <div class="flex items-center space-x-2 mb-1">
+                      <span id="valve-state" class="inline-flex items-center px-2 py-0.5 rounded-full bg-primary text-white text-xs font-medium">Pushed</span>
+                    </div>
+                    <div class="text-xs text-secondary">Last sync <time datetime="2025-11-09T17:30:00Z">yesterday 17:30</time></div>
+                  </div>
+                  <button id="btn-sync" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors ml-2">Sync now</button>
+                </div>
+                <div class="p-3 bg-muted rounded-lg flex items-center justify-between">
+                  <div>
+                    <div class="text-xs text-secondary mb-1">Broker Set</div>
+                    <div class="text-sm font-semibold text-primary" id="broker-set-name">Private · 10 brokers</div>
+                  </div>
+                  <button id="btn-broker-set" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors ml-2">Manage</button>
+                </div>
               </div>
             </div>
           </div>
-          <div class="flex items-center space-x-3">
-            <button id="btn-upload-doc" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-upload"></i><span>Upload Doc</span></button>
-            <button id="btn-book-viewing" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-calendar-check"></i><span>Book Viewing</span></button>
-            <button id="btn-publish" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-share-nodes"></i><span>Publish to Brokers</span></button>
-            <a href="Add Unit To Property Page.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2"><i class="fa-solid fa-plus"></i><span>Add Unit</span></a>
+          <div class="flex items-center space-x-3 ml-6">
+            <button id="btn-upload-doc" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+              <i class="fa-solid fa-upload"></i>
+              <span>Upload Doc</span>
+            </button>
+            <button id="btn-book-viewing" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+              <i class="fa-solid fa-calendar-check"></i>
+              <span>Book Viewing</span>
+            </button>
+            <button id="btn-publish" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+              <i class="fa-solid fa-share-nodes"></i>
+              <span>Publish to Brokers</span>
+            </button>
+            <a href="Add Unit To Property Page.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add Unit</span>
+            </a>
           </div>
         </div>
         <div id="tabbar" class="flex items-center space-x-4 border-t border-[#E6E6E6] pt-4" role="tablist" aria-label="Property sections">
