@@ -314,8 +314,8 @@ export function DealOverview() {
               <span>Back</span>
             </Link>
             <div>
-              <h1 className="text-2xl font-semibold text-[#252525]">Pipeline Overview</h1>
-              <p className="text-sm text-[#8E8E8E] mt-0.5">Control centre for all active deals and opportunities</p>
+              <h1 className="text-2xl font-semibold text-[#252525]">Deal Details</h1>
+              <p className="text-sm text-[#8E8E8E] mt-0.5">End-to-end view of this requirement</p>
             </div>
           </div>
         </div>
