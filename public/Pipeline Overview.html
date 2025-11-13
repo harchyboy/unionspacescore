@@ -28,7 +28,36 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        ::-webkit-scrollbar { display: none; }
+        /* Custom scrollbar for pipeline board */
+        #pipeline-board::-webkit-scrollbar {
+            height: 12px;
+            display: block;
+        }
+        #pipeline-board::-webkit-scrollbar-track {
+            background: #F0F0F0;
+            border-radius: 6px;
+        }
+        #pipeline-board::-webkit-scrollbar-thumb {
+            background: #8E8E8E;
+            border-radius: 6px;
+        }
+        #pipeline-board::-webkit-scrollbar-thumb:hover {
+            background: #252525;
+        }
+        /* Hide scrollbars elsewhere */
+        ::-webkit-scrollbar { 
+            display: none; 
+        }
+        /* Make header, controls, and stats sticky as one unit */
+        #pipeline-header-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: white;
+        }
+        #header, #pipeline-controls, #pipeline-stats {
+            background: white;
+        }
         .slide-over-panel {
             transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
@@ -48,6 +77,8 @@
             overflow-x: auto;
             overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #8E8E8E #F0F0F0;
         }
         #pipeline-board > .flex {
             min-width: max-content;
@@ -78,7 +109,8 @@
     <aside id="sidebar" class="w-64 bg-white border-r border-concrete/20 flex flex-col fixed left-0 top-0 bottom-0 z-50" data-sidebar-placeholder data-active="deals"></aside>
 
     <div class="flex-1 ml-64">
-    <header id="header" class="bg-white border-b border-concrete/30 sticky top-0 z-40">
+    <div id="pipeline-header-wrapper">
+    <header id="header" class="bg-white border-b border-concrete/30">
         <div class="px-8 py-4">
             <div class="flex items-center justify-between">
                 <div>
@@ -153,7 +185,7 @@
         </div>
     </div>
 
-    <div id="pipeline-stats" class="px-8 py-6 bg-white border-b border-concrete/30">
+    <div id="pipeline-stats" class="px-8 py-4 bg-white border-b border-concrete/30">
         <div class="grid grid-cols-6 gap-4">
             <div class="bg-stone rounded-lg p-4">
                 <div class="flex items-center justify-between mb-2">
@@ -210,6 +242,7 @@
             </div>
         </div>
     </div>
+    </div> <!-- End pipeline-header-wrapper -->
 
     <div id="pipeline-board" class="px-8 py-6">
         <div class="flex space-x-4 pb-6">
