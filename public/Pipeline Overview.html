@@ -26,8 +26,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>::-webkit-scrollbar { display: none;}</style>
-    <style>::-webkit-scrollbar { display: none;}
+    <style>
+        ::-webkit-scrollbar { display: none; }
         #new-requirement-panel {
             transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
@@ -1514,6 +1514,10 @@
 </div>
 
 <script>
+window.addEventListener('load', function() {
+    // Enable horizontal scroll with mouse wheel
+    const pipelineBoard = document.getElementById('pipeline-board');
+    const scrollContainer = pipelineBoard.querySelector('.flex.space-x-4');
     const columnBodies = pipelineBoard.querySelectorAll('[id^="stage-"] .flex-1');
     
     scrollContainer.addEventListener('wheel', function(e) {
@@ -1531,18 +1535,22 @@
         }, { passive: true });
     });
 
+    // New Requirement slide-over functionality
     const newRequirementBtn = document.getElementById('new-requirement-btn');
     const newRequirementOverlay = document.getElementById('new-requirement-overlay');
     const newRequirementPanel = document.getElementById('new-requirement-panel');
     const newRequirementFrame = newRequirementPanel ? newRequirementPanel.querySelector('iframe') : null;
 
     function openNewRequirement() {
-        if (!newRequirementOverlay || !newRequirementPanel) return;
+        if (!newRequirementOverlay || !newRequirementPanel) {
+            console.error('New requirement overlay or panel not found');
+            return;
+        }
         newRequirementOverlay.classList.remove('hidden');
         requestAnimationFrame(() => {
             newRequirementPanel.classList.add('open');
         });
-        document.body.classList.add('overflow-hidden');
+        document.body.style.overflow = 'hidden';
     }
 
     function closeNewRequirement() {
@@ -1555,15 +1563,25 @@
                 newRequirementFrame.setAttribute('src', src || 'Qualification.html');
             }
         }, 300);
-        document.body.classList.remove('overflow-hidden');
+        document.body.style.overflow = '';
     }
 
     if (newRequirementBtn) {
-        newRequirementBtn.addEventListener('click', openNewRequirement);
+        newRequirementBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openNewRequirement();
+        });
+    } else {
+        console.error('New requirement button not found');
     }
 
     document.querySelectorAll('[data-close-new-requirement]').forEach(button => {
-        button.addEventListener('click', closeNewRequirement);
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeNewRequirement();
+        });
     });
 
     window.addEventListener('keydown', function(e) {
@@ -1571,6 +1589,26 @@
             closeNewRequirement();
         }
     });
+
+    // Drag and drop functionality placeholder
+    const cards = document.querySelectorAll('[id^="stage-"] .bg-stone, [id^="stage-"] .bg-blue-50, [id^="stage-"] .bg-purple-50, [id^="stage-"] .bg-indigo-50, [id^="stage-"] .bg-teal-50, [id^="stage-"] .bg-amber-50, [id^="stage-"] .bg-orange-50, [id^="stage-"] .bg-cyan-50, [id^="stage-"] .bg-emerald-50, [id^="stage-"] .bg-violet-50, [id^="stage-"] .bg-green-50, [id^="stage-"] .bg-red-50');
+    
+    cards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('button')) {
+                console.log('Card clicked:', this.querySelector('h4').textContent);
+            }
+        });
+    });
+
+    // Quick action buttons
+    document.querySelectorAll('[id^="stage-"] button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('Action:', this.textContent.trim());
+        });
+    });
+});
 </script>
 </body>
 </html>
