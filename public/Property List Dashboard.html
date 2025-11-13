@@ -1354,6 +1354,34 @@
 
 <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
 <script>
+// Define openPropertyDetails function before event listeners
+window.openPropertyDetails = function(row) {
+    const iframe = document.getElementById('property-details-iframe');
+    const content = document.getElementById('property-details-content');
+    const overlay = document.getElementById('property-details-overlay');
+    const panel = document.getElementById('property-details-panel');
+    
+    if (!iframe || !content || !overlay || !panel) {
+        console.error('Property details slide-over elements not found', { iframe, content, overlay, panel });
+        return;
+    }
+    
+    // Hide content placeholder, show iframe
+    content.style.display = 'none';
+    iframe.style.display = 'block';
+    
+    // Load the Properties Detailed Card page in the iframe
+    iframe.src = 'Properties Detailed Card.html';
+    
+    // Show overlay and panel
+    overlay.classList.remove('hidden');
+    panel.classList.add('open');
+    
+    // Highlight selected row
+    document.querySelectorAll('.property-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
+    row.classList.add('bg-primary', 'bg-opacity-10');
+};
+
 window.addEventListener('load', function() {
     try {
         const data = [{
@@ -1454,99 +1482,19 @@ window.addEventListener('load', function() {
         form.reset();
     });
     
-    // Property details slide-over functionality - use event delegation
-    const tableBody = document.querySelector('tbody');
-    if (tableBody) {
-        tableBody.addEventListener('click', function(e) {
-            // Find the closest property row
-            const row = e.target.closest('.property-row');
-            if (!row) return;
-            
-            // Don't open if clicking on interactive elements
-            const target = e.target;
-            const isCheckbox = target.type === 'checkbox' || target.closest('input[type="checkbox"]');
-            const isActionButton = target.closest('.row-actions-btn') || (target.tagName === 'BUTTON' && target.closest('td:last-child'));
-            
-            if (isCheckbox || isActionButton) {
+    // Property details slide-over functionality
+    document.querySelectorAll('.property-row').forEach(function(row) {
+        row.addEventListener('click', function(e) {
+            // Don't open if clicking on input, button, or inside a button
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
                 return;
-            }
-            
-            // Don't open if clicking in the checkbox cell (first td) or actions cell (last td)
-            const clickedCell = e.target.closest('td');
-            if (clickedCell) {
-                const allCells = Array.from(row.querySelectorAll('td'));
-                if (allCells.length > 0) {
-                    const firstCell = allCells[0];
-                    const lastCell = allCells[allCells.length - 1];
-                    
-                    if (clickedCell === firstCell || clickedCell === lastCell) {
-                        return;
-                    }
-                }
             }
             
             // Open the property details
-            e.preventDefault();
-            e.stopPropagation();
-            window.openPropertyDetails(row);
-        });
-    }
-    
-    // Also attach directly to rows as fallback
-    const propertyRows = document.querySelectorAll('.property-row');
-    propertyRows.forEach(row => {
-        row.addEventListener('click', function(e) {
-            // Only handle if event wasn't already handled by delegation
-            if (e.target.closest('input[type="checkbox"]') || e.target.closest('.row-actions-btn')) {
-                return;
-            }
-            
-            const clickedCell = e.target.closest('td');
-            if (clickedCell) {
-                const allCells = Array.from(row.querySelectorAll('td'));
-                if (allCells.length > 0) {
-                    const firstCell = allCells[0];
-                    const lastCell = allCells[allCells.length - 1];
-                    
-                    if (clickedCell === firstCell || clickedCell === lastCell) {
-                        return;
-                    }
-                }
-            }
-            
-            e.preventDefault();
-            e.stopPropagation();
             window.openPropertyDetails(row);
         });
     });
 });
-
-window.openPropertyDetails = function(row) {
-    const iframe = document.getElementById('property-details-iframe');
-    const content = document.getElementById('property-details-content');
-    const overlay = document.getElementById('property-details-overlay');
-    const panel = document.getElementById('property-details-panel');
-    
-    if (!iframe || !content || !overlay || !panel) {
-        console.error('Property details slide-over elements not found', { iframe, content, overlay, panel });
-        return;
-    }
-    
-    // Hide content placeholder, show iframe
-    content.style.display = 'none';
-    iframe.style.display = 'block';
-    
-    // Load the Properties Detailed Card page in the iframe
-    iframe.src = 'Properties Detailed Card.html';
-    
-    // Show overlay and panel
-    overlay.classList.remove('hidden');
-    panel.classList.add('open');
-    
-    // Highlight selected row
-    document.querySelectorAll('.property-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
-    row.classList.add('bg-primary', 'bg-opacity-10');
-};
 
 function closePropertyDetails() {
     const iframe = document.getElementById('property-details-iframe');
