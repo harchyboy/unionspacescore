@@ -306,17 +306,30 @@ export function DealOverview() {
       <header className="bg-white border-b border-[#8E8E8E]/30 sticky top-0 z-40">
         <div className="flex items-center justify-between px-8 py-4">
           <div className="flex items-center space-x-6">
-            <Link
-              to="/deals"
-              className="text-sm text-[#8E8E8E] hover:text-[#252525] flex items-center space-x-2"
+            <button
+              onClick={() => navigate('/deals')}
+              className="p-2 text-[#8E8E8E] hover:text-[#252525] transition-colors"
             >
-              <i className="fa-solid fa-arrow-left"></i>
-              <span>Back</span>
-            </Link>
+              <i className="fa-solid fa-arrow-left text-lg"></i>
+            </button>
             <div>
               <h1 className="text-2xl font-semibold text-[#252525]">Deal Details</h1>
               <p className="text-sm text-[#8E8E8E] mt-0.5">End-to-end view of this requirement</p>
             </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <button className="relative p-2 text-[#8E8E8E] hover:text-[#252525] transition-colors">
+              <i className="fa-regular fa-bell text-lg"></i>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#252525] rounded-full"></span>
+            </button>
+            <button className="p-2 text-[#8E8E8E] hover:text-[#252525] transition-colors">
+              <i className="fa-solid fa-magnifying-glass text-lg"></i>
+            </button>
+            <button className="px-4 py-2 text-sm text-[#252525] hover:bg-[#F0F0F0] rounded-lg transition-colors border border-[#8E8E8E]/30">
+              <i className="fa-solid fa-circle-question mr-2"></i>
+              Help
+            </button>
           </div>
         </div>
       </header>
