@@ -125,7 +125,7 @@
                 <span id="badge-visibility" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white" title="Visibility">Private</span>
               </div>
               <p class="text-secondary mb-4">99 Bishopsgate, London EC2M 3XD</p>
-              <div class="flex items-center space-x-6 text-sm mb-4">
+              <div class="flex flex-wrap items-center gap-6 text-sm mb-5">
                 <div class="flex items-center space-x-2">
                   <i class="fa-solid fa-building text-secondary" aria-hidden="true"></i>
                   <span class="text-primary"><strong id="summary-units">8</strong> Units</span>
@@ -139,30 +139,30 @@
                   <span class="text-primary">Updated <time datetime="2025-11-10T08:00:00Z">2 hours ago</time></span>
                 </div>
               </div>
-              <div class="grid grid-cols-3 gap-3 max-w-3xl">
-                <div class="p-3 bg-muted rounded-lg flex items-center justify-between" aria-live="polite">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-4xl">
+                <div class="p-5 bg-muted rounded-xl flex items-center justify-between min-w-[240px] shadow-sm" aria-live="polite">
                   <div>
                     <div class="text-xs text-secondary mb-1">Data Health</div>
-                    <div class="text-sm font-semibold text-primary"><span id="health-score">92%</span></div>
+                    <div class="text-base font-semibold text-primary"><span id="health-score">92%</span></div>
                   </div>
                   <button id="btn-health-details" class="text-xs text-primary underline hover:no-underline">View drivers</button>
                 </div>
-                <div class="p-3 bg-muted rounded-lg flex items-center justify-between">
+                <div class="p-5 bg-muted rounded-xl flex items-center justify-between min-w-[240px] gap-3 shadow-sm">
                   <div class="flex-1">
                     <div class="text-xs text-secondary mb-1">Valve Sync</div>
                     <div class="flex items-center space-x-2 mb-1">
-                      <span id="valve-state" class="inline-flex items-center px-2 py-0.5 rounded-full bg-primary text-white text-xs font-medium">Pushed</span>
+                      <span id="valve-state" class="inline-flex items-center px-2.5 py-1 rounded-full bg-primary text-white text-xs font-medium">Pushed</span>
                     </div>
                     <div class="text-xs text-secondary">Last sync <time datetime="2025-11-09T17:30:00Z">yesterday 17:30</time></div>
                   </div>
-                  <button id="btn-sync" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors ml-2">Sync now</button>
+                  <button id="btn-sync" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors">Sync now</button>
                 </div>
-                <div class="p-3 bg-muted rounded-lg flex items-center justify-between">
+                <div class="p-5 bg-muted rounded-xl flex items-center justify-between min-w-[240px] gap-3 shadow-sm">
                   <div>
                     <div class="text-xs text-secondary mb-1">Broker Set</div>
-                    <div class="text-sm font-semibold text-primary" id="broker-set-name">Private · 10 brokers</div>
+                    <div class="text-base font-semibold text-primary" id="broker-set-name">Private · 10 brokers</div>
                   </div>
-                  <button id="btn-broker-set" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors ml-2">Manage</button>
+                  <button id="btn-broker-set" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors">Manage</button>
                 </div>
               </div>
             </div>
