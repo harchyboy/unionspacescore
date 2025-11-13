@@ -1,12 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export function ProposalBuilder() {
+  const { id } = useParams<{ id: string }>();
   const proposals = [
     { id: 1, deal: 'Tech Hub London', company: 'TechCorp Ltd', status: 'Draft', created: '2024-01-10' },
     { id: 2, deal: 'Creative Space Manchester', company: 'Design Studio', status: 'Sent', created: '2024-01-08' },
     { id: 3, deal: 'Business Center Birmingham', company: 'Enterprise Inc', status: 'Draft', created: '2024-01-12' },
     { id: 4, deal: 'Innovation Lab Leeds', company: 'Startup Co', status: 'Under Review', created: '2024-01-09' },
   ];
+
+  const backLink = id ? `/deals/${id}` : '/deals';
+  const backLabel = id ? 'Deal Overview' : 'Pipeline';
 
   return (
     <div className="px-8 py-6">
@@ -17,17 +21,19 @@ export function ProposalBuilder() {
         </div>
         <div className="flex items-center space-x-3">
           <Link
-            to="/deals"
+            to={backLink}
             className="text-sm text-[#8e8e8e] hover:text-[#252525] flex items-center space-x-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            <span>Pipeline</span>
+            <span>{backLabel}</span>
           </Link>
-          <button className="bg-[#252525] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90">
-            New Proposal
-          </button>
+          {!id && (
+            <button className="bg-[#252525] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90">
+              New Proposal
+            </button>
+          )}
         </div>
       </div>
 

@@ -10,6 +10,8 @@ import { Qualification } from './pages/deals/Qualification';
 import { MatchingShortlist } from './pages/deals/MatchingShortlist';
 import { Viewings } from './pages/deals/Viewings';
 import { ProposalBuilder } from './pages/deals/ProposalBuilder';
+import { ProposalConfiguration } from './pages/deals/ProposalConfiguration';
+import { DealOverview } from './pages/deals/DealOverview';
 import { DecisionScreen } from './pages/deals/DecisionScreen';
 import { DealRoomSetup } from './pages/deals/DealRoomSetup';
 import { HeadsOfTerms } from './pages/deals/HeadsOfTerms';
@@ -57,6 +59,9 @@ function App() {
 
             {/* Deal Flow */}
             <Route path="/deals" element={<PipelineOverview />} />
+            <Route path="/deals/:id" element={<DealOverview />} />
+            <Route path="/deals/:id/proposal/configure" element={<ProposalConfiguration />} />
+            <Route path="/deals/:id/proposal/builder" element={<ProposalBuilder />} />
             <Route path="/deals/qualification" element={<Qualification />} />
             <Route path="/deals/matching" element={<MatchingShortlist />} />
             <Route path="/deals/viewings" element={<Viewings />} />
