@@ -70,7 +70,7 @@
       --shadow: -2px 4px 12px 4px rgba(51, 51, 51, 0.05);
     }
     ::-webkit-scrollbar { display: none; }
-    html, body { height: 100%; }
+    html, body { min-height: 100%; }
     body { font-family: var(--font-sans); background-color: #f0f0f0; color: #252525; }
     .transition-all-smooth { transition: all 0.2s ease-in-out; }
     .hover-lift:hover { transform: translateY(-2px); }
@@ -93,10 +93,10 @@
 </head>
 <body class="antialiased">
   <a href="#main-content" class="sr-only sr-only-focusable">Skip to content</a>
-  <div id="app-shell" class="flex h-screen overflow-hidden">
+  <div id="app-shell" class="flex min-h-screen">
     <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" aria-label="Primary" data-sidebar-placeholder data-active="properties"></aside>
 
-    <main id="main-content" class="flex-1 flex flex-col overflow-hidden" tabindex="-1">
+    <main id="main-content" class="flex-1 flex flex-col" tabindex="-1">
       <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-6 flex-1">
           <a href="Property List Dashboard.html" class="text-secondary hover:text-primary text-sm flex items-center space-x-2" aria-label="Back to Properties"><i class="fa-solid fa-arrow-left"></i><span>Back to Properties</span></a>
@@ -200,7 +200,7 @@
         </div>
       </section>
 
-      <div id="property-content" class="flex-1 overflow-y-auto bg-[#F0F0F0]">
+      <div id="property-content" class="flex-1 bg-[#F0F0F0]">
         <!-- Overview -->
         <section id="overview-section" class="px-8 py-6">
           <div class="grid grid-cols-3 gap-6 mb-6">
