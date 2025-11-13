@@ -78,8 +78,8 @@
         }
         /* Pipeline board - isolated horizontal scroll like an iframe */
         #pipeline-board {
-            overflow-x: auto;
-            overflow-y: hidden;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
             width: 100%;
             max-width: 100%;
             position: relative;
@@ -88,17 +88,28 @@
             scrollbar-color: #8E8E8E #F0F0F0;
             /* Prevent horizontal scroll from affecting page scroll */
             overscroll-behavior-x: contain;
+            /* Ensure scrollbar is always visible when content overflows */
+            scrollbar-gutter: stable;
+        }
+        /* Ensure parent containers don't clip overflow */
+        .flex-1.ml-64 {
+            overflow: visible;
         }
         #pipeline-board > .flex {
-            min-width: max-content;
-            width: max-content;
-            display: flex;
-            flex-wrap: nowrap;
+            min-width: max-content !important;
+            width: max-content !important;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            /* Ensure flex container doesn't shrink */
+            flex-shrink: 0;
         }
         /* Restore original fixed-width columns */
         #pipeline-board [id^="stage-"] {
-            flex-shrink: 0;
-            width: 20rem; /* w-80 = 320px */
+            flex-shrink: 0 !important;
+            flex-grow: 0 !important;
+            width: 20rem !important; /* w-80 = 320px */
+            min-width: 20rem !important;
+            max-width: 20rem !important;
         }
         /* Drag and drop styles */
         [draggable="true"] {
@@ -261,7 +272,7 @@
     </div> <!-- End pipeline-header-wrapper -->
 
     <div id="pipeline-board" class="py-6" style="padding-left: 2rem; padding-right: 2rem;">
-        <div class="flex space-x-4 pb-6">
+        <div class="flex space-x-4 pb-6" style="min-width: max-content; width: max-content; display: flex; flex-wrap: nowrap;">
             <div id="stage-intake" class="flex-shrink-0 w-80">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
