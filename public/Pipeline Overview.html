@@ -28,27 +28,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Custom scrollbar for pipeline board - always visible when content overflows */
-        #pipeline-board {
-            scrollbar-gutter: stable;
-        }
-        #pipeline-board::-webkit-scrollbar {
-            height: 14px;
-            display: block !important;
-        }
-        #pipeline-board::-webkit-scrollbar-track {
-            background: #F0F0F0;
-            border-radius: 7px;
-            margin: 0 2rem;
-        }
-        #pipeline-board::-webkit-scrollbar-thumb {
-            background: #8E8E8E;
-            border-radius: 7px;
-            border: 2px solid #F0F0F0;
-        }
-        #pipeline-board::-webkit-scrollbar-thumb:hover {
-            background: #252525;
-        }
+        /* Pipeline board - no horizontal scroll needed, all columns fit on screen */
         /* Hide scrollbars elsewhere */
         ::-webkit-scrollbar { 
             display: none; 
@@ -77,22 +57,24 @@
         #new-requirement-panel.open {
             transform: translateX(0);
         }
-        /* Pipeline board horizontal scroll */
+        /* Pipeline board - fit all columns on screen */
         #pipeline-board {
-            overflow-x: auto;
-            overflow-y: hidden;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-            scrollbar-color: #8E8E8E #F0F0F0;
+            overflow: visible;
             width: 100%;
             max-width: 100%;
             position: relative;
         }
         #pipeline-board > .flex {
-            min-width: max-content;
-            width: max-content;
+            width: 100%;
             display: flex;
             flex-wrap: nowrap;
+            gap: 1rem;
+        }
+        /* Make columns flexible to fit screen */
+        #pipeline-board [id^="stage-"] {
+            flex: 1 1 0;
+            min-width: 150px; /* Minimum width to keep columns readable while fitting all on screen */
+            max-width: 100%;
         }
         /* Drag and drop styles */
         [draggable="true"] {
@@ -255,8 +237,8 @@
     </div> <!-- End pipeline-header-wrapper -->
 
     <div id="pipeline-board" class="py-6" style="padding-left: 2rem; padding-right: 2rem;">
-        <div class="flex space-x-4 pb-6" style="min-width: fit-content;">
-            <div id="stage-intake" class="flex-shrink-0 w-80">
+        <div class="flex pb-6" style="width: 100%;">
+            <div id="stage-intake" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -369,7 +351,7 @@
                 </div>
             </div>
 
-            <div id="stage-qualified" class="flex-shrink-0 w-80">
+            <div id="stage-qualified" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -491,7 +473,7 @@
                 </div>
             </div>
 
-            <div id="stage-first-viewing" class="flex-shrink-0 w-80">
+            <div id="stage-first-viewing" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -613,7 +595,7 @@
                 </div>
             </div>
 
-            <div id="stage-second-viewing" class="flex-shrink-0 w-80">
+            <div id="stage-second-viewing" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -709,7 +691,7 @@
                 </div>
             </div>
 
-            <div id="stage-final-viewing" class="flex-shrink-0 w-80">
+            <div id="stage-final-viewing" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -805,7 +787,7 @@
                 </div>
             </div>
 
-            <div id="stage-proposal-sent" class="flex-shrink-0 w-80">
+            <div id="stage-proposal-sent" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -901,7 +883,7 @@
                 </div>
             </div>
 
-            <div id="stage-decision-pending" class="flex-shrink-0 w-80">
+            <div id="stage-decision-pending" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -997,7 +979,7 @@
                 </div>
             </div>
 
-            <div id="stage-deal-room-live" class="flex-shrink-0 w-80">
+            <div id="stage-deal-room-live" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -1089,7 +1071,7 @@
                 </div>
             </div>
 
-            <div id="stage-hots-in" class="flex-shrink-0 w-80">
+            <div id="stage-hots-in" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -1185,7 +1167,7 @@
                 </div>
             </div>
 
-            <div id="stage-legals" class="flex-shrink-0 w-80">
+            <div id="stage-legals" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -1281,7 +1263,7 @@
                 </div>
             </div>
 
-            <div id="stage-handoff" class="flex-shrink-0 w-80">
+            <div id="stage-handoff" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -1347,7 +1329,7 @@
                 </div>
             </div>
 
-            <div id="stage-won" class="flex-shrink-0 w-80">
+            <div id="stage-won" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -1428,7 +1410,7 @@
                 </div>
             </div>
 
-            <div id="stage-lost" class="flex-shrink-0 w-80">
+            <div id="stage-lost" class="flex-1 min-w-0">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
                         <div class="flex items-center">
@@ -1530,44 +1512,7 @@
 
 <script>
 window.addEventListener('load', function() {
-    // Enable horizontal scroll with mouse wheel
-    const pipelineBoard = document.getElementById('pipeline-board');
-    const scrollContainer = pipelineBoard.querySelector('.flex.space-x-4');
-    const columnBodies = pipelineBoard.querySelectorAll('[id^="stage-"] .flex-1');
-    
-    if (scrollContainer && pipelineBoard) {
-        // Ensure the board can scroll horizontally
-        console.log('Pipeline board setup:', {
-            scrollWidth: pipelineBoard.scrollWidth,
-            clientWidth: pipelineBoard.clientWidth,
-            canScroll: pipelineBoard.scrollWidth > pipelineBoard.clientWidth
-        });
-        
-        // Horizontal scroll with mouse wheel on the board container
-        pipelineBoard.addEventListener('wheel', function(e) {
-            // Check if content is wider than container
-            if (pipelineBoard.scrollWidth > pipelineBoard.clientWidth) {
-                // Allow vertical scroll to work as horizontal scroll when hovering over board
-                if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
-                    // Vertical scroll detected, convert to horizontal
-                    if (!e.shiftKey) {
-                        e.preventDefault();
-                        pipelineBoard.scrollLeft += e.deltaY;
-                    }
-                }
-            }
-        }, { passive: false });
-
-        // Shift + wheel to scroll horizontally when inside columns
-        columnBodies.forEach(body => {
-            body.addEventListener('wheel', function(e) {
-                if (e.shiftKey && pipelineBoard.scrollWidth > pipelineBoard.clientWidth) {
-                    e.preventDefault();
-                    pipelineBoard.scrollLeft += e.deltaY;
-                }
-            }, { passive: false });
-        });
-    }
+    // Pipeline board columns now fit on screen - no horizontal scrolling needed
 
     // New Requirement slide-over functionality
     const newRequirementBtn = document.getElementById('new-requirement-btn');
