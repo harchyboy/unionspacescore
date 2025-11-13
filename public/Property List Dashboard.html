@@ -1356,10 +1356,13 @@
 <script>
 // Define openPropertyDetails function before event listeners
 window.openPropertyDetails = function(row) {
+    console.log('openPropertyDetails called', row);
     const iframe = document.getElementById('property-details-iframe');
     const content = document.getElementById('property-details-content');
     const overlay = document.getElementById('property-details-overlay');
     const panel = document.getElementById('property-details-panel');
+    
+    console.log('Elements found:', { iframe: !!iframe, content: !!content, overlay: !!overlay, panel: !!panel });
     
     if (!iframe || !content || !overlay || !panel) {
         console.error('Property details slide-over elements not found', { iframe, content, overlay, panel });
@@ -1376,6 +1379,9 @@ window.openPropertyDetails = function(row) {
     // Show overlay and panel
     overlay.classList.remove('hidden');
     panel.classList.add('open');
+    
+    console.log('Panel classes after opening:', panel.className);
+    console.log('Overlay classes after opening:', overlay.className);
     
     // Highlight selected row
     document.querySelectorAll('.property-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
@@ -1490,8 +1496,20 @@ window.addEventListener('load', function() {
                 return;
             }
             
+            // Prevent default behavior and stop propagation
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            
             // Open the property details
-            window.openPropertyDetails(row);
+            console.log('Property row clicked, opening details');
+            if (window.openPropertyDetails) {
+                window.openPropertyDetails(row);
+            } else {
+                console.error('openPropertyDetails function not found');
+            }
+            
+            return false;
         });
     });
 });
