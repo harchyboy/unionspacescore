@@ -195,6 +195,32 @@
         .slide-over.open {
             transform: translateX(0);
         }
+        
+        .field-group {
+            opacity: 0;
+            animation: fadeInUp 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .field-group:nth-child(1) { animation-delay: 0.05s; }
+        .field-group:nth-child(2) { animation-delay: 0.1s; }
+        .field-group:nth-child(3) { animation-delay: 0.15s; }
+        .field-group:nth-child(4) { animation-delay: 0.2s; }
+        .field-group:nth-child(5) { animation-delay: 0.25s; }
+        .field-group:nth-child(6) { animation-delay: 0.3s; }
+        .field-group:nth-child(7) { animation-delay: 0.35s; }
+        .field-group:nth-child(8) { animation-delay: 0.4s; }
+        .field-group:nth-child(9) { animation-delay: 0.45s; }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -231,10 +257,10 @@
                     <h1 class="text-3xl font-semibold text-primary mb-2">Suppliers</h1>
                     <p class="text-secondary text-sm">End-to-end vendor management with onboarding, SLAs, and performance tracking</p>
                 </div>
-                <a id="add-supplier-btn" href="Suppliers Adding Card.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                <button id="add-supplier-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add Supplier</span>
-                </a>
+                </button>
             </div>
             
             <div class="flex items-center space-x-4 mt-6">
@@ -839,187 +865,237 @@
     </div>
 </div>
 
-<div id="add-supplier-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-primary">Add Supplier</h2>
-            <button id="close-modal" class="text-secondary hover:text-primary">
-                <i class="fa-solid fa-times text-xl"></i>
-            </button>
+<div id="add-supplier-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+    <div class="min-h-screen bg-[#F0F0F0]">
+        <div class="bg-white border-b border-[#E6E6E6] px-8 py-4 sticky top-0 z-10">
+            <div class="max-w-4xl mx-auto flex items-center justify-between">
+                <button id="back-button" class="flex items-center space-x-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="text-sm font-medium">Back to Suppliers</span>
+                </button>
+                <button id="close-modal" class="text-secondary hover:text-primary p-2">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
         </div>
         
-        <div class="p-6">
-            <div class="mb-6">
-                <p class="text-sm text-secondary">Onboard a new service provider with contract details, SLA baselines, and compliance documentation.</p>
+        <div class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl font-semibold text-primary mb-2">Add Supplier</h1>
+                <p class="text-secondary text-sm">Onboard a new service provider with contract details, SLA baselines, and compliance documentation.</p>
             </div>
-            
-            <form id="add-supplier-form" class="space-y-6">
-                <div class="border-b border-[#E6E6E6] pb-6">
-                    <h3 class="text-lg font-semibold text-primary mb-4">Supplier Details</h3>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-primary mb-2">Supplier Name (Company) <span class="text-destructive">*</span></label>
-                        <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Thirdway AV">
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Category <span class="text-destructive">*</span></label>
-                            <select required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
-                                <option value="">Select category</option>
-                                <option>Cleaning</option>
-                                <option>AV & Tech</option>
-                                <option>IT Support</option>
-                                <option>Repairs & Maintenance</option>
-                                <option>Plants & Landscaping</option>
-                                <option>Coffee & Catering</option>
-                                <option>Furniture</option>
-                                <option>Utilities</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Coverage Areas <span class="text-destructive">*</span></label>
-                            <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Central London, EC1, EC2">
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-primary mb-2">Operating Hours</label>
-                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Mon-Fri 9am-6pm, 24/7 emergency">
-                    </div>
-                </div>
-                
-                <div class="border-b border-[#E6E6E6] pb-6">
-                    <h3 class="text-lg font-semibold text-primary mb-4">Rate Card & Lead Times</h3>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Base Rate (per hour)</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                <input type="number" class="w-full pl-8 pr-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0.00">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Call-Out Fee</label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                <input type="number" class="w-full pl-8 pr-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="0.00">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-primary mb-2">Lead Times</label>
-                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Standard: 24hrs, Emergency: 2hrs">
-                    </div>
-                </div>
-                
-                <div class="border-b border-[#E6E6E6] pb-6">
-                    <h3 class="text-lg font-semibold text-primary mb-4">Primary Contact</h3>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Contact Name <span class="text-destructive">*</span></label>
-                            <input type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Ben Taylor">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Job Title</label>
-                            <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Account Manager">
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Email <span class="text-destructive">*</span></label>
-                            <input type="email" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="contact@supplier.com">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Phone <span class="text-destructive">*</span></label>
-                            <input type="tel" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="+44 20 1234 5678">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="border-b border-[#E6E6E6] pb-6">
-                    <h3 class="text-lg font-semibold text-primary mb-4">Contract & SLA</h3>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Contract Status <span class="text-destructive">*</span></label>
-                            <select required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
-                                <option value="">Select status</option>
-                                <option>None</option>
-                                <option>Trial</option>
-                                <option>Active</option>
-                                <option>Suspended</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Renewal Date</label>
-                            <input type="date" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-primary mb-2">SLA Baseline</label>
-                        <textarea class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary h-24" placeholder="e.g., Response: 2 hours, Resolution: 24 hours for standard requests"></textarea>
-                        <p class="text-xs text-secondary mt-1">Define response and resolution targets per category</p>
-                    </div>
-                </div>
-                
-                <div class="pb-2">
-                    <h3 class="text-lg font-semibold text-primary mb-4">Compliance Documents</h3>
-                    
-                    <div class="space-y-3">
-                        <div class="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all-smooth cursor-pointer">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-file-upload text-primary"></i>
-                                <div class="flex-1">
-                                    <div class="text-sm font-medium text-primary">Insurance Certificate</div>
-                                    <div class="text-xs text-secondary">Public liability, employer's liability</div>
-                                </div>
-                                <input type="file" class="hidden" id="insurance-upload">
-                                <label for="insurance-upload" class="text-xs text-primary hover:underline cursor-pointer">Upload</label>
-                            </div>
-                        </div>
-                        
-                        <div class="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all-smooth cursor-pointer">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-file-upload text-primary"></i>
-                                <div class="flex-1">
-                                    <div class="text-sm font-medium text-primary">RAMS Documents</div>
-                                    <div class="text-xs text-secondary">Risk assessment & method statements</div>
-                                </div>
-                                <input type="file" class="hidden" id="rams-upload">
-                                <label for="rams-upload" class="text-xs text-primary hover:underline cursor-pointer">Upload</label>
-                            </div>
-                        </div>
-                        
-                        <div class="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all-smooth cursor-pointer">
-                            <div class="flex items-center space-x-3">
-                                <i class="fa-solid fa-file-upload text-primary"></i>
-                                <div class="flex-1">
-                                    <div class="text-sm font-medium text-primary">Accreditations</div>
-                                    <div class="text-xs text-secondary">Industry certifications & memberships</div>
-                                </div>
-                                <input type="file" class="hidden" id="accred-upload">
-                                <label for="accred-upload" class="text-xs text-primary hover:underline cursor-pointer">Upload</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-3 pt-4 border-t border-[#E6E6E6]">
-                    <button type="submit" class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth">
-                        Add Supplier
-                    </button>
-                    <button type="button" id="cancel-modal" class="flex-1 border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
-                        Cancel
-                    </button>
-                </div>
-            </form>
         </div>
+        
+        <div class="px-8 py-8">
+            <div class="max-w-4xl mx-auto">
+                <form id="add-supplier-form" class="space-y-8">
+                    <div id="supplier-details-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Supplier Details</h2>
+                            <p class="text-sm text-secondary">Basic supplier information</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Supplier Name (Company) <span class="text-destructive">*</span></label>
+                                <input type="text" name="supplier_name" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Thirdway AV">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Category <span class="text-destructive">*</span></label>
+                                    <select name="category" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth appearance-none">
+                                        <option value="">Select category</option>
+                                        <option value="cleaning">Cleaning</option>
+                                        <option value="av-tech">AV & Tech</option>
+                                        <option value="it-support">IT Support</option>
+                                        <option value="repairs-maintenance">Repairs & Maintenance</option>
+                                        <option value="plants-landscaping">Plants & Landscaping</option>
+                                        <option value="coffee-catering">Coffee & Catering</option>
+                                        <option value="furniture">Furniture</option>
+                                        <option value="utilities">Utilities</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Coverage Areas <span class="text-destructive">*</span></label>
+                                    <input type="text" name="coverage_areas" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Central London, EC1, EC2">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Operating Hours</label>
+                                <input type="text" name="operating_hours" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Mon-Fri 9am-6pm, 24/7 emergency">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Description</label>
+                                <textarea name="description" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="Brief description of services provided"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="rate-card-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Rate Card & Lead Times</h2>
+                            <p class="text-sm text-secondary">Pricing and service timelines</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Base Rate (per hour)</label>
+                                    <div class="relative">
+                                        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
+                                        <input type="number" name="base_rate" step="0.01" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="0.00">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Call-Out Fee</label>
+                                    <div class="relative">
+                                        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
+                                        <input type="number" name="callout_fee" step="0.01" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="0.00">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">Lead Times</label>
+                                <input type="text" name="lead_times" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Standard: 24hrs, Emergency: 2hrs">
+                                <p class="text-xs text-secondary mt-2">Specify standard and emergency response times</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="primary-contact-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Primary Contact</h2>
+                            <p class="text-sm text-secondary">Main point of contact for this supplier</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Contact Name <span class="text-destructive">*</span></label>
+                                    <input type="text" name="contact_name" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Ben Taylor">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Job Title</label>
+                                    <input type="text" name="contact_title" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Account Manager">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Email <span class="text-destructive">*</span></label>
+                                    <input type="email" name="contact_email" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="contact@supplier.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Phone <span class="text-destructive">*</span></label>
+                                    <input type="tel" name="contact_phone" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="+44 20 1234 5678">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="contract-sla-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Contract & SLA</h2>
+                            <p class="text-sm text-secondary">Contract status and service level agreements</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Contract Status <span class="text-destructive">*</span></label>
+                                    <select name="contract_status" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth appearance-none">
+                                        <option value="">Select status</option>
+                                        <option value="none">None</option>
+                                        <option value="trial">Trial</option>
+                                        <option value="active">Active</option>
+                                        <option value="suspended">Suspended</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-primary mb-2">Renewal Date</label>
+                                    <input type="date" name="renewal_date" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-primary mb-2">SLA Baseline</label>
+                                <textarea name="sla_baseline" rows="4" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Response: 2 hours, Resolution: 24 hours for standard requests"></textarea>
+                                <p class="text-xs text-secondary mt-2">Define response and resolution targets per category</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="compliance-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 field-group">
+                        <div class="mb-6">
+                            <h2 class="text-lg font-semibold text-primary mb-1">Compliance Documents</h2>
+                            <p class="text-sm text-secondary">Required documentation for supplier onboarding</p>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all-smooth cursor-pointer">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-file-upload text-primary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-medium text-primary">Insurance Certificate</div>
+                                        <div class="text-xs text-secondary">Public liability, employer's liability</div>
+                                    </div>
+                                    <input type="file" class="hidden" id="insurance-upload" name="insurance_cert">
+                                    <label for="insurance-upload" class="text-xs text-primary hover:underline cursor-pointer">Upload</label>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all-smooth cursor-pointer">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-file-upload text-primary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-medium text-primary">RAMS Documents</div>
+                                        <div class="text-xs text-secondary">Risk assessment & method statements</div>
+                                    </div>
+                                    <input type="file" class="hidden" id="rams-upload" name="rams_docs">
+                                    <label for="rams-upload" class="text-xs text-primary hover:underline cursor-pointer">Upload</label>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all-smooth cursor-pointer">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-file-upload text-primary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-medium text-primary">Accreditations</div>
+                                        <div class="text-xs text-secondary">Industry certifications & memberships</div>
+                                    </div>
+                                    <input type="file" class="hidden" id="accred-upload" name="accreditations">
+                                    <label for="accred-upload" class="text-xs text-primary hover:underline cursor-pointer">Upload</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="form-actions" class="flex items-center justify-between pt-6 field-group">
+                        <button type="button" id="cancel-button" class="px-8 py-3 border-2 border-[#E6E6E6] text-primary rounded-lg font-semibold hover:bg-muted transition-all-smooth">
+                            Cancel
+                        </button>
+                        <div class="flex items-center space-x-4">
+                            <button type="button" id="save-draft-button" class="px-8 py-3 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-muted transition-all-smooth">
+                                Save Draft
+                            </button>
+                            <button type="submit" class="px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                                <span>Add Supplier</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="success-toast" class="hidden fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50">
+    <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+        <i class="fa-solid fa-check text-white"></i>
+    </div>
+    <div>
+        <div class="font-semibold">Supplier added successfully</div>
+        <div class="text-xs opacity-90">Record created and ready to use</div>
     </div>
 </div>
 
@@ -1347,7 +1423,9 @@ function showSupplierDetails(row) {
     `;
     
     document.getElementById('supplier-details-overlay').classList.remove('hidden');
-    document.getElementById('supplier-details-panel').classList.add('open');
+    const panel = document.getElementById('supplier-details-panel');
+    panel.classList.add('open');
+    panel.style.transform = 'translateX(0)'; // Reset transform when opening
     
     // Highlight selected row
     document.querySelectorAll('.supplier-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
@@ -1356,9 +1434,190 @@ function showSupplierDetails(row) {
 
 function closeSupplierDetails() {
     document.getElementById('supplier-details-overlay').classList.add('hidden');
-    document.getElementById('supplier-details-panel').classList.remove('open');
+    const panel = document.getElementById('supplier-details-panel');
+    panel.classList.remove('open');
+    panel.style.transform = ''; // Reset transform when closing
     document.querySelectorAll('.supplier-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
 }
+
+// Swipe functionality for slide-over panel
+(function() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    let isDragging = false;
+    let currentTranslate = 0;
+    
+    const panel = document.getElementById('supplier-details-panel');
+    if (!panel) return;
+    
+    panel.addEventListener('touchstart', function(e) {
+        if (!panel.classList.contains('open')) return;
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+        isDragging = false;
+        currentTranslate = 0;
+    });
+    
+    panel.addEventListener('touchmove', function(e) {
+        if (!panel.classList.contains('open')) return;
+        
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = Math.abs(touchEndY - touchStartY);
+        
+        // Only allow horizontal swipe if it's more horizontal than vertical
+        // and if we're swiping right (to close)
+        if (!isDragging && Math.abs(deltaX) > 10 && Math.abs(deltaX) > deltaY && deltaX > 0) {
+            isDragging = true;
+            panel.style.transition = 'none';
+        }
+        
+        if (isDragging && deltaX > 0) {
+            currentTranslate = deltaX;
+            panel.style.transform = `translateX(${currentTranslate}px)`;
+            e.preventDefault();
+        }
+    });
+    
+    panel.addEventListener('touchend', function(e) {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        panel.style.transition = 'transform 0.3s ease-in-out';
+        
+        // If swiped more than 100px to the right, close the panel
+        if (currentTranslate > 100) {
+            closeSupplierDetails();
+        } else {
+            // Otherwise, snap back
+            panel.style.transform = 'translateX(0)';
+        }
+        
+        currentTranslate = 0;
+    });
+    
+    // Also handle mouse drag for desktop
+    let mouseStartX = 0;
+    let mouseIsDown = false;
+    
+    panel.addEventListener('mousedown', function(e) {
+        if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input') || e.target.closest('select') || e.target.closest('textarea')) {
+            return;
+        }
+        mouseStartX = e.clientX;
+        mouseIsDown = true;
+        currentTranslate = 0;
+        panel.style.transition = 'none';
+        e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+        if (!mouseIsDown) return;
+        
+        const deltaX = e.clientX - mouseStartX;
+        
+        if (deltaX > 0) {
+            currentTranslate = deltaX;
+            panel.style.transform = `translateX(${currentTranslate}px)`;
+        }
+    });
+    
+    document.addEventListener('mouseup', function(e) {
+        if (!mouseIsDown) return;
+        
+        mouseIsDown = false;
+        panel.style.transition = 'transform 0.3s ease-in-out';
+        
+        // If dragged more than 100px to the right, close the panel
+        if (currentTranslate > 100) {
+            closeSupplierDetails();
+        } else {
+            // Otherwise, snap back
+            panel.style.transform = 'translateX(0)';
+        }
+    });
+})();
+
+    // Add Supplier Modal handlers
+    const addSupplierBtn = document.getElementById('add-supplier-btn');
+    const supplierModal = document.getElementById('add-supplier-modal');
+    const closeModal = document.getElementById('close-modal');
+    const backButton = document.getElementById('back-button');
+    const cancelButton = document.getElementById('cancel-button');
+    const saveDraftButton = document.getElementById('save-draft-button');
+    const supplierForm = document.getElementById('add-supplier-form');
+    const successToast = document.getElementById('success-toast');
+    
+    if (addSupplierBtn) {
+        addSupplierBtn.addEventListener('click', function() {
+            supplierModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    
+    function closeAddSupplierModal() {
+        supplierModal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    
+    if (closeModal) {
+        closeModal.addEventListener('click', closeAddSupplierModal);
+    }
+    
+    if (backButton) {
+        backButton.addEventListener('click', closeAddSupplierModal);
+    }
+    
+    if (cancelButton) {
+        cancelButton.addEventListener('click', function() {
+            if (confirm('Discard changes and return to suppliers list?')) {
+                closeAddSupplierModal();
+            }
+        });
+    }
+    
+    if (supplierModal) {
+        supplierModal.addEventListener('click', function(e) {
+            if (e.target === supplierModal) {
+                closeAddSupplierModal();
+            }
+        });
+    }
+    
+    if (supplierForm) {
+        supplierForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (successToast) {
+                successToast.classList.remove('hidden');
+            }
+            
+            setTimeout(function() {
+                if (successToast) {
+                    successToast.classList.add('hidden');
+                }
+                closeAddSupplierModal();
+                supplierForm.reset();
+            }, 2000);
+        });
+    }
+    
+    if (saveDraftButton) {
+        saveDraftButton.addEventListener('click', function() {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-secondary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+            toast.innerHTML = '<div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center"><i class="fa-solid fa-save text-white"></i></div><div><div class="font-semibold">Draft saved</div><div class="text-xs opacity-90">You can complete this later</div></div>';
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.remove();
+            }, 2500);
+        });
+    }
 </script>
 
 </body>
