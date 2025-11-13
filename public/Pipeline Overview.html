@@ -147,16 +147,59 @@
             </div>
             
             <div class="flex items-center space-x-4">
-                <button class="relative p-2 text-concrete hover:text-slate transition-colors">
-                    <i class="fa-regular fa-bell text-lg"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-slate rounded-full"></span>
+                <div class="relative">
+                    <div class="flex items-center border border-concrete/30 rounded-lg overflow-hidden">
+                        <a href="Pipeline Overview.html" class="flex items-center px-4 py-2 text-sm font-semibold transition-colors bg-slate text-white">
+                            <i class="fa-solid fa-table-columns mr-2"></i>
+                            Board View
+                        </a>
+                        <a href="Matching & Shortlist.html" class="flex items-center px-4 py-2 text-sm text-concrete hover:text-slate hover:bg-stone transition-colors">
+                            <i class="fa-solid fa-list-check mr-2"></i>
+                            Matching & Shortlist
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="h-8 w-px bg-concrete/30"></div>
+                
+                <div class="flex items-center space-x-2">
+                    <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors">
+                        <i class="fa-solid fa-sort mr-2"></i>
+                        Sorted by
+                        <span class="font-semibold text-slate ml-1">Stage</span>
+                    </button>
+                    
+                    <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                        <i class="fa-solid fa-filter mr-2"></i>
+                        Filter
+                    </button>
+                    
+                    <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                        <i class="fa-solid fa-user mr-2"></i>
+                        All Brokers
+                        <i class="fa-solid fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    
+                    <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                        <i class="fa-solid fa-building mr-2"></i>
+                        All Properties
+                        <i class="fa-solid fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i>
+                    Save View
                 </button>
-                <button class="p-2 text-concrete hover:text-slate transition-colors">
-                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors">
+                    <i class="fa-solid fa-download mr-2"></i>
+                    Export
                 </button>
-                <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
-                    <i class="fa-solid fa-circle-question mr-2"></i>
-                    Help
+                <button id="new-requirement-btn" class="px-4 py-2 bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors text-sm font-semibold">
+                    <i class="fa-solid fa-plus mr-2"></i>
+                    New Requirement
                 </button>
             </div>
         </div>
