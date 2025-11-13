@@ -1486,13 +1486,39 @@ window.addEventListener('load', function() {
             }
             
             // Open the property details
-            if (typeof openPropertyDetails === 'function') {
-                openPropertyDetails(row);
-            } else {
-                console.error('openPropertyDetails function not found');
-            }
+            e.preventDefault();
+            e.stopPropagation();
+            window.openPropertyDetails(row);
         });
     }
+    
+    // Also attach directly to rows as fallback
+    const propertyRows = document.querySelectorAll('.property-row');
+    propertyRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            // Only handle if event wasn't already handled by delegation
+            if (e.target.closest('input[type="checkbox"]') || e.target.closest('.row-actions-btn')) {
+                return;
+            }
+            
+            const clickedCell = e.target.closest('td');
+            if (clickedCell) {
+                const allCells = Array.from(row.querySelectorAll('td'));
+                if (allCells.length > 0) {
+                    const firstCell = allCells[0];
+                    const lastCell = allCells[allCells.length - 1];
+                    
+                    if (clickedCell === firstCell || clickedCell === lastCell) {
+                        return;
+                    }
+                }
+            }
+            
+            e.preventDefault();
+            e.stopPropagation();
+            window.openPropertyDetails(row);
+        });
+    });
 });
 
 window.openPropertyDetails = function(row) {
