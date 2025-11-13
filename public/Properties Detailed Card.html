@@ -139,30 +139,30 @@
                   <span class="text-primary">Updated <time datetime="2025-11-10T08:00:00Z">2 hours ago</time></span>
                 </div>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-4xl items-start">
-                <div class="p-5 bg-muted rounded-xl flex items-start justify-between min-w-[240px] shadow-sm" aria-live="polite">
-                  <div class="flex-1">
+              <div class="flex flex-wrap gap-6 max-w-4xl">
+                <div class="flex flex-col justify-between w-[260px] bg-muted rounded-xl shadow-sm p-5" aria-live="polite">
+                  <div>
                     <div class="text-xs text-secondary mb-1">Data Health</div>
                     <div class="text-base font-semibold text-primary"><span id="health-score">92%</span></div>
                   </div>
-                  <button id="btn-health-details" class="text-xs text-primary underline hover:no-underline ml-3 flex-shrink-0">View drivers</button>
+                  <button id="btn-health-details" class="text-xs text-primary underline hover:no-underline self-start mt-4">View drivers</button>
                 </div>
-                <div class="p-5 bg-muted rounded-xl flex items-start justify-between min-w-[240px] gap-3 shadow-sm">
-                  <div class="flex-1 min-w-0">
+                <div class="flex flex-col justify-between w-[260px] bg-muted rounded-xl shadow-sm p-5">
+                  <div>
                     <div class="text-xs text-secondary mb-1">Valve Sync</div>
-                    <div class="flex items-center space-x-2 mb-1">
+                    <div class="flex items-center space-x-2 mb-2">
                       <span id="valve-state" class="inline-flex items-center px-2.5 py-1 rounded-full bg-primary text-white text-xs font-medium">Pushed</span>
                     </div>
-                    <div class="text-xs text-secondary">Last sync <time datetime="2025-11-09T17:30:00Z">yesterday 17:30</time></div>
+                    <div class="text-xs text-secondary leading-snug">Last sync <time datetime="2025-11-09T17:30:00Z">yesterday 17:30</time></div>
                   </div>
-                  <button id="btn-sync" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors flex-shrink-0">Sync now</button>
+                  <button id="btn-sync" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors mt-4 self-start">Sync now</button>
                 </div>
-                <div class="p-5 bg-muted rounded-xl flex items-start justify-between min-w-[240px] gap-3 shadow-sm">
-                  <div class="flex-1">
+                <div class="flex flex-col justify-between w-[260px] bg-muted rounded-xl shadow-sm p-5">
+                  <div>
                     <div class="text-xs text-secondary mb-1">Broker Set</div>
                     <div class="text-base font-semibold text-primary" id="broker-set-name">Private · 10 brokers</div>
                   </div>
-                  <button id="btn-broker-set" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors flex-shrink-0">Manage</button>
+                  <button id="btn-broker-set" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors mt-4 self-start">Manage</button>
                 </div>
               </div>
             </div>
