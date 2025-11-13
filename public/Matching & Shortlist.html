@@ -27,7 +27,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>::-webkit-scrollbar { display: none;}</style>
+    <style>::-webkit-scrollbar { display: none;}
+        body.embedded #sidebar,
+        body.embedded #pipeline-controls,
+        body.embedded #status-bar,
+        body.embedded #footer,
+        body.embedded #help-button,
+        body.embedded header#header {
+            display: none;
+        }
+        body.embedded #main-content {
+            margin-left: 0;
+        }
+    </style>
 </head>
 <body class="bg-stone font-haltung">
 
@@ -1234,6 +1246,12 @@
         <i class="fa-solid fa-circle-question text-xl"></i>
     </button>
 </div>
+
+<script>
+    if (window.self !== window.top) {
+        document.body.classList.add('embedded');
+    }
+</script>
 
 </body>
 </html>
