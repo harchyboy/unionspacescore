@@ -35,6 +35,22 @@
         #new-requirement-panel.open {
             transform: translateX(0);
         }
+        /* Drag and drop styles */
+        [draggable="true"] {
+            cursor: move;
+            user-select: none;
+        }
+        [draggable="true"]:active {
+            cursor: grabbing;
+        }
+        .drag-over {
+            border: 2px solid #252525 !important;
+            background-color: rgba(37, 37, 37, 0.05) !important;
+        }
+        .dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
     </style>
 </head>
 <body class="bg-stone font-haltung">
@@ -1590,16 +1606,144 @@ window.addEventListener('load', function() {
         }
     });
 
-    // Drag and drop functionality placeholder
+    // Drag and drop functionality
+    let draggedCard = null;
+    let draggedFromStage = null;
+    
+    // Get all stage columns (drop zones)
+    const stageColumns = document.querySelectorAll('[id^="stage-"]');
+    const stageContainers = document.querySelectorAll('[id^="stage-"] .flex-1.overflow-y-auto');
+    
+    // Get all cards
     const cards = document.querySelectorAll('[id^="stage-"] .bg-stone, [id^="stage-"] .bg-blue-50, [id^="stage-"] .bg-purple-50, [id^="stage-"] .bg-indigo-50, [id^="stage-"] .bg-teal-50, [id^="stage-"] .bg-amber-50, [id^="stage-"] .bg-orange-50, [id^="stage-"] .bg-cyan-50, [id^="stage-"] .bg-emerald-50, [id^="stage-"] .bg-violet-50, [id^="stage-"] .bg-green-50, [id^="stage-"] .bg-red-50');
     
+    // Make cards draggable
     cards.forEach(card => {
+        card.setAttribute('draggable', 'true');
+        card.classList.add('cursor-move');
+        
+        // Drag start
+        card.addEventListener('dragstart', function(e) {
+            draggedCard = this;
+            draggedFromStage = this.closest('[id^="stage-"]');
+            this.style.opacity = '0.5';
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        });
+        
+        // Drag end
+        card.addEventListener('dragend', function(e) {
+            this.style.opacity = '1';
+            this.classList.remove('dragging');
+            // Remove drag-over classes from all columns
+            stageContainers.forEach(container => {
+                container.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            });
+        });
+        
+        // Click handler (for card details)
         card.addEventListener('click', function(e) {
-            if (!e.target.closest('button')) {
+            if (!e.target.closest('button') && e.type !== 'dragstart') {
                 console.log('Card clicked:', this.querySelector('h4').textContent);
             }
         });
     });
+    
+    // Make stage containers drop zones
+    stageContainers.forEach(container => {
+        let dragOverCounter = 0;
+        
+        container.addEventListener('dragover', function(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            dragOverCounter++;
+            return false;
+        });
+        
+        container.addEventListener('dragenter', function(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            dragOverCounter++;
+            this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            return false;
+        });
+        
+        container.addEventListener('dragleave', function(e) {
+            dragOverCounter--;
+            // Only remove class if we've left the container (not just a child element)
+            if (dragOverCounter === 0) {
+                this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            }
+        });
+        
+        container.addEventListener('drop', function(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            
+            dragOverCounter = 0;
+            this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            
+            if (draggedCard && draggedCard !== null) {
+                const targetStage = this.closest('[id^="stage-"]');
+                
+                // Only move if dropping in a different stage
+                if (targetStage && targetStage !== draggedFromStage) {
+                    // Remove from old stage
+                    draggedCard.remove();
+                    
+                    // Add to new stage
+                    this.appendChild(draggedCard);
+                    
+                    // Update card counts
+                    updateCardCounts();
+                    
+                    // Show success feedback
+                    showDragFeedback('Card moved successfully');
+                } else if (targetStage === draggedFromStage) {
+                    // Same stage - just reset visual state
+                    showDragFeedback('Card returned to original position');
+                }
+            }
+            
+            return false;
+        });
+    });
+    
+    // Function to update card counts in stage headers
+    function updateCardCounts() {
+        stageColumns.forEach(stage => {
+            const stageId = stage.id;
+            const container = stage.querySelector('.flex-1.overflow-y-auto');
+            const countElement = stage.querySelector('.text-xs.text-concrete');
+            
+            if (container && countElement) {
+                const cardCount = container.querySelectorAll('.bg-stone, .bg-blue-50, .bg-purple-50, .bg-indigo-50, .bg-teal-50, .bg-amber-50, .bg-orange-50, .bg-cyan-50, .bg-emerald-50, .bg-violet-50, .bg-green-50, .bg-red-50').length;
+                countElement.textContent = countElement.textContent.replace(/\d+/, cardCount);
+            }
+        });
+    }
+    
+    // Function to show drag feedback
+    function showDragFeedback(message) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-8 right-8 bg-slate text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 z-50 transition-all';
+        toast.innerHTML = `<i class="fa-solid fa-check-circle"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
 
     // Quick action buttons
     document.querySelectorAll('[id^="stage-"] button').forEach(button => {
