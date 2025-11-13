@@ -27,6 +27,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>::-webkit-scrollbar { display: none;}</style>
+    <style>::-webkit-scrollbar { display: none;}
+        #new-requirement-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        #new-requirement-panel.open {
+            transform: translateX(0);
+        }
+    </style>
 </head>
 <body class="bg-stone font-haltung">
 
@@ -185,7 +194,7 @@
                     <i class="fa-solid fa-download mr-2"></i>
                     Export
                 </button>
-                <button class="px-4 py-2 bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors text-sm font-semibold">
+                <button id="new-requirement-btn" class="px-4 py-2 bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors text-sm font-semibold">
                     <i class="fa-solid fa-plus mr-2"></i>
                     New Requirement
                 </button>
@@ -1483,39 +1492,85 @@
     </div>
 </div>
 
+<div id="new-requirement-overlay" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/50" data-close-new-requirement></div>
+    <div id="new-requirement-panel" class="absolute inset-y-0 right-0 w-full max-w-6xl bg-white shadow-2xl flex flex-col">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-concrete/30">
+            <div class="flex items-center space-x-4">
+                <button class="text-concrete hover:text-slate transition-colors" data-close-new-requirement>
+                    <i class="fa-solid fa-arrow-left text-lg"></i>
+                </button>
+                <div>
+                    <h2 class="text-lg font-semibold text-slate">Add Requirement</h2>
+                    <p class="text-xs text-concrete">Capture new pipeline opportunities in seconds</p>
+                </div>
+            </div>
+            <button class="text-concrete hover:text-slate transition-colors" data-close-new-requirement>
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <iframe src="Qualification.html" class="flex-1 w-full h-full" title="Add Requirement"></iframe>
+    </div>
+</div>
+
 <script>
-window.addEventListener('load', function() {
-    // Enable horizontal scroll with mouse wheel
-    const pipelineBoard = document.getElementById('pipeline-board');
-    const scrollContainer = pipelineBoard.querySelector('.flex.space-x-4');
+    const columnBodies = pipelineBoard.querySelectorAll('[id^="stage-"] .flex-1');
     
     scrollContainer.addEventListener('wheel', function(e) {
-        if (e.deltaY !== 0) {
+        if (!e.shiftKey && e.deltaY !== 0) {
             e.preventDefault();
             scrollContainer.scrollLeft += e.deltaY;
         }
-    });
+    }, { passive: false });
 
-    // Drag and drop functionality placeholder
-    const cards = document.querySelectorAll('[id^="stage-"] .bg-stone, [id^="stage-"] .bg-blue-50, [id^="stage-"] .bg-purple-50, [id^="stage-"] .bg-indigo-50, [id^="stage-"] .bg-teal-50, [id^="stage-"] .bg-amber-50, [id^="stage-"] .bg-orange-50, [id^="stage-"] .bg-cyan-50, [id^="stage-"] .bg-emerald-50, [id^="stage-"] .bg-violet-50, [id^="stage-"] .bg-green-50, [id^="stage-"] .bg-red-50');
-    
-    cards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            if (!e.target.closest('button')) {
-                console.log('Card clicked:', this.querySelector('h4').textContent);
+    columnBodies.forEach(body => {
+        body.addEventListener('wheel', function(e) {
+            if (e.shiftKey) {
+                scrollContainer.scrollLeft += e.deltaY;
             }
-        });
+        }, { passive: true });
     });
 
-    // Quick action buttons
-    document.querySelectorAll('[id^="stage-"] button').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.stopPropagation();
-            console.log('Action:', this.textContent.trim());
+    const newRequirementBtn = document.getElementById('new-requirement-btn');
+    const newRequirementOverlay = document.getElementById('new-requirement-overlay');
+    const newRequirementPanel = document.getElementById('new-requirement-panel');
+    const newRequirementFrame = newRequirementPanel ? newRequirementPanel.querySelector('iframe') : null;
+
+    function openNewRequirement() {
+        if (!newRequirementOverlay || !newRequirementPanel) return;
+        newRequirementOverlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            newRequirementPanel.classList.add('open');
         });
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeNewRequirement() {
+        if (!newRequirementOverlay || !newRequirementPanel) return;
+        newRequirementPanel.classList.remove('open');
+        setTimeout(() => {
+            newRequirementOverlay.classList.add('hidden');
+            if (newRequirementFrame) {
+                const src = newRequirementFrame.getAttribute('src');
+                newRequirementFrame.setAttribute('src', src || 'Qualification.html');
+            }
+        }, 300);
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    if (newRequirementBtn) {
+        newRequirementBtn.addEventListener('click', openNewRequirement);
+    }
+
+    document.querySelectorAll('[data-close-new-requirement]').forEach(button => {
+        button.addEventListener('click', closeNewRequirement);
     });
-});
+
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && newRequirementPanel && newRequirementPanel.classList.contains('open')) {
+            closeNewRequirement();
+        }
+    });
 </script>
-
 </body>
 </html>
