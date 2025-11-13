@@ -4,6 +4,7 @@ interface TabsProps {
   children: ReactNode;
   defaultTab?: string;
   className?: string;
+  onTabChange?: (tab: string) => void;
 }
 
 interface TabsContextType {
@@ -13,11 +14,16 @@ interface TabsContextType {
 
 const TabsContext = React.createContext<TabsContextType | undefined>(undefined);
 
-export function Tabs({ children, defaultTab, className = '' }: TabsProps) {
+export function Tabs({ children, defaultTab, className = '', onTabChange }: TabsProps) {
   const [activeTab, setActiveTab] = useState(defaultTab || '');
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    onTabChange?.(tab);
+  };
+
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+    <TabsContext.Provider value={{ activeTab, setActiveTab: handleTabChange }}>
       <div className={className}>{children}</div>
     </TabsContext.Provider>
   );

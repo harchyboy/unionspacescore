@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 import type { Property } from '../../types/property';
 
 // Seed data: 99 Bishopsgate example
-const seedProperties: Property[] = [
+export const seedProperties: Property[] = [
   {
     id: '99-bishopsgate',
     name: '99 Bishopsgate',
@@ -158,6 +158,9 @@ export const propertyHandlers = [
     const search = url.searchParams.get('search')?.toLowerCase() || '';
     const marketingStatus = url.searchParams.get('marketingStatus') || '';
     const visibility = url.searchParams.get('visibility') || '';
+    const brokerSet = url.searchParams.get('brokerSet') || '';
+    const missingMedia = url.searchParams.get('missingMedia') === 'true';
+    const brokerReadyThisWeek = url.searchParams.get('brokerReadyThisWeek') === 'true';
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const limit = parseInt(url.searchParams.get('limit') || '10', 10);
     const sortBy = url.searchParams.get('sortBy') || 'updatedAt';
@@ -173,6 +176,11 @@ export const propertyHandlers = [
       if (visibility && p.marketing.visibility !== visibility) {
         return false;
       }
+      if (brokerSet && p.marketing.brokerSet !== brokerSet) {
+        return false;
+      }
+      // Note: missingMedia and brokerReadyThisWeek would need additional property fields to filter properly
+      // For now, we'll skip these filters in the mock
       return true;
     });
 
@@ -249,6 +257,66 @@ export const propertyHandlers = [
 
     properties.push(newProperty);
     return HttpResponse.json(newProperty, { status: 201 });
+  }),
+
+  // Bulk update properties
+  http.patch('/api/properties/bulk', async ({ request }) => {
+    const body = (await request.json()) as {
+      propertyIds: string[];
+      updates: {
+        visibility?: 'Private' | 'Public';
+        marketingStatus?: 'Draft' | 'Broker-Ready' | 'On Market';
+        brokerSet?: string;
+      };
+    };
+
+    let updated = 0;
+    const errors: string[] = [];
+
+    for (const id of body.propertyIds) {
+      const property = properties.find((p) => p.id === id);
+      if (property) {
+        if (body.updates.visibility) {
+          property.marketing.visibility = body.updates.visibility;
+        }
+        if (body.updates.marketingStatus) {
+          property.marketing.status = body.updates.marketingStatus;
+        }
+        if (body.updates.brokerSet !== undefined) {
+          property.marketing.brokerSet = body.updates.brokerSet;
+        }
+        property.updatedAt = new Date().toISOString();
+        updated++;
+      } else {
+        errors.push(`Property ${id} not found`);
+      }
+    }
+
+    return HttpResponse.json({ success: true, updated, errors: errors.length > 0 ? errors : undefined });
+  }),
+
+  // Bulk push to broker set
+  http.post('/api/properties/bulk/broker-set', async ({ request }) => {
+    const body = (await request.json()) as {
+      propertyIds: string[];
+      brokerSet: string;
+    };
+
+    let updated = 0;
+    const errors: string[] = [];
+
+    for (const id of body.propertyIds) {
+      const property = properties.find((p) => p.id === id);
+      if (property) {
+        property.marketing.brokerSet = body.brokerSet;
+        property.updatedAt = new Date().toISOString();
+        updated++;
+      } else {
+        errors.push(`Property ${id} not found`);
+      }
+    }
+
+    return HttpResponse.json({ success: true, updated, errors: errors.length > 0 ? errors : undefined });
   }),
 
   // Update property

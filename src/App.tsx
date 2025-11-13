@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
+import { MockStoreProvider } from './store/useMockStore';
 import { PropertiesList } from './pages/properties/List';
 import { PropertyDetails } from './pages/properties/Details';
 import { PropertyNew } from './pages/properties/New';
@@ -18,6 +19,9 @@ import { HeadsOfTerms } from './pages/deals/HeadsOfTerms';
 import { LegalsTracking } from './pages/deals/LegalsTracking';
 import { ProvisionalOrders } from './pages/deals/ProvisionalOrders';
 import { HandoffToOperations } from './pages/deals/HandoffToOperations';
+import { DealRoomSetupPage } from './pages/deals/DealRoomSetupPage';
+import { DealRoomHomePage } from './pages/deals/DealRoomHomePage';
+import { DealRoomGuard } from './pages/deals/DealRoomGuard';
 import { ContactsList } from './pages/contacts/List';
 import { ContactDetailsPage } from './pages/contacts/ContactDetailsPage';
 import { ContactNew } from './pages/contacts/New';
@@ -51,50 +55,74 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppShell>
-          <Routes>
-            {/* Dashboard */}
-            <Route path="/" element={<Tom />} />
+      <MockStoreProvider>
+        <BrowserRouter>
+          <AppShell>
+            <Routes>
+              {/* Dashboard */}
+              <Route path="/" element={<Tom />} />
 
-            {/* Deal Flow */}
-            <Route path="/deals" element={<PipelineOverview />} />
-            <Route path="/deals/:id" element={<DealOverview />} />
-            <Route path="/deals/:id/proposal/configure" element={<ProposalConfiguration />} />
-            <Route path="/deals/:id/proposal/builder" element={<ProposalBuilder />} />
-            <Route path="/deals/qualification" element={<Qualification />} />
-            <Route path="/deals/matching" element={<MatchingShortlist />} />
-            <Route path="/deals/viewings" element={<Viewings />} />
-            <Route path="/deals/proposal-builder" element={<ProposalBuilder />} />
-            <Route path="/deals/decision" element={<DecisionScreen />} />
-            <Route path="/deals/deal-room-setup" element={<DealRoomSetup />} />
-            <Route path="/deals/heads-of-terms" element={<HeadsOfTerms />} />
-            <Route path="/deals/legals" element={<LegalsTracking />} />
-            <Route path="/deals/provisional-orders" element={<ProvisionalOrders />} />
-            <Route path="/deals/handoff" element={<HandoffToOperations />} />
+              {/* Deal Flow */}
+              <Route path="/deals" element={<PipelineOverview />} />
+              <Route path="/deals/:id" element={<DealOverview />} />
+              <Route path="/deals/:id/proposal/configure" element={<ProposalConfiguration />} />
+              <Route path="/deals/:id/proposal/builder" element={<ProposalBuilder />} />
+              <Route path="/deals/:id/proposal" element={<ProposalBuilder />} />
+              <Route path="/deals/qualification" element={<Qualification />} />
+              <Route path="/deals/matching" element={<MatchingShortlist />} />
+              <Route path="/deals/viewings" element={<Viewings />} />
+              <Route path="/deals/proposal-builder" element={<ProposalBuilder />} />
+              <Route path="/deals/decision" element={<DecisionScreen />} />
+              <Route path="/deals/deal-room-setup" element={<DealRoomSetup />} />
+              <Route path="/deals/heads-of-terms" element={<HeadsOfTerms />} />
+              <Route path="/deals/legals" element={<LegalsTracking />} />
+              <Route path="/deals/provisional-orders" element={<ProvisionalOrders />} />
+              <Route path="/deals/handoff" element={<HandoffToOperations />} />
 
-            {/* Properties */}
-            <Route path="/properties" element={<PropertiesList />} />
-            <Route path="/properties/:id" element={<PropertyDetails />} />
-            <Route path="/properties/new" element={<PropertyNew />} />
+              {/* Deal Room Routes */}
+              <Route
+                path="/deals/:dealId/deal-room/setup"
+                element={
+                  <DealRoomGuard>
+                    <DealRoomSetupPage />
+                  </DealRoomGuard>
+                }
+              />
+              <Route
+                path="/deals/:dealId/deal-room"
+                element={
+                  <DealRoomGuard>
+                    <DealRoomHomePage />
+                  </DealRoomGuard>
+                }
+              />
 
-            {/* Units */}
-            <Route
-              path="/units"
-              element={<PlaceholderPage title="Units" description="Manage all units across properties" />}
-            />
+              {/* Properties */}
+              <Route path="/properties" element={<PropertiesList />} />
+              <Route path="/properties/:id" element={<PropertyDetails />} />
+              <Route path="/properties/new" element={<PropertyNew />} />
 
-            {/* Deal Room */}
-            <Route
-              path="/deal-room"
-              element={<PlaceholderPage title="Deal Room" description="Deal room management" />}
-            />
+              {/* Units */}
+              <Route
+                path="/units"
+                element={<PlaceholderPage title="Units" description="Manage all units across properties" />}
+              />
 
-            {/* Operations */}
-            <Route
-              path="/onboarding"
-              element={<PlaceholderPage title="Onboarding" description="Track new tenant onboarding" />}
-            />
+              {/* Deal Room */}
+              <Route
+                path="/deal-room"
+                element={<PlaceholderPage title="Deal Room" description="Deal room management" />}
+              />
+
+              {/* Operations */}
+              <Route
+                path="/deals/:dealId/onboarding"
+                element={<PlaceholderPage title="Onboarding" description="Track new tenant onboarding" />}
+              />
+              <Route
+                path="/onboarding"
+                element={<PlaceholderPage title="Onboarding" description="Track new tenant onboarding" />}
+              />
             <Route
               path="/services"
               element={<PlaceholderPage title="Services" description="Service management" />}
@@ -124,6 +152,7 @@ function App() {
           </Routes>
         </AppShell>
       </BrowserRouter>
+      </MockStoreProvider>
     </QueryClientProvider>
   );
 }

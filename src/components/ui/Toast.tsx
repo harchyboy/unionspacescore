@@ -39,7 +39,7 @@ export function Toast({ message, type = 'success', duration = 3000, onClose }: T
   );
 }
 
-interface ToastContainerProps {
+export interface ToastContainerProps {
   toasts: Array<{ id: string; message: string; type?: 'success' | 'error' | 'info' }>;
   onRemove: (id: string) => void;
 }

@@ -34,6 +34,10 @@ export interface Property {
     visibility: 'Private' | 'Public';
     status: 'Draft' | 'Broker-Ready' | 'On Market';
     fitOut: 'Shell' | 'Cat A' | 'Cat A+';
+    brokerSet?: string;
+    valveSyncStatus?: 'synced' | 'pending' | 'error';
+    valveSyncError?: string;
+    lastSyncedAt?: string;
   };
   compliance?: {
     epc?: { rating: string; ref?: string; issued?: string; expires?: string };

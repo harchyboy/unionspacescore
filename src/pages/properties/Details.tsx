@@ -11,6 +11,7 @@ import { AnalyticsTab } from './tabs/AnalyticsTab';
 import { ApprovalsTab } from './tabs/ApprovalsTab';
 import { RiskTab } from './tabs/RiskTab';
 import { DealRoomTab } from './tabs/DealRoomTab';
+import { MarketingTab } from './tabs/MarketingTab';
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
@@ -23,6 +24,7 @@ const TABS = [
   { id: 'approvals', label: 'Approvals' },
   { id: 'risk', label: 'Risk' },
   { id: 'deal-room', label: 'Deal Room' },
+  { id: 'marketing', label: 'Marketing' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -105,6 +107,7 @@ export function PropertyDetails() {
           {activeTab === 'approvals' && <ApprovalsTab property={property} />}
           {activeTab === 'risk' && <RiskTab property={property} />}
           {activeTab === 'deal-room' && <DealRoomTab property={property} />}
+          {activeTab === 'marketing' && <MarketingTab property={property} />}
         </div>
       </div>
     </div>
