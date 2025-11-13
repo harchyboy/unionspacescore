@@ -28,18 +28,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Custom scrollbar for pipeline board */
+        /* Custom scrollbar for pipeline board - always visible when content overflows */
+        #pipeline-board {
+            scrollbar-gutter: stable;
+        }
         #pipeline-board::-webkit-scrollbar {
-            height: 12px;
-            display: block;
+            height: 14px;
+            display: block !important;
         }
         #pipeline-board::-webkit-scrollbar-track {
             background: #F0F0F0;
-            border-radius: 6px;
+            border-radius: 7px;
+            margin: 0 2rem;
         }
         #pipeline-board::-webkit-scrollbar-thumb {
             background: #8E8E8E;
-            border-radius: 6px;
+            border-radius: 7px;
+            border: 2px solid #F0F0F0;
         }
         #pipeline-board::-webkit-scrollbar-thumb:hover {
             background: #252525;
@@ -79,10 +84,15 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: #8E8E8E #F0F0F0;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
         }
         #pipeline-board > .flex {
             min-width: max-content;
             width: max-content;
+            display: flex;
+            flex-wrap: nowrap;
         }
         /* Drag and drop styles */
         [draggable="true"] {
@@ -244,8 +254,8 @@
     </div>
     </div> <!-- End pipeline-header-wrapper -->
 
-    <div id="pipeline-board" class="px-8 py-6">
-        <div class="flex space-x-4 pb-6">
+    <div id="pipeline-board" class="py-6" style="padding-left: 2rem; padding-right: 2rem;">
+        <div class="flex space-x-4 pb-6" style="min-width: fit-content;">
             <div id="stage-intake" class="flex-shrink-0 w-80">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
@@ -1525,14 +1535,25 @@ window.addEventListener('load', function() {
     const scrollContainer = pipelineBoard.querySelector('.flex.space-x-4');
     const columnBodies = pipelineBoard.querySelectorAll('[id^="stage-"] .flex-1');
     
-    if (scrollContainer) {
+    if (scrollContainer && pipelineBoard) {
+        // Ensure the board can scroll horizontally
+        console.log('Pipeline board setup:', {
+            scrollWidth: pipelineBoard.scrollWidth,
+            clientWidth: pipelineBoard.clientWidth,
+            canScroll: pipelineBoard.scrollWidth > pipelineBoard.clientWidth
+        });
+        
         // Horizontal scroll with mouse wheel on the board container
         pipelineBoard.addEventListener('wheel', function(e) {
-            if (!e.shiftKey && e.deltaY !== 0) {
-                // Only prevent default if we're actually scrolling horizontally
-                if (pipelineBoard.scrollWidth > pipelineBoard.clientWidth) {
-                    e.preventDefault();
-                    pipelineBoard.scrollLeft += e.deltaY;
+            // Check if content is wider than container
+            if (pipelineBoard.scrollWidth > pipelineBoard.clientWidth) {
+                // Allow vertical scroll to work as horizontal scroll when hovering over board
+                if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) {
+                    // Vertical scroll detected, convert to horizontal
+                    if (!e.shiftKey) {
+                        e.preventDefault();
+                        pipelineBoard.scrollLeft += e.deltaY;
+                    }
                 }
             }
         }, { passive: false });
