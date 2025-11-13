@@ -78,6 +78,16 @@
     .tab-active { color: var(--primary); border-bottom-color: var(--primary); }
     .tab-inactive { color: var(--secondary); border-bottom-color: transparent; }
     .chip { @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium; }
+    
+    /* Hide sidebar and header when embedded in iframe */
+    body.embedded #sidebar,
+    body.embedded header#header {
+      display: none;
+    }
+    
+    body.embedded #main-content {
+      margin-left: 0;
+    }
   </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -622,7 +632,24 @@
     // Mock buttons
     document.getElementById('btn-sync')?.addEventListener('click', () => alert('Sync started'));
     document.getElementById('btn-publish')?.addEventListener('click', () => alert('Preflight checks passed. Ready to publish.'));
-    document.getElementById('btn-broker-set')?.addEventListener('click', () => alert('Open Broker Set manager')));
+    
+    // Detect if page is loaded in iframe and add embedded class
+    (function() {
+        function addEmbeddedClass() {
+            if (window.self !== window.top) {
+                document.documentElement.classList.add('embedded');
+                if (document.body) {
+                    document.body.classList.add('embedded');
+                }
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', addEmbeddedClass);
+        } else {
+            addEmbeddedClass();
+        }
+    })();
+    document.getElementById('btn-broker-set')?.addEventListener('click', () => alert('Open Broker Set manager'));
     document.getElementById('btn-health-details')?.addEventListener('click', () => alert('Drivers: floorplans, EPC, media'));
 
   </script>
