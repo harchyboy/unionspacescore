@@ -1489,10 +1489,16 @@ window.addEventListener('load', function() {
     });
     
     // Property details slide-over functionality
-    document.querySelectorAll('.property-row').forEach(function(row) {
+    const propertyRows = document.querySelectorAll('.property-row');
+    console.log('Found property rows:', propertyRows.length);
+    
+    propertyRows.forEach(function(row) {
         row.addEventListener('click', function(e) {
+            console.log('Property row click event fired', e.target);
+            
             // Don't open if clicking on input, button, or inside a button
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                console.log('Click ignored - input or button');
                 return;
             }
             
@@ -1502,7 +1508,7 @@ window.addEventListener('load', function() {
             e.stopImmediatePropagation();
             
             // Open the property details
-            console.log('Property row clicked, opening details');
+            console.log('Opening property details for row:', row);
             if (window.openPropertyDetails) {
                 window.openPropertyDetails(row);
             } else {
