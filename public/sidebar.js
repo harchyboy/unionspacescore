@@ -49,16 +49,17 @@ function applyActiveState(sidebar, navKey) {
   }
 
   link.classList.add('bg-primary', 'text-white', 'shadow-sm');
-  link.classList.remove('text-slate');
+  link.classList.remove('text-slate', 'hover:bg-stone');
 
   const icon = link.querySelector('i');
   if (icon) {
     icon.classList.add('text-white');
+    icon.classList.remove('text-slate', 'text-concrete');
   }
 
   const badge = link.querySelector('[data-nav-badge]');
   if (badge) {
-    badge.classList.remove('bg-slate', 'text-white', 'bg-secondary');
+    badge.classList.remove('bg-slate', 'text-white', 'bg-secondary', 'bg-red-600');
     badge.classList.add('bg-white', 'text-primary');
   }
 }
