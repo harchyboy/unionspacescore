@@ -43,6 +43,16 @@
         #new-requirement-panel.open {
             transform: translateX(0);
         }
+        /* Pipeline board horizontal scroll */
+        #pipeline-board {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+        #pipeline-board > .flex {
+            min-width: max-content;
+            width: max-content;
+        }
         /* Drag and drop styles */
         [draggable="true"] {
             cursor: move;
@@ -173,7 +183,7 @@
     </div>
 
     <div id="pipeline-board" class="px-8 py-6">
-        <div class="flex space-x-4 overflow-x-auto pb-6">
+        <div class="flex space-x-4 pb-6">
             <div id="stage-intake" class="flex-shrink-0 w-80">
                 <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
                     <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
@@ -1453,20 +1463,28 @@ window.addEventListener('load', function() {
     const scrollContainer = pipelineBoard.querySelector('.flex.space-x-4');
     const columnBodies = pipelineBoard.querySelectorAll('[id^="stage-"] .flex-1');
     
-    scrollContainer.addEventListener('wheel', function(e) {
-        if (!e.shiftKey && e.deltaY !== 0) {
-            e.preventDefault();
-            scrollContainer.scrollLeft += e.deltaY;
-        }
-    }, { passive: false });
-
-    columnBodies.forEach(body => {
-        body.addEventListener('wheel', function(e) {
-            if (e.shiftKey) {
-                scrollContainer.scrollLeft += e.deltaY;
+    if (scrollContainer) {
+        // Horizontal scroll with mouse wheel on the board container
+        pipelineBoard.addEventListener('wheel', function(e) {
+            if (!e.shiftKey && e.deltaY !== 0) {
+                // Only prevent default if we're actually scrolling horizontally
+                if (pipelineBoard.scrollWidth > pipelineBoard.clientWidth) {
+                    e.preventDefault();
+                    pipelineBoard.scrollLeft += e.deltaY;
+                }
             }
-        }, { passive: true });
-    });
+        }, { passive: false });
+
+        // Shift + wheel to scroll horizontally when inside columns
+        columnBodies.forEach(body => {
+            body.addEventListener('wheel', function(e) {
+                if (e.shiftKey && pipelineBoard.scrollWidth > pipelineBoard.clientWidth) {
+                    e.preventDefault();
+                    pipelineBoard.scrollLeft += e.deltaY;
+                }
+            }, { passive: false });
+        });
+    }
 
     // New Requirement slide-over functionality
     const newRequirementBtn = document.getElementById('new-requirement-btn');
