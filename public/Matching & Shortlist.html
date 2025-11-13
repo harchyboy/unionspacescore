@@ -43,6 +43,24 @@
             z-index: 10;
         }
     </style>
+    <script>
+        // Detect if page is loaded in iframe and add embedded class
+        (function() {
+            function addEmbeddedClass() {
+                if (window.self !== window.top) {
+                    document.documentElement.classList.add('embedded');
+                    if (document.body) {
+                        document.body.classList.add('embedded');
+                    }
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', addEmbeddedClass);
+            } else {
+                addEmbeddedClass();
+            }
+        })();
+    </script>
 </head>
 <body class="bg-stone font-haltung">
 
@@ -1189,12 +1207,6 @@
         <i class="fa-solid fa-circle-question text-xl"></i>
     </button>
 </div>
-
-<script>
-    if (window.self !== window.top) {
-        document.body.classList.add('embedded');
-    }
-</script>
 
 </body>
 </html>
