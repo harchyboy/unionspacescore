@@ -1436,57 +1436,69 @@ window.addEventListener('load', function() {
     const cancelModal = document.getElementById('cancel-modal');
     const form = document.getElementById('add-property-form');
     
-    addPropertyBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-    });
+    if (addPropertyBtn) {
+        addPropertyBtn.addEventListener('click', function() {
+            if (modal) modal.classList.remove('hidden');
+        });
+    }
     
-    closeModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            if (modal) modal.classList.add('hidden');
+        });
+    }
     
-    cancelModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
+    if (cancelModal) {
+        cancelModal.addEventListener('click', function() {
+            if (modal) modal.classList.add('hidden');
+        });
+    }
     
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-        }
-    });
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
     
     // Row actions menu
     const rowActionsMenu = document.getElementById('row-actions-menu');
     const rowActionsBtns = document.querySelectorAll('.row-actions-btn');
     
-    rowActionsBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const rect = btn.getBoundingClientRect();
-            rowActionsMenu.style.top = rect.bottom + 5 + 'px';
-            rowActionsMenu.style.left = rect.left - 180 + 'px';
-            rowActionsMenu.classList.toggle('hidden');
+    if (rowActionsMenu && rowActionsBtns.length > 0) {
+        rowActionsBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const rect = btn.getBoundingClientRect();
+                rowActionsMenu.style.top = rect.bottom + 5 + 'px';
+                rowActionsMenu.style.left = rect.left - 180 + 'px';
+                rowActionsMenu.classList.toggle('hidden');
+            });
         });
-    });
+        
+        document.addEventListener('click', function() {
+            rowActionsMenu.classList.add('hidden');
+        });
+    }
     
-    document.addEventListener('click', function() {
-        rowActionsMenu.classList.add('hidden');
-    });
-    
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        modal.classList.add('hidden');
-        
-        const toast = document.createElement('div');
-        toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
-        toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Property added. Data health: 65%. Continue to enrichment.</span>';
-        document.body.appendChild(toast);
-        
-        setTimeout(function() {
-            toast.remove();
-        }, 4000);
-        
-        form.reset();
-    });
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (modal) modal.classList.add('hidden');
+            
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+            toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Property added. Data health: 65%. Continue to enrichment.</span>';
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.remove();
+            }, 4000);
+            
+            form.reset();
+        });
+    }
     
     // Property details slide-over functionality
     const propertyRows = document.querySelectorAll('.property-row');
