@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import type { ReactNode } from 'react';
+import { isFeatureEnabled, FEATURES } from '../../config/features';
 
 interface NavItem {
   key: string;
@@ -15,7 +15,7 @@ interface NavSection {
   items: NavItem[];
 }
 
-const navSections: NavSection[] = [
+const allNavSections: NavSection[] = [
   {
     items: [
       {
@@ -116,6 +116,33 @@ const navSections: NavSection[] = [
   },
 ];
 
+// Filter navigation sections based on feature flags
+function getFilteredNavSections(): NavSection[] {
+  return allNavSections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => {
+        const featureMap: Record<string, string> = {
+          overview: FEATURES.OVERVIEW,
+          deals: FEATURES.DEALS,
+          properties: FEATURES.PROPERTIES,
+          units: FEATURES.UNITS,
+          'deal-room': FEATURES.DEAL_ROOM,
+          onboarding: FEATURES.ONBOARDING,
+          services: FEATURES.SERVICES,
+          tickets: FEATURES.TICKETS,
+          suppliers: FEATURES.SUPPLIERS,
+          contacts: FEATURES.CONTACTS,
+          analytics: FEATURES.ANALYTICS,
+          settings: FEATURES.SETTINGS,
+        };
+        const feature = featureMap[item.key];
+        return feature ? isFeatureEnabled(feature as any) : true;
+      }),
+    }))
+    .filter((section) => section.items.length > 0); // Remove empty sections
+}
+
 function NavItemComponent({ item, isActive }: { item: NavItem; isActive: boolean }) {
   return (
     <Link
@@ -189,7 +216,7 @@ export function Sidebar() {
 
       <nav className="flex-1 overflow-y-auto py-4">
         <div className="px-3 space-y-1">
-          {navSections.map((section, sectionIndex) => (
+          {getFilteredNavSections().map((section, sectionIndex) => (
             <div key={sectionIndex}>
               {section.label && (
                 <div className="pt-4 pb-2">
