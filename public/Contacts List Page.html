@@ -1576,7 +1576,7 @@
                 </div>
             </div>
             
-            <div class="mt-8 grid grid-cols-2 gap-6">
+            <div class="mt-8">
                 <div id="broker-performance-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-semibold text-primary">Top Broker Performance</h3>
@@ -1639,17 +1639,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div id="relationship-health-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold text-primary">Relationship Health</h3>
-                        <div class="flex items-center space-x-2">
-                            <button class="px-3 py-1.5 text-xs font-medium text-white bg-primary rounded-lg">30D</button>
-                            <button class="px-3 py-1.5 text-xs font-medium text-secondary hover:text-primary border border-[#E6E6E6] rounded-lg">90D</button>
-                        </div>
-                    </div>
-                    <div id="health-chart" style="height: 240px;"></div>
                 </div>
             </div>
             
@@ -2069,7 +2058,6 @@
     </div>
 </div>
 
-<script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
 <script>
 function showContactDetails(row) {
     const name = row.dataset.contactName;
@@ -2727,43 +2715,6 @@ function clearAllFilters() {
 }
 
 window.addEventListener('load', function() {
-    try {
-        const data = [{
-            type: 'bar',
-            x: ['Excellent', 'Good', 'Fair', 'Needs Attention'],
-            y: [45, 58, 28, 11],
-            marker: {
-                color: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444']
-            }
-        }];
-        
-        const layout = {
-            margin: { t: 20, r: 20, b: 40, l: 50 },
-            plot_bgcolor: '#ffffff',
-            paper_bgcolor: '#ffffff',
-            xaxis: {
-                gridcolor: '#E6E6E6',
-                showgrid: false
-            },
-            yaxis: {
-                title: 'Contacts',
-                gridcolor: '#E6E6E6',
-                showgrid: true
-            },
-            showlegend: false
-        };
-        
-        const config = {
-            responsive: true,
-            displayModeBar: false,
-            displaylogo: false
-        };
-        
-        Plotly.newPlot('health-chart', data, layout, config);
-    } catch(e) {
-        document.getElementById('health-chart').innerHTML = '<div class="flex items-center justify-center h-full text-secondary">Chart unavailable</div>';
-    }
-    
     const addContactBtn = document.getElementById('add-contact-btn');
     const modal = document.getElementById('add-contact-modal');
     const closeModal = document.getElementById('close-modal');
