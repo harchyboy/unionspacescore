@@ -823,47 +823,33 @@
                             <h2 class="text-lg font-semibold text-primary mb-1">Contact Type</h2>
                             <p class="text-sm text-secondary">Define the relationship and role of this contact</p>
                         </div>
-                        <div class="grid grid-cols-3 gap-4">
+                        <div class="grid grid-cols-2 gap-4">
                             <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
-                                <input type="radio" name="type" value="broker" class="sr-only peer" required>
+                                <input type="radio" name="type" value="flex-broker" class="sr-only peer" required>
                                 <i class="fa-solid fa-handshake text-3xl text-secondary peer-checked:text-primary mb-3"></i>
-                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Broker</span>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Brokers</span>
                                 <span class="text-xs text-secondary mt-1">Tenant representative</span>
                                 <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
                             <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
                                 <input type="radio" name="type" value="disposal-agent" class="sr-only peer">
                                 <i class="fa-solid fa-building text-3xl text-secondary peer-checked:text-primary mb-3"></i>
-                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Disposal Agent</span>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Disposal Agents</span>
                                 <span class="text-xs text-secondary mt-1">Landlord representative</span>
                                 <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
                             <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
                                 <input type="radio" name="type" value="tenant" class="sr-only peer">
                                 <i class="fa-solid fa-user-tie text-3xl text-secondary peer-checked:text-primary mb-3"></i>
-                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Tenant</span>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Traditional Tenant Reps</span>
                                 <span class="text-xs text-secondary mt-1">Occupier contact</span>
                                 <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
                             <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
-                                <input type="radio" name="type" value="landlord" class="sr-only peer">
-                                <i class="fa-solid fa-landmark text-3xl text-secondary peer-checked:text-primary mb-3"></i>
-                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Landlord</span>
-                                <span class="text-xs text-secondary mt-1">Property owner</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
                                 <input type="radio" name="type" value="supplier" class="sr-only peer">
-                                <i class="fa-solid fa-tools text-3xl text-secondary peer-checked:text-primary mb-3"></i>
-                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Supplier</span>
+                                <i class="fa-solid fa-wrench text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Suppliers</span>
                                 <span class="text-xs text-secondary mt-1">Service provider</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
-                                <input type="radio" name="type" value="internal" class="sr-only peer">
-                                <i class="fa-solid fa-user-shield text-3xl text-secondary peer-checked:text-primary mb-3"></i>
-                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Internal</span>
-                                <span class="text-xs text-secondary mt-1">Team member</span>
                                 <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
                         </div>
@@ -1872,7 +1858,7 @@ window.addEventListener('load', function() {
                 disposalSection.classList.add('hidden');
                 supplierSection.classList.add('hidden');
                 
-                if (this.value === 'broker') {
+                if (this.value === 'flex-broker') {
                     brokerSection.classList.remove('hidden');
                 } else if (this.value === 'disposal-agent') {
                     disposalSection.classList.remove('hidden');
