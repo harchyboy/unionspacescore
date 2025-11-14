@@ -898,9 +898,19 @@
                             <p class="text-sm text-secondary">Organisation and firm information</p>
                         </div>
                         <div class="space-y-6">
-                            <div>
+                            <div class="relative">
                                 <label class="block text-sm font-semibold text-primary mb-2">Company Name <span class="text-destructive">*</span></label>
-                                <input type="text" name="company" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Knight Frank, CBRE, JLL">
+                                <div class="relative">
+                                    <input type="text" id="company-input" name="company" required class="w-full px-4 py-3 pr-12 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Knight Frank, CBRE, JLL">
+                                    <button type="button" id="company-lookup-btn" class="absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 text-secondary hover:text-primary transition-all-smooth rounded hover:bg-muted" title="Search existing companies" style="margin-top: 0;">
+                                        <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+                                    </button>
+                                </div>
+                                <div id="company-suggestions" class="hidden absolute z-50 w-full mt-1 bg-white border border-[#E6E6E6] rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                    <div class="py-1" id="company-suggestions-list">
+                                        <!-- Suggestions will be populated here -->
+                                    </div>
+                                </div>
                                 <p class="text-xs text-secondary mt-2">If the firm doesn't exist, we'll create it automatically</p>
                             </div>
                             <div>
@@ -1930,6 +1940,113 @@ window.addEventListener('load', function() {
     if (filterActivity) filterActivity.addEventListener('change', filterContacts);
     if (filterHealth) filterHealth.addEventListener('change', filterContacts);
     if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearAllFilters);
+    
+    // Company lookup functionality
+    const companyInput = document.getElementById('company-input');
+    const companyLookupBtn = document.getElementById('company-lookup-btn');
+    const companySuggestions = document.getElementById('company-suggestions');
+    const companySuggestionsList = document.getElementById('company-suggestions-list');
+    
+    // Sample company data for prototype
+    const sampleCompanies = [
+        'Knight Frank',
+        'CBRE',
+        'JLL',
+        'Savills',
+        'Cushman & Wakefield',
+        'Colliers International',
+        'BNP Paribas Real Estate',
+        'Avison Young',
+        'DTZ',
+        'GVA',
+        'Lambert Smith Hampton',
+        'Gerald Eve',
+        'Bidwells',
+        'Strutt & Parker',
+        'Knight Knox',
+        'British Land',
+        'Landsec',
+        'Derwent London',
+        'Great Portland Estates',
+        'Shaftesbury'
+    ];
+    
+    function filterCompanies(query) {
+        if (!query || query.trim() === '') {
+            return sampleCompanies;
+        }
+        const lowerQuery = query.toLowerCase();
+        return sampleCompanies.filter(company => 
+            company.toLowerCase().includes(lowerQuery)
+        );
+    }
+    
+    function showSuggestions(query) {
+        const filtered = filterCompanies(query);
+        companySuggestionsList.innerHTML = '';
+        
+        if (filtered.length === 0) {
+            companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">No companies found. Type to create a new company.</div>';
+        } else {
+            filtered.slice(0, 10).forEach(function(company) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2';
+                button.innerHTML = '<i class="fa-solid fa-building text-secondary text-xs"></i><span>' + company + '</span>';
+                button.addEventListener('click', function() {
+                    companyInput.value = company;
+                    companySuggestions.classList.add('hidden');
+                    companyInput.focus();
+                });
+                companySuggestionsList.appendChild(button);
+            });
+            
+            if (filtered.length > 10) {
+                const moreDiv = document.createElement('div');
+                moreDiv.className = 'px-4 py-2 text-xs text-secondary border-t border-[#E6E6E6]';
+                moreDiv.textContent = (filtered.length - 10) + ' more companies found';
+                companySuggestionsList.appendChild(moreDiv);
+            }
+        }
+        
+        companySuggestions.classList.remove('hidden');
+    }
+    
+    function hideSuggestions() {
+        companySuggestions.classList.add('hidden');
+    }
+    
+    if (companyInput) {
+        companyInput.addEventListener('input', function() {
+            showSuggestions(this.value);
+        });
+        
+        companyInput.addEventListener('focus', function() {
+            if (this.value) {
+                showSuggestions(this.value);
+            }
+        });
+    }
+    
+    if (companyLookupBtn) {
+        companyLookupBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (companySuggestions.classList.contains('hidden')) {
+                showSuggestions(companyInput.value || '');
+            } else {
+                hideSuggestions();
+            }
+        });
+    }
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        const companySection = document.querySelector('#company-details-section .relative');
+        if (companySection && !companySection.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
 });
 </script>
 
