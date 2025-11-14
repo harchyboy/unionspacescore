@@ -31,7 +31,7 @@ const allNavSections: NavSection[] = [
     items: [
       {
         key: 'deals',
-        label: 'Deals',
+        label: 'Pipeline',
         icon: 'fa-handshake',
         href: '/deals',
         badge: 12,
