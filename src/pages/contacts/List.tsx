@@ -1,27 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useContacts } from '../../api/contacts';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
 import { Button } from '../../components/ui/Button';
-import { SearchInput } from '../../components/ui/SearchInput';
 import { Select } from '../../components/ui/Select';
 import { Table, TableHeader, TableHeaderCell, TableBody } from '../../components/ui/Table';
 import { ContactRow } from '../../components/contacts/ContactRow';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
-import type { ContactType, RelationshipHealth } from '../../types/contact';
+import { Tabs, TabsList, TabsTrigger } from '../../components/ui/Tabs';
+import type { ContactType, RelationshipHealth, Contact } from '../../types/contact';
 
-const contactTypes: { value: ContactType | 'all'; label: string }[] = [
-  { value: 'all', label: 'All Types' },
-  { value: 'flex-broker', label: 'Flex Broker' },
-  { value: 'disposal-agent', label: 'Disposal Agent' },
-  { value: 'tenant', label: 'Tenant/Prospect' },
-  { value: 'landlord', label: 'Landlord' },
-  { value: 'supplier', label: 'Supplier' },
-  { value: 'internal', label: 'Internal' },
-];
+// Tab values that map to ContactType
+export const CONTACT_TAB_BROKERS = 'flex-broker' as const;
+export const CONTACT_TAB_DISPOSAL_AGENTS = 'disposal-agent' as const;
+export const CONTACT_TAB_TENANT_REPS = 'tenant' as const;
+
+// Tab configuration matching ContactType enum
+export const CONTACT_TABS = [
+  { value: CONTACT_TAB_BROKERS, label: 'Brokers' },
+  { value: CONTACT_TAB_DISPOSAL_AGENTS, label: 'Disposal Agents' },
+  { value: CONTACT_TAB_TENANT_REPS, label: 'Traditional Tenant Reps' },
+] as const;
+
+export type ContactTabValue = typeof CONTACT_TABS[number]['value'];
+
+// Helper function to determine contact category
+export function getContactCategory(contact: Contact): ContactTabValue | null {
+  if (contact.type === CONTACT_TAB_BROKERS) {
+    return CONTACT_TAB_BROKERS;
+  }
+  if (contact.type === CONTACT_TAB_DISPOSAL_AGENTS) {
+    return CONTACT_TAB_DISPOSAL_AGENTS;
+  }
+  if (contact.type === CONTACT_TAB_TENANT_REPS) {
+    return CONTACT_TAB_TENANT_REPS;
+  }
+  return null;
+}
+
+// Map tab value to contact type (direct mapping since tabs use ContactType values)
+function getContactTypeForTab(tab: string): ContactType | null {
+  if (tab === CONTACT_TAB_BROKERS || tab === CONTACT_TAB_DISPOSAL_AGENTS || tab === CONTACT_TAB_TENANT_REPS) {
+    return tab as ContactType;
+  }
+  return null;
+}
 
 const healthOptions: { value: RelationshipHealth | 'all'; label: string }[] = [
   { value: 'all', label: 'All Relationship Health' },
@@ -34,53 +60,59 @@ const healthOptions: { value: RelationshipHealth | 'all'; label: string }[] = [
 export function ContactsList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedTab, setSelectedTab] = useState<string>('all');
+  
+  // Get initial active tab from URL or default to brokers
+  const getInitialTab = (): ContactTabValue => {
+    const urlTab = searchParams.get('contactType');
+    if (urlTab === CONTACT_TAB_BROKERS || urlTab === CONTACT_TAB_DISPOSAL_AGENTS || urlTab === CONTACT_TAB_TENANT_REPS) {
+      return urlTab as ContactTabValue;
+    }
+    return CONTACT_TAB_BROKERS; // Default to brokers
+  };
+
+  const [activeTab, setActiveTab] = useState<ContactTabValue>(getInitialTab());
   const [searchQuery, setSearchQuery] = useState(searchParams.get('query') || '');
-  const [typeFilter, setTypeFilter] = useState<ContactType | 'all'>(
-    (searchParams.get('type') as ContactType | 'all') || 'all'
-  );
   const [firmFilter, setFirmFilter] = useState<string>('all');
   const [submarketFilter, setSubmarketFilter] = useState<string>('all');
   const [activityFilter, setActivityFilter] = useState<string>('all');
   const [healthFilter, setHealthFilter] = useState<RelationshipHealth | 'all'>(
     (searchParams.get('health') as RelationshipHealth | 'all') || 'all'
   );
-  const { toasts, showToast, removeToast } = useToast();
+  const { toasts, removeToast } = useToast();
+
+  // Get the contact type filter based on active tab
+  const getTypeFilterForTab = (): ContactType | undefined => {
+    return getContactTypeForTab(activeTab) || undefined;
+  };
+
+  // Sync active tab with URL on mount and when URL changes
+  useEffect(() => {
+    const urlTab = searchParams.get('contactType');
+    if (urlTab === CONTACT_TAB_BROKERS || urlTab === CONTACT_TAB_DISPOSAL_AGENTS || urlTab === CONTACT_TAB_TENANT_REPS) {
+      if (activeTab !== urlTab) {
+        setActiveTab(urlTab as ContactTabValue);
+      }
+    } else if (!urlTab) {
+      // If no URL param, set default and update URL
+      setActiveTab(CONTACT_TAB_BROKERS);
+      const params = new URLSearchParams(searchParams);
+      params.set('contactType', CONTACT_TAB_BROKERS);
+      setSearchParams(params, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const { data, isLoading, error } = useContacts({
     page: 1,
     pageSize: 50,
     filters: {
-      type: typeFilter !== 'all' ? typeFilter : undefined,
+      type: getTypeFilterForTab(),
       health: healthFilter !== 'all' ? healthFilter : undefined,
       query: searchQuery || undefined,
     },
     sortBy: 'name',
     sortOrder: 'asc',
   });
-
-  const handleSearch = (value: string) => {
-    setSearchQuery(value);
-    const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set('query', value);
-    } else {
-      params.delete('query');
-    }
-    setSearchParams(params);
-  };
-
-  const handleTypeFilter = (value: string) => {
-    const newType = value as ContactType | 'all';
-    setTypeFilter(newType);
-    const params = new URLSearchParams(searchParams);
-    if (newType !== 'all') {
-      params.set('type', newType);
-    } else {
-      params.delete('type');
-    }
-    setSearchParams(params);
-  };
 
   const handleHealthFilter = (value: string) => {
     const newHealth = value as RelationshipHealth | 'all';
@@ -91,32 +123,35 @@ export function ContactsList() {
     } else {
       params.delete('health');
     }
+    // Preserve contactType in URL
+    params.set('contactType', activeTab);
     setSearchParams(params);
   };
 
   const handleClearFilters = () => {
     setSearchQuery('');
-    setTypeFilter('all');
     setFirmFilter('all');
     setSubmarketFilter('all');
     setActivityFilter('all');
     setHealthFilter('all');
-    setSearchParams({});
+    const params = new URLSearchParams();
+    params.set('contactType', activeTab);
+    setSearchParams(params);
   };
 
   const handleTabChange = (tab: string) => {
-    setSelectedTab(tab);
-    if (tab === 'all') {
-      setTypeFilter('all');
-    } else if (tab === 'flex-brokers') {
-      setTypeFilter('flex-broker');
-    } else if (tab === 'disposal-agents') {
-      setTypeFilter('disposal-agent');
-    } else if (tab === 'tenants') {
-      setTypeFilter('tenant');
-    } else if (tab === 'suppliers') {
-      setTypeFilter('supplier');
+    const tabValue = tab as ContactTabValue;
+    setActiveTab(tabValue);
+    const params = new URLSearchParams(searchParams);
+    params.set('contactType', tabValue);
+    // Preserve other filters
+    if (searchQuery) {
+      params.set('query', searchQuery);
     }
+    if (healthFilter !== 'all') {
+      params.set('health', healthFilter);
+    }
+    setSearchParams(params, { replace: false });
   };
 
   return (
@@ -139,78 +174,34 @@ export function ContactsList() {
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center space-x-4 mt-6">
-          <button
-            onClick={() => handleTabChange('all')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
-              selectedTab === 'all'
-                ? 'text-primary border-primary'
-                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
-            }`}
-          >
-            All Contacts
-          </button>
-          <button
-            onClick={() => handleTabChange('flex-brokers')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
-              selectedTab === 'flex-brokers'
-                ? 'text-primary border-primary'
-                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
-            }`}
-          >
-            Flex Brokers
-          </button>
-          <button
-            onClick={() => handleTabChange('disposal-agents')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
-              selectedTab === 'disposal-agents'
-                ? 'text-primary border-primary'
-                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
-            }`}
-          >
-            Disposal Agents
-          </button>
-          <button
-            onClick={() => handleTabChange('tenants')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
-              selectedTab === 'tenants'
-                ? 'text-primary border-primary'
-                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
-            }`}
-          >
-            Tenants
-          </button>
-          <button
-            onClick={() => handleTabChange('suppliers')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all-smooth ${
-              selectedTab === 'suppliers'
-                ? 'text-primary border-primary'
-                : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
-            }`}
-          >
-            Suppliers
-          </button>
-          <div className="flex-1"></div>
-          <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
-            <i className="fa-solid fa-filter"></i>
-            <span>Filters</span>
-          </button>
-          <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
-            <i className="fa-solid fa-download"></i>
-            <span>Export</span>
-          </button>
+        <div className="mt-6">
+          <Tabs key={activeTab} defaultTab={activeTab} onTabChange={handleTabChange}>
+            <div className="flex items-center justify-between">
+              <TabsList>
+                {CONTACT_TABS.map((tab) => (
+                  <TabsTrigger key={tab.value} value={tab.value}>
+                    {tab.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              <div className="flex items-center space-x-4">
+                <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+                  <i className="fa-solid fa-filter"></i>
+                  <span>Filters</span>
+                </button>
+                <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
+                  <i className="fa-solid fa-download"></i>
+                  <span>Export</span>
+                </button>
+              </div>
+            </div>
+          </Tabs>
         </div>
       </div>
 
       {/* Filters */}
       <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
         <div className="flex items-center space-x-3 flex-wrap gap-2">
-          <Select
-            options={contactTypes}
-            value={typeFilter}
-            onChange={(e) => handleTypeFilter(e.target.value)}
-            className="w-48"
-          />
           <Select
             options={[
               { value: 'all', label: 'All Firms' },
