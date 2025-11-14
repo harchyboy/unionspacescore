@@ -58,7 +58,7 @@ export function Input({
           <i className={`fa-solid ${icon} absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary pointer-events-none`}></i>
         )}
         {rightElement && (
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none z-10">
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10">
             {rightElement}
           </div>
         )}

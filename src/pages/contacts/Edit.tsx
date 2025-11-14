@@ -9,6 +9,7 @@ import { Select } from '../../components/ui/Select';
 import { Textarea } from '../../components/ui/Textarea';
 import { Button } from '../../components/ui/Button';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { CompanyLookup } from '../../components/contacts/CompanyLookup';
 import type { ContactType, RelationshipHealth } from '../../types/contact';
 
 const contactTypes: { value: ContactType; label: string }[] = [
@@ -173,10 +174,10 @@ export function ContactEdit() {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="Company"
+          <CompanyLookup
+            label="Company Name"
             value={formData.company}
-            onChange={(e) => handleChange('company', e.target.value)}
+            onChange={(value) => handleChange('company', value)}
           />
           <Select
             label="Type"
