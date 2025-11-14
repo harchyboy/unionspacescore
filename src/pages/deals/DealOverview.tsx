@@ -819,7 +819,7 @@ export function DealOverview() {
               className="w-full px-4 py-3 bg-white text-[#252525] rounded-lg hover:bg-[#F0F0F0] transition-colors border border-[#8E8E8E]/30 font-semibold text-sm flex items-center justify-center"
             >
               <i className="fa-solid fa-file-invoice mr-2"></i>
-              Generate Proposal
+              Issue Options
             </button>
 
             <button className="w-full px-4 py-3 bg-white text-[#252525] rounded-lg hover:bg-[#F0F0F0] transition-colors border border-[#8E8E8E]/30 font-semibold text-sm flex items-center justify-center">
