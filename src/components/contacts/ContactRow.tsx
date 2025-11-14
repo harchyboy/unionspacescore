@@ -16,7 +16,7 @@ const typeLabels: Record<Contact['type'], string> = {
   'disposal-agent': 'Disposal Agents',
   tenant: 'Traditional Tenant Reps',
   landlord: 'Landlord',
-  supplier: 'Supplier',
+  supplier: 'Suppliers',
   internal: 'Internal',
 };
 
