@@ -12,9 +12,9 @@ interface ContactRowProps {
 }
 
 const typeLabels: Record<Contact['type'], string> = {
-  'flex-broker': 'Flex Broker',
-  'disposal-agent': 'Disposal Agent',
-  tenant: 'Tenant',
+  'flex-broker': 'Brokers',
+  'disposal-agent': 'Disposal Agents',
+  tenant: 'Traditional Tenant Reps',
   landlord: 'Landlord',
   supplier: 'Supplier',
   internal: 'Internal',
