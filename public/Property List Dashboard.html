@@ -178,70 +178,72 @@
         <div id="filters-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
             <div class="flex items-center space-x-3 flex-wrap gap-2">
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Submarkets</option>
-                        <option>City Core</option>
-                        <option>Shoreditch</option>
-                        <option>Mayfair</option>
-                        <option>Canary Wharf</option>
-                        <option>King's Cross</option>
+                    <select id="filter-submarket" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Submarkets</option>
+                        <option value="City Core">City Core</option>
+                        <option value="Shoreditch">Shoreditch</option>
+                        <option value="Mayfair">Mayfair</option>
+                        <option value="Canary Wharf">Canary Wharf</option>
+                        <option value="King's Cross">King's Cross</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Visibility</option>
-                        <option>Public</option>
-                        <option>Private</option>
+                    <select id="filter-visibility" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Visibility</option>
+                        <option value="Public">Public</option>
+                        <option value="Private">Private</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Disposal Agents</option>
-                        <option>Knight Frank</option>
-                        <option>CBRE</option>
-                        <option>JLL</option>
-                        <option>Savills</option>
-                        <option>Cushman & Wakefield</option>
+                    <select id="filter-disposal-agent" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Disposal Agents</option>
+                        <option value="Knight Frank">Knight Frank</option>
+                        <option value="CBRE">CBRE</option>
+                        <option value="JLL">JLL</option>
+                        <option value="Savills">Savills</option>
+                        <option value="Cushman & Wakefield">Cushman & Wakefield</option>
+                        <option value="Cushman">Cushman</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Owners</option>
-                        <option>Tom Harrison</option>
-                        <option>Max Chen</option>
-                        <option>Dani Roberts</option>
+                    <select id="filter-owner" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Owners</option>
+                        <option value="Tom">Tom</option>
+                        <option value="Tom Harrison">Tom Harrison</option>
+                        <option value="Max Chen">Max Chen</option>
+                        <option value="Dani Roberts">Dani Roberts</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Broker Networks</option>
-                        <option>Public Network</option>
-                        <option>Private · 10 brokers</option>
-                        <option>Private · 5 brokers</option>
+                    <select id="filter-broker-network" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Broker Networks</option>
+                        <option value="Public Network">Public Network</option>
+                        <option value="Private · 10 brokers">Private · 10 brokers</option>
+                        <option value="Private · 5 brokers">Private · 5 brokers</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>Data Health</option>
-                        <option>&lt; 50%</option>
-                        <option>50-75%</option>
-                        <option>75-85%</option>
-                        <option>&gt; 85%</option>
+                    <select id="filter-data-health" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">Data Health</option>
+                        <option value="<50">&lt; 50%</option>
+                        <option value="50-75">50-75%</option>
+                        <option value="75-85">75-85%</option>
+                        <option value=">85">&gt; 85%</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
-                <button class="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1">
+                <button id="clear-filters" class="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1">
                     <i class="fa-solid fa-rotate-left text-xs"></i>
                     <span>Clear all</span>
                 </button>
@@ -1371,6 +1373,139 @@ window.addEventListener('load', function() {
             return false;
         });
     });
+    
+    // Filter functionality
+    function applyFilters() {
+        const submarketFilter = document.getElementById('filter-submarket').value;
+        const visibilityFilter = document.getElementById('filter-visibility').value;
+        const disposalAgentFilter = document.getElementById('filter-disposal-agent').value;
+        const ownerFilter = document.getElementById('filter-owner').value;
+        const brokerNetworkFilter = document.getElementById('filter-broker-network').value;
+        const dataHealthFilter = document.getElementById('filter-data-health').value;
+        
+        const propertyRows = document.querySelectorAll('.property-row');
+        let visibleCount = 0;
+        
+        propertyRows.forEach(function(row) {
+            let show = true;
+            
+            // Filter by submarket
+            if (submarketFilter && row.getAttribute('data-property-submarket') !== submarketFilter) {
+                show = false;
+            }
+            
+            // Filter by visibility
+            if (visibilityFilter && row.getAttribute('data-property-visibility') !== visibilityFilter) {
+                show = false;
+            }
+            
+            // Filter by disposal agent (check the broker network column text - 7th column)
+            if (disposalAgentFilter && show) {
+                const brokerNetworkCell = row.querySelector('td:nth-child(7)'); // Broker Network column
+                if (brokerNetworkCell) {
+                    const cellText = brokerNetworkCell.textContent.trim();
+                    // Handle "Cushman & Wakefield" vs "Cushman"
+                    if (disposalAgentFilter === 'Cushman & Wakefield' || disposalAgentFilter === 'Cushman') {
+                        if (cellText !== 'Cushman' && cellText !== 'Cushman & Wakefield') {
+                            show = false;
+                        }
+                    } else if (cellText !== disposalAgentFilter) {
+                        show = false;
+                    }
+                } else {
+                    show = false;
+                }
+            }
+            
+            // Filter by owner
+            if (ownerFilter && show) {
+                const ownerValue = row.getAttribute('data-property-owner');
+                // Handle "Tom" vs "Tom Harrison"
+                if (ownerFilter === 'Tom Harrison' && ownerValue !== 'Tom' && ownerValue !== 'Tom Harrison') {
+                    show = false;
+                } else if (ownerFilter === 'Tom' && ownerValue !== 'Tom') {
+                    show = false;
+                } else if (ownerFilter !== 'Tom' && ownerFilter !== 'Tom Harrison' && ownerValue !== ownerFilter) {
+                    show = false;
+                }
+            }
+            
+            // Filter by broker network
+            if (brokerNetworkFilter && row.getAttribute('data-property-broker-network') !== brokerNetworkFilter) {
+                show = false;
+            }
+            
+            // Filter by data health
+            if (dataHealthFilter && show) {
+                const healthValue = row.getAttribute('data-property-health');
+                if (healthValue) {
+                    const healthPercent = parseInt(healthValue.replace('%', ''));
+                    let matches = false;
+                    
+                    if (dataHealthFilter === '<50' && healthPercent < 50) {
+                        matches = true;
+                    } else if (dataHealthFilter === '50-75' && healthPercent >= 50 && healthPercent < 75) {
+                        matches = true;
+                    } else if (dataHealthFilter === '75-85' && healthPercent >= 75 && healthPercent < 85) {
+                        matches = true;
+                    } else if (dataHealthFilter === '>85' && healthPercent > 85) {
+                        matches = true;
+                    }
+                    
+                    if (!matches) {
+                        show = false;
+                    }
+                } else {
+                    show = false;
+                }
+            }
+            
+            // Show or hide row
+            if (show) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Update property count
+        const countElement = document.querySelector('#bulk-actions-bar span');
+        if (countElement) {
+            countElement.textContent = visibleCount + ' properties';
+        }
+    }
+    
+    // Add event listeners to all filters
+    const filterSelects = [
+        'filter-submarket',
+        'filter-visibility',
+        'filter-disposal-agent',
+        'filter-owner',
+        'filter-broker-network',
+        'filter-data-health'
+    ];
+    
+    filterSelects.forEach(function(filterId) {
+        const filter = document.getElementById(filterId);
+        if (filter) {
+            filter.addEventListener('change', applyFilters);
+        }
+    });
+    
+    // Clear filters button
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            filterSelects.forEach(function(filterId) {
+                const filter = document.getElementById(filterId);
+                if (filter) {
+                    filter.value = '';
+                }
+            });
+            applyFilters();
+        });
+    }
 });
 
 function closePropertyDetails() {
