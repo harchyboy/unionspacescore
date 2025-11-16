@@ -324,10 +324,10 @@
             </div>
             
             <div class="flex items-center space-x-4 mt-6">
-                <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">All Suppliers</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Active Contracts</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Trial Period</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Renewals Due</button>
+                <button onclick="filterByTab('all')" class="supplier-tab-btn px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary" data-tab="all">All Suppliers</button>
+                <button onclick="filterByTab('active')" class="supplier-tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="active">Active Contracts</button>
+                <button onclick="filterByTab('trial')" class="supplier-tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="trial">Trial Period</button>
+                <button onclick="filterByTab('renewals')" class="supplier-tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="renewals">Renewals Due</button>
                 <div class="flex-1"></div>
                 <button class="text-secondary hover:text-primary text-sm flex items-center space-x-1">
                     <i class="fa-solid fa-filter"></i>
@@ -343,44 +343,48 @@
         <div id="filters-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
             <div class="flex items-center space-x-3 flex-wrap gap-2">
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Categories</option>
-                        <option>Cleaning</option>
-                        <option>AV & Tech</option>
-                        <option>IT Support</option>
-                        <option>Repairs & Maintenance</option>
-                        <option>Plants & Landscaping</option>
-                        <option>Coffee & Catering</option>
-                        <option>Furniture</option>
-                        <option>Utilities</option>
+                    <select id="filter-category" onchange="applyFilters()" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Categories</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="AV & Tech">AV & Tech</option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="Repairs & Maintenance">Repairs & Maintenance</option>
+                        <option value="R&M">R&M</option>
+                        <option value="Plants & Landscaping">Plants & Landscaping</option>
+                        <option value="Plants">Plants</option>
+                        <option value="Coffee & Catering">Coffee & Catering</option>
+                        <option value="Coffee">Coffee</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Utilities">Utilities</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Contract Status</option>
-                        <option>None</option>
-                        <option>Trial</option>
-                        <option>Active</option>
-                        <option>Suspended</option>
+                    <select id="filter-contract-status" onchange="applyFilters()" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Contract Status</option>
+                        <option value="none">None</option>
+                        <option value="suspended">Suspended</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Coverage Areas</option>
-                        <option>Central London</option>
-                        <option>East London</option>
-                        <option>West London</option>
-                        <option>North London</option>
-                        <option>South London</option>
+                    <select id="filter-coverage" onchange="applyFilters()" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Coverage Areas</option>
+                        <option value="Central">Central</option>
+                        <option value="Central, East">Central, East</option>
+                        <option value="Central, West">Central, West</option>
+                        <option value="East">East</option>
+                        <option value="West">West</option>
+                        <option value="North">North</option>
+                        <option value="South">South</option>
+                        <option value="All London">All London</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
-                <button class="text-secondary hover:text-primary text-sm ml-2">
+                <button onclick="clearAllFilters()" class="text-secondary hover:text-primary text-sm ml-2">
                     Clear all
                 </button>
             </div>
@@ -1363,6 +1367,114 @@ function switchSupplierTab(tabName) {
     }
 }
 
+// Filter state
+let currentTabFilter = 'all';
+let currentCategoryFilter = 'all';
+let currentStatusFilter = 'all';
+let currentCoverageFilter = 'all';
+
+function filterByTab(tab) {
+    currentTabFilter = tab;
+    
+    // Update tab button styles
+    document.querySelectorAll('.supplier-tab-btn').forEach(btn => {
+        btn.classList.remove('text-primary', 'border-primary');
+        btn.classList.add('text-secondary', 'border-transparent');
+    });
+    
+    const activeBtn = document.querySelector(`.supplier-tab-btn[data-tab="${tab}"]`);
+    if (activeBtn) {
+        activeBtn.classList.remove('text-secondary', 'border-transparent');
+        activeBtn.classList.add('text-primary', 'border-primary');
+    }
+    
+    applyFilters();
+}
+
+function applyFilters() {
+    // Get filter values
+    const categorySelect = document.getElementById('filter-category');
+    const statusSelect = document.getElementById('filter-contract-status');
+    const coverageSelect = document.getElementById('filter-coverage');
+    
+    currentCategoryFilter = categorySelect ? categorySelect.value : 'all';
+    currentStatusFilter = statusSelect ? statusSelect.value : 'all';
+    currentCoverageFilter = coverageSelect ? coverageSelect.value : 'all';
+    
+    // Get all supplier rows
+    const rows = document.querySelectorAll('.supplier-row');
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        const category = row.dataset.supplierCategory || '';
+        const status = row.dataset.supplierStatus || '';
+        const coverage = row.dataset.supplierCoverage || '';
+        const renewal = row.dataset.supplierRenewal || '';
+        
+        // Tab filter
+        let matchesTab = true;
+        if (currentTabFilter === 'active') {
+            matchesTab = status === 'Active';
+        } else if (currentTabFilter === 'trial') {
+            matchesTab = status === 'Trial';
+        } else if (currentTabFilter === 'renewals') {
+            // Check if renewal is due in next 90 days (simplified check)
+            matchesTab = status === 'Active' && renewal && !renewal.includes('Trial');
+        } else {
+            matchesTab = true; // 'all'
+        }
+        
+        // Category filter
+        let matchesCategory = true;
+        if (currentCategoryFilter !== 'all') {
+            matchesCategory = category === currentCategoryFilter;
+        }
+        
+        // Status filter (only None and Suspended since Active/Trial are in tabs)
+        let matchesStatus = true;
+        if (currentStatusFilter !== 'all') {
+            matchesStatus = status.toLowerCase() === currentStatusFilter;
+        }
+        
+        // Coverage filter
+        let matchesCoverage = true;
+        if (currentCoverageFilter !== 'all') {
+            matchesCoverage = coverage.includes(currentCoverageFilter) || coverage === currentCoverageFilter;
+        }
+        
+        // Show/hide row
+        if (matchesTab && matchesCategory && matchesStatus && matchesCoverage) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Update count display
+    const countElement = document.querySelector('#bulk-actions-bar .text-sm');
+    if (countElement) {
+        countElement.textContent = `Showing ${visibleCount} of ${rows.length} suppliers`;
+    }
+}
+
+function clearAllFilters() {
+    // Reset tab to 'all'
+    filterByTab('all');
+    
+    // Reset dropdowns
+    const categorySelect = document.getElementById('filter-category');
+    const statusSelect = document.getElementById('filter-contract-status');
+    const coverageSelect = document.getElementById('filter-coverage');
+    
+    if (categorySelect) categorySelect.value = 'all';
+    if (statusSelect) statusSelect.value = 'all';
+    if (coverageSelect) coverageSelect.value = 'all';
+    
+    // Apply filters
+    applyFilters();
+}
+
 window.addEventListener('load', function() {
     // Supplier row click handlers
     document.querySelectorAll('.supplier-row').forEach(function(row) {
@@ -1377,6 +1489,9 @@ window.addEventListener('load', function() {
             showSupplierDetails(row);
         });
     });
+    
+    // Initialize filters
+    applyFilters();
 });
 
 function showSupplierDetails(row) {
