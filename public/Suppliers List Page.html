@@ -1337,6 +1337,32 @@ function toggleSecondaryContact() {
     }
 }
 
+function switchSupplierTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.supplier-tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    // Remove active state from all tabs
+    document.querySelectorAll('.supplier-tab').forEach(tab => {
+        tab.classList.remove('text-primary', 'border-primary');
+        tab.classList.add('text-secondary', 'border-transparent');
+    });
+    
+    // Show selected tab content
+    const selectedContent = document.getElementById(`supplier-tab-${tabName}`);
+    if (selectedContent) {
+        selectedContent.classList.remove('hidden');
+    }
+    
+    // Add active state to selected tab
+    const selectedTab = document.querySelector(`.supplier-tab[data-tab="${tabName}"]`);
+    if (selectedTab) {
+        selectedTab.classList.remove('text-secondary', 'border-transparent');
+        selectedTab.classList.add('text-primary', 'border-primary');
+    }
+}
+
 window.addEventListener('load', function() {
     // Supplier row click handlers
     document.querySelectorAll('.supplier-row').forEach(function(row) {
@@ -1374,6 +1400,18 @@ function showSupplierDetails(row) {
         'Suspended': 'bg-destructive text-white'
     };
     
+    // For Thirdway AV, use specific data; otherwise use row data
+    const isThirdwayAV = name === 'Thirdway AV';
+    const displayName = isThirdwayAV ? 'Thirdway AV' : name;
+    const displayCategory = isThirdwayAV ? 'AV & Tech' : category;
+    const displayStatus = isThirdwayAV ? 'Active' : status;
+    const displayCoverage = isThirdwayAV ? 'Central, East' : coverage;
+    const displayRenewal = isThirdwayAV ? 'Dec 15, 2025' : renewal;
+    const displayIcon = isThirdwayAV ? 'fa-tv' : icon;
+    const displayContactName = isThirdwayAV ? 'James Turner' : contactName;
+    const displayContactEmail = isThirdwayAV ? 'james.turner@thirdwayav.com' : contactEmail;
+    const displayContactPhone = isThirdwayAV ? '020 7123 4567' : contactPhone;
+    
     document.getElementById('supplier-details-content').innerHTML = `
         <div class="bg-white border-b border-[#E6E6E6] px-8 py-6 mb-0">
             <div class="flex items-center space-x-4 mb-4">
@@ -1382,22 +1420,22 @@ function showSupplierDetails(row) {
                 </button>
                 <div class="flex items-center space-x-4 flex-1">
                     <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl">
-                        <i class="fa-solid ${icon}"></i>
+                        <i class="fa-solid ${displayIcon}"></i>
                     </div>
                     <div>
                         <div class="flex items-center space-x-3 mb-1">
-                            <h1 class="text-2xl font-semibold text-primary">${name}</h1>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary">${category}</span>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusColors[status] || 'bg-muted text-primary'}">${status}</span>
+                            <h1 class="text-2xl font-semibold text-primary">${displayName}</h1>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary">${displayCategory}</span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusColors[displayStatus] || 'bg-muted text-primary'}">${displayStatus}</span>
                         </div>
                         <div class="flex items-center space-x-4 text-sm text-secondary">
                             <span class="flex items-center space-x-1">
                                 <i class="fa-solid fa-map-marker-alt"></i>
-                                <span>${coverage}</span>
+                                <span>${displayCoverage}</span>
                             </span>
                             <span class="flex items-center space-x-1">
-                                <i class="fa-solid fa-chart-line"></i>
-                                <span>Renewal: ${renewal}</span>
+                                <i class="fa-solid fa-calendar"></i>
+                                <span>Renewal: ${displayRenewal}</span>
                             </span>
                         </div>
                     </div>
@@ -1418,125 +1456,428 @@ function showSupplierDetails(row) {
             </div>
             
             <div class="flex items-center space-x-4">
-                <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">Overview</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Work Orders</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Performance</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Compliance</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Documents</button>
+                <button onclick="switchSupplierTab('overview')" class="supplier-tab px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary" data-tab="overview">Overview</button>
+                <button onclick="switchSupplierTab('work-orders')" class="supplier-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="work-orders">Work Orders</button>
+                <button onclick="switchSupplierTab('performance')" class="supplier-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="performance">Performance</button>
+                <button onclick="switchSupplierTab('compliance')" class="supplier-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="compliance">Compliance</button>
+                <button onclick="switchSupplierTab('documents')" class="supplier-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="documents">Documents</button>
             </div>
         </div>
         
         <div class="bg-[#F0F0F0] p-8">
-            <div class="grid grid-cols-3 gap-6">
-                <div class="col-span-2 space-y-6">
+            <!-- Overview Tab -->
+            <div id="supplier-tab-overview" class="supplier-tab-content">
+                <div class="space-y-6">
+                    <!-- Key Details -->
                     <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg font-semibold text-primary">Supplier Information</h3>
-                            <button class="text-secondary hover:text-primary text-sm">
-                                <i class="fa-solid fa-pencil mr-1"></i>
-                                Edit
-                            </button>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Key Details</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Contract Status</label>
+                                <span class="text-sm text-primary">${displayStatus}</span>
+                            </div>
                             <div>
                                 <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Category</label>
-                                <span class="text-sm text-primary">${category}</span>
+                                <span class="text-sm text-primary">${displayCategory}</span>
                             </div>
-                            
                             <div>
-                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Status</label>
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${statusColors[status] || 'bg-muted text-primary'}">${status}</span>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Coverage</label>
+                                <span class="text-sm text-primary">${displayCoverage}</span>
                             </div>
-                            
                             <div>
-                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Coverage Areas</label>
-                                <span class="text-sm text-primary">${coverage}</span>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Renewal Date</label>
+                                <span class="text-sm text-primary">15 Dec 2025</span>
                             </div>
-                            
-                            <div>
-                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Contract Renewal</label>
-                                <span class="text-sm text-primary">${renewal}</span>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Description</label>
-                                <span class="text-sm text-primary">${description}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg font-semibold text-primary">Contact Information</h3>
-                            <button class="text-secondary hover:text-primary text-sm">
-                                <i class="fa-solid fa-pencil mr-1"></i>
-                                Edit
-                            </button>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
+                            <div class="md:col-span-2">
                                 <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Primary Contact</label>
-                                <span class="text-sm text-primary">${contactName}</span>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Email</label>
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-sm text-primary">${contactEmail}</span>
-                                    <button class="text-secondary hover:text-primary">
-                                        <i class="fa-solid fa-copy text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Phone</label>
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-sm text-primary">${contactPhone}</span>
-                                    <button class="text-secondary hover:text-primary">
-                                        <i class="fa-solid fa-copy text-xs"></i>
-                                    </button>
+                                <div class="space-y-1">
+                                    <div class="text-sm font-medium text-primary">${displayContactName}</div>
+                                    <div class="text-sm text-secondary">Email: ${displayContactEmail}</div>
+                                    <div class="text-sm text-secondary">Phone: ${displayContactPhone}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
+                    <!-- Service Overview -->
                     <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg font-semibold text-primary">Recent Work Orders</h3>
-                            <button class="text-secondary hover:text-primary text-sm">
-                                <i class="fa-solid fa-plus mr-1"></i>
-                                New Work Order
-                            </button>
+                        <h3 class="text-lg font-semibold text-primary mb-4">Service Overview</h3>
+                        <ul class="space-y-2 text-sm text-primary">
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-check text-primary mr-2 mt-1"></i>
+                                <span>Audio visual support for meeting rooms</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-check text-primary mr-2 mt-1"></i>
+                                <span>Annual maintenance on conferencing hardware</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-check text-primary mr-2 mt-1"></i>
+                                <span>Reactive fault response during business hours</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Pricing Summary -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Pricing Summary</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Base Hourly Rate</label>
+                                <span class="text-lg font-semibold text-primary">£85</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Call Out Fee</label>
+                                <span class="text-lg font-semibold text-primary">£60</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Emergency Uplift</label>
+                                <span class="text-lg font-semibold text-primary">40%</span>
+                            </div>
                         </div>
-                        <div class="text-sm text-secondary text-center py-4">
-                            No recent work orders
+                    </div>
+                    
+                    <!-- Lead Times -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Lead Times</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Standard Response</label>
+                                <span class="text-sm text-primary">4 hours</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Emergency Response</label>
+                                <span class="text-sm text-primary">1 hour</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Quick Links</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="#" class="text-sm text-primary hover:underline flex items-center space-x-2">
+                                <i class="fa-solid fa-file-pdf text-destructive"></i>
+                                <span>View contract PDF</span>
+                            </a>
+                            <a href="#" class="text-sm text-primary hover:underline flex items-center space-x-2">
+                                <i class="fa-solid fa-file-excel text-green-600"></i>
+                                <span>View rate card</span>
+                            </a>
+                            <a href="#" class="text-sm text-primary hover:underline flex items-center space-x-2">
+                                <i class="fa-solid fa-file-pdf text-destructive"></i>
+                                <span>View insurance</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-                
+            </div>
+            
+            <!-- Work Orders Tab -->
+            <div id="supplier-tab-work-orders" class="supplier-tab-content hidden">
                 <div class="space-y-6">
+                    <!-- Summary Row -->
                     <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                        <h3 class="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Quick Actions</h3>
-                        <div class="space-y-2">
-                            <button class="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-file-circle-plus text-primary"></i>
-                                    <span class="text-sm text-primary">Create Work Order</span>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
-                            </button>
-                            
-                            <button class="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth">
-                                <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-file-circle-check text-primary"></i>
-                                    <span class="text-sm text-primary">Request Documents</span>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-secondary text-xs"></i>
-                            </button>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Total Work Orders</label>
+                                <span class="text-2xl font-semibold text-primary">34</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Completed This Year</label>
+                                <span class="text-2xl font-semibold text-primary">21</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Average Completion Time</label>
+                                <span class="text-2xl font-semibold text-primary">1.8 days</span>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <!-- Work Orders Table -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-muted border-b border-[#E6E6E6]">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Work Order ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Description</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Location</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#E6E6E6]">
+                                    <tr class="hover:bg-muted transition-all-smooth">
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">WO-2314</td>
+                                        <td class="px-6 py-4 text-sm text-primary">Meeting room screen fault</td>
+                                        <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-primary">22 Sep 2025</td>
+                                        <td class="px-6 py-4 text-sm text-primary">£245</td>
+                                    </tr>
+                                    <tr class="hover:bg-muted transition-all-smooth">
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">WO-2279</td>
+                                        <td class="px-6 py-4 text-sm text-primary">Projector replacement</td>
+                                        <td class="px-6 py-4 text-sm text-primary">West Business Park</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">In progress</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-primary">14 Sep 2025</td>
+                                        <td class="px-6 py-4 text-sm text-primary">£980</td>
+                                    </tr>
+                                    <tr class="hover:bg-muted transition-all-smooth">
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">WO-2261</td>
+                                        <td class="px-6 py-4 text-sm text-primary">Audio dropout investigation</td>
+                                        <td class="px-6 py-4 text-sm text-primary">North Industrial</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-primary">09 Sep 2025</td>
+                                        <td class="px-6 py-4 text-sm text-primary">£180</td>
+                                    </tr>
+                                    <tr class="hover:bg-muted transition-all-smooth">
+                                        <td class="px-6 py-4 text-sm font-medium text-primary">WO-2245</td>
+                                        <td class="px-6 py-4 text-sm text-primary">Annual AV maintenance visit</td>
+                                        <td class="px-6 py-4 text-sm text-primary">City Core</td>
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Scheduled</span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-primary">03 Oct 2025</td>
+                                        <td class="px-6 py-4 text-sm text-primary">£1,200</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Performance Tab -->
+            <div id="supplier-tab-performance" class="supplier-tab-content hidden">
+                <div class="space-y-6">
+                    <!-- SLA Targets -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">SLA Targets</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">SLA Target Response</label>
+                                <span class="text-lg font-semibold text-primary">4 hours</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">SLA Target Resolution</label>
+                                <span class="text-lg font-semibold text-primary">24 hours</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Actual Performance -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Actual Performance</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Average Response Time</label>
+                                <span class="text-lg font-semibold text-primary">3.2 hours</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Average Resolution Time</label>
+                                <span class="text-lg font-semibold text-primary">19 hours</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">First Time Fix Rate</label>
+                                <span class="text-lg font-semibold text-primary">82%</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Late Responses This Quarter</label>
+                                <span class="text-lg font-semibold text-primary">3</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Common Issues -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Common Issues</h3>
+                        <ul class="space-y-2 text-sm text-primary">
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-circle text-secondary mr-2 mt-1 text-xs"></i>
+                                <span>HDMI failures</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-circle text-secondary mr-2 mt-1 text-xs"></i>
+                                <span>Firmware resets</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa-solid fa-circle text-secondary mr-2 mt-1 text-xs"></i>
+                                <span>Faulty power supplies</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Compliance Tab -->
+            <div id="supplier-tab-compliance" class="supplier-tab-content hidden">
+                <div class="space-y-6">
+                    <!-- Insurance -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Insurance</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Public Liability Insurance</div>
+                                    <div class="text-xs text-secondary">Valid, expires 30 Nov 2025</div>
+                                </div>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Valid</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Employers Liability Insurance</div>
+                                    <div class="text-xs text-secondary">Valid, expires 30 Nov 2025</div>
+                                </div>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Valid</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Documents -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Documents</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">RAMS</div>
+                                    <div class="text-xs text-secondary">Uploaded, version dated 12 Aug 2025</div>
+                                </div>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Uploaded</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Health and Safety Policy</div>
+                                    <div class="text-xs text-secondary">Uploaded, version dated 01 Jul 2025</div>
+                                </div>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Uploaded</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Accreditations -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Accreditations</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary">SafeContractor</span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary">ISO 9001</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary -->
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-4">
+                        <div class="text-sm text-primary">
+                            <span class="font-medium">Compliance checks overdue:</span> None
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Documents Tab -->
+            <div id="supplier-tab-documents" class="supplier-tab-content hidden">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-muted border-b border-[#E6E6E6]">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">File Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Uploaded</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Size</th>
+                                    <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#E6E6E6]">
+                                <tr class="hover:bg-muted transition-all-smooth">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-file-pdf text-destructive"></i>
+                                            <span class="text-sm text-primary">Contract Agreement</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-primary">PDF</td>
+                                    <td class="px-6 py-4 text-sm text-primary">10 Jan 2025</td>
+                                    <td class="px-6 py-4 text-sm text-primary">1.2 MB</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-secondary hover:text-primary">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-all-smooth">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-file-excel text-green-600"></i>
+                                            <span class="text-sm text-primary">Rate Card 2025</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-primary">XLSX</td>
+                                    <td class="px-6 py-4 text-sm text-primary">10 Jan 2025</td>
+                                    <td class="px-6 py-4 text-sm text-primary">180 KB</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-secondary hover:text-primary">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-all-smooth">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-file-pdf text-destructive"></i>
+                                            <span class="text-sm text-primary">Insurance Certificate</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-primary">PDF</td>
+                                    <td class="px-6 py-4 text-sm text-primary">01 Dec 2024</td>
+                                    <td class="px-6 py-4 text-sm text-primary">900 KB</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-secondary hover:text-primary">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-all-smooth">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-file-pdf text-destructive"></i>
+                                            <span class="text-sm text-primary">RAMS 2025</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-primary">PDF</td>
+                                    <td class="px-6 py-4 text-sm text-primary">12 Aug 2025</td>
+                                    <td class="px-6 py-4 text-sm text-primary">750 KB</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-secondary hover:text-primary">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-all-smooth">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-file-pdf text-destructive"></i>
+                                            <span class="text-sm text-primary">Maintenance Summary Q2</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-primary">PDF</td>
+                                    <td class="px-6 py-4 text-sm text-primary">02 Jul 2025</td>
+                                    <td class="px-6 py-4 text-sm text-primary">600 KB</td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-secondary hover:text-primary">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
