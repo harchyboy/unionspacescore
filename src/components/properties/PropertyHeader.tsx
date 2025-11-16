@@ -42,7 +42,7 @@ export function PropertyHeader({ property }: PropertyHeaderProps) {
         )}
 
         {/* Data Health, Valve Sync, and Broker Set Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-3 gap-6 mt-6">
           {/* Data Health Card */}
           <div className="flex flex-col justify-between bg-[#F0F0F0] rounded-xl border border-[#E6E6E6] p-5 min-h-[120px]">
             <div>
