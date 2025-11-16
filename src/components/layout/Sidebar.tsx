@@ -202,10 +202,40 @@ export function Sidebar() {
       <div className="p-6 border-b border-[#E6E6E6]">
         <div className="flex items-center space-x-3">
           <div
-            className="w-10 h-10 bg-primary rounded flex items-center justify-center"
+            className="w-10 h-10 bg-white rounded flex items-center justify-center"
             aria-hidden="true"
           >
-            <span className="text-white font-semibold text-lg">U</span>
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-full"
+            >
+              {/* White circle in center */}
+              <circle cx="20" cy="20" r="12" fill="white" />
+              {/* Top black shape with curved inner edge and stepped outer edge */}
+              <path
+                d="M 20 8 L 20 20 A 12 12 0 0 1 8 20 L 8 16 L 12 16 L 12 12 L 16 12 L 16 8 Z"
+                fill="#252525"
+              />
+              {/* Bottom black shape */}
+              <path
+                d="M 20 32 L 20 20 A 12 12 0 0 0 8 20 L 8 24 L 12 24 L 12 28 L 16 28 L 16 32 Z"
+                fill="#252525"
+              />
+              {/* Left black shape */}
+              <path
+                d="M 8 20 L 20 20 A 12 12 0 0 0 20 8 L 16 8 L 16 12 L 12 12 L 12 16 L 8 16 Z"
+                fill="#252525"
+              />
+              {/* Right black shape */}
+              <path
+                d="M 32 20 L 20 20 A 12 12 0 0 1 20 8 L 24 8 L 24 12 L 28 12 L 28 16 L 32 16 Z"
+                fill="#252525"
+              />
+            </svg>
           </div>
           <div>
             <div className="font-semibold text-primary text-lg">UNION</div>
