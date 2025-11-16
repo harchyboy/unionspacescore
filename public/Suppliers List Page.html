@@ -432,7 +432,7 @@
                                     <div class="text-xs text-secondary">ben@thirdway.co.uk</div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Dec 15, 2025</td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
                                     <button class="text-secondary hover:text-primary">
                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                     </button>
@@ -466,7 +466,7 @@
                                     <div class="text-xs text-secondary">sarah@premier-cs.com</div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Mar 20, 2026</td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
                                     <button class="text-secondary hover:text-primary">
                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                     </button>
@@ -500,7 +500,7 @@
                                     <div class="text-xs text-secondary">james@citymaint.co.uk</div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Jun 30, 2025</td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
                                     <button class="text-secondary hover:text-primary">
                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                     </button>
@@ -534,7 +534,7 @@
                                     <div class="text-xs text-secondary">rachel@techsupport.com</div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-secondary">Trial ends Jan 31</td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
                                     <button class="text-secondary hover:text-primary">
                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                     </button>
@@ -568,7 +568,7 @@
                                     <div class="text-xs text-secondary">oliver@greenspaces.co.uk</div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Sep 10, 2025</td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
                                     <button class="text-secondary hover:text-primary">
                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                     </button>
@@ -602,7 +602,7 @@
                                     <div class="text-xs text-secondary">emma@artisancoffee.com</div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Nov 5, 2025</td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">
                                     <button class="text-secondary hover:text-primary">
                                         <i class="fa-solid fa-ellipsis-vertical"></i>
                                     </button>
@@ -1341,9 +1341,14 @@ window.addEventListener('load', function() {
     // Supplier row click handlers
     document.querySelectorAll('.supplier-row').forEach(function(row) {
         row.addEventListener('click', function(e) {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
-                showSupplierDetails(row);
+            // Don't trigger if clicking on checkbox, button, or inside a button
+            if (e.target.tagName === 'INPUT' || 
+                e.target.tagName === 'BUTTON' || 
+                e.target.closest('button') ||
+                e.target.closest('td[onclick]')) {
+                return;
             }
+            showSupplierDetails(row);
         });
     });
 });
@@ -1392,7 +1397,7 @@ function showSupplierDetails(row) {
                             </span>
                             <span class="flex items-center space-x-1">
                                 <i class="fa-solid fa-chart-line"></i>
-                                <span>SLA: ${sla}%</span>
+                                <span>Renewal: ${renewal}</span>
                             </span>
                         </div>
                     </div>
