@@ -162,10 +162,6 @@
               <i class="fa-solid fa-upload"></i>
               <span>Upload Doc</span>
             </button>
-            <button id="btn-book-viewing" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-              <i class="fa-solid fa-calendar-check"></i>
-              <span>Book Viewing</span>
-            </button>
             <button id="btn-publish" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
               <i class="fa-solid fa-share-nodes"></i>
               <span>Publish to Brokers</span>
@@ -658,7 +654,6 @@
     const modal = document.getElementById('modal-viewing');
     function openModal() { modal.classList.remove('hidden'); modal.classList.add('flex'); }
     function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
-    document.getElementById('btn-book-viewing')?.addEventListener('click', openModal);
     document.getElementById('btn-book-viewing-2')?.addEventListener('click', openModal);
     document.getElementById('close-viewing')?.addEventListener('click', closeModal);
     modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
