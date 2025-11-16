@@ -149,16 +149,6 @@
                 </div>
                 <div class="flex flex-col justify-between w-[260px] bg-muted rounded-xl shadow-sm p-5">
                   <div>
-                    <div class="text-xs text-secondary mb-1">Valve Sync</div>
-                    <div class="flex items-center space-x-2 mb-2">
-                      <span id="valve-state" class="inline-flex items-center px-2.5 py-1 rounded-full bg-primary text-white text-xs font-medium">Pushed</span>
-                    </div>
-                    <div class="text-xs text-secondary leading-snug">Last sync <time datetime="2025-11-09T17:30:00Z">yesterday 17:30</time></div>
-                  </div>
-                  <button id="btn-sync" class="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors mt-4 self-start">Sync now</button>
-                </div>
-                <div class="flex flex-col justify-between w-[260px] bg-muted rounded-xl shadow-sm p-5">
-                  <div>
                     <div class="text-xs text-secondary mb-1">Broker Set</div>
                     <div class="text-base font-semibold text-primary" id="broker-set-name">Private · 10 brokers</div>
                   </div>
@@ -674,7 +664,6 @@
     modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
     // Mock buttons
-    document.getElementById('btn-sync')?.addEventListener('click', () => alert('Sync started'));
     document.getElementById('btn-publish')?.addEventListener('click', () => alert('Preflight checks passed. Ready to publish.'));
     
     // Detect if page is loaded in iframe and add embedded class
