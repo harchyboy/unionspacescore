@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Requirement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: '#252525',
+                        concrete: '#8E8E8E',
+                        stone: '#F0F0F0'
+                    },
+                    fontFamily: {
+                        'haltung': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none;}</style>
+</head>
+<body class="bg-stone font-haltung">
+
+<div id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-white border-r border-concrete/30 flex flex-col z-50">
+    <div class="p-6 border-b border-concrete/30">
+        <div class="text-2xl font-semibold text-slate tracking-tight">UNION</div>
+        <div class="text-xs text-concrete mt-1">Core Dashboard</div>
+    </div>
+    
+    <nav class="flex-1 overflow-y-auto py-6">
+        <div class="px-4 mb-6">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">Pipeline</div>
+            <a href="#" class="flex items-center px-3 py-2.5 bg-slate text-white rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-chart-line w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Deals</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-building w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Properties</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-folder-open w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Deal Room</span>
+            </a>
+        </div>
+        
+        <div class="px-4 mb-6">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">Operations</div>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-handshake w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Handoff</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-rocket w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Onboarding</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-boxes-stacked w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Services</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-ticket w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Tickets</span>
+                <span class="ml-auto bg-slate text-white text-xs px-2 py-0.5 rounded-full">3</span>
+            </a>
+        </div>
+        
+        <div class="px-4 mb-6">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">Management</div>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-users w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Suppliers</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-chart-bar w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Analytics</span>
+            </a>
+        </div>
+        
+        <div class="px-4">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">System</div>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-gear w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Settings</span>
+            </a>
+        </div>
+    </nav>
+    
+    <div class="p-4 border-t border-concrete/30">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-slate rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                TD
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-slate text-sm truncate">Tom Davies</p>
+                <p class="text-xs text-concrete truncate">Origination Lead</p>
+            </div>
+            <button class="text-concrete hover:text-slate">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="main-content" class="ml-64">
+    <header id="header" class="bg-white border-b border-concrete/30 sticky top-0 z-40">
+        <div class="flex items-center justify-between px-8 py-4">
+            <div class="flex items-center space-x-6">
+                <button class="text-concrete hover:text-slate transition-colors">
+                    <i class="fa-solid fa-arrow-left text-lg mr-3"></i>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-semibold text-slate">Add Requirement</h1>
+                    <p class="text-sm text-concrete mt-0.5">Fast intake from email, WhatsApp or call</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-concrete hover:text-slate transition-colors">
+                    <i class="fa-regular fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-slate rounded-full"></span>
+                </button>
+                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </button>
+                <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    <i class="fa-solid fa-circle-question mr-2"></i>
+                    Help
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="quick-capture-bar" class="bg-slate px-8 py-4">
+        <div class="max-w-7xl flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-bolt text-white"></i>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold text-sm">Fast Capture Mode</h3>
+                    <p class="text-stone text-xs">Target: under 30 seconds from inquiry to requirement</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button class="px-4 py-2 text-sm bg-white/10 text-white hover:bg-white/20 rounded-lg transition-colors border border-white/20">
+                    <i class="fa-solid fa-paste mr-2"></i>
+                    Paste from Email
+                </button>
+                <button class="px-4 py-2 text-sm bg-white/10 text-white hover:bg-white/20 rounded-lg transition-colors border border-white/20">
+                    <i class="fa-brands fa-whatsapp mr-2"></i>
+                    From WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="smart-parse-section" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate">Smart Parse</h3>
+                        <p class="text-sm text-concrete mt-1">Paste email or message—we'll extract key details automatically</p>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-800 text-xs font-semibold rounded">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>
+                        AI-Powered
+                    </span>
+                </div>
+                
+                <div class="p-6">
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-slate mb-3">Paste Email or Message Content</label>
+                        <textarea rows="8" class="w-full px-4 py-3 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate resize-none" placeholder="Paste the full email or WhatsApp message here. Our AI will detect company name, contact details, space requirements, timing, budget, and key constraints automatically...
+
+Example:
+Hi Tom, we're looking for around 3,500 sq ft in Shoreditch/Old Street for our fintech startup. Need 40-45 desks, 3 meeting rooms. Budget around £60-70k annually. Ideally move in by March. We'd prefer Cat A+ or light fitted. Let me know what you have. Cheers, Sarah Mitchell, Apex Technologies."></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                                <i class="fa-solid fa-broom mr-2"></i>
+                                Clear
+                            </button>
+                            <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                                <i class="fa-solid fa-file-import mr-2"></i>
+                                Load Template
+                            </button>
+                        </div>
+                        <button class="px-6 py-2 text-sm bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>
+                            Parse & Extract
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="extracted-fields" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-slate">Extracted Details</h3>
+                            <p class="text-sm text-concrete mt-1">Review and refine before saving</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xs text-concrete">Confidence Score:</span>
+                            <div class="flex items-center">
+                                <div class="w-32 h-2 bg-stone rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-500 rounded-full" style="width: 87%"></div>
+                                </div>
+                                <span class="ml-2 text-sm font-semibold text-green-800">87%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Company / Tenant</label>
+                            <div class="relative">
+                                <input type="text" value="Apex Technologies" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                    <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                </span>
+                            </div>
+                            <p class="text-xs text-concrete mt-1.5">
+                                <i class="fa-solid fa-lightbulb mr-1"></i>
+                                Auto-detected from message
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Primary Contact</label>
+                            <div class="relative">
+                                <input type="text" value="Sarah Mitchell" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                    <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                </span>
+                            </div>
+                            <p class="text-xs text-concrete mt-1.5">
+                                <i class="fa-solid fa-lightbulb mr-1"></i>
+                                Linked to existing contact record
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Source</label>
+                            <select class="w-full px-4 py-2.5 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate appearance-none bg-white">
+                                <option>Email</option>
+                                <option>WhatsApp</option>
+                                <option>Phone Call</option>
+                                <option>Val (AI Assistant)</option>
+                                <option>Website Inquiry</option>
+                                <option>Broker Referral</option>
+                                <option>Direct Approach</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Priority</label>
+                            <select class="w-full px-4 py-2.5 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate appearance-none bg-white">
+                                <option>Standard</option>
+                                <option>High</option>
+                                <option>Hot Opportunity</option>
+                                <option>Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-concrete/30">
+                        <h4 class="text-sm font-semibold text-slate mb-4">Space Requirements</h4>
+                        
+                        <div class="grid grid-cols-3 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Desks / Headcount</label>
+                                <div class="relative">
+                                    <input type="text" value="40-45 desks" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Square Footage</label>
+                                <div class="relative">
+                                    <input type="text" value="~3,500 sq ft" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Meeting Rooms</label>
+                                <div class="relative">
+                                    <input type="text" value="3 rooms" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Preferred Submarkets</label>
+                                <div class="relative">
+                                    <input type="text" value="Shoreditch, Old Street" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                    </span>
+                                </div>
+                                <p class="text-xs text-concrete mt-1.5">
+                                    <i class="fa-solid fa-lightbulb mr-1"></i>
+                                    Parsed from location mentions
+                                </p>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Timing / Move-In</label>
+                                <div class="relative">
+                                    <input type="text" value="March 2025" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                    </span>
+                                </div>
+                                <p class="text-xs text-concrete mt-1.5">
+                                    <i class="fa-solid fa-lightbulb mr-1"></i>
+                                    Detected timeline reference
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-concrete/30">
+                        <h4 class="text-sm font-semibold text-slate mb-4">Commercial Details</h4>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Budget Range (Annual)</label>
+                                <div class="relative">
+                                    <input type="text" value="£60,000 - £70,000" class="w-full px-4 py-2.5 border border-green-300 bg-green-50/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all text-sm text-slate font-semibold">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
+                                    </span>
+                                </div>
+                                <p class="text-xs text-concrete mt-1.5">
+                                    <i class="fa-solid fa-calculator mr-1"></i>
+                                    ~£17-20 per sq ft
+                                </p>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Fit-Out Preference</label>
+                                <div class="flex space-x-3">
+                                    <button class="flex-1 px-4 py-2.5 border-2 border-green-500 bg-green-50 rounded-lg text-sm font-semibold text-green-800 transition-all">
+                                        Cat A+
+                                    </button>
+                                    <button class="flex-1 px-4 py-2.5 border border-concrete/30 bg-white rounded-lg text-sm text-slate hover:border-slate transition-all">
+                                        Cat A
+                                    </button>
+                                    <button class="flex-1 px-4 py-2.5 border-2 border-green-500 bg-green-50 rounded-lg text-sm font-semibold text-green-800 transition-all">
+                                        Fitted
+                                    </button>
+                                </div>
+                                <p class="text-xs text-concrete mt-1.5">
+                                    <i class="fa-solid fa-lightbulb mr-1"></i>
+                                    "Cat A+ or light fitted" detected
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-concrete/30">
+                        <h4 class="text-sm font-semibold text-slate mb-4">Additional Context</h4>
+                        
+                        <div class="mb-6">
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Requirement Summary</label>
+                            <textarea rows="3" class="w-full px-4 py-3 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate resize-none" placeholder="Brief description of the requirement...">Fintech startup seeking 3,500 sq ft in Shoreditch/Old Street area. 40-45 desks, 3 meeting rooms. Budget £60-70k annually. Prefer Cat A+ or light fitted. Move-in target: March 2025.</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Key Constraints / Notes</label>
+                            <textarea rows="3" class="w-full px-4 py-3 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate resize-none" placeholder="Any specific requirements, deal-breakers, or important context...">Timeline is flexible but prefer to avoid Q4. Team values natural light and proximity to transport links. Open to slightly larger space if the right fit.</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="broker-linking" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Broker & Disposal Agent</h3>
+                    <p class="text-sm text-concrete mt-1">Link to existing relationships or create new records</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Broker Firm</label>
+                            <div class="relative">
+                                <input type="text" placeholder="Search or add new broker firm..." class="w-full px-4 py-2.5 pr-10 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-concrete">
+                                    <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                                </span>
+                            </div>
+                            <div class="mt-3 space-y-2">
+                                <button class="w-full flex items-center justify-between px-4 py-3 border border-concrete/30 rounded-lg hover:border-slate transition-all text-left">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-stone rounded flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-building text-slate text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-slate">CBRE</p>
+                                            <p class="text-xs text-concrete">12 active deals</p>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-concrete text-xs"></i>
+                                </button>
+                                <button class="w-full flex items-center justify-between px-4 py-3 border border-concrete/30 rounded-lg hover:border-slate transition-all text-left">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-stone rounded flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-building text-slate text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-slate">JLL</p>
+                                            <p class="text-xs text-concrete">8 active deals</p>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-concrete text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Broker Contact</label>
+                            <div class="relative">
+                                <input type="text" placeholder="Search or add new contact..." class="w-full px-4 py-2.5 pr-10 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-concrete">
+                                    <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                                </span>
+                            </div>
+                            <div class="mt-3 p-4 bg-stone rounded-lg">
+                                <div class="flex items-start">
+                                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                        <i class="fa-solid fa-circle-info text-slate"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-slate mb-1">No Broker Selected</p>
+                                        <p class="text-xs text-concrete leading-relaxed">Select a broker firm first, then choose the specific contact. You can also proceed without a broker if this is a direct inquiry.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-concrete/30">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate mb-1">Disposal Agent (Optional)</h4>
+                                <p class="text-xs text-concrete">Link if this requirement came via a disposal agent</p>
+                            </div>
+                            <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                                <i class="fa-solid fa-plus mr-2"></i>
+                                Add Disposal Agent
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="duplicate-detection" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-amber-50 border border-amber-300 rounded-lg p-6">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-800 text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-semibold text-slate mb-2">Potential Duplicate Detected</h3>
+                        <p class="text-sm text-concrete mb-4">We found an existing requirement that might match this inquiry</p>
+                        
+                        <div class="bg-white border border-amber-200 rounded-lg p-4 mb-4">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Apex Technologies - Shoreditch Search</h4>
+                                    <p class="text-xs text-concrete">Created 5 days ago by Tom Davies</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Active
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4 text-xs">
+                                <div>
+                                    <span class="text-concrete">Size:</span>
+                                    <span class="ml-1 font-semibold text-slate">3,200 sq ft</span>
+                                </div>
+                                <div>
+                                    <span class="text-concrete">Budget:</span>
+                                    <span class="ml-1 font-semibold text-slate">£55-65k</span>
+                                </div>
+                                <div>
+                                    <span class="text-concrete">Timing:</span>
+                                    <span class="ml-1 font-semibold text-slate">Q1 2025</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3">
+                            <button class="px-4 py-2 text-sm bg-amber-600 text-white hover:bg-amber-700 rounded-lg transition-colors font-semibold">
+                                <i class="fa-solid fa-link mr-2"></i>
+                                Link to Existing Requirement
+                            </button>
+                            <button class="px-4 py-2 text-sm bg-white text-slate hover:bg-stone rounded-lg transition-colors border border-amber-300">
+                                Create as New Requirement
+                            </button>
+                            <button class="px-4 py-2 text-sm text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-eye mr-2"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="matching-preview" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate">Suggested Property Matches</h3>
+                        <p class="text-sm text-concrete mt-1">AI-powered recommendations based on requirements</p>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-800 text-xs font-semibold rounded">
+                        <i class="fa-solid fa-sparkles mr-2"></i>
+                        3 Strong Matches
+                    </span>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="border-2 border-green-500 bg-green-50/30 rounded-lg overflow-hidden hover:shadow-lg transition-all">
+                            <div class="h-32 bg-gradient-to-br from-slate to-concrete"></div>
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-sm font-semibold text-slate">42 Moorgate</h4>
+                                    <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                        96% Match
+                                    </span>
+                                </div>
+                                <p class="text-xs text-concrete mb-3">Floor 6, Suite 601 • Shoreditch</p>
+                                <div class="space-y-1.5 mb-4">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Size</span>
+                                        <span class="font-semibold text-slate">3,600 sq ft</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Desks</span>
+                                        <span class="font-semibold text-slate">42 desks</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Meeting Rooms</span>
+                                        <span class="font-semibold text-slate">3 rooms</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Available</span>
+                                        <span class="font-semibold text-slate">Now</span>
+                                    </div>
+                                </div>
+                                <button class="w-full px-3 py-2 bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors text-xs font-semibold">
+                                    <i class="fa-solid fa-eye mr-2"></i>
+                                    View Property
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg overflow-hidden hover:shadow-lg transition-all">
+                            <div class="h-32 bg-gradient-to-br from-concrete to-stone"></div>
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-sm font-semibold text-slate">The Bower</h4>
+                                    <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                                        89% Match
+                                    </span>
+                                </div>
+                                <p class="text-xs text-concrete mb-3">Floor 4 • Old Street</p>
+                                <div class="space-y-1.5 mb-4">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Size</span>
+                                        <span class="font-semibold text-slate">3,400 sq ft</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Desks</span>
+                                        <span class="font-semibold text-slate">40 desks</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Meeting Rooms</span>
+                                        <span class="font-semibold text-slate">2 rooms</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Available</span>
+                                        <span class="font-semibold text-slate">Feb 2025</span>
+                                    </div>
+                                </div>
+                                <button class="w-full px-3 py-2 border border-concrete/30 text-slate hover:bg-stone rounded-lg transition-colors text-xs font-semibold">
+                                    <i class="fa-solid fa-eye mr-2"></i>
+                                    View Property
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg overflow-hidden hover:shadow-lg transition-all">
+                            <div class="h-32 bg-gradient-to-br from-stone to-concrete"></div>
+                            <div class="p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-sm font-semibold text-slate">Tea Building</h4>
+                                    <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                                        84% Match
+                                    </span>
+                                </div>
+                                <p class="text-xs text-concrete mb-3">Floor 2, Unit B • Shoreditch</p>
+                                <div class="space-y-1.5 mb-4">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Size</span>
+                                        <span class="font-semibold text-slate">3,800 sq ft</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Desks</span>
+                                        <span class="font-semibold text-slate">45 desks</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Meeting Rooms</span>
+                                        <span class="font-semibold text-slate">4 rooms</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-concrete">Available</span>
+                                        <span class="font-semibold text-slate">Mar 2025</span>
+                                    </div>
+                                </div>
+                                <button class="w-full px-3 py-2 border border-concrete/30 text-slate hover:bg-stone rounded-lg transition-colors text-xs font-semibold">
+                                    <i class="fa-solid fa-eye mr-2"></i>
+                                    View Property
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <button class="text-sm text-slate hover:underline font-semibold">
+                            View All 12 Potential Matches
+                            <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="first-task" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">First Task</h3>
+                    <p class="text-sm text-concrete mt-1">Automatic task creation to keep momentum</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Task Type</label>
+                            <select class="w-full px-4 py-2.5 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate appearance-none bg-white">
+                                <option>Qualify Requirement</option>
+                                <option>Schedule Initial Call</option>
+                                <option>Send Property Shortlist</option>
+                                <option>Arrange Viewing</option>
+                                <option>Request Additional Info</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Due Date</label>
+                            <input type="date" class="w-full px-4 py-2.5 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate">
+                        </div>
+
+                        <div class="col-span-2">
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Task Description</label>
+                            <textarea rows="3" class="w-full px-4 py-3 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate resize-none" placeholder="Describe what needs to be done...">Call Sarah Mitchell to qualify budget, timeline flexibility, and decision-making process. Confirm desk count and meeting room requirements. Discuss Cat A+ vs fitted preference in detail.</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Assigned To</label>
+                            <select class="w-full px-4 py-2.5 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate appearance-none bg-white">
+                                <option>Tom Davies (Me)</option>
+                                <option>Max Sullivan</option>
+                                <option>Dani Rodriguez</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-concrete uppercase tracking-wide mb-2">Priority</label>
+                            <select class="w-full px-4 py-2.5 border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate transition-all text-sm text-slate appearance-none bg-white">
+                                <option>Normal</option>
+                                <option>High</option>
+                                <option>Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="save-actions" class="px-8 py-8 mb-16 sticky bottom-0 bg-stone/95 backdrop-blur-sm border-t border-concrete/30 z-30">
+        <div class="max-w-7xl">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button class="px-4 py-2 text-sm text-slate hover:bg-white rounded-lg transition-colors border border-concrete/30">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i>
+                        Save Draft
+                    </button>
+                    <button class="px-4 py-2 text-sm text-concrete hover:text-slate transition-colors">
+                        <i class="fa-solid fa-xmark mr-2"></i>
+                        Discard
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <div class="text-right mr-4">
+                        <p class="text-xs text-concrete mb-0.5">Time Elapsed</p>
+                        <p class="text-sm font-semibold text-slate">00:18</p>
+                    </div>
+                    <button class="px-6 py-3 bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold shadow-lg">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        Create Requirement
+                    </button>
+                    <button class="px-6 py-3 bg-green-600 text-white hover:bg-green-700 rounded-lg transition-colors font-semibold shadow-lg">
+                        <i class="fa-solid fa-rocket mr-2"></i>
+                        Create & Start Deal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer" class="bg-white border-t border-concrete/30 px-8 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div class="text-2xl font-semibold text-slate">UNION</div>
+                    <div class="h-4 w-px bg-concrete/30"></div>
+                    <p class="text-xs text-concrete">Built For The Best</p>
+                </div>
+                
+                <div class="flex items-center space-x-6 text-xs text-concrete">
+                    <a href="#" class="hover:text-slate transition-colors">Documentation</a>
+                    <a href="#" class="hover:text-slate transition-colors">Support</a>
+                    <a href="#" class="hover:text-slate transition-colors">System Status</a>
+                    <span>© 2024 UNION. All rights reserved.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div id="help-button" class="fixed bottom-8 right-8 z-50">
+    <button class="w-14 h-14 bg-slate text-white rounded-full shadow-lg hover:bg-slate/90 transition-all flex items-center justify-center">
+        <i class="fa-solid fa-circle-question text-xl"></i>
+    </button>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+    const pasteEmailBtn = document.querySelector('button:has(.fa-paste)');
+    const whatsappBtn = document.querySelector('button:has(.fa-whatsapp)');
+    const parseBtn = document.querySelector('button:has(.fa-wand-magic-sparkles)');
+    const textarea = document.querySelector('textarea[rows="8"]');
+    
+    const sampleEmail = `Hi Tom,
+
+We're looking for around 3,500 sq ft in Shoreditch/Old Street for our fintech startup. Need 40-45 desks, 3 meeting rooms. Budget around £60-70k annually. Ideally move in by March. We'd prefer Cat A+ or light fitted.
+
+Let me know what you have.
+
+Cheers,
+Sarah Mitchell
+Head of Operations
+Apex Technologies
+s.mitchell@apextech.com
++44 20 7123 4567`;
+
+    if (pasteEmailBtn && textarea) {
+        pasteEmailBtn.addEventListener('click', function() {
+            textarea.value = sampleEmail;
+            textarea.classList.add('border-green-300', 'bg-green-50/30');
+            setTimeout(() => {
+                textarea.classList.remove('border-green-300', 'bg-green-50/30');
+            }, 1000);
+        });
+    }
+
+    if (whatsappBtn && textarea) {
+        whatsappBtn.addEventListener('click', function() {
+            textarea.value = sampleEmail;
+            textarea.classList.add('border-green-300', 'bg-green-50/30');
+            setTimeout(() => {
+                textarea.classList.remove('border-green-300', 'bg-green-50/30');
+            }, 1000);
+        });
+    }
+
+    if (parseBtn) {
+        parseBtn.addEventListener('click', function() {
+            const extractedSection = document.getElementById('extracted-fields');
+            if (extractedSection) {
+                extractedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
+    let startTime = Date.now();
+    const timerElement = document.querySelector('.text-sm.font-semibold.text-slate');
+    
+    if (timerElement) {
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            timerElement.textContent = `${minutes}:${seconds}`;
+        }, 1000);
+    }
+});
+</script>
+
+</body>
+</html>
