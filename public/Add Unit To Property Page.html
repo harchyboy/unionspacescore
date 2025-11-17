@@ -260,377 +260,149 @@
             </div>
         </div>
         
-        <div id="unit-form-content" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
-            
-            <div id="required-fields-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 mb-6">
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold text-primary mb-2">Essential Details</h2>
-                    <p class="text-sm text-secondary">Required information to create the unit</p>
-                </div>
-                
+        <div id="unit-form-content" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-4 py-6 md:px-8">
+            <div class="space-y-6 max-w-5xl mx-auto">
                 <form id="unit-form" class="space-y-6">
-                    
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Property <span class="text-destructive">*</span></label>
-                            <select required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none bg-muted">
-                                <option value="">Select property</option>
-                                <option selected>99 Bishopsgate</option>
-                                <option>The Tides At Arverne</option>
-                                <option>One Canada Square</option>
-                                <option>The Leadenhall Building</option>
-                                <option>Principal Place</option>
-                            </select>
+                    <section id="unit-basics" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Unit basics</h2>
+                            <p class="text-sm text-secondary mt-1">Create the core record for this space.</p>
                         </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Unit Name / ID <span class="text-destructive">*</span></label>
-                            <input type="text" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 99B-3-201">
-                            <p class="text-xs text-secondary mt-1.5">Format: {PropertyCode}-{Floor}-{Suite}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Floor <span class="text-destructive">*</span></label>
-                            <select required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
-                                <option value="">Select floor</option>
-                                <option>Ground</option>
-                                <option>1st Floor</option>
-                                <option>2nd Floor</option>
-                                <option>3rd Floor</option>
-                                <option>4th Floor</option>
-                                <option>5th Floor</option>
-                                <option>6th Floor</option>
-                                <option>7th Floor</option>
-                                <option>8th Floor</option>
-                                <option>9th Floor</option>
-                                <option>10th Floor</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Size (sq ft) <span class="text-destructive">*</span></label>
-                            <input type="number" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 2500">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Desks <span class="text-destructive">*</span></label>
-                            <input type="number" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 25">
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Meeting Rooms <span class="text-destructive">*</span></label>
-                            <input type="number" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 2">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-3">Fit-out Status <span class="text-destructive">*</span></label>
-                        <div class="grid grid-cols-3 gap-4">
-                            <label class="relative flex flex-col items-center justify-center px-4 py-4 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="fitout" value="unfitted" class="sr-only peer" required>
-                                <i class="fa-solid fa-hard-hat text-2xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="text-sm font-medium text-secondary peer-checked:text-primary">Unfitted</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex flex-col items-center justify-center px-4 py-4 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="fitout" value="part-fitted" class="sr-only peer">
-                                <i class="fa-solid fa-wrench text-2xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="text-sm font-medium text-secondary peer-checked:text-primary">Part Fitted</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex flex-col items-center justify-center px-4 py-4 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="fitout" value="fitted" class="sr-only peer">
-                                <i class="fa-solid fa-check-circle text-2xl text-secondary peer-checked:text-primary mb-2"></i>
-                                <span class="text-sm font-medium text-secondary peer-checked:text-primary">Fitted</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-3">Availability Status <span class="text-destructive">*</span></label>
-                        <div class="grid grid-cols-3 gap-4">
-                            <label class="relative flex items-center justify-center px-4 py-3 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="availability" value="available" class="sr-only peer" required>
-                                <span class="text-sm font-medium text-secondary peer-checked:text-primary">Available</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex items-center justify-center px-4 py-3 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="availability" value="under-offer" class="sr-only peer">
-                                <span class="text-sm font-medium text-secondary peer-checked:text-primary">Under Offer</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex items-center justify-center px-4 py-3 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="availability" value="let" class="sr-only peer">
-                                <span class="text-sm font-medium text-secondary peer-checked:text-primary">Let</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                </form>
-            </div>
-            
-            <div id="pricing-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 mb-6">
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold text-primary mb-2">Pricing Structure</h2>
-                    <p class="text-sm text-secondary">Define the commercial terms for this unit</p>
-                </div>
-                
-                <div class="space-y-6">
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-3">Pricing Mode <span class="text-destructive">*</span></label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <label class="relative flex flex-col px-6 py-4 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="pricing-mode" value="all-inclusive" class="sr-only peer" required>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-semibold text-secondary peer-checked:text-primary">All-Inclusive</span>
-                                    <i class="fa-solid fa-circle-check text-secondary peer-checked:text-primary"></i>
-                                </div>
-                                <span class="text-xs text-secondary">Single monthly payment covering all costs</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex flex-col px-6 py-4 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="pricing-mode" value="bolt-on" class="sr-only peer">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Bolt-On</span>
-                                    <i class="fa-solid fa-circle-check text-secondary peer-checked:text-primary"></i>
-                                </div>
-                                <span class="text-xs text-secondary">Separate rent, service charge, and rates</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div id="all-inclusive-fields" class="hidden space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2">Guide Total per Month <span class="text-destructive">*</span></label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                <input type="number" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 12500">
-                            </div>
-                            <p class="text-xs text-secondary mt-1.5">Includes rent, service charge, rates, and utilities</p>
-                        </div>
-                        
-                        <div class="border-t border-[#E6E6E6] pt-4">
-                            <p class="text-xs font-medium text-secondary mb-3">Breakdown (Optional)</p>
-                            <div class="grid grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-primary mb-2">Rent (£/month)</label>
-                                    <div class="relative">
-                                        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                        <input type="number" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 7500">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-primary mb-2">Service Charge</label>
-                                    <div class="relative">
-                                        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                        <input type="number" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 3000">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-primary mb-2">Rates</label>
-                                    <div class="relative">
-                                        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                        <input type="number" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 2000">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="bolt-on-fields" class="hidden space-y-4">
-                        <div class="grid grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2">Rent (£/month) <span class="text-destructive">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                    <input type="number" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 7500">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-primary mb-2">Service Charge <span class="text-destructive">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                    <input type="number" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 3000">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-primary mb-2">Business Rates <span class="text-destructive">*</span></label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary">£</span>
-                                    <input type="number" class="w-full pl-8 pr-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., 2000">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-muted border border-[#E6E6E6] rounded-lg p-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-secondary">Total Monthly Cost</span>
-                                <span class="text-lg font-semibold text-primary">£12,500</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div id="visibility-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 mb-6">
-                <div class="mb-6">
-                    <h2 class="text-xl font-semibold text-primary mb-2">Visibility & Marketing</h2>
-                    <p class="text-sm text-secondary">Control who can see this unit</p>
-                </div>
-                
-                <div class="space-y-6">
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-3">Visibility <span class="text-destructive">*</span></label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <label class="relative flex flex-col px-6 py-4 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="visibility" value="public" class="sr-only peer" required>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Public</span>
-                                    <i class="fa-solid fa-globe text-secondary peer-checked:text-primary"></i>
-                                </div>
-                                <span class="text-xs text-secondary">Visible to full broker network</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                            <label class="relative flex flex-col px-6 py-4 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                <input type="radio" name="visibility" value="private" class="sr-only peer">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Private</span>
-                                    <i class="fa-solid fa-lock text-secondary peer-checked:text-primary"></i>
-                                </div>
-                                <span class="text-xs text-secondary">Preferred brokers only</span>
-                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                            </label>
-                        </div>
-                        <p class="text-xs text-secondary mt-3">
-                            <i class="fa-solid fa-info-circle mr-1"></i>
-                            Inherits property default, can be overridden for specific suites
-                        </p>
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div id="advanced-section" class="bg-white rounded-lg border border-[#E6E6E6] p-8 mb-6">
-                <div class="mb-6 flex items-center justify-between">
-                    <div>
-                        <h2 class="text-xl font-semibold text-primary mb-2">Advanced Options</h2>
-                        <p class="text-sm text-secondary">Optional fields for enhanced matching and fit-out management</p>
-                    </div>
-                    <button id="toggle-advanced" class="text-primary hover:text-opacity-80 text-sm font-medium flex items-center space-x-2">
-                        <span>Expand</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </button>
-                </div>
-                
-                <div id="advanced-fields" class="hidden space-y-6">
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-primary mb-3">Suitability Tags</label>
-                        <p class="text-xs text-secondary mb-3">Used by the matching algorithm to pair units with tenant requirements</p>
-                        <div class="space-y-3">
-                            <div class="flex flex-wrap gap-2">
-                                <label class="inline-flex items-center px-3 py-2 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                    <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                    <span class="text-sm text-primary">Bank/City Suitable</span>
-                                </label>
-                                <label class="inline-flex items-center px-3 py-2 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                    <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                    <span class="text-sm text-primary">Tech/Creative</span>
-                                </label>
-                                <label class="inline-flex items-center px-3 py-2 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                    <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                    <span class="text-sm text-primary">Professional Services</span>
-                                </label>
-                                <label class="inline-flex items-center px-3 py-2 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                    <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                    <span class="text-sm text-primary">Retail/Hospitality</span>
-                                </label>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-xs font-medium text-secondary mb-2">Headcount Range</label>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <input type="number" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="Min headcount">
-                                    <input type="number" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="Max headcount">
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-xs font-medium text-secondary mb-2">Amenities</label>
-                                <div class="flex flex-wrap gap-2">
-                                    <label class="inline-flex items-center px-3 py-1.5 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                        <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                        <span class="text-xs text-primary">Shower</span>
-                                    </label>
-                                    <label class="inline-flex items-center px-3 py-1.5 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                        <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                        <span class="text-xs text-primary">Bike Storage</span>
-                                    </label>
-                                    <label class="inline-flex items-center px-3 py-1.5 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                        <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                        <span class="text-xs text-primary">Terrace</span>
-                                    </label>
-                                    <label class="inline-flex items-center px-3 py-1.5 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                        <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                        <span class="text-xs text-primary">Kitchen</span>
-                                    </label>
-                                    <label class="inline-flex items-center px-3 py-1.5 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                                        <input type="checkbox" class="mr-2 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                                        <span class="text-xs text-primary">24/7 Access</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="fitout-budget-section" class="bg-muted border border-[#E6E6E6] rounded-lg p-6">
-                        <div class="mb-4">
-                            <h3 class="text-sm font-semibold text-primary mb-1">Fit-out Budget & Rent Impact</h3>
-                            <p class="text-xs text-secondary">For Unfitted units only</p>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-medium text-secondary mb-2">Agreed Budget</label>
-                                    <div class="relative">
-                                        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary text-sm">£</span>
-                                        <input type="number" class="w-full pl-8 pr-3 py-2 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="e.g., 50000">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-secondary mb-2">Max Overage</label>
-                                    <div class="relative">
-                                        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary text-sm">£</span>
-                                        <input type="number" class="w-full pl-8 pr-3 py-2 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" placeholder="e.g., 10000">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-xs font-medium text-secondary mb-2">Rent Adjustment Formula</label>
-                                <textarea class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none" rows="2" placeholder="e.g., If budget increases above £50k, rent adjusts by £150/month per £10k over term"></textarea>
-                                <p class="text-xs text-secondary mt-1.5">
-                                    <i class="fa-solid fa-lightbulb mr-1"></i>
-                                    Helper: "If budget increases above agreed £X, rent adjusts by £Y/month over term"
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-name">Unit name / label <span class="text-destructive">*</span></label>
+                                <input id="unit-name" name="unitName" type="text" required aria-invalid="true" class="w-full px-4 py-3 border border-destructive rounded-lg focus:outline-none focus:ring-2 focus:ring-destructive placeholder:text-secondary/70" placeholder="Suite 4.02">
+                                <p class="text-xs text-destructive mt-2 font-medium flex items-center space-x-2">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>Unit name is required.</span>
                                 </p>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-floor">Floor</label>
+                                <input id="unit-floor" name="floor" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="G, 01, 02, LG">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-status">Status</label>
+                                <select id="unit-status" name="status" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="available">Available</option>
+                                    <option value="under-offer">Under offer</option>
+                                    <option value="let">Let</option>
+                                    <option value="held">Held</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="figma-url">Figma asset URL</label>
+                                <input id="figma-url" name="figmaAssetUrl" type="url" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="https://figma.com/file/...">
+                                <p class="text-xs text-secondary mt-2">Optional reference for marketing imagery.</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                </div>
-            </div>
+                    </section>
+
+                    <section id="space-details" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Space details</h2>
+                            <p class="text-sm text-secondary mt-1">Sizing and occupancy information.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-area">Area (sq ft)</label>
+                                <input id="unit-area" name="areaSqft" type="number" inputmode="decimal" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="2500">
+                                <p class="text-xs text-secondary mt-2">Use net internal area where possible.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="desk-count">Desk count</label>
+                                <input id="desk-count" name="deskCount" type="number" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="24">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="meeting-rooms">Meeting rooms</label>
+                                <input id="meeting-rooms" name="meetingRooms" type="number" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="3">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="availability-visibility" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Availability & visibility</h2>
+                            <p class="text-sm text-secondary mt-1">Control what brokers and the team can see.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-visibility">Visibility <span class="text-destructive">*</span></label>
+                                <select id="unit-visibility" name="visibility" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="public">Public</option>
+                                    <option value="private" selected>Private</option>
+                                </select>
+                                <p class="text-xs text-secondary mt-2">Defaults to Private to keep suites internal until ready.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="availability-notes">Internal availability notes</label>
+                                <textarea id="availability-notes" name="availabilityNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Holding for ACME until 15 Feb. Status will reflect these notes in the future."></textarea>
+                                <p class="text-xs text-secondary mt-2">Stores alongside the status text for ops context only.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="amenities-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Amenities</h2>
+                            <p class="text-sm text-secondary mt-1">Multi-select tag input stored in the <span class="font-medium text-primary">amenities</span> field.</p>
+                        </div>
+                        <div>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div class="text-xs text-secondary">Select everything included with this unit.</div>
+                                <div id="amenities-list" class="flex flex-wrap gap-2" aria-label="Amenities multi-select"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="comfort-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Comfort & HVAC</h2>
+                            <p class="text-sm text-secondary mt-1">Capture glazing and servicing expectations.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="windows-type">Windows type</label>
+                                <select id="windows-type" name="windowsType" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select windows type</option>
+                                    <option value="full-height">Full height</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="limited">Limited</option>
+                                    <option value="none">None</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="hvac-servicing">HVAC servicing</label>
+                                <select id="hvac-servicing" name="hvacServicing" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select servicing</option>
+                                    <option value="included">Included in landlord service charge</option>
+                                    <option value="tenant">Tenant responsible</option>
+                                    <option value="shared">Shared system</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="hvac-notes">HVAC notes</label>
+                                <input id="hvac-notes" name="hvacNotes" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="VRF system, last serviced Jan 2025">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="design-notes" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Design & internal notes</h2>
+                            <p class="text-sm text-secondary mt-1">Internal only, never shown externally.</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2" for="internal-notes">Internal notes</label>
+                            <textarea id="internal-notes" name="internalNotes" rows="4" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Notes for ops, fit-out dependencies, landlord requirements, etc."></textarea>
+                        </div>
+                    </section>
+                </form>
             
-            <div id="automation-info" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+            <div id="automation-info" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
                 <div class="flex items-start space-x-4">
                     <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
                         <i class="fa-solid fa-robot text-white"></i>
@@ -659,18 +431,18 @@
                 </div>
             </div>
             
-            <div id="form-actions" class="flex items-center justify-between">
-                <button class="text-secondary hover:text-primary text-sm font-medium flex items-center space-x-2">
+            <div id="form-actions" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6">
+                <button class="text-secondary hover:text-primary text-sm font-medium flex items-center space-x-2 self-start">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Back to Units</span>
                 </button>
-                <div class="flex items-center space-x-3">
+                <div class="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
                     <button class="border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
-                        Save as Draft
+                        Cancel
                     </button>
                     <button class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-check"></i>
-                        <span>Save & Activate Unit</span>
+                        <span>Save unit</span>
                     </button>
                 </div>
             </div>
@@ -683,66 +455,80 @@
 <script>
 window.addEventListener('load', function() {
     
-    const pricingModeInputs = document.querySelectorAll('input[name="pricing-mode"]');
-    const allInclusiveFields = document.getElementById('all-inclusive-fields');
-    const boltOnFields = document.getElementById('bolt-on-fields');
-    
-    if (pricingModeInputs.length && allInclusiveFields && boltOnFields) {
-        pricingModeInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                if (this.value === 'all-inclusive') {
-                    allInclusiveFields.classList.remove('hidden');
-                    boltOnFields.classList.add('hidden');
-                } else if (this.value === 'bolt-on') {
-                    allInclusiveFields.classList.add('hidden');
-                    boltOnFields.classList.remove('hidden');
-                }
-            });
-        });
-    }
-    
-    const toggleAdvanced = document.getElementById('toggle-advanced');
-    const advancedFields = document.getElementById('advanced-fields');
-    
-    if (toggleAdvanced && advancedFields) {
-        toggleAdvanced.addEventListener('click', function() {
-            advancedFields.classList.toggle('hidden');
-            const icon = this.querySelector('i');
-            if (advancedFields.classList.contains('hidden')) {
-                if (icon) {
-                    icon.classList.remove('fa-chevron-up');
-                    icon.classList.add('fa-chevron-down');
-                }
-                const label = this.querySelector('span');
-                if (label) {
-                    label.textContent = 'Expand';
-                }
-            } else {
-                if (icon) {
-                    icon.classList.remove('fa-chevron-down');
-                    icon.classList.add('fa-chevron-up');
-                }
-                const label = this.querySelector('span');
-                if (label) {
-                    label.textContent = 'Collapse';
-                }
-            }
-        });
-    }
-    
-    if (boltOnFields) {
-        const boltOnInputs = boltOnFields.querySelectorAll('input[type="number"]');
-        boltOnInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                const rent = parseFloat(boltOnFields.querySelector('input[placeholder*="7500"]').value) || 0;
-                const service = parseFloat(boltOnFields.querySelector('input[placeholder*="3000"]').value) || 0;
-                const rates = parseFloat(boltOnFields.querySelector('input[placeholder*="2000"]').value) || 0;
-                const total = rent + service + rates;
-                const totalDisplay = boltOnFields.querySelector('.text-lg.font-semibold');
-                if (totalDisplay) {
-                    totalDisplay.textContent = '£' + total.toLocaleString();
-                }
-            });
+    const amenities = [
+        "24/7 access",
+        "Air conditioning",
+        "Backup internet connection",
+        "Balcony",
+        "Brainstorming rooms",
+        "Breakout areas",
+        "Business lounge",
+        "Cafe",
+        "Call handling",
+        "Car parking",
+        "CAT 5/6/7 cabling",
+        "CCTV",
+        "Changing rooms",
+        "Cleaning",
+        "Coffee",
+        "Conference rooms",
+        "Cycle parking",
+        "Wi Fi",
+        "DDA compliance",
+        "Disabled access",
+        "Dog friendly",
+        "Event space",
+        "Exercise studio",
+        "Filtered water",
+        "Fully furnished",
+        "Games lounge",
+        "Gym",
+        "Kitchen",
+        "Lift",
+        "Lockers",
+        "Mail handling",
+        "Meeting rooms",
+        "Mindfulness rooms",
+        "On site barista",
+        "On site staff",
+        "Outdoor space",
+        "Phone booths",
+        "Printing",
+        "Restaurant",
+        "Restaurant on site",
+        "Rooftop terrace",
+        "Secretarial services",
+        "Secure server rooms",
+        "Security guards",
+        "Showers",
+        "Single sex toilets",
+        "Snacks and refreshments",
+        "Storage",
+        "Unisex toilets",
+        "Video conferencing",
+        "VOIP",
+        "Wellness room"
+    ];
+
+    const amenitiesContainer = document.getElementById('amenities-list');
+    if (amenitiesContainer) {
+        amenities.forEach(option => {
+            const label = document.createElement('label');
+            label.className = 'inline-flex items-center cursor-pointer';
+
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.name = 'amenities';
+            input.value = option;
+            input.className = 'sr-only peer';
+
+            const chip = document.createElement('span');
+            chip.className = 'inline-flex items-center px-3 py-1.5 text-xs font-medium border border-[#E6E6E6] rounded-full text-secondary peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary transition-colors';
+            chip.textContent = option;
+
+            label.appendChild(input);
+            label.appendChild(chip);
+            amenitiesContainer.appendChild(label);
         });
     }
     

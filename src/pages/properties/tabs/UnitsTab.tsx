@@ -70,7 +70,6 @@ export function UnitsTab({ property }: UnitsTabProps) {
             <TableHeaderCell>Price</TableHeaderCell>
             <TableHeaderCell>Lease</TableHeaderCell>
             <TableHeaderCell>Pipeline</TableHeaderCell>
-            <TableHeaderCell align="right">Actions</TableHeaderCell>
           </TableHeader>
           <TableBody>
             {filteredUnits.map((unit) => (
@@ -101,21 +100,6 @@ export function UnitsTab({ property }: UnitsTabProps) {
                       {unit.pipelineStage}
                     </Chip>
                   )}
-                </TableCell>
-                <TableCell align="right">
-                  <button
-                    className="text-[#8e8e8e] hover:text-[#252525]"
-                    aria-label={`Actions for ${unit.code}`}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                      />
-                    </svg>
-                  </button>
                 </TableCell>
               </TableRow>
             ))}
