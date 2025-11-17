@@ -39,6 +39,8 @@ async function loadSharedSidebar() {
     if (activeKey) {
       applyActiveState(clone, activeKey);
     }
+
+    hydrateLeadBadge(clone);
   });
 }
 
@@ -49,16 +51,17 @@ function applyActiveState(sidebar, navKey) {
   }
 
   link.classList.add('bg-primary', 'text-white', 'shadow-sm');
-  link.classList.remove('text-slate');
+  link.classList.remove('text-slate', 'hover:bg-stone');
 
   const icon = link.querySelector('i');
   if (icon) {
     icon.classList.add('text-white');
+    icon.classList.remove('text-slate', 'text-concrete');
   }
 
   const badge = link.querySelector('[data-nav-badge]');
   if (badge) {
-    badge.classList.remove('bg-slate', 'text-white', 'bg-secondary');
+    badge.classList.remove('bg-slate', 'text-white', 'bg-secondary', 'bg-red-600');
     badge.classList.add('bg-white', 'text-primary');
   }
 }
@@ -67,5 +70,15 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadSharedSidebar);
 } else {
   loadSharedSidebar();
+}
+
+function hydrateLeadBadge(sidebar) {
+  const badge = sidebar.querySelector('[data-hot-lead-badge]');
+  if (!badge) return;
+
+  if (window.LEAD_UTILS && typeof window.LEAD_UTILS.getHotLeadCount === 'function') {
+    const hotCount = window.LEAD_UTILS.getHotLeadCount();
+    badge.textContent = `${hotCount} HOT`;
+  }
 }
 

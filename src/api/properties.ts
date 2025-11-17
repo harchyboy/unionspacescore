@@ -5,6 +5,9 @@ export interface ListPropertiesParams {
   search?: string;
   marketingStatus?: string;
   visibility?: string;
+  brokerSet?: string;
+  missingMedia?: boolean;
+  brokerReadyThisWeek?: boolean;
   page?: number;
   limit?: number;
   sortBy?: 'updatedAt' | 'name';
@@ -43,6 +46,9 @@ export async function listProperties(
   if (params.search) searchParams.set('search', params.search);
   if (params.marketingStatus) searchParams.set('marketingStatus', params.marketingStatus);
   if (params.visibility) searchParams.set('visibility', params.visibility);
+  if (params.brokerSet) searchParams.set('brokerSet', params.brokerSet);
+  if (params.missingMedia) searchParams.set('missingMedia', 'true');
+  if (params.brokerReadyThisWeek) searchParams.set('brokerReadyThisWeek', 'true');
   if (params.page) searchParams.set('page', params.page.toString());
   if (params.limit) searchParams.set('limit', params.limit.toString());
   if (params.sortBy) searchParams.set('sortBy', params.sortBy);
@@ -139,6 +145,66 @@ export function useUploadDocument() {
     mutationFn: ({ id, file }: { id: PropertyId; file: File }) => uploadDocument(id, file),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['property', variables.id] });
+    },
+  });
+}
+
+// Bulk actions
+export async function bulkUpdateProperties(
+  propertyIds: PropertyId[],
+  updates: {
+    visibility?: 'Private' | 'Public';
+    marketingStatus?: 'Draft' | 'Broker-Ready' | 'On Market';
+    brokerSet?: string;
+  }
+): Promise<{ success: boolean; updated: number; errors?: string[] }> {
+  return fetchJson<{ success: boolean; updated: number; errors?: string[] }>(
+    `${API_BASE}/properties/bulk`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify({ propertyIds, updates }),
+    }
+  );
+}
+
+export async function bulkPushToBrokerSet(
+  propertyIds: PropertyId[],
+  brokerSet: string
+): Promise<{ success: boolean; updated: number; errors?: string[] }> {
+  return fetchJson<{ success: boolean; updated: number; errors?: string[] }>(
+    `${API_BASE}/properties/bulk/broker-set`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ propertyIds, brokerSet }),
+    }
+  );
+}
+
+export function useBulkUpdateProperties() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      propertyIds,
+      updates,
+    }: {
+      propertyIds: PropertyId[];
+      updates: Parameters<typeof bulkUpdateProperties>[1];
+    }) => bulkUpdateProperties(propertyIds, updates),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
+    },
+  });
+}
+
+export function useBulkPushToBrokerSet() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ propertyIds, brokerSet }: { propertyIds: PropertyId[]; brokerSet: string }) =>
+      bulkPushToBrokerSet(propertyIds, brokerSet),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['properties'] });
     },
   });
 }

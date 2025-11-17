@@ -1,7 +1,9 @@
 {
-  "buildCommand": "pnpm build",
+  "buildCommand": "node build-static.js",
   "outputDirectory": "dist",
   "installCommand": "pnpm install",
-  "framework": null
+  "framework": null,
+  "cleanUrls": false,
+  "trailingSlash": false
 }
 

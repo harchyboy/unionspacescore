@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
     <title>Properties</title>
     <script src='https://cdn.tailwindcss.com'></script>
     <script>
@@ -105,6 +106,15 @@
         .hover-lift:hover {
             transform: translateY(-2px);
         }
+        
+        .slide-over {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .slide-over.open {
+            transform: translateX(0);
+        }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -146,14 +156,10 @@
                         <i class="fa-solid fa-save"></i>
                         <span>Save View</span>
                     </button>
-                    <button class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-                        <i class="fa-solid fa-file-import"></i>
-                        <span>Bulk Import</span>
-                    </button>
-                    <a href="Property List Dashboard Add Po.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <button id="add-property-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-plus"></i>
                         <span>Add Property</span>
-                    </a>
+                    </button>
                 </div>
             </div>
             
@@ -161,114 +167,79 @@
                 <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">All Properties</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Missing Assets</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Ready to Publish</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Broker-Ready This Week</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Out of Sync</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Data Health &gt; 85%</button>
-                <div class="flex-1"></div>
-                <button class="text-secondary hover:text-primary text-sm flex items-center space-x-1">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span>Advanced Filters</span>
-                </button>
             </div>
         </div>
         
         <div id="filters-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
             <div class="flex items-center space-x-3 flex-wrap gap-2">
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Submarkets</option>
-                        <option>City Core</option>
-                        <option>Shoreditch</option>
-                        <option>Mayfair</option>
-                        <option>Canary Wharf</option>
-                        <option>King's Cross</option>
+                    <select id="filter-submarket" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Submarkets</option>
+                        <option value="City Core">City Core</option>
+                        <option value="Shoreditch">Shoreditch</option>
+                        <option value="Mayfair">Mayfair</option>
+                        <option value="Canary Wharf">Canary Wharf</option>
+                        <option value="King's Cross">King's Cross</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Fit-out Status</option>
-                        <option>Cat A</option>
-                        <option>Cat A+</option>
-                        <option>Fitted</option>
+                    <select id="filter-visibility" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Visibility</option>
+                        <option value="Public">Public</option>
+                        <option value="Private">Private</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Marketing Status</option>
-                        <option>Internal Only</option>
-                        <option>Broker-Ready</option>
+                    <select id="filter-disposal-agent" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Disposal Agents</option>
+                        <option value="Knight Frank">Knight Frank</option>
+                        <option value="CBRE">CBRE</option>
+                        <option value="JLL">JLL</option>
+                        <option value="Savills">Savills</option>
+                        <option value="Cushman & Wakefield">Cushman & Wakefield</option>
+                        <option value="Cushman">Cushman</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Visibility</option>
-                        <option>Public</option>
-                        <option>Private</option>
+                    <select id="filter-owner" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Owners</option>
+                        <option value="Tom">Tom</option>
+                        <option value="Tom Townsend">Tom Townsend</option>
+                        <option value="Max Chen">Max Chen</option>
+                        <option value="Dani Roberts">Dani Roberts</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Disposal Agents</option>
-                        <option>Knight Frank</option>
-                        <option>CBRE</option>
-                        <option>JLL</option>
-                        <option>Savills</option>
-                        <option>Cushman & Wakefield</option>
+                    <select id="filter-broker-network" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Broker Networks</option>
+                        <option value="Public Network">Public Network</option>
+                        <option value="Private · 10 brokers">Private · 10 brokers</option>
+                        <option value="Private · 5 brokers">Private · 5 brokers</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Owners</option>
-                        <option>Tom Harrison</option>
-                        <option>Max Chen</option>
-                        <option>Dani Roberts</option>
+                    <select id="filter-data-health" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">Data Health</option>
+                        <option value="<50">&lt; 50%</option>
+                        <option value="50-75">50-75%</option>
+                        <option value="75-85">75-85%</option>
+                        <option value=">85">&gt; 85%</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
-                <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Broker Networks</option>
-                        <option>Public Network</option>
-                        <option>Private · 10 brokers</option>
-                        <option>Private · 5 brokers</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
-                </div>
-                
-                <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>Data Health</option>
-                        <option>&lt; 50%</option>
-                        <option>50-75%</option>
-                        <option>75-85%</option>
-                        <option>&gt; 85%</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
-                </div>
-                
-                <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>Valve Sync</option>
-                        <option>Pushed</option>
-                        <option>Out of Sync</option>
-                        <option>Failed</option>
-                        <option>Not Synced</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
-                </div>
-                
-                <button class="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1">
+                <button id="clear-filters" class="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1">
                     <i class="fa-solid fa-rotate-left text-xs"></i>
                     <span>Clear all</span>
                 </button>
@@ -285,10 +256,6 @@
             </div>
             <div class="flex items-center space-x-2">
                 <button class="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <span>Push to Valve</span>
-                </button>
-                <button class="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-eye-slash"></i>
                     <span>Change Visibility</span>
                 </button>
@@ -296,17 +263,13 @@
                     <i class="fa-solid fa-user-tie"></i>
                     <span>Assign Agent</span>
                 </button>
-                <button class="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span>Generate Sheets</span>
-                </button>
                 <div class="relative">
-                    <select class="appearance-none bg-white border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>Sort by: Last Updated</option>
-                        <option>Sort by: Name A-Z</option>
-                        <option>Sort by: Name Z-A</option>
-                        <option>Sort by: Occupancy High-Low</option>
-                        <option>Sort by: Data Health</option>
+                    <select id="sort-select" class="appearance-none bg-white border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="last-updated">Sort by: Last Updated</option>
+                        <option value="name-asc">Sort by: Name A-Z</option>
+                        <option value="name-desc">Sort by: Name Z-A</option>
+                        <option value="occupancy-desc">Sort by: Occupancy High-Low</option>
+                        <option value="health-desc">Sort by: Data Health</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
@@ -331,12 +294,6 @@
                                 <th class="px-6 py-3 text-left">
                                     <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
                                         <span>Submarket</span>
-                                        <i class="fa-solid fa-sort text-xs"></i>
-                                    </button>
-                                </th>
-                                <th class="px-6 py-3 text-left">
-                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
-                                        <span>Fit-out</span>
                                         <i class="fa-solid fa-sort text-xs"></i>
                                     </button>
                                 </th>
@@ -390,21 +347,14 @@
                                 </th>
                                 <th class="px-6 py-3 text-left">
                                     <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
-                                        <span>Valve Sync</span>
-                                        <i class="fa-solid fa-sort text-xs"></i>
-                                    </button>
-                                </th>
-                                <th class="px-6 py-3 text-left">
-                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
                                         <span>Updated By</span>
                                         <i class="fa-solid fa-sort text-xs"></i>
                                     </button>
                                 </th>
-                                <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#E6E6E6]">
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Properties Detailed Card.html'">
+                            <tr class="property-row hover:bg-muted transition-all-smooth cursor-pointer" data-property-name="99 Bishopsgate" data-property-address="99 Bishopsgate, London EC2M" data-property-image="https://storage.googleapis.com/uxpilot-auth.appspot.com/2a04833416-c73dfcb3955e8c8d5f62.png" data-property-submarket="City Core" data-property-units="3 / 8" data-property-occupancy="62%" data-property-visibility="Private" data-property-broker-network="Private · 10 brokers" data-property-landlord="British Land" data-property-owner="Tom" data-property-owner-avatar="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" data-property-assets="8 imgs" data-property-health="92%">
                                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -420,9 +370,6 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">City Core</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
-                                </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-1 text-sm">
                                         <span class="font-semibold text-primary">3</span>
@@ -445,7 +392,7 @@
                                 <td class="px-6 py-4 text-sm text-primary">British Land</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <img src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
                                         <span class="text-sm text-primary">Tom</span>
                                     </div>
                                 </td>
@@ -464,23 +411,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="text-sm text-primary">Tom</div>
                                     <div class="text-xs text-secondary">2h ago</div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="relative inline-block">
-                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
-                                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                                        </button>
-                                    </div>
-                                </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
-                                <td class="px-6 py-4">
+                            <tr class="property-row hover:bg-muted transition-all-smooth cursor-pointer" data-property-name="The Tides At Arverne" data-property-address="190 Beach 69th St, Arverne" data-property-image="https://storage.googleapis.com/uxpilot-auth.appspot.com/4a1fa12ae2-0df310617941ad5e1e43.png" data-property-submarket="Shoreditch" data-property-units="5 / 12" data-property-occupancy="42%" data-property-broker-network="CBRE" data-property-landlord="Land Securities" data-property-owner="Tom" data-property-owner-avatar="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" data-property-assets="12 imgs" data-property-health="85%">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
                                 <td class="px-6 py-4">
@@ -495,9 +432,6 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Shoreditch</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Fitted</span>
-                                </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-1 text-sm">
                                         <span class="font-semibold text-primary">5</span>
@@ -514,13 +448,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">Internal Only</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">—</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">CBRE</td>
-                                <td class="px-6 py-4 text-sm text-secondary">1 day ago</td>
+                                <td class="px-6 py-4 text-sm text-primary">Land Securities</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <img src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
                                         <span class="text-sm text-primary">Tom</span>
                                     </div>
                                 </td>
@@ -539,23 +473,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="text-sm text-primary">Tom</div>
                                     <div class="text-xs text-secondary">1d ago</div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="relative inline-block">
-                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
-                                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                                        </button>
-                                    </div>
-                                </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
-                                <td class="px-6 py-4">
+                            <tr class="property-row hover:bg-muted transition-all-smooth cursor-pointer" data-property-name="One Canada Square" data-property-address="Canary Wharf, London E14" data-property-image="https://storage.googleapis.com/uxpilot-auth.appspot.com/71ec98b403-4d78e412d1a56ddf8015.png" data-property-submarket="Canary Wharf" data-property-units="2 / 6" data-property-occupancy="33%" data-property-broker-network="JLL" data-property-landlord="Derwent London" data-property-owner="Tom" data-property-owner-avatar="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" data-property-assets="6 imgs" data-property-health="75%">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
                                 <td class="px-6 py-4">
@@ -570,9 +494,6 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Canary Wharf</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A</span>
-                                </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-1 text-sm">
                                         <span class="font-semibold text-primary">2</span>
@@ -589,13 +510,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">—</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">JLL</td>
-                                <td class="px-6 py-4 text-sm text-secondary">3 days ago</td>
+                                <td class="px-6 py-4 text-sm text-primary">Derwent London</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <img src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
                                         <span class="text-sm text-primary">Tom</span>
                                     </div>
                                 </td>
@@ -614,23 +535,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="text-sm text-primary">Tom</div>
                                     <div class="text-xs text-secondary">3d ago</div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="relative inline-block">
-                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
-                                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                                        </button>
-                                    </div>
-                                </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
-                                <td class="px-6 py-4">
+                            <tr class="property-row hover:bg-muted transition-all-smooth cursor-pointer" data-property-name="The Leadenhall Building" data-property-address="122 Leadenhall St, London EC3" data-property-image="https://storage.googleapis.com/uxpilot-auth.appspot.com/8a2df2cabf-6e968c9424109620c5f5.png" data-property-submarket="City Core" data-property-units="4 / 10" data-property-occupancy="40%" data-property-broker-network="Savills" data-property-landlord="Great Portland Estates" data-property-owner="Tom" data-property-owner-avatar="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" data-property-assets="10 imgs" data-property-health="65%">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
                                 <td class="px-6 py-4">
@@ -645,9 +556,6 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">City Core</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
-                                </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-1 text-sm">
                                         <span class="font-semibold text-primary">4</span>
@@ -664,13 +572,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">Internal Only</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">—</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Savills</td>
-                                <td class="px-6 py-4 text-sm text-secondary">5 days ago</td>
+                                <td class="px-6 py-4 text-sm text-primary">Great Portland Estates</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <img src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
                                         <span class="text-sm text-primary">Tom</span>
                                     </div>
                                 </td>
@@ -689,23 +597,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="text-sm text-primary">Tom</div>
                                     <div class="text-xs text-secondary">5d ago</div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="relative inline-block">
-                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
-                                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                                        </button>
-                                    </div>
-                                </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
-                                <td class="px-6 py-4">
+                            <tr class="property-row hover:bg-muted transition-all-smooth cursor-pointer" data-property-name="Principal Place" data-property-address="Worship St, Shoreditch EC2A" data-property-image="https://storage.googleapis.com/uxpilot-auth.appspot.com/c4d01238b7-5dffcd72a27d96967a5e.png" data-property-submarket="Shoreditch" data-property-units="6 / 15" data-property-occupancy="40%" data-property-broker-network="Cushman" data-property-landlord="Land Securities" data-property-owner="Tom" data-property-owner-avatar="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" data-property-assets="15 imgs" data-property-health="88%">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
                                 <td class="px-6 py-4">
@@ -720,9 +618,6 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Shoreditch</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Fitted</span>
-                                </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-1 text-sm">
                                         <span class="font-semibold text-primary">6</span>
@@ -739,13 +634,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">—</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Cushman</td>
-                                <td class="px-6 py-4 text-sm text-secondary">1 week ago</td>
+                                <td class="px-6 py-4 text-sm text-primary">Land Securities</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <img src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
                                         <span class="text-sm text-primary">Tom</span>
                                     </div>
                                 </td>
@@ -764,29 +659,19 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="text-sm text-primary">Tom</div>
                                     <div class="text-xs text-secondary">1w ago</div>
                                 </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="relative inline-block">
-                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
-                                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                                        </button>
-                                    </div>
-                                </td>
                             </tr>
 
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
-                                <td class="px-6 py-4">
+                            <tr class="property-row hover:bg-muted transition-all-smooth cursor-pointer" data-property-name="The Shard" data-property-address="32 London Bridge St, London SE1" data-property-image="https://placehold.co/96x96?text=HQ" data-property-submarket="Southwark" data-property-units="7 / 18" data-property-occupancy="61%" data-property-broker-network="Knight Frank" data-property-landlord="Derwent London" data-property-owner="Tom" data-property-owner-avatar="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" data-property-assets="18 imgs" data-property-health="92%">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-3">
                                         <div class="w-12 h-12 bg-muted rounded overflow-hidden flex-shrink-0">
-                                            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/67fd6c1e72-86ec3a1c33a0cad7a78d.png" alt="The Shard" />
+                                            <img class="w-full h-full object-cover" src="https://placehold.co/96x96?text=HQ" alt="The Shard" />
                                         </div>
                                         <div>
                                             <div class="font-semibold text-primary text-sm">The Shard</div>
@@ -795,9 +680,6 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Southwark</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
-                                </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-1 text-sm">
                                         <span class="font-semibold text-primary">7</span>
@@ -814,13 +696,13 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">—</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Knight Frank</td>
-                                <td class="px-6 py-4 text-sm text-secondary">2 weeks ago</td>
+                                <td class="px-6 py-4 text-sm text-primary">Derwent London</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-2">
-                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
+                                        <img src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" alt="Tom" class="w-6 h-6 rounded-full object-cover">
                                         <span class="text-sm text-primary">Tom</span>
                                     </div>
                                 </td>
@@ -839,18 +721,8 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Pushed</span>
-                                </td>
-                                <td class="px-6 py-4">
                                     <div class="text-sm text-primary">Tom</div>
                                     <div class="text-xs text-secondary">2w ago</div>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="relative inline-block">
-                                        <button class="text-secondary hover:text-primary transition-all-smooth row-actions-btn">
-                                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                                        </button>
-                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -918,17 +790,6 @@
                             <span class="text-primary font-medium">+5%</span>
                             <span class="text-secondary">vs last quarter</span>
                         </div>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="text-secondary text-sm font-medium">Broker-Ready</div>
-                            <div class="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
-                                <i class="fa-solid fa-share-nodes text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="text-3xl font-semibold text-primary mb-1">14</div>
-                        <div class="text-xs text-secondary">58% of portfolio</div>
                     </div>
                 </div>
             </div>
@@ -1019,17 +880,6 @@
                         
                         <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
                             <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-share-nodes text-white text-xs"></i>
-                            </div>
-                            <div class="flex-1">
-                                <div class="text-sm text-primary font-medium">Published to broker network</div>
-                                <div class="text-xs text-secondary mt-1">The Leadenhall Building marked as Broker-Ready</div>
-                                <div class="text-xs text-secondary mt-1">5 hours ago</div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
-                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-file-pdf text-white text-xs"></i>
                             </div>
                             <div class="flex-1">
@@ -1112,6 +962,18 @@
     </main>
 </div>
 
+<!-- Property Details Slide-Over Panel -->
+<div id="property-details-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50" onclick="closePropertyDetails()"></div>
+<div id="property-details-panel" class="slide-over fixed right-0 top-0 bottom-0 w-[95%] max-w-[1800px] bg-white shadow-2xl z-50 overflow-hidden">
+    <iframe id="property-details-iframe" src="" class="w-full h-full border-0" style="display: none;"></iframe>
+    <div id="property-details-content" class="p-8">
+        <div class="text-center py-12 text-secondary">
+            <i class="fa-solid fa-building text-4xl mb-4"></i>
+            <p>Select a property to view details</p>
+        </div>
+    </div>
+</div>
+
 <div id="add-property-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between">
@@ -1181,47 +1043,10 @@
                     <label class="block text-sm font-medium text-primary mb-2">Owner / Steward <span class="text-destructive">*</span></label>
                     <select required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
                         <option value="">Assign to team member</option>
-                        <option>Tom Harrison</option>
+                        <option>Tom Townsend</option>
                         <option>Max Chen</option>
                         <option>Dani Roberts</option>
                     </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Fit-out Status <span class="text-destructive">*</span></label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="fitout" value="cat-a" class="sr-only peer" required>
-                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Cat A</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="fitout" value="cat-a-plus" class="sr-only peer">
-                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Cat A+</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="fitout" value="fitted" class="sr-only peer">
-                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Fitted</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-primary mb-2">Marketing Status <span class="text-destructive">*</span></label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="marketing" value="internal" class="sr-only peer" required>
-                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Internal Only</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                        <label class="relative flex items-center justify-center px-4 py-3 border border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth">
-                            <input type="radio" name="marketing" value="broker-ready" class="sr-only peer">
-                            <span class="text-sm font-medium text-secondary peer-checked:text-primary">Broker-Ready</span>
-                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
-                        </label>
-                    </div>
                 </div>
                 
                 <div>
@@ -1275,64 +1100,48 @@
                         Cancel
                     </button>
                 </div>
-                
-                <div class="text-center">
-                    <button type="button" class="text-sm text-primary hover:underline">
-                        Continue to enrichment wizard
-                    </button>
-                </div>
             </form>
         </div>
     </div>
 </div>
 
-<div id="row-actions-menu" class="hidden fixed bg-white border border-[#E6E6E6] rounded-lg shadow-lg py-2 z-50 min-w-[200px]">
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-folder-open w-4"></i>
-        <span>Open</span>
-    </button>
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-pencil w-4"></i>
-        <span>Edit</span>
-    </button>
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-door-open w-4"></i>
-        <span>Manage Units</span>
-    </button>
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-cloud-arrow-up w-4"></i>
-        <span>Upload Assets</span>
-    </button>
-    <hr class="my-2 border-[#E6E6E6]">
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-share-nodes w-4"></i>
-        <span>Push to Valve</span>
-    </button>
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-eye-slash w-4"></i>
-        <span>Change Visibility</span>
-    </button>
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-user-tie w-4"></i>
-        <span>Assign Disposal Agent</span>
-    </button>
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-file-pdf w-4"></i>
-        <span>Generate Broker Sheet</span>
-    </button>
-    <button class="w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-brands fa-figma w-4"></i>
-        <span>Open in Figma</span>
-    </button>
-    <hr class="my-2 border-[#E6E6E6]">
-    <button class="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-muted transition-all-smooth flex items-center space-x-2">
-        <i class="fa-solid fa-box-archive w-4"></i>
-        <span>Archive</span>
-    </button>
-</div>
 
 <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
 <script>
+// Define openPropertyDetails function before event listeners
+window.openPropertyDetails = function(row) {
+    console.log('openPropertyDetails called', row);
+    const iframe = document.getElementById('property-details-iframe');
+    const content = document.getElementById('property-details-content');
+    const overlay = document.getElementById('property-details-overlay');
+    const panel = document.getElementById('property-details-panel');
+    
+    console.log('Elements found:', { iframe: !!iframe, content: !!content, overlay: !!overlay, panel: !!panel });
+    
+    if (!iframe || !content || !overlay || !panel) {
+        console.error('Property details slide-over elements not found', { iframe, content, overlay, panel });
+        return;
+    }
+    
+    // Hide content placeholder, show iframe
+    content.style.display = 'none';
+    iframe.style.display = 'block';
+    
+    // Load the Properties Detailed Card page in the iframe
+    iframe.src = 'Properties Detailed Card.html';
+    
+    // Show overlay and panel
+    overlay.classList.remove('hidden');
+    panel.classList.add('open');
+    
+    console.log('Panel classes after opening:', panel.className);
+    console.log('Overlay classes after opening:', overlay.className);
+    
+    // Highlight selected row
+    document.querySelectorAll('.property-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
+    row.classList.add('bg-primary', 'bg-opacity-10');
+};
+
 window.addEventListener('load', function() {
     try {
         const data = [{
@@ -1381,57 +1190,277 @@ window.addEventListener('load', function() {
     const cancelModal = document.getElementById('cancel-modal');
     const form = document.getElementById('add-property-form');
     
-    addPropertyBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-    });
+    if (addPropertyBtn) {
+        addPropertyBtn.addEventListener('click', function() {
+            if (modal) modal.classList.remove('hidden');
+        });
+    }
     
-    closeModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            if (modal) modal.classList.add('hidden');
+        });
+    }
     
-    cancelModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
+    if (cancelModal) {
+        cancelModal.addEventListener('click', function() {
+            if (modal) modal.classList.add('hidden');
+        });
+    }
     
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-        }
-    });
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
     
-    // Row actions menu
-    const rowActionsMenu = document.getElementById('row-actions-menu');
-    const rowActionsBtns = document.querySelectorAll('.row-actions-btn');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (modal) modal.classList.add('hidden');
+            
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+            toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Property added. Data health: 65%. Continue to enrichment.</span>';
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.remove();
+            }, 4000);
+            
+            form.reset();
+        });
+    }
     
-    rowActionsBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    // Property details slide-over functionality
+    const propertyRows = document.querySelectorAll('.property-row');
+    console.log('Found property rows:', propertyRows.length);
+    
+    propertyRows.forEach(function(row) {
+        row.addEventListener('click', function(e) {
+            console.log('Property row click event fired', e.target);
+            
+            // Don't open if clicking on input, button, or inside a button
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                console.log('Click ignored - input or button');
+                return;
+            }
+            
+            // Prevent default behavior and stop propagation
+            e.preventDefault();
             e.stopPropagation();
-            const rect = btn.getBoundingClientRect();
-            rowActionsMenu.style.top = rect.bottom + 5 + 'px';
-            rowActionsMenu.style.left = rect.left - 180 + 'px';
-            rowActionsMenu.classList.toggle('hidden');
+            e.stopImmediatePropagation();
+            
+            // Open the property details
+            console.log('Opening property details for row:', row);
+            if (window.openPropertyDetails) {
+                window.openPropertyDetails(row);
+            } else {
+                console.error('openPropertyDetails function not found');
+            }
+            
+            return false;
         });
     });
     
-    document.addEventListener('click', function() {
-        rowActionsMenu.classList.add('hidden');
+    // Filter functionality
+    function applyFilters() {
+        const submarketFilter = document.getElementById('filter-submarket').value;
+        const visibilityFilter = document.getElementById('filter-visibility').value;
+        const disposalAgentFilter = document.getElementById('filter-disposal-agent').value;
+        const ownerFilter = document.getElementById('filter-owner').value;
+        const brokerNetworkFilter = document.getElementById('filter-broker-network').value;
+        const dataHealthFilter = document.getElementById('filter-data-health').value;
+        
+        const propertyRows = document.querySelectorAll('.property-row');
+        let visibleCount = 0;
+        
+        propertyRows.forEach(function(row) {
+            let show = true;
+            
+            // Filter by submarket
+            if (submarketFilter && row.getAttribute('data-property-submarket') !== submarketFilter) {
+                show = false;
+            }
+            
+            // Filter by visibility
+            if (visibilityFilter && row.getAttribute('data-property-visibility') !== visibilityFilter) {
+                show = false;
+            }
+            
+            // Filter by disposal agent (check the broker network column text - 7th column)
+            if (disposalAgentFilter && show) {
+                const brokerNetworkCell = row.querySelector('td:nth-child(7)'); // Broker Network column
+                if (brokerNetworkCell) {
+                    const cellText = brokerNetworkCell.textContent.trim();
+                    // Handle "Cushman & Wakefield" vs "Cushman"
+                    if (disposalAgentFilter === 'Cushman & Wakefield' || disposalAgentFilter === 'Cushman') {
+                        if (cellText !== 'Cushman' && cellText !== 'Cushman & Wakefield') {
+                            show = false;
+                        }
+                    } else if (cellText !== disposalAgentFilter) {
+                        show = false;
+                    }
+                } else {
+                    show = false;
+                }
+            }
+            
+            // Filter by owner
+            if (ownerFilter && show) {
+                const ownerValue = row.getAttribute('data-property-owner');
+                // Handle "Tom" vs "Tom Townsend"
+                if (ownerFilter === 'Tom Townsend' && ownerValue !== 'Tom' && ownerValue !== 'Tom Townsend') {
+                    show = false;
+                } else if (ownerFilter === 'Tom' && ownerValue !== 'Tom') {
+                    show = false;
+                } else if (ownerFilter !== 'Tom' && ownerFilter !== 'Tom Townsend' && ownerValue !== ownerFilter) {
+                    show = false;
+                }
+            }
+            
+            // Filter by broker network
+            if (brokerNetworkFilter && row.getAttribute('data-property-broker-network') !== brokerNetworkFilter) {
+                show = false;
+            }
+            
+            // Filter by data health
+            if (dataHealthFilter && show) {
+                const healthValue = row.getAttribute('data-property-health');
+                if (healthValue) {
+                    const healthPercent = parseInt(healthValue.replace('%', ''));
+                    let matches = false;
+                    
+                    if (dataHealthFilter === '<50' && healthPercent < 50) {
+                        matches = true;
+                    } else if (dataHealthFilter === '50-75' && healthPercent >= 50 && healthPercent < 75) {
+                        matches = true;
+                    } else if (dataHealthFilter === '75-85' && healthPercent >= 75 && healthPercent < 85) {
+                        matches = true;
+                    } else if (dataHealthFilter === '>85' && healthPercent > 85) {
+                        matches = true;
+                    }
+                    
+                    if (!matches) {
+                        show = false;
+                    }
+                } else {
+                    show = false;
+                }
+            }
+            
+            // Show or hide row
+            if (show) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Update property count
+        const countElement = document.querySelector('#bulk-actions-bar span');
+        if (countElement) {
+            countElement.textContent = visibleCount + ' properties';
+        }
+    }
+    
+    // Add event listeners to all filters
+    const filterSelects = [
+        'filter-submarket',
+        'filter-visibility',
+        'filter-disposal-agent',
+        'filter-owner',
+        'filter-broker-network',
+        'filter-data-health'
+    ];
+    
+    filterSelects.forEach(function(filterId) {
+        const filter = document.getElementById(filterId);
+        if (filter) {
+            filter.addEventListener('change', applyFilters);
+        }
     });
     
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        modal.classList.add('hidden');
-        
-        const toast = document.createElement('div');
-        toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
-        toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Property added. Data health: 65%. Continue to enrichment.</span>';
-        document.body.appendChild(toast);
-        
-        setTimeout(function() {
-            toast.remove();
-        }, 4000);
-        
-        form.reset();
-    });
+    // Clear filters button
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            filterSelects.forEach(function(filterId) {
+                const filter = document.getElementById(filterId);
+                if (filter) {
+                    filter.value = '';
+                }
+            });
+            applyFilters();
+        });
+    }
+
+    // Sorting functionality
+    const sortSelect = document.getElementById('sort-select');
+    const propertyTableBody = document.querySelector('#properties-list tbody');
+
+    function sortProperties(criteria) {
+        if (!propertyTableBody) return;
+
+        const rows = Array.from(propertyTableBody.querySelectorAll('.property-row'));
+        let comparator = null;
+
+        if (criteria === 'name-asc') {
+            comparator = (a, b) => {
+                const nameA = (a.dataset.propertyName || '').toLowerCase();
+                const nameB = (b.dataset.propertyName || '').toLowerCase();
+                return nameA.localeCompare(nameB);
+            };
+        } else if (criteria === 'name-desc') {
+            comparator = (a, b) => {
+                const nameA = (a.dataset.propertyName || '').toLowerCase();
+                const nameB = (b.dataset.propertyName || '').toLowerCase();
+                return nameB.localeCompare(nameA);
+            };
+        }
+
+        if (comparator) {
+            rows.sort(comparator).forEach(row => propertyTableBody.appendChild(row));
+        }
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function(e) {
+            sortProperties(e.target.value);
+        });
+    }
+});
+
+function closePropertyDetails() {
+    const iframe = document.getElementById('property-details-iframe');
+    const content = document.getElementById('property-details-content');
+    
+    // Hide overlay and panel
+    document.getElementById('property-details-overlay').classList.add('hidden');
+    document.getElementById('property-details-panel').classList.remove('open');
+    
+    // Reset iframe and show placeholder
+    setTimeout(function() {
+        iframe.src = '';
+        iframe.style.display = 'none';
+        content.style.display = 'block';
+    }, 300);
+    
+    // Remove row highlight
+    document.querySelectorAll('.property-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
+}
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const overlay = document.getElementById('property-details-overlay');
+        if (!overlay.classList.contains('hidden')) {
+            closePropertyDetails();
+        }
+    }
 });
 </script>
 

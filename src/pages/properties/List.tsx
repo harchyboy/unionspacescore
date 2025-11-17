@@ -1,26 +1,124 @@
 import { useState } from 'react';
-import { useProperties } from '../../api/properties';
+import { useProperties, useBulkUpdateProperties, useBulkPushToBrokerSet } from '../../api/properties';
 import { PropertyCard } from '../../components/properties/PropertyCard';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { Button } from '../../components/ui/Button';
+import { useToast } from '../../hooks/useToast';
 import { Link } from 'react-router-dom';
+import type { PropertyId } from '../../types/property';
 
 export function PropertiesList() {
   const [search, setSearch] = useState('');
   const [marketingStatus, setMarketingStatus] = useState('');
   const [visibility, setVisibility] = useState('');
+  const [brokerSet, setBrokerSet] = useState('');
+  const [missingMedia, setMissingMedia] = useState(false);
+  const [brokerReadyThisWeek, setBrokerReadyThisWeek] = useState(false);
+  const [selectedProperties, setSelectedProperties] = useState<Set<PropertyId>>(new Set());
+  const [showBulkActions, setShowBulkActions] = useState(false);
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<'updatedAt' | 'name'>('updatedAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  
+  const { showToast } = useToast();
+  const bulkUpdateMutation = useBulkUpdateProperties();
+  const bulkPushMutation = useBulkPushToBrokerSet();
 
   const { data, isLoading, error } = useProperties({
     search,
     marketingStatus: marketingStatus || undefined,
     visibility: visibility || undefined,
+    brokerSet: brokerSet || undefined,
+    missingMedia: missingMedia || undefined,
+    brokerReadyThisWeek: brokerReadyThisWeek || undefined,
     page,
     limit: 10,
     sortBy,
     sortOrder,
   });
+
+  const properties = data?.properties || [];
+  const total = data?.total || 0;
+  const totalPages = Math.ceil(total / 10);
+
+  const handleSelectAll = () => {
+    if (selectedProperties.size === properties.length) {
+      setSelectedProperties(new Set());
+    } else {
+      setSelectedProperties(new Set(properties.map((p) => p.id)));
+    }
+  };
+
+  const handleSelectProperty = (propertyId: PropertyId) => {
+    const newSelected = new Set(selectedProperties);
+    if (newSelected.has(propertyId)) {
+      newSelected.delete(propertyId);
+    } else {
+      newSelected.add(propertyId);
+    }
+    setSelectedProperties(newSelected);
+    setShowBulkActions(newSelected.size > 0);
+  };
+
+  const handleBulkUpdateVisibility = (newVisibility: 'Private' | 'Public') => {
+    if (selectedProperties.size === 0) return;
+    bulkUpdateMutation.mutate(
+      {
+        propertyIds: Array.from(selectedProperties),
+        updates: { visibility: newVisibility },
+      },
+      {
+        onSuccess: (data) => {
+          showToast(`Updated ${data.updated} properties`, 'success');
+          setSelectedProperties(new Set());
+          setShowBulkActions(false);
+        },
+        onError: (error: Error) => {
+          showToast(error.message, 'error');
+        },
+      }
+    );
+  };
+
+  const handleBulkUpdateMarketingStatus = (newStatus: 'Draft' | 'Broker-Ready' | 'On Market') => {
+    if (selectedProperties.size === 0) return;
+    bulkUpdateMutation.mutate(
+      {
+        propertyIds: Array.from(selectedProperties),
+        updates: { marketingStatus: newStatus },
+      },
+      {
+        onSuccess: (data) => {
+          showToast(`Updated ${data.updated} properties`, 'success');
+          setSelectedProperties(new Set());
+          setShowBulkActions(false);
+        },
+        onError: (error: Error) => {
+          showToast(error.message, 'error');
+        },
+      }
+    );
+  };
+
+  const handleBulkPushToBrokerSet = (brokerSetValue: string) => {
+    if (selectedProperties.size === 0) return;
+    bulkPushMutation.mutate(
+      {
+        propertyIds: Array.from(selectedProperties),
+        brokerSet: brokerSetValue,
+      },
+      {
+        onSuccess: (data) => {
+          showToast(`Pushed ${data.updated} properties to broker set`, 'success');
+          setSelectedProperties(new Set());
+          setShowBulkActions(false);
+        },
+        onError: (error: Error) => {
+          showToast(error.message, 'error');
+        },
+      }
+    );
+  };
 
   if (isLoading) {
     return (
@@ -44,10 +142,6 @@ export function PropertiesList() {
     );
   }
 
-  const properties = data?.properties || [];
-  const total = data?.total || 0;
-  const totalPages = Math.ceil(total / 10);
-
   return (
     <div className="px-8 py-6">
       <div className="flex items-center justify-between mb-6">
@@ -64,8 +158,8 @@ export function PropertiesList() {
       </div>
 
       <div className="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
+          <div className="md:col-span-2 lg:col-span-2">
             <input
               type="text"
               placeholder="Search properties..."
@@ -102,8 +196,47 @@ export function PropertiesList() {
             <option value="Private">Private</option>
             <option value="Public">Public</option>
           </select>
+          <select
+            value={brokerSet}
+            onChange={(e) => {
+              setBrokerSet(e.target.value);
+              setPage(1);
+            }}
+            className="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
+          >
+            <option value="">All Broker Sets</option>
+            <option value="premium">Premium Set</option>
+            <option value="standard">Standard Set</option>
+            <option value="budget">Budget Set</option>
+          </select>
+          <div className="flex items-center space-x-2">
+            <label className="flex items-center space-x-2 text-sm text-[#8e8e8e] cursor-pointer">
+              <input
+                type="checkbox"
+                checked={missingMedia}
+                onChange={(e) => {
+                  setMissingMedia(e.target.checked);
+                  setPage(1);
+                }}
+                className="w-4 h-4 border border-[#E6E6E6] rounded"
+              />
+              <span>Missing Media</span>
+            </label>
+          </div>
         </div>
         <div className="flex items-center space-x-4">
+          <label className="flex items-center space-x-2 text-sm text-[#8e8e8e] cursor-pointer">
+            <input
+              type="checkbox"
+              checked={brokerReadyThisWeek}
+              onChange={(e) => {
+                setBrokerReadyThisWeek(e.target.checked);
+                setPage(1);
+              }}
+              className="w-4 h-4 border border-[#E6E6E6] rounded"
+            />
+            <span>Broker-Ready This Week</span>
+          </label>
           <select
             value={`${sortBy}-${sortOrder}`}
             onChange={(e) => {
@@ -121,6 +254,71 @@ export function PropertiesList() {
         </div>
       </div>
 
+      {showBulkActions && selectedProperties.size > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <span className="text-sm font-medium text-[#252525]">
+                {selectedProperties.size} property{selectedProperties.size !== 1 ? 'ies' : ''} selected
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedProperties(new Set());
+                  setShowBulkActions(false);
+                }}
+              >
+                Clear Selection
+              </Button>
+            </div>
+            <div className="flex items-center space-x-2">
+              <select
+                onChange={(e) => {
+                  if (e.target.value) {
+                    handleBulkPushToBrokerSet(e.target.value);
+                    e.target.value = '';
+                  }
+                }}
+                className="px-3 py-1.5 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
+              >
+                <option value="">Push to Broker Set...</option>
+                <option value="premium">Premium Set</option>
+                <option value="standard">Standard Set</option>
+                <option value="budget">Budget Set</option>
+              </select>
+              <select
+                onChange={(e) => {
+                  if (e.target.value) {
+                    handleBulkUpdateVisibility(e.target.value as 'Private' | 'Public');
+                    e.target.value = '';
+                  }
+                }}
+                className="px-3 py-1.5 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
+              >
+                <option value="">Update Visibility...</option>
+                <option value="Private">Private</option>
+                <option value="Public">Public</option>
+              </select>
+              <select
+                onChange={(e) => {
+                  if (e.target.value) {
+                    handleBulkUpdateMarketingStatus(e.target.value as 'Draft' | 'Broker-Ready' | 'On Market');
+                    e.target.value = '';
+                  }
+                }}
+                className="px-3 py-1.5 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
+              >
+                <option value="">Update Marketing Status...</option>
+                <option value="Draft">Draft</option>
+                <option value="Broker-Ready">Broker-Ready</option>
+                <option value="On Market">On Market</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+
       {properties.length === 0 ? (
         <EmptyState
           title="No properties found"
@@ -134,9 +332,28 @@ export function PropertiesList() {
         />
       ) : (
         <>
+          <div className="mb-4 flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={selectedProperties.size === properties.length && properties.length > 0}
+              onChange={handleSelectAll}
+              className="w-4 h-4 border border-[#E6E6E6] rounded"
+            />
+            <span className="text-sm text-[#8e8e8e]">Select All</span>
+          </div>
           <div className="grid grid-cols-1 gap-4 mb-6">
             {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <div key={property.id} className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  checked={selectedProperties.has(property.id)}
+                  onChange={() => handleSelectProperty(property.id)}
+                  className="mt-6 w-4 h-4 border border-[#E6E6E6] rounded"
+                />
+                <div className="flex-1">
+                  <PropertyCard property={property} />
+                </div>
+              </div>
             ))}
           </div>
 

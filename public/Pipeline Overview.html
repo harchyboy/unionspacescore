@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <title>Pipeline Overview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: '#252525',
+                        concrete: '#8E8E8E',
+                        stone: '#F0F0F0',
+                        primary: '#252525'
+                    },
+                    fontFamily: {
+                        'haltung': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for pipeline board - isolated horizontal scroll */
+        #pipeline-board::-webkit-scrollbar {
+            height: 12px;
+            display: block !important;
+        }
+        #pipeline-board::-webkit-scrollbar-track {
+            background: #F0F0F0;
+            border-radius: 6px;
+        }
+        #pipeline-board::-webkit-scrollbar-thumb {
+            background: #8E8E8E;
+            border-radius: 6px;
+        }
+        #pipeline-board::-webkit-scrollbar-thumb:hover {
+            background: #252525;
+        }
+        /* Hide scrollbars elsewhere */
+        ::-webkit-scrollbar { 
+            display: none; 
+        }
+        /* Exception for pipeline board */
+        #pipeline-board::-webkit-scrollbar {
+            display: block !important;
+        }
+        /* Make header, controls, and stats sticky as one unit */
+        #pipeline-header-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: white;
+            /* Prevent horizontal scrolling of header */
+            overflow-x: visible;
+            overflow-y: visible;
+            width: 100%;
+            max-width: 100%;
+        }
+        #header, #pipeline-controls, #pipeline-stats {
+            background: white;
+            /* Ensure header doesn't scroll horizontally */
+            overflow-x: visible;
+            overflow-y: visible;
+            width: 100%;
+            max-width: 100%;
+        }
+        /* Keep New Requirement button fixed and visible */
+        #new-requirement-btn {
+            position: relative;
+            z-index: 41;
+        }
+        /* Ensure header button container doesn't scroll */
+        #header > div > div:last-child {
+            position: relative;
+            z-index: 41;
+        }
+        .slide-over-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .slide-over-panel.open {
+            transform: translateX(0);
+        }
+        #new-requirement-panel {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        #new-requirement-panel.open {
+            transform: translateX(0);
+        }
+        /* Pipeline board - isolated horizontal scroll like an iframe */
+        #pipeline-board {
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #8E8E8E #F0F0F0;
+            /* Prevent horizontal scroll from affecting page scroll */
+            overscroll-behavior-x: contain;
+            /* Ensure scrollbar is always visible when content overflows */
+            scrollbar-gutter: stable;
+        }
+        /* Ensure parent containers don't clip overflow */
+        .flex-1.ml-64 {
+            overflow-x: visible;
+            overflow-y: auto;
+            width: 100%;
+        }
+        /* Ensure header wrapper doesn't scroll horizontally */
+        .flex-1.ml-64 > #pipeline-header-wrapper {
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+        }
+        #pipeline-board > .flex {
+            min-width: max-content !important;
+            width: max-content !important;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            /* Ensure flex container doesn't shrink */
+            flex-shrink: 0;
+        }
+        /* Restore original fixed-width columns */
+        #pipeline-board [id^="stage-"] {
+            flex-shrink: 0 !important;
+            flex-grow: 0 !important;
+            width: 20rem !important; /* w-80 = 320px */
+            min-width: 20rem !important;
+            max-width: 20rem !important;
+        }
+        /* Drag and drop styles */
+        [draggable="true"] {
+            cursor: move;
+            user-select: none;
+        }
+        [draggable="true"]:active {
+            cursor: grabbing;
+        }
+        .drag-over {
+            border: 2px solid #252525 !important;
+            background-color: rgba(37, 37, 37, 0.05) !important;
+        }
+        .dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+    </style>
+    <script src="sidebar.js" defer></script>
+</head>
+<body class="bg-stone font-haltung">
+
+<div class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-white border-r border-concrete/20 flex flex-col fixed left-0 top-0 bottom-0 z-50" data-sidebar-placeholder data-active="deals"></aside>
+
+    <div class="flex-1 ml-64" style="overflow-x: visible; width: 100%;">
+    <div id="pipeline-header-wrapper" style="overflow-x: visible; width: 100%;">
+    <header id="header" class="bg-white border-b border-concrete/30" style="overflow-x: visible; width: 100%;">
+        <div class="px-8 py-4" style="overflow-x: visible; width: 100%;">
+            <div class="flex items-center justify-between" style="overflow-x: visible; width: 100%;">
+                <div>
+                    <h1 class="text-2xl font-semibold text-slate">Pipeline Overview</h1>
+                    <p class="text-sm text-concrete mt-0.5">Control centre for all active deals and opportunities</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button class="relative p-2 text-concrete hover:text-slate transition-colors">
+                        <i class="fa-regular fa-bell text-lg"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-slate rounded-full"></span>
+                    </button>
+                    <button class="p-2 text-concrete hover:text-slate transition-colors">
+                        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                    </button>
+                    <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                        <i class="fa-solid fa-circle-question mr-2"></i>
+                        Help
+                    </button>
+                    <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                        <i class="fa-solid fa-lock mr-2"></i>
+                        Save View
+                    </button>
+                    <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                        <i class="fa-solid fa-arrow-down mr-2"></i>
+                        Export
+                    </button>
+                    <button id="new-requirement-btn" class="px-6 py-2 text-sm bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        New Requirement
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="pipeline-controls" class="bg-white border-b border-concrete/30 px-8 py-4">
+        <div class="flex items-center space-x-4">
+            <div class="relative">
+                <button class="flex items-center px-4 py-2 bg-white border border-concrete/30 rounded-lg text-sm font-semibold text-slate hover:bg-stone transition-colors">
+                    <i class="fa-solid fa-table-columns mr-2"></i>
+                    Board View
+                    <i class="fa-solid fa-chevron-down ml-2 text-xs"></i>
+                </button>
+            </div>
+            
+            <div class="h-8 w-px bg-concrete/30"></div>
+            
+            <div class="flex items-center space-x-2">
+                <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors">
+                    <i class="fa-solid fa-sort mr-2"></i>
+                    Sorted by
+                    <span class="font-semibold text-slate ml-1">Stage</span>
+                </button>
+                
+                <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    <i class="fa-solid fa-filter mr-2"></i>
+                    Filter
+                </button>
+                
+                <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    <i class="fa-solid fa-user mr-2"></i>
+                    All Brokers
+                    <i class="fa-solid fa-chevron-down ml-2 text-xs"></i>
+                </button>
+                
+                <button class="flex items-center px-3 py-2 text-sm text-concrete hover:text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    <i class="fa-solid fa-building mr-2"></i>
+                    All Properties
+                    <i class="fa-solid fa-chevron-down ml-2 text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pipeline-stats" class="px-8 py-4 bg-white border-b border-concrete/30">
+        <div class="grid grid-cols-6 gap-4">
+            <div class="bg-stone rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-concrete uppercase tracking-wide">Total Pipeline</span>
+                    <i class="fa-solid fa-chart-line text-concrete"></i>
+                </div>
+                <div class="text-2xl font-semibold text-slate">47</div>
+                <div class="text-xs text-concrete mt-1">Active opportunities</div>
+            </div>
+            
+            <div class="bg-stone rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-concrete uppercase tracking-wide">Hot Ops</span>
+                    <i class="fa-solid fa-fire text-red-600"></i>
+                </div>
+                <div class="text-2xl font-semibold text-slate">12</div>
+                <div class="text-xs text-concrete mt-1">Immediate action</div>
+            </div>
+            
+            <div class="bg-stone rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-concrete uppercase tracking-wide">In Viewings</span>
+                    <i class="fa-solid fa-eye text-concrete"></i>
+                </div>
+                <div class="text-2xl font-semibold text-slate">18</div>
+                <div class="text-xs text-concrete mt-1">Tours scheduled</div>
+            </div>
+            
+            <div class="bg-stone rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-concrete uppercase tracking-wide">Proposals Out</span>
+                    <i class="fa-solid fa-file-invoice text-concrete"></i>
+                </div>
+                <div class="text-2xl font-semibold text-slate">8</div>
+                <div class="text-xs text-concrete mt-1">Awaiting decision</div>
+            </div>
+            
+            <div class="bg-stone rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-concrete uppercase tracking-wide">In Legals</span>
+                    <i class="fa-solid fa-gavel text-concrete"></i>
+                </div>
+                <div class="text-2xl font-semibold text-slate">5</div>
+                <div class="text-xs text-concrete mt-1">Near completion</div>
+            </div>
+            
+            <div class="bg-stone rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-concrete uppercase tracking-wide">Stale >14d</span>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                </div>
+                <div class="text-2xl font-semibold text-slate">4</div>
+                <div class="text-xs text-concrete mt-1">Needs attention</div>
+            </div>
+        </div>
+    </div>
+    </div> <!-- End pipeline-header-wrapper -->
+
+    <div id="pipeline-board" class="py-6" style="padding-left: 2rem; padding-right: 2rem;">
+        <div class="flex space-x-4 pb-6" style="min-width: max-content; width: max-content; display: flex; flex-wrap: nowrap;">
+            <div id="stage-intake" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Intake</h3>
+                            <span class="ml-2 text-xs text-concrete">7</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">TechFlow Solutions</h4>
+                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-red-100 text-red-800 text-xs font-semibold rounded">
+                                    Hot
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>35 desks</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
+                                    <span>City of London</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£85k-£95k budget</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>2 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Quantum Analytics</h4>
+                                    <p class="text-xs text-concrete">Via: JLL</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>50 desks</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
+                                    <span>Shoreditch / Old Street</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£120k budget</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>5 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Creative Minds Ltd</h4>
+                                    <p class="text-xs text-concrete">Via: Cushman & Wakefield</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>25 desks</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
+                                    <span>Soho / Covent Garden</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£65k budget</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>1 day ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors" onclick="document.getElementById('new-requirement-btn').click()">
+                            <i class="fa-solid fa-plus mr-2"></i>
+                            Add Requirement
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-qualified" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Qualified</h3>
+                            <span class="ml-2 text-xs text-concrete">9</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200 hover:border-blue-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">DataVault Systems</h4>
+                                    <p class="text-xs text-concrete">Via: CBRE • Compton</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
+                                    Viewing Soon
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>60 desks • All-Inclusive</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>42 Moorgate shortlisted</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>1st viewing: 28 Nov</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-blue-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">3d</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Nexus Capital Partners</h4>
+                                    <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>40 desks • Bolt-On</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>3 properties matched</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Scheduling tours</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">5d</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Horizon Ventures</h4>
+                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>30 desks • All-Inclusive</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>Shoreditch portfolio</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Awaiting dates</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">6d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-plus mr-2"></i>
+                            Add to Stage
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-first-viewing" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">1st Viewing</h3>
+                            <span class="ml-2 text-xs text-concrete">6</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200 hover:border-purple-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Apex Technologies</h4>
+                                    <p class="text-xs text-concrete">Via: JLL • Disposal: Compton</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Today
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>42 Moorgate, Floor 6</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>Today at 2:00 PM</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>45 desks • All-Inclusive</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-purple-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Log Notes</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Meridian Group</h4>
+                                    <p class="text-xs text-concrete">Via: CBRE</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>15 Bishopsgate, Floor 3</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>Tomorrow at 10:00 AM</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>55 desks • Bolt-On</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">8d</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Sterling Advisors</h4>
+                                    <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>20 Fenchurch, Floor 8</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>29 Nov at 3:00 PM</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>35 desks • All-Inclusive</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">10d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <a href="Viewings.html" class="block w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors text-center">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            Schedule Viewing
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-second-viewing" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-indigo-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">2nd Viewing</h3>
+                            <span class="ml-2 text-xs text-concrete">4</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200 hover:border-indigo-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Catalyst Ventures</h4>
+                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
+                                    Decision Soon
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>42 Moorgate, Floor 4</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Viewed: 22 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>70 desks • All-Inclusive</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-comments w-4 mr-2"></i>
+                                    <span>Very positive feedback</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-indigo-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Prepare Proposal</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Phoenix Capital</h4>
+                                    <p class="text-xs text-concrete">Via: JLL</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>15 Bishopsgate, Floor 5</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Scheduled: 30 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>50 desks • Bolt-On</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">12d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-calendar mr-2"></i>
+                            Schedule 2nd Tour
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-final-viewing" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-teal-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Final Viewing</h3>
+                            <span class="ml-2 text-xs text-concrete">3</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-teal-50 rounded-lg p-4 border border-teal-200 hover:border-teal-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Vertex Solutions</h4>
+                                    <p class="text-xs text-concrete">Via: CBRE • Compton</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Strong Interest
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>20 Fenchurch, Floor 12</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Final tour: 25 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>80 desks • All-Inclusive</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-circle-check w-4 mr-2"></i>
+                                    <span>Board approval pending</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-teal-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Send Proposal</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Zenith Partners</h4>
+                                    <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>42 Moorgate, Floor 7</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Final tour: 27 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>45 desks • Bolt-On</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">15d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <a href="Proposal Builder.html" class="block w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors text-center">
+                            <i class="fa-solid fa-file-invoice mr-2"></i>
+                            Issue Options
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-proposal-sent" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Proposal Sent</h3>
+                            <span class="ml-2 text-xs text-concrete">5</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-amber-50 rounded-lg p-4 border border-amber-200 hover:border-amber-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Omega Finance</h4>
+                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-red-100 text-red-800 text-xs font-semibold rounded">
+                                    Follow Up
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-file-invoice w-4 mr-2"></i>
+                                    <span>Sent: 18 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-envelope-open w-4 mr-2"></i>
+                                    <span>Opened: 19 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£142k annual value</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>Decision expected: 30 Nov</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-amber-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Call Now</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Prism Technologies</h4>
+                                    <p class="text-xs text-concrete">Via: JLL</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-file-invoice w-4 mr-2"></i>
+                                    <span>Sent: 20 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-envelope-open w-4 mr-2"></i>
+                                    <span>Opened: 21 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£98k annual value</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">18d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>
+                            Send Proposal
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-decision-pending" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Decision Pending</h3>
+                            <span class="ml-2 text-xs text-concrete">3</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-orange-50 rounded-lg p-4 border border-orange-200 hover:border-orange-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Atlas Corporation</h4>
+                                    <p class="text-xs text-concrete">Via: CBRE</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Verbal Yes
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>42 Moorgate, Floor 9</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£165k annual • All-Inclusive</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>HoTs expected: This week</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>Move-in: Feb 2025</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-orange-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Start Deal Room</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Summit Advisors</h4>
+                                    <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-building w-4 mr-2"></i>
+                                    <span>15 Bishopsgate, Floor 7</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£118k annual • Bolt-On</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Decision: Early Dec</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">22d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-folder-open mr-2"></i>
+                            Open Deal Room
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-deal-room-live" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-cyan-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Deal Room Live</h3>
+                            <span class="ml-2 text-xs text-concrete">2</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-cyan-50 rounded-lg p-4 border border-cyan-200 hover:border-cyan-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Nexus Digital</h4>
+                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
+                                    Services Selection
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-file-signature w-4 mr-2"></i>
+                                    <span>UNION agreement: Draft</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-handshake w-4 mr-2"></i>
+                                    <span>Landlord HoTs: Pending</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-boxes-stacked w-4 mr-2"></i>
+                                    <span>Services: 6 of 10 selected</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-cyan-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="Max" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Max Sullivan</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Open Room</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Cornerstone Group</h4>
+                                    <p class="text-xs text-concrete">Via: JLL</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-file-signature w-4 mr-2"></i>
+                                    <span>UNION agreement: Review</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-handshake w-4 mr-2"></i>
+                                    <span>Landlord HoTs: Uploaded</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-boxes-stacked w-4 mr-2"></i>
+                                    <span>Services: Complete</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="Max" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Max Sullivan</span>
+                                </div>
+                                <span class="text-xs text-concrete">25d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-folder-open mr-2"></i>
+                            Access Deal Room
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-hots-in" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">HoTs In</h3>
+                            <span class="ml-2 text-xs text-concrete">2</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-emerald-50 rounded-lg p-4 border border-emerald-200 hover:border-emerald-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Vanguard Investments</h4>
+                                    <p class="text-xs text-concrete">Via: CBRE • Compton</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Both Signed
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-file-signature w-4 mr-2"></i>
+                                    <span>UNION: Executed 15 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-handshake w-4 mr-2"></i>
+                                    <span>HoTs: Uploaded 12 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Move-in: 15 Jan 2025</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-gavel w-4 mr-2"></i>
+                                    <span>Legals: In progress</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-emerald-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Handoff Ready</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Eclipse Partners</h4>
+                                    <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-file-signature w-4 mr-2"></i>
+                                    <span>UNION: Awaiting signature</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-handshake w-4 mr-2"></i>
+                                    <span>HoTs: Uploaded 20 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Move-in: Mar 2025</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="Max" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Max Sullivan</span>
+                                </div>
+                                <span class="text-xs text-concrete">28d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-upload mr-2"></i>
+                            Upload HoTs
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-legals" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-violet-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Legals</h3>
+                            <span class="ml-2 text-xs text-concrete">3</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-violet-50 rounded-lg p-4 border border-violet-200 hover:border-violet-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Titan Holdings</h4>
+                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Near Complete
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-gavel w-4 mr-2"></i>
+                                    <span>Lease: Final review</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-circle-check w-4 mr-2"></i>
+                                    <span>UNION docs: Complete</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Expected complete: 29 Nov</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
+                                    <span>Move-in: 20 Jan 2025</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-violet-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Track Progress</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Forge Capital</h4>
+                                    <p class="text-xs text-concrete">Via: JLL</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-gavel w-4 mr-2"></i>
+                                    <span>Lease: Solicitor review</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-circle-check w-4 mr-2"></i>
+                                    <span>UNION docs: Complete</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Move-in: Feb 2025</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">32d</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-file-lines mr-2"></i>
+                            Update Status
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-handoff" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-600 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Handoff to Ops</h3>
+                            <span class="ml-2 text-xs text-concrete">1</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-green-50 rounded-lg p-4 border border-green-200 hover:border-green-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Apex Technologies</h4>
+                                    <p class="text-xs text-concrete">Via: JLL • Compton</p>
+                                </div>
+                                <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Ready
+                                </span>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-circle-check w-4 mr-2"></i>
+                                    <span>All docs executed</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-boxes-stacked w-4 mr-2"></i>
+                                    <span>Services: 8 selected</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-users w-4 mr-2"></i>
+                                    <span>Suppliers: Confirmed</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Move-in: 15 Jan 2025</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-green-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">Complete Handoff</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-t border-concrete/30">
+                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                            <i class="fa-solid fa-handshake mr-2"></i>
+                            Handoff to Ops
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-won" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Won</h3>
+                            <span class="ml-2 text-xs text-concrete">2</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-green-50 rounded-lg p-4 border border-green-200 hover:border-green-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Pinnacle Systems</h4>
+                                    <p class="text-xs text-concrete">Via: CBRE</p>
+                                </div>
+                                <i class="fa-solid fa-trophy text-green-600"></i>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£185k annual value</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Closed: 10 Nov 2024</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-rocket w-4 mr-2"></i>
+                                    <span>In onboarding</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-green-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">35d</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Quantum Ventures</h4>
+                                    <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                                <i class="fa-solid fa-trophy text-green-600"></i>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                                    <span>£134k annual value</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Closed: 05 Nov 2024</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-circle-check w-4 mr-2"></i>
+                                    <span>Live</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-concrete/20">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <span class="text-xs text-concrete">40d</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-lost" class="flex-shrink-0 w-80">
+                <div class="bg-white rounded-lg border border-concrete/30 h-full flex flex-col">
+                    <div class="px-4 py-3 border-b border-concrete/30 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                            <h3 class="text-sm font-semibold text-slate">Lost</h3>
+                            <span class="ml-2 text-xs text-concrete">1</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-concrete hover:text-slate transition-colors">
+                                <i class="fa-solid fa-ellipsis-h text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="bg-red-50 rounded-lg p-4 border border-red-200 hover:border-red-400 transition-colors cursor-pointer">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Velocity Partners</h4>
+                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-xs text-concrete mb-3">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-circle-xmark w-4 mr-2"></i>
+                                    <span>Chose competitor</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-calendar w-4 mr-2"></i>
+                                    <span>Lost: 18 Nov 2024</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-comment w-4 mr-2"></i>
+                                    <span>Price concern</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-red-200">
+                                <div class="flex items-center space-x-2">
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-5 h-5 rounded-full object-cover">
+                                    <span class="text-xs text-concrete">Tom Davies</span>
+                                </div>
+                                <button class="text-xs text-slate font-semibold hover:underline">View Notes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-shrink-0 w-16 flex items-start pt-14">
+                <button class="w-10 h-10 bg-white rounded-full border border-concrete/30 flex items-center justify-center text-concrete hover:text-slate hover:border-slate transition-colors">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="new-requirement-overlay" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/50" data-close-new-requirement></div>
+    <div id="new-requirement-panel" class="absolute inset-y-0 right-0 w-full max-w-6xl bg-white shadow-2xl flex flex-col">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-concrete/30">
+            <div class="flex items-center space-x-4">
+                <button class="text-concrete hover:text-slate transition-colors" data-close-new-requirement>
+                    <i class="fa-solid fa-arrow-left text-lg"></i>
+                </button>
+                <div>
+                    <h2 class="text-lg font-semibold text-slate">Add Requirement</h2>
+                    <p class="text-xs text-concrete">Capture new pipeline opportunities in seconds</p>
+                </div>
+            </div>
+            <button class="text-concrete hover:text-slate transition-colors" data-close-new-requirement>
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <iframe src="Qualification.html" class="flex-1 w-full h-full" title="Add Requirement"></iframe>
+    </div>
+</div>
+
+<div id="deal-detail-overlay" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/50" data-close-deal-detail></div>
+    <div id="deal-detail-panel" class="slide-over-panel absolute inset-y-0 right-0 w-full max-w-7xl bg-white shadow-2xl flex flex-col">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-concrete/30">
+            <div class="flex items-center space-x-4">
+                <button class="text-concrete hover:text-slate transition-colors" data-close-deal-detail>
+                    <i class="fa-solid fa-arrow-left text-lg"></i>
+                </button>
+                <div>
+                    <h2 class="text-lg font-semibold text-slate">Deal Details</h2>
+                    <p class="text-xs text-concrete">End-to-end view of this requirement</p>
+                </div>
+            </div>
+            <button class="text-concrete hover:text-slate transition-colors" data-close-deal-detail>
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <iframe src="Matching &amp; Shortlist.html" class="flex-1 w-full h-full" title="Deal Details"></iframe>
+    </div>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+    // Pipeline board has isolated horizontal scroll - like an iframe
+    // Horizontal scrolling in Kanban doesn't affect page scroll
+
+    // New Requirement slide-over functionality
+    const newRequirementBtn = document.getElementById('new-requirement-btn');
+    const newRequirementOverlay = document.getElementById('new-requirement-overlay');
+    const newRequirementPanel = document.getElementById('new-requirement-panel');
+    const newRequirementFrame = newRequirementPanel ? newRequirementPanel.querySelector('iframe') : null;
+
+    function openNewRequirement() {
+        if (!newRequirementOverlay || !newRequirementPanel) {
+            console.error('New requirement overlay or panel not found');
+            return;
+        }
+        newRequirementOverlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            newRequirementPanel.classList.add('open');
+        });
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeNewRequirement() {
+        if (!newRequirementOverlay || !newRequirementPanel) return;
+        newRequirementPanel.classList.remove('open');
+        setTimeout(() => {
+            newRequirementOverlay.classList.add('hidden');
+            if (newRequirementFrame) {
+                const src = newRequirementFrame.getAttribute('src');
+                newRequirementFrame.setAttribute('src', src || 'Qualification.html');
+            }
+        }, 300);
+        document.body.style.overflow = '';
+    }
+
+    if (newRequirementBtn) {
+        newRequirementBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openNewRequirement();
+        });
+    } else {
+        console.error('New requirement button not found');
+    }
+
+    document.querySelectorAll('[data-close-new-requirement]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeNewRequirement();
+        });
+    });
+
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && newRequirementPanel && newRequirementPanel.classList.contains('open')) {
+            closeNewRequirement();
+        }
+    });
+
+    // Deal detail slide-over functionality
+    const dealDetailOverlay = document.getElementById('deal-detail-overlay');
+    const dealDetailPanel = document.getElementById('deal-detail-panel');
+    const dealDetailFrame = dealDetailPanel ? dealDetailPanel.querySelector('iframe') : null;
+
+    function openDealDetail() {
+        if (!dealDetailOverlay || !dealDetailPanel) {
+            console.error('Deal detail overlay or panel not found');
+            return;
+        }
+        dealDetailOverlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            dealDetailPanel.classList.add('open');
+        });
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDealDetail() {
+        if (!dealDetailOverlay || !dealDetailPanel) return;
+        dealDetailPanel.classList.remove('open');
+        setTimeout(() => {
+            dealDetailOverlay.classList.add('hidden');
+            if (dealDetailFrame) {
+                const src = dealDetailFrame.getAttribute('src');
+                dealDetailFrame.setAttribute('src', src || 'Matching & Shortlist.html');
+            }
+        }, 300);
+        document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-close-deal-detail]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeDealDetail();
+        });
+    });
+
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && dealDetailPanel && dealDetailPanel.classList.contains('open')) {
+            closeDealDetail();
+        }
+    });
+
+    // Drag and drop functionality
+    let draggedCard = null;
+    let draggedFromStage = null;
+    let isDraggingCard = false;
+    
+    // Get all stage columns (drop zones)
+    const stageColumns = document.querySelectorAll('[id^="stage-"]');
+    const stageContainers = document.querySelectorAll('[id^="stage-"] .flex-1.overflow-y-auto');
+    
+    // Get all cards
+    const cards = document.querySelectorAll('[id^="stage-"] .bg-stone, [id^="stage-"] .bg-blue-50, [id^="stage-"] .bg-purple-50, [id^="stage-"] .bg-indigo-50, [id^="stage-"] .bg-teal-50, [id^="stage-"] .bg-amber-50, [id^="stage-"] .bg-orange-50, [id^="stage-"] .bg-cyan-50, [id^="stage-"] .bg-emerald-50, [id^="stage-"] .bg-violet-50, [id^="stage-"] .bg-green-50, [id^="stage-"] .bg-red-50');
+    
+    // Make cards draggable
+    cards.forEach(card => {
+        card.setAttribute('draggable', 'true');
+        card.classList.add('cursor-move');
+        
+        // Drag start
+        card.addEventListener('dragstart', function(e) {
+            draggedCard = this;
+            draggedFromStage = this.closest('[id^="stage-"]');
+            this.style.opacity = '0.5';
+            this.classList.add('dragging');
+            isDraggingCard = true;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        });
+        
+        // Drag end
+        card.addEventListener('dragend', function(e) {
+            this.style.opacity = '1';
+            this.classList.remove('dragging');
+            stageContainers.forEach(container => {
+                container.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            });
+            requestAnimationFrame(() => {
+                isDraggingCard = false;
+            });
+        });
+        
+        // Click handler (for card details)
+        card.addEventListener('click', function(e) {
+            if (isDraggingCard) {
+                return;
+            }
+            if (!e.target.closest('button')) {
+                openDealDetail();
+            }
+        });
+    });
+    
+    // Make stage containers drop zones
+    stageContainers.forEach(container => {
+        let dragOverCounter = 0;
+        
+        container.addEventListener('dragover', function(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            dragOverCounter++;
+            return false;
+        });
+        
+        container.addEventListener('dragenter', function(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            dragOverCounter++;
+            this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            return false;
+        });
+        
+        container.addEventListener('dragleave', function(e) {
+            dragOverCounter--;
+            // Only remove class if we've left the container (not just a child element)
+            if (dragOverCounter === 0) {
+                this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            }
+        });
+        
+        container.addEventListener('drop', function(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            
+            dragOverCounter = 0;
+            this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            
+            if (draggedCard && draggedCard !== null) {
+                const targetStage = this.closest('[id^="stage-"]');
+                
+                // Only move if dropping in a different stage
+                if (targetStage && targetStage !== draggedFromStage) {
+                    // Remove from old stage
+                    draggedCard.remove();
+                    
+                    // Add to new stage
+                    this.appendChild(draggedCard);
+                    
+                    // Update card counts
+                    updateCardCounts();
+                    
+                    // Show success feedback
+                    showDragFeedback('Card moved successfully');
+                } else if (targetStage === draggedFromStage) {
+                    // Same stage - just reset visual state
+                    showDragFeedback('Card returned to original position');
+                }
+            }
+            
+            return false;
+        });
+    });
+    
+    // Function to update card counts in stage headers
+    function updateCardCounts() {
+        stageColumns.forEach(stage => {
+            const stageId = stage.id;
+            const container = stage.querySelector('.flex-1.overflow-y-auto');
+            const countElement = stage.querySelector('.text-xs.text-concrete');
+            
+            if (container && countElement) {
+                const cardCount = container.querySelectorAll('.bg-stone, .bg-blue-50, .bg-purple-50, .bg-indigo-50, .bg-teal-50, .bg-amber-50, .bg-orange-50, .bg-cyan-50, .bg-emerald-50, .bg-violet-50, .bg-green-50, .bg-red-50').length;
+                countElement.textContent = countElement.textContent.replace(/\d+/, cardCount);
+            }
+        });
+    }
+    
+    // Function to show drag feedback
+    function showDragFeedback(message) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-8 right-8 bg-slate text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 z-50 transition-all';
+        toast.innerHTML = `<i class="fa-solid fa-check-circle"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
+
+    // Quick action buttons
+    document.querySelectorAll('[id^="stage-"] button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('Action:', this.textContent.trim());
+        });
+    });
+});
+</script>
+    </div>
+</div>
+</body>
+</html>

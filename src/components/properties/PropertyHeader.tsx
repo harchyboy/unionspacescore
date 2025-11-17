@@ -40,6 +40,33 @@ export function PropertyHeader({ property }: PropertyHeaderProps) {
             <DataBar value={stats.occupancyPct} label="Occupancy Rate" />
           </div>
         )}
+
+        {/* Data Health and Broker Set Cards */}
+        <div className="grid grid-cols-2 gap-6 mt-6">
+          {/* Data Health Card */}
+          <div className="flex flex-col justify-between bg-[#F0F0F0] rounded-xl border border-[#E6E6E6] p-5 min-h-[120px]">
+            <div>
+              <div className="text-xs text-[#8e8e8e] mb-1">Data Health</div>
+              <div className="text-base font-semibold text-[#252525]">92%</div>
+            </div>
+            <button className="text-xs text-[#252525] underline hover:no-underline self-start mt-4">
+              View drivers
+            </button>
+          </div>
+
+          {/* Broker Set Card */}
+          <div className="flex flex-col justify-between bg-[#F0F0F0] rounded-xl border border-[#E6E6E6] p-5 min-h-[120px]">
+            <div>
+              <div className="text-xs text-[#8e8e8e] mb-1">Broker Set</div>
+              <div className="text-base font-semibold text-[#252525]">
+                {property.marketing.brokerSet || property.marketing.visibility} · 10 brokers
+              </div>
+            </div>
+            <button className="px-3 py-1.5 border border-[#E6E6E6] rounded text-xs hover:bg-white transition-colors mt-4 self-start">
+              Manage
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
