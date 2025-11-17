@@ -350,8 +350,8 @@
                         </div>
                         <div>
                             <div class="grid grid-cols-1 gap-2">
-                                <div class="text-xs text-secondary">Select everything included with this unit. Click multiple tags to select them.</div>
-                                <div id="amenities-list" class="flex flex-wrap gap-2" aria-label="Amenities multi-select"></div>
+                                <div class="text-xs text-secondary">Select everything included with this unit. You can select multiple options.</div>
+                                <div id="amenities-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2" aria-label="Amenities multi-select"></div>
                             </div>
                         </div>
                     </section>
@@ -514,7 +514,7 @@ window.addEventListener('load', function() {
     if (amenitiesContainer) {
         amenities.forEach(option => {
             const label = document.createElement('label');
-            label.className = 'inline-flex items-center cursor-pointer';
+            label.className = 'flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-muted/50 transition-colors';
             
             // Prevent form submission and page scroll
             label.addEventListener('click', function(e) {
@@ -526,7 +526,7 @@ window.addEventListener('load', function() {
             input.type = 'checkbox';
             input.name = 'amenities';
             input.value = option;
-            input.className = 'sr-only peer';
+            input.className = 'w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-2 focus:ring-primary/30 cursor-pointer';
             input.tabIndex = -1; // Prevent keyboard focus which can cause scrolling
             
             // Prevent scroll when checkbox receives focus
@@ -535,12 +535,12 @@ window.addEventListener('load', function() {
                 this.blur(); // Immediately remove focus to prevent scroll
             });
 
-            const chip = document.createElement('span');
-            chip.className = 'inline-flex items-center px-3 py-1.5 text-xs font-medium border border-[#E6E6E6] rounded-full text-secondary peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary transition-colors';
-            chip.textContent = option;
+            const text = document.createElement('span');
+            text.className = 'text-sm text-primary';
+            text.textContent = option;
 
             label.appendChild(input);
-            label.appendChild(chip);
+            label.appendChild(text);
             amenitiesContainer.appendChild(label);
         });
     }
