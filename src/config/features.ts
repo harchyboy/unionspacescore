@@ -14,6 +14,7 @@ const enabledFeatures = enabledFeaturesEnv.split(',').map((f) => f.trim().toLowe
 
 export const FEATURES = {
   DEALS: 'deals',
+  LEADS: 'leads',
   PROPERTIES: 'properties',
   UNITS: 'units',
   DEAL_ROOM: 'deal-room',

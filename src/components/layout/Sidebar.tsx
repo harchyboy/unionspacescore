@@ -1,6 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import { isFeatureEnabled, FEATURES } from '../../config/features';
 
+const HOT_LEAD_BADGE = 4;
+
 interface NavItem {
   key: string;
   label: string;
@@ -35,6 +37,13 @@ const allNavSections: NavSection[] = [
         icon: 'fa-handshake',
         href: '/deals',
         badge: 12,
+      },
+      {
+        key: 'leads',
+        label: 'Leads',
+        icon: 'fa-address-card',
+        href: '/leads',
+        badge: HOT_LEAD_BADGE,
       },
       {
         key: 'properties',
@@ -128,6 +137,7 @@ function getFilteredNavSections(): NavSection[] {
           properties: FEATURES.PROPERTIES,
           units: FEATURES.UNITS,
           'deal-room': FEATURES.DEAL_ROOM,
+          leads: FEATURES.LEADS,
           onboarding: FEATURES.ONBOARDING,
           services: FEATURES.SERVICES,
           tickets: FEATURES.TICKETS,
@@ -179,6 +189,7 @@ export function Sidebar() {
     const path = location.pathname;
     if (path === '/') return 'overview';
     if (path.startsWith('/deals')) return 'deals';
+    if (path.startsWith('/leads')) return 'leads';
     if (path.startsWith('/properties')) return 'properties';
     if (path.startsWith('/units')) return 'units';
     if (path.startsWith('/deal-room')) return 'deal-room';

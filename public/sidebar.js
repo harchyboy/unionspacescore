@@ -39,6 +39,8 @@ async function loadSharedSidebar() {
     if (activeKey) {
       applyActiveState(clone, activeKey);
     }
+
+    hydrateLeadBadge(clone);
   });
 }
 
@@ -68,5 +70,15 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadSharedSidebar);
 } else {
   loadSharedSidebar();
+}
+
+function hydrateLeadBadge(sidebar) {
+  const badge = sidebar.querySelector('[data-hot-lead-badge]');
+  if (!badge) return;
+
+  if (window.LEAD_UTILS && typeof window.LEAD_UTILS.getHotLeadCount === 'function') {
+    const hotCount = window.LEAD_UTILS.getHotLeadCount();
+    badge.textContent = `${hotCount} HOT`;
+  }
 }
 

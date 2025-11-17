@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lead Capture | UNION</title>
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#252525',
+              secondary: '#8E8E8E',
+              border: '#E6E6E6',
+              muted: '#FAFAFA'
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif']
+            }
+          }
+        }
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://kit.fontawesome.com/4b37446228.js" crossorigin="anonymous"></script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body class="bg-[#F0F0F0]">
+    <div class="flex h-screen overflow-hidden">
+      <aside
+        data-sidebar-placeholder
+        data-active="leads"
+        class="w-64 bg-white border-r border-[#E6E6E6]"
+      ></aside>
+
+      <main class="flex-1 overflow-y-auto">
+        <header class="bg-white border-b border-[#E6E6E6] px-8 py-5 flex items-center justify-between">
+          <div>
+            <p class="text-xs text-secondary uppercase tracking-widest mb-1">Lead Intake</p>
+            <h1 class="text-3xl font-semibold text-primary">Create New Lead</h1>
+            <p class="text-sm text-secondary mt-1">
+              Capture conversations from every touchpoint with structured data for scoring.
+            </p>
+          </div>
+          <a
+            href="Leads Dashboard.html"
+            class="px-4 py-2 text-sm font-medium border border-[#E6E6E6] rounded-lg text-primary hover:bg-muted transition"
+          >
+            Back to Leads
+          </a>
+        </header>
+
+        <section class="px-8 py-6">
+          <form
+            id="lead-capture-form"
+            class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+          >
+            <div class="space-y-6">
+              <div class="bg-white border border-[#E6E6E6] rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="text-lg font-semibold text-primary">Source Channel</h2>
+                  <span class="text-xs text-secondary">Multi-channel capture</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="channel-card flex items-center gap-3 border border-[#E6E6E6] rounded-lg p-3 cursor-pointer hover:border-primary transition">
+                    <input type="radio" name="channel" value="Web Form" class="hidden" />
+                    <span class="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-primary">
+                      <i class="fa-solid fa-globe"></i>
+                    </span>
+                    <div>
+                      <div class="font-medium text-primary">Web Form</div>
+                      <div class="text-xs text-secondary">Instantly tagged digital enquiry</div>
+                    </div>
+                  </label>
+                  <label class="channel-card flex items-center gap-3 border border-[#E6E6E6] rounded-lg p-3 cursor-pointer hover:border-primary transition">
+                    <input type="radio" name="channel" value="Phone Call" class="hidden" />
+                    <span class="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-primary">
+                      <i class="fa-solid fa-phone"></i>
+                    </span>
+                    <div>
+                      <div class="font-medium text-primary">Phone Call</div>
+                      <div class="text-xs text-secondary">Recorded inbound conversation</div>
+                    </div>
+                  </label>
+                  <label class="channel-card flex items-center gap-3 border border-[#E6E6E6] rounded-lg p-3 cursor-pointer hover:border-primary transition">
+                    <input type="radio" name="channel" value="Email" class="hidden" />
+                    <span class="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-primary">
+                      <i class="fa-solid fa-envelope"></i>
+                    </span>
+                    <div>
+                      <div class="font-medium text-primary">Email</div>
+                      <div class="text-xs text-secondary">Forwarded inbox submission</div>
+                    </div>
+                  </label>
+                  <label class="channel-card flex items-center gap-3 border border-[#E6E6E6] rounded-lg p-3 cursor-pointer hover:border-primary transition">
+                    <input type="radio" name="channel" value="Broker Referral" class="hidden" />
+                    <span class="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-primary">
+                      <i class="fa-solid fa-people-arrows"></i>
+                    </span>
+                    <div>
+                      <div class="font-medium text-primary">Broker Referral</div>
+                      <div class="text-xs text-secondary">Partner originated opportunity</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="bg-white border border-[#E6E6E6] rounded-xl p-5 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-lg font-semibold text-primary">Contact Details</h2>
+                  <span class="text-xs text-secondary">Who reached out?</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Name</label>
+                    <input
+                      name="name"
+                      required
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="Alex Morgan"
+                    />
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Company</label>
+                    <input
+                      name="company"
+                      required
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="Nimbus Labs"
+                    />
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="alex@nimbuslabs.com"
+                    />
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Phone</label>
+                    <input
+                      name="phone"
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="+44 20 7000 0000"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <div class="bg-white border border-[#E6E6E6] rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                  <h2 class="text-lg font-semibold text-primary">Requirement Brief</h2>
+                  <span class="text-xs text-secondary">Fuel BANT scoring</span>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="text-xs font-semibold text-secondary uppercase">Space Size</label>
+                      <input
+                        name="size"
+                        class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                        placeholder="e.g. 20,000 sq ft"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-xs font-semibold text-secondary uppercase">Timeline</label>
+                      <select
+                        name="timeline"
+                        class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      >
+                        <option value="">Select</option>
+                        <option>Immediate</option>
+                        <option>2-4 weeks</option>
+                        <option>1-3 months</option>
+                        <option>3-6 months</option>
+                        <option>6+ months</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Preferred Locations</label>
+                    <input
+                      name="locations"
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="City Core, Canary Wharf"
+                    />
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Budget Range</label>
+                    <select
+                      name="budget"
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    >
+                      <option value="">Select budget</option>
+                      <option>£100k+ annual</option>
+                      <option>£50k-£99k annual</option>
+                      <option>£25k-£49k annual</option>
+                      <option>£10k-£24k annual</option>
+                      <option>Under £10k annual</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Requirement Notes</label>
+                    <textarea
+                      name="notes"
+                      rows="4"
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="Hybrid desk ratio, specialist lab needs, ESG priorities..."
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white border border-[#E6E6E6] rounded-xl p-5 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-lg font-semibold text-primary">Campaign Tracking</h2>
+                  <span class="text-xs text-secondary">Source fingerprint</span>
+                </div>
+                <select
+                  name="tracking"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                >
+                  <option value="">Select tracking tag</option>
+                  <option>Broker Partner: Knight Frank</option>
+                  <option>Website Form: landlord-microsite</option>
+                  <option>Inbound Call: 0800 lead line</option>
+                  <option>Email Campaign: Autumn availability</option>
+                  <option>Event Capture: Future of Work Forum</option>
+                </select>
+                <div class="flex items-start gap-3 border border-dashed border-[#E6E6E6] rounded-lg p-4 bg-muted">
+                  <i class="fa-solid fa-lightbulb text-primary mt-1"></i>
+                  <p class="text-sm text-secondary">
+                    Tagging sources keeps attribution clean and pushes context into the qualification playbook.
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  class="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-opacity-90 transition"
+                >
+                  Save Lead &amp; Notify Team
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast-root" class="fixed bottom-8 right-8 space-y-3 z-50"></div>
+
+    <script src="leads-data.js"></script>
+    <script src="sidebar.js" defer></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('lead-capture-form');
+        const cards = document.querySelectorAll('.channel-card');
+
+        cards.forEach((card) => {
+          const input = card.querySelector('input');
+          card.addEventListener('click', () => {
+            cards.forEach((c) => c.classList.remove('border-primary', 'bg-muted'));
+            card.classList.add('border-primary', 'bg-muted');
+            input.checked = true;
+          });
+        });
+
+        form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          pushToast('Lead captured and routed to qualification queue.');
+          form.reset();
+          cards.forEach((c) => c.classList.remove('border-primary', 'bg-muted'));
+        });
+
+        function pushToast(message) {
+          const root = document.getElementById('toast-root');
+          const toast = document.createElement('div');
+          toast.className =
+            'bg-primary text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2';
+          toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-300"></i><span class="text-sm">${message}</span>`;
+          root.appendChild(toast);
+          setTimeout(() => toast.remove(), 3200);
+        }
+      });
+    </script>
+  </body>
+</html>
+
