@@ -515,12 +515,25 @@ window.addEventListener('load', function() {
         amenities.forEach(option => {
             const label = document.createElement('label');
             label.className = 'inline-flex items-center cursor-pointer';
+            
+            // Prevent form submission and page scroll
+            label.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Don't prevent default - let the checkbox toggle naturally
+            });
 
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.name = 'amenities';
             input.value = option;
             input.className = 'sr-only peer';
+            input.tabIndex = -1; // Prevent keyboard focus which can cause scrolling
+            
+            // Prevent scroll when checkbox receives focus
+            input.addEventListener('focus', function(e) {
+                e.preventDefault();
+                this.blur(); // Immediately remove focus to prevent scroll
+            });
 
             const chip = document.createElement('span');
             chip.className = 'inline-flex items-center px-3 py-1.5 text-xs font-medium border border-[#E6E6E6] rounded-full text-secondary peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary transition-colors';
@@ -535,6 +548,13 @@ window.addEventListener('load', function() {
     const saveUnitBtn = document.getElementById('save-unit-btn');
     const unitForm = document.getElementById('unit-form');
     const cancelUnitBtn = document.getElementById('cancel-unit-btn');
+    
+    // Prevent form submission on Enter key or accidental submit
+    if (unitForm) {
+        unitForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
+    }
     
     if (cancelUnitBtn) {
         cancelUnitBtn.addEventListener('click', function(e) {
