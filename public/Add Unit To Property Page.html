@@ -346,11 +346,11 @@
                     <section id="amenities-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
                         <div class="mb-6">
                             <h2 class="text-xl font-semibold text-primary">Amenities</h2>
-                            <p class="text-sm text-secondary mt-1">Multi-select tag input stored in the <span class="font-medium text-primary">amenities</span> field.</p>
+                            <p class="text-sm text-secondary mt-1">Multi-select tag input stored in the <span class="font-medium text-primary">amenities</span> field. <span class="font-medium text-primary">You can select multiple options.</span></p>
                         </div>
                         <div>
                             <div class="grid grid-cols-1 gap-2">
-                                <div class="text-xs text-secondary">Select everything included with this unit.</div>
+                                <div class="text-xs text-secondary">Select everything included with this unit. Click multiple tags to select them.</div>
                                 <div id="amenities-list" class="flex flex-wrap gap-2" aria-label="Amenities multi-select"></div>
                             </div>
                         </div>
@@ -550,6 +550,34 @@ window.addEventListener('load', function() {
     saveUnitBtn.addEventListener('click', function(e) {
         e.preventDefault();
         
+        // Collect all selected amenities
+        const selectedAmenities = [];
+        const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]:checked');
+        amenityCheckboxes.forEach(checkbox => {
+            selectedAmenities.push(checkbox.value);
+        });
+        
+        // Log selected amenities (for debugging - can be removed in production)
+        console.log('Selected amenities:', selectedAmenities);
+        
+        // You can also store them in a hidden input field for form submission
+        // Remove any existing hidden input
+        const existingHiddenInput = document.querySelector('input[name="amenitiesArray"]');
+        if (existingHiddenInput) {
+            existingHiddenInput.remove();
+        }
+        
+        // Add hidden input with selected amenities as JSON array
+        if (selectedAmenities.length > 0) {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'amenitiesArray';
+            hiddenInput.value = JSON.stringify(selectedAmenities);
+            unitForm.appendChild(hiddenInput);
+        }
+        
+        // Form validation and submission logic would go here
+        // For now, just show success toast
         const toast = document.createElement('div');
         toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
         toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Unit created successfully. Dossier generated.</span>';
