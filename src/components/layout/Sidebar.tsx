@@ -240,12 +240,12 @@ export function Sidebar() {
       <div className="p-4 border-t border-[#E6E6E6]">
         <div className="flex items-center space-x-3">
           <img
-            src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg"
-            alt="Tom"
+            src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg"
+            alt="Tom Townsend"
             className="w-9 h-9 rounded-full object-cover"
           />
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold text-primary truncate">Tom Harrison</div>
+            <div className="text-sm font-semibold text-primary truncate">Tom Townsend</div>
             <div className="text-xs text-secondary">Origination</div>
           </div>
           <button className="text-secondary hover:text-primary">

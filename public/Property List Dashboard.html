@@ -211,7 +211,7 @@
                     <select id="filter-owner" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="">All Owners</option>
                         <option value="Tom">Tom</option>
-                        <option value="Tom Harrison">Tom Harrison</option>
+                        <option value="Tom Townsend">Tom Townsend</option>
                         <option value="Max Chen">Max Chen</option>
                         <option value="Dani Roberts">Dani Roberts</option>
                     </select>
@@ -1086,7 +1086,7 @@
                     <label class="block text-sm font-medium text-primary mb-2">Owner / Steward <span class="text-destructive">*</span></label>
                     <select required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none">
                         <option value="">Assign to team member</option>
-                        <option>Tom Harrison</option>
+                        <option>Tom Townsend</option>
                         <option>Max Chen</option>
                         <option>Dani Roberts</option>
                     </select>
@@ -1410,12 +1410,12 @@ window.addEventListener('load', function() {
             // Filter by owner
             if (ownerFilter && show) {
                 const ownerValue = row.getAttribute('data-property-owner');
-                // Handle "Tom" vs "Tom Harrison"
-                if (ownerFilter === 'Tom Harrison' && ownerValue !== 'Tom' && ownerValue !== 'Tom Harrison') {
+                // Handle "Tom" vs "Tom Townsend"
+                if (ownerFilter === 'Tom Townsend' && ownerValue !== 'Tom' && ownerValue !== 'Tom Townsend') {
                     show = false;
                 } else if (ownerFilter === 'Tom' && ownerValue !== 'Tom') {
                     show = false;
-                } else if (ownerFilter !== 'Tom' && ownerFilter !== 'Tom Harrison' && ownerValue !== ownerFilter) {
+                } else if (ownerFilter !== 'Tom' && ownerFilter !== 'Tom Townsend' && ownerValue !== ownerFilter) {
                     show = false;
                 }
             }
