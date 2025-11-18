@@ -75,6 +75,8 @@
     body { font-family: var(--font-sans); background-color: #f0f0f0; color: #252525; }
     .transition-all-smooth { transition: all 0.2s ease-in-out; }
     .hover-lift:hover { transform: translateY(-2px); }
+    body.hide-nav #sidebar { display: none; }
+    body.hide-nav #main-content { margin-left: 0; }
   </style>
   <script src="sidebar.js" defer></script>
 </head>
@@ -370,6 +372,7 @@
 
   <script>
     window.addEventListener('load', function() {
+      document.body.classList.add('hide-nav');
       const saveButtons = [document.getElementById('save-property-btn'), document.getElementById('footer-save')];
       const cancelButtons = [document.getElementById('discard-property-btn'), document.getElementById('back-to-detail')];
 
