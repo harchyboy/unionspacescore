@@ -324,6 +324,16 @@
                                 <input id="meeting-rooms" name="meetingRooms" type="number" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="3">
                             </div>
                             <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="occupancy-status">Occupancy status</label>
+                                <select id="occupancy-status" name="occupancyStatus" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select status</option>
+                                    <option value="occupied">Occupied</option>
+                                    <option value="vacant">Vacant</option>
+                                    <option value="under-offer">Under offer</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                            <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="layout-type">Layout type</label>
                                 <select id="layout-type" name="layoutType" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
                                     <option value="">Select layout</option>
@@ -464,15 +474,15 @@
                             <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-primary mb-2" for="upload-floorplan">Upload floor plan</label>
-                                    <input id="upload-floorplan" name="marketingFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                    <input id="upload-floorplan" name="marketingFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-primary mb-2" for="upload-epc">Upload EPC</label>
-                                    <input id="upload-epc" name="marketingEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                    <input id="upload-epc" name="marketingEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-primary mb-2" for="upload-photos">Upload photos</label>
-                                    <input id="upload-photos" name="marketingPhotos" type="file" accept="image/*" multiple class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                    <input id="upload-photos" name="marketingPhotos" type="file" accept="image/*" multiple class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
                                 </div>
                             </div>
                         </div>
@@ -486,19 +496,19 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="doc-floorplan">Floor plan</label>
-                                <input id="doc-floorplan" name="docFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                <input id="doc-floorplan" name="docFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="doc-epc">EPC</label>
-                                <input id="doc-epc" name="docEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                <input id="doc-epc" name="docEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="doc-photos">Photos</label>
-                                <input id="doc-photos" name="docPhotos" type="file" accept="image/*" multiple class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                <input id="doc-photos" name="docPhotos" type="file" accept="image/*" multiple class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="doc-other">Other compliance documents</label>
-                                <input id="doc-other" name="docOther" type="file" multiple class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                <input id="doc-other" name="docOther" type="file" multiple class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
                             </div>
                         </div>
                     </section>
