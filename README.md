@@ -136,7 +136,7 @@ pnpm format
 
 ### Pre-commit Hooks
 
-Husky runs `pnpm lint` and `pnpm test` before each commit to ensure code quality.
+Husky currently runs `pnpm lint` before commits. `pnpm test` has been temporarily removed from the hook until the Vitest `jsdom` environment and Playwright configuration are fixed for headless CI. Re-enable it once the DOM globals are wired up and the e2e suite is isolated.
 
 ## API Mocking
 
