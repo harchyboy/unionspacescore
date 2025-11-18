@@ -169,10 +169,10 @@
                     <h1 class="text-3xl font-semibold text-primary mb-2">Units</h1>
                     <p class="text-secondary text-sm">Manage available spaces, pricing, and pipeline stages</p>
                 </div>
-                <button id="add-unit-btn" type="button" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                <a href="Add Unit To Property Page.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add Unit</span>
-                </button>
+                </a>
             </div>
             
             <div class="flex items-center space-x-4 mt-6">
@@ -1145,23 +1145,25 @@ window.addEventListener('load', function() {
     const cancelModal = document.getElementById('cancel-modal');
     const form = document.getElementById('add-unit-form');
     
-    addUnitBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-    });
-    
-    closeModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
-    
-    cancelModal.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
-    
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
+    if (addUnitBtn && modal && closeModal && cancelModal && form) {
+        addUnitBtn.addEventListener('click', function() {
+            modal.classList.remove('hidden');
+        });
+        
+        closeModal.addEventListener('click', function() {
             modal.classList.add('hidden');
-        }
-    });
+        });
+        
+        cancelModal.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+        
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
     
     const pricingRadios = document.querySelectorAll('input[name="pricing"]');
     const allInclusiveFields = document.getElementById('all-inclusive-pricing');
