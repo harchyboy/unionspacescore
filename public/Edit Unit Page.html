@@ -110,6 +110,8 @@
         .hover-lift:hover {
             transform: translateY(-2px);
         }
+        body.hide-nav #sidebar { display: none; }
+        body.hide-nav #main-content { margin-left: 0; }
 
         body.embedded #sidebar,
         body.embedded header#header {
@@ -576,6 +578,7 @@
 
 <script>
 window.addEventListener('load', function() {
+    document.body.classList.add('hide-nav');
     const amenities = [
         "24/7 access","Air conditioning","Backup internet connection","Balcony","Brainstorming rooms","Breakout areas","Business lounge","Cafe","Call handling","Car parking","CAT 5/6/7 cabling","CCTV","Changing rooms","Cleaning","Coffee","Conference rooms","Cycle parking","Wi Fi","DDA compliance","Disabled access","Dog friendly","Event space","Exercise studio","Filtered water","Fully furnished","Games lounge","Gym","Kitchen","Lift","Lockers","Mail handling","Meeting rooms","Mindfulness rooms","On site barista","On site staff","Outdoor space","Phone booths","Printing","Restaurant","Restaurant on site","Rooftop terrace","Secretarial services","Secure server rooms","Security guards","Showers","Single sex toilets","Snacks and refreshments","Storage","Unisex toilets","Video conferencing","VOIP","Wellness room"
     ];
