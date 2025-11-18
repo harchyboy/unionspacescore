@@ -45,14 +45,20 @@
 
       input[type='range'] {
         transition: none !important;
+        pointer-events: none !important;
+        cursor: default !important;
       }
 
       input[type='range']::-webkit-slider-thumb {
         transition: none !important;
+        pointer-events: none !important;
+        cursor: default !important;
       }
 
       input[type='range']::-moz-range-thumb {
         transition: none !important;
+        pointer-events: none !important;
+        cursor: default !important;
       }
     </style>
   </head>
@@ -369,6 +375,19 @@
         bantSliders.forEach((slider) => {
           const key = slider.dataset.bantSlider;
           slider.value = lead.bant[key];
+          // Prevent any user interaction with the slider - it should only update via dropdown
+          const preventInteraction = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          };
+          slider.addEventListener('input', preventInteraction, true);
+          slider.addEventListener('change', preventInteraction, true);
+          slider.addEventListener('mousedown', preventInteraction, true);
+          slider.addEventListener('mouseup', preventInteraction, true);
+          slider.addEventListener('touchstart', preventInteraction, true);
+          slider.addEventListener('touchend', preventInteraction, true);
+          slider.addEventListener('click', preventInteraction, true);
         });
 
         bonusSelects.forEach((select) => {
