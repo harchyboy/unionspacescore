@@ -278,21 +278,31 @@
                                 </p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-floor">Floor</label>
-                                <input id="unit-floor" name="floor" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="G, 01, 02, LG">
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-floor">Floor <span class="text-destructive">*</span></label>
+                                <input id="unit-floor" name="floor" type="text" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="G, 01, 02, LG">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-status">Status</label>
-                                <select id="unit-status" name="status" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
-                                    <option value="available">Available</option>
-                                    <option value="under-offer">Under offer</option>
-                                    <option value="let">Let</option>
-                                    <option value="held">Held</option>
-                                    <option value="draft">Draft</option>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-type">Unit type</label>
+                                <select id="unit-type" name="unitType" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select type</option>
+                                    <option value="office">Office</option>
+                                    <option value="retail">Retail</option>
+                                    <option value="industrial">Industrial</option>
+                                    <option value="studio">Studio</option>
+                                    <option value="other">Other</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="figma-url">Figma asset URL</label>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-description">Description</label>
+                                <textarea id="unit-description" name="description" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="High floor plug-and-play suite with double glazing."></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="internal-ref">Internal reference code</label>
+                                <input id="internal-ref" name="internalReference" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="BISH-99-4.02">
+                                <p class="text-xs text-secondary mt-2">Optional for ops audit trails.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="figma-url">Figma asset link</label>
                                 <input id="figma-url" name="figmaAssetUrl" type="url" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="https://figma.com/file/...">
                                 <p class="text-xs text-secondary mt-2">Optional reference for marketing imagery.</p>
                             </div>
@@ -306,8 +316,8 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-area">Area (sq ft)</label>
-                                <input id="unit-area" name="areaSqft" type="number" inputmode="decimal" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="2500">
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-area">Area (sq ft) <span class="text-destructive">*</span></label>
+                                <input id="unit-area" name="areaSqft" type="number" inputmode="decimal" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="2500">
                                 <p class="text-xs text-secondary mt-2">Use net internal area where possible.</p>
                             </div>
                             <div>
@@ -318,13 +328,104 @@
                                 <label class="block text-sm font-medium text-primary mb-2" for="meeting-rooms">Meeting rooms</label>
                                 <input id="meeting-rooms" name="meetingRooms" type="number" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="3">
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="layout-type">Layout type</label>
+                                <select id="layout-type" name="layoutType" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select layout</option>
+                                    <option value="open-plan">Open plan</option>
+                                    <option value="cellular">Cellular</option>
+                                    <option value="mixed">Mixed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="max-capacity">Maximum capacity</label>
+                                <input id="max-capacity" name="maxCapacity" type="number" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="45">
+                            </div>
                         </div>
                     </section>
 
-                    <section id="availability-visibility" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                    <section id="availability-status" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
                         <div class="mb-6">
-                            <h2 class="text-xl font-semibold text-primary">Availability & visibility</h2>
-                            <p class="text-sm text-secondary mt-1">Control what brokers and the team can see.</p>
+                            <h2 class="text-xl font-semibold text-primary">Availability & status</h2>
+                            <p class="text-sm text-secondary mt-1">Track live status, tenancy, and pipeline context.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-status">Unit availability status <span class="text-destructive">*</span></label>
+                                <select id="unit-status" name="status" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="available">Available</option>
+                                    <option value="under-offer">Under offer</option>
+                                    <option value="let">Let</option>
+                                    <option value="held">Held</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="available-from">Available from date</label>
+                                <input id="available-from" name="availableFrom" type="date" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="tenant-name">Tenant (if let)</label>
+                                <input id="tenant-name" name="tenant" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="ACME Industries">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="let-details">Let / under-offer details</label>
+                                <textarea id="let-details" name="letDetails" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Heads of terms issued 12 Feb, conditional on CAT B works."></textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="availability-notes">Internal availability notes</label>
+                                <textarea id="availability-notes" name="availabilityNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Holding for ACME until 15 Feb. Status will reflect these notes in the future."></textarea>
+                                <p class="text-xs text-secondary mt-2">Stores alongside the status text for ops context only.</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-muted rounded-xl border border-dashed border-[#E6E6E6] p-4 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-sm font-semibold text-primary">
+                                <i class="fa-solid fa-link"></i>
+                                <span>Pipeline deals (FR-008)</span>
+                            </div>
+                            <p class="text-sm text-secondary">When a tenant requirement exists, it will sync here automatically. No manual input required—links appear once the requirement references this unit.</p>
+                        </div>
+                    </section>
+
+                    <section id="commercial-terms" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Commercial terms</h2>
+                            <p class="text-sm text-secondary mt-1">Capture quoting rent, opex, and incentive structure.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="quoting-rent">Quoting rent</label>
+                                <div class="flex gap-3">
+                                    <input id="quoting-rent" name="quotingRent" type="number" inputmode="decimal" class="flex-1 px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="72.50">
+                                    <select id="rent-unit" name="rentUnit" class="w-40 px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                        <option value="psf">per sq ft</option>
+                                        <option value="pcm">per month</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="service-charge">Service charge (per sq ft)</label>
+                                <input id="service-charge" name="serviceCharge" type="number" inputmode="decimal" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="12.00">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="business-rates">Business rates estimate</label>
+                                <input id="business-rates" name="businessRates" type="number" inputmode="decimal" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="17.50">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="incentives">Incentives</label>
+                                <textarea id="incentives" name="incentives" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="6 months rent free on 5-year term."></textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="additional-charges">Additional charges / packages</label>
+                                <textarea id="additional-charges" name="additionalCharges" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Add smart office bundle, concierge service, etc."></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="visibility-marketing" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Visibility & marketing</h2>
+                            <p class="text-sm text-secondary mt-1">Control what brokers see and log outbound activity.</p>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -335,10 +436,74 @@
                                 </select>
                                 <p class="text-xs text-secondary mt-2">Defaults to Private to keep suites internal until ready.</p>
                             </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-primary mb-2" for="availability-notes">Internal availability notes</label>
-                                <textarea id="availability-notes" name="availabilityNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Holding for ACME until 15 Feb. Status will reflect these notes in the future."></textarea>
-                                <p class="text-xs text-secondary mt-2">Stores alongside the status text for ops context only.</p>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="marketing-status">Marketing status</label>
+                                <select id="marketing-status" name="marketingStatus" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="draft">Draft</option>
+                                    <option value="coming-soon">Coming soon</option>
+                                    <option value="live">Live</option>
+                                    <option value="paused">Paused</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2">Broker network</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="inline-flex items-center gap-2 text-sm px-3 py-2 border border-[#E6E6E6] rounded-full cursor-pointer hover:bg-muted/60">
+                                        <input type="checkbox" name="brokerNetwork" value="union" class="text-primary rounded">
+                                        <span>UNION prefered</span>
+                                    </label>
+                                    <label class="inline-flex items-center gap-2 text-sm px-3 py-2 border border-[#E6E6E6] rounded-full cursor-pointer hover:bg-muted/60">
+                                        <input type="checkbox" name="brokerNetwork" value="flex" class="text-primary rounded">
+                                        <span>Flex brokers</span>
+                                    </label>
+                                    <label class="inline-flex items-center gap-2 text-sm px-3 py-2 border border-[#E6E6E6] rounded-full cursor-pointer hover:bg-muted/60">
+                                        <input type="checkbox" name="brokerNetwork" value="agencies" class="text-primary rounded">
+                                        <span>Agencies</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="disposal-agent">Disposal agent</label>
+                                <input id="disposal-agent" name="disposalAgent" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Knight Frank">
+                            </div>
+                            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="upload-floorplan">Upload floor plan</label>
+                                    <input id="upload-floorplan" name="marketingFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="upload-epc">Upload EPC</label>
+                                    <input id="upload-epc" name="marketingEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="upload-photos">Upload photos</label>
+                                    <input id="upload-photos" name="marketingPhotos" type="file" accept="image/*" multiple class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="documents-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Documents</h2>
+                            <p class="text-sm text-secondary mt-1">Store all compliance-ready documentation at unit level.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-floorplan">Floor plan</label>
+                                <input id="doc-floorplan" name="docFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-epc">EPC</label>
+                                <input id="doc-epc" name="docEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-photos">Photos</label>
+                                <input id="doc-photos" name="docPhotos" type="file" accept="image/*" multiple class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-other">Other compliance documents</label>
+                                <input id="doc-other" name="docOther" type="file" multiple class="w-full px-4 py-3 border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40">
                             </div>
                         </div>
                     </section>
@@ -383,6 +548,19 @@
                                     <option value="unknown">Unknown</option>
                                 </select>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="mechanical-resp">Mechanical responsibility</label>
+                                <select id="mechanical-resp" name="mechanicalResponsibility" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select party</option>
+                                    <option value="tenant">Tenant</option>
+                                    <option value="landlord">Landlord</option>
+                                    <option value="mixed">Shared responsibility</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="last-serviced">Last servicing date</label>
+                                <input id="last-serviced" name="lastServicingDate" type="date" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-primary mb-2" for="hvac-notes">HVAC notes</label>
                                 <input id="hvac-notes" name="hvacNotes" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="VRF system, last serviced Jan 2025">
@@ -390,14 +568,46 @@
                         </div>
                     </section>
 
-                    <section id="design-notes" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                    <section id="internal-use" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
                         <div class="mb-6">
-                            <h2 class="text-xl font-semibold text-primary">Design & internal notes</h2>
+                            <h2 class="text-xl font-semibold text-primary">Internal use & operational data</h2>
                             <p class="text-sm text-secondary mt-1">Internal only, never shown externally.</p>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-primary mb-2" for="internal-notes">Internal notes</label>
-                            <textarea id="internal-notes" name="internalNotes" rows="4" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Notes for ops, fit-out dependencies, landlord requirements, etc."></textarea>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="data-health-score">Data health score</label>
+                                <input id="data-health-score" name="dataHealthScore" type="number" min="0" max="100" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="85">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="valve-sync-status">Valve Sync status</label>
+                                <select id="valve-sync-status" name="valveSyncStatus" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="in-sync">In sync with property</option>
+                                    <option value="pending">Pending update</option>
+                                    <option value="issue">Requires attention</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="data-health-notes">Data health notes</label>
+                                <textarea id="data-health-notes" name="dataHealthNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Missing CAD plan, awaiting EPC re-measure."></textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="internal-notes">Internal operations notes</label>
+                                <textarea id="internal-notes" name="internalNotes" rows="4" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Notes for ops, fit-out dependencies, landlord requirements, etc."></textarea>
+                            </div>
+                            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="work-orders">Work orders</label>
+                                    <textarea id="work-orders" name="workOrders" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Optional—for later syncing with CMMS."></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="maintenance-notes">Maintenance notes</label>
+                                    <textarea id="maintenance-notes" name="maintenanceNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="MEP snag cleared Feb 2025."></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="past-tenants">Past tenants</label>
+                                    <textarea id="past-tenants" name="pastTenants" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Contain note of past occupiers, lease dates."></textarea>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </form>
