@@ -3,6 +3,7 @@ import { useMatches, useAddToShortlist } from '../../../api/matching';
 import { LoadingSpinner } from '../../../components/ui/LoadingSpinner';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import type { DealId } from '../../../types/deal';
+import { canSendProposal, type ProposalContext } from '../../../utils/proposal';
 
 interface MatchingTabProps {
   dealId: DealId;
@@ -25,6 +26,23 @@ export function MatchingTab({ dealId }: MatchingTabProps) {
     // TODO: Implement remove from shortlist
     console.log('Remove from shortlist', { propertyId, unitId });
   };
+
+  const handleSendProposal = (propertyId: string, unitId?: string) => {
+    // Navigate to proposal builder with dealId and propertyId
+    const params = new URLSearchParams();
+    params.set('propertyId', propertyId);
+    if (unitId) {
+      params.set('unitId', unitId);
+    }
+    navigate(`/deals/${dealId}/proposal/builder?${params.toString()}`);
+  };
+
+  // Check if Send Proposal is allowed for this deal context
+  const proposalContext: ProposalContext = {
+    type: 'deal',
+    dealId: dealId,
+  };
+  const showSendProposal = canSendProposal(proposalContext);
 
   if (isLoading) {
     return (
@@ -156,6 +174,14 @@ export function MatchingTab({ dealId }: MatchingTabProps) {
               >
                 View Details
               </button>
+              {showSendProposal && (
+                <button
+                  onClick={() => handleSendProposal(property.id, unit?.id)}
+                  className="px-3 py-1.5 text-sm bg-[#252525] text-white hover:bg-opacity-90 rounded-lg transition-colors"
+                >
+                  Send Proposal
+                </button>
+              )}
               {isShortlisted ? (
                 <button
                   onClick={() => handleRemoveFromShortlist(property.id, unit?.id)}
