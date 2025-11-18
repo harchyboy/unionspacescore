@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { isFeatureEnabled, FEATURES } from '../../config/features';
+import { isFeatureEnabled, FEATURES, type Feature } from '../../config/features';
 
 const HOT_LEAD_BADGE = 4;
 
@@ -131,7 +131,7 @@ function getFilteredNavSections(): NavSection[] {
     .map((section) => ({
       ...section,
       items: section.items.filter((item) => {
-        const featureMap: Record<string, string> = {
+        const featureMap: Partial<Record<NavItem['key'], Feature>> = {
           overview: FEATURES.OVERVIEW,
           deals: FEATURES.DEALS,
           properties: FEATURES.PROPERTIES,
@@ -147,7 +147,7 @@ function getFilteredNavSections(): NavSection[] {
           settings: FEATURES.SETTINGS,
         };
         const feature = featureMap[item.key];
-        return feature ? isFeatureEnabled(feature as any) : true;
+        return feature ? isFeatureEnabled(feature) : true;
       }),
     }))
     .filter((section) => section.items.length > 0); // Remove empty sections

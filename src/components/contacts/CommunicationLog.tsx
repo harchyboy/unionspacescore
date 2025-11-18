@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../ui/Card';
 import { SearchInput } from '../ui/SearchInput';
 import { Select } from '../ui/Select';
@@ -27,13 +26,6 @@ const typeIcons: Record<Communication['type'], string> = {
   call: 'fa-phone',
   meeting: 'fa-calendar',
   note: 'fa-sticky-note',
-};
-
-const typeLabels: Record<Communication['type'], string> = {
-  email: 'Email',
-  call: 'Call',
-  meeting: 'Meeting',
-  note: 'Note',
 };
 
 export function CommunicationLog({

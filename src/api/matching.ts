@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { MatchingResult, PropertyMatch } from '../types/matching';
+import type { MatchingResult } from '../types/matching';
 import type { DealId } from '../types/deal';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';

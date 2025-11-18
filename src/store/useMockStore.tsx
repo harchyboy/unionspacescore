@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import type { AppState, DealRoomStatus, AgreementPlan, Agreement, FileDoc, ActivityItem, TaskItem, HeadsOfTerms } from '../types/dealRoom';
+import type { AppState, DealRoomStatus, AgreementPlan, Agreement, FileDoc, ActivityItem, TaskItem } from '../types/dealRoom';
 
 const STORAGE_KEY = 'union.dealroom.mock';
 
 // Helper utilities
-export const now = () => new Date().toISOString();
-export const uid = () => Math.random().toString(36).slice(2);
+const now = () => new Date().toISOString();
+const uid = () => Math.random().toString(36).slice(2);
 
 // Seed fixtures
 function seedState(): AppState {
@@ -440,6 +440,7 @@ export function MockStoreProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useMockStore() {
   const context = useContext(StoreContext);
   if (!context) {

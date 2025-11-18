@@ -8,7 +8,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 interface ContactRowProps {
   contact: Contact;
-  onSelect?: (id: string) => void;
 }
 
 const typeLabels: Record<Contact['type'], string> = {
@@ -29,14 +28,7 @@ const typeIcons: Record<Contact['type'], string> = {
   internal: 'fa-user',
 };
 
-const healthColors: Record<Contact['relationshipHealth'], 'success' | 'warning' | 'destructive' | 'default'> = {
-  excellent: 'success',
-  good: 'success',
-  fair: 'warning',
-  'needs-attention': 'destructive',
-};
-
-export function ContactRow({ contact, onSelect }: ContactRowProps) {
+export function ContactRow({ contact }: ContactRowProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const deleteContact = useDeleteContact();
