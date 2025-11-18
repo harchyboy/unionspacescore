@@ -222,11 +222,11 @@
             </div>
             
             <div class="flex items-center space-x-4 border-t border-[#E6E6E6] pt-4">
-                <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">Commercials</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Viewings</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Deal Artifacts</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Fit-out</button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Activity & Files</button>
+                <button id="tab-commercials" class="tab-btn px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary" data-tab="commercials">Commercials</button>
+                <button id="tab-viewings" class="tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="viewings">Viewings</button>
+                <button id="tab-deal-artifacts" class="tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="deal-artifacts">Deal Artifacts</button>
+                <button id="tab-fitout" class="tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="fitout">Fit-out</button>
+                <button id="tab-activity" class="tab-btn px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="activity">Activity & Files</button>
             </div>
         </div>
         
@@ -256,9 +256,17 @@
                                     <span class="text-sm text-primary">Building Insurance</span>
                                     <span class="text-sm font-semibold text-primary">£650</span>
                                 </div>
+                                <div class="flex items-center justify-between py-2 border-b border-[#E6E6E6]">
+                                    <span class="text-sm text-secondary">Utilities</span>
+                                    <span class="text-sm font-semibold text-secondary">Included</span>
+                                </div>
                                 <div class="flex items-center justify-between py-3 bg-muted rounded-lg px-3 mt-3">
                                     <span class="text-base font-semibold text-primary">Total Monthly</span>
                                     <span class="text-base font-semibold text-primary">£18,500</span>
+                                </div>
+                                <div class="flex items-center justify-between py-2 border-t border-[#E6E6E6] mt-2">
+                                    <span class="text-sm text-primary">Total Annual</span>
+                                    <span class="text-sm font-semibold text-primary">£222,000</span>
                                 </div>
                             </div>
                         </div>
@@ -283,337 +291,579 @@
                                     <div class="text-lg font-semibold text-primary">3 Months Rent</div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 pt-6 border-t border-[#E6E6E6]">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <div class="text-sm font-semibold text-primary mb-1">Pricing Mode</div>
-                                <div class="text-xs text-secondary">All-inclusive simplifies tenant budgeting. Bolt-on available for specific service exclusions.</div>
+                            <div class="mt-4 pt-4 border-t border-[#E6E6E6]">
+                                <div class="text-xs text-secondary mb-2">Incentives</div>
+                                <p class="text-sm text-primary">6 months rent-free period. Fit-out contribution of £50,000 available subject to 5-year term commitment.</p>
                             </div>
-                            <button class="text-primary hover:underline text-sm font-medium">
-                                Switch to Bolt-On View
-                            </button>
+                            <div class="mt-4 pt-4 border-t border-[#E6E6E6]">
+                                <div class="text-xs text-secondary mb-1">VAT Position</div>
+                                <div class="text-sm text-primary">Rent subject to VAT at standard rate (20%)</div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div id="modifications-services" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-semibold text-primary">Modifications & Services Requested</h2>
-                        <button class="text-primary hover:underline text-sm font-medium flex items-center space-x-2">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Log Request</span>
-                        </button>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="border border-[#E6E6E6] rounded-lg p-4">
-                            <div class="flex items-start justify-between mb-3">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3 mb-2">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Modification</span>
-                                        <span class="text-sm font-semibold text-primary">Additional Meeting Room</span>
-                                    </div>
-                                    <p class="text-sm text-secondary">Client requested conversion of open area to enclosed 8-person meeting room with AV setup</p>
-                                </div>
-                                <span class="text-xs text-secondary">14 Nov 2024</span>
-                            </div>
-                            <div class="flex items-center justify-between pt-3 border-t border-[#E6E6E6]">
-                                <div class="flex items-center space-x-4 text-xs">
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fa-solid fa-user text-secondary"></i>
-                                        <span class="text-secondary">Requested by:</span>
-                                        <span class="text-primary font-medium">Knight Frank (Broker)</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fa-solid fa-calendar text-secondary"></i>
-                                        <span class="text-secondary">After 2nd viewing</span>
-                                    </div>
-                                </div>
-                                <button class="text-primary hover:underline text-xs font-medium">
-                                    View Impact
-                                </button>
-                            </div>
+            </div>
+            
+            <!-- Viewings Tab -->
+            <div id="viewings-section" class="space-y-6 hidden">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-muted rounded-lg p-4">
+                            <div class="text-xs text-secondary mb-1">Total Viewings</div>
+                            <div class="text-2xl font-semibold text-primary">8</div>
                         </div>
-                        
-                        <div class="border border-[#E6E6E6] rounded-lg p-4">
-                            <div class="flex items-start justify-between mb-3">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3 mb-2">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-accent text-white">Service</span>
-                                        <span class="text-sm font-semibold text-primary">Premium AV Package</span>
-                                    </div>
-                                    <p class="text-sm text-secondary">Upgraded AV system for all meeting rooms including video conferencing equipment</p>
-                                </div>
-                                <span class="text-xs text-secondary">16 Nov 2024</span>
-                            </div>
-                            <div class="flex items-center justify-between pt-3 border-t border-[#E6E6E6]">
-                                <div class="flex items-center space-x-4 text-xs">
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fa-solid fa-user text-secondary"></i>
-                                        <span class="text-secondary">Requested by:</span>
-                                        <span class="text-primary font-medium">Tenant Direct</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fa-solid fa-handshake text-secondary"></i>
-                                        <span class="text-secondary">Direct UNION agreement</span>
-                                    </div>
-                                </div>
-                                <button class="text-primary hover:underline text-xs font-medium">
-                                    View Impact
-                                </button>
-                            </div>
+                        <div class="bg-muted rounded-lg p-4">
+                            <div class="text-xs text-secondary mb-1">Completed</div>
+                            <div class="text-2xl font-semibold text-primary">5</div>
                         </div>
-                        
-                        <div class="border border-[#E6E6E6] rounded-lg p-4">
-                            <div class="flex items-start justify-between mb-3">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3 mb-2">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Modification</span>
-                                        <span class="text-sm font-semibold text-primary">Kitchen Layout Adjustment</span>
-                                    </div>
-                                    <p class="text-sm text-secondary">Relocate coffee station and add additional refrigeration unit</p>
-                                </div>
-                                <span class="text-xs text-secondary">18 Nov 2024</span>
-                            </div>
-                            <div class="flex items-center justify-between pt-3 border-t border-[#E6E6E6]">
-                                <div class="flex items-center space-x-4 text-xs">
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fa-solid fa-user text-secondary"></i>
-                                        <span class="text-secondary">Requested by:</span>
-                                        <span class="text-primary font-medium">Tenant Direct</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1">
-                                        <i class="fa-solid fa-calendar text-secondary"></i>
-                                        <span class="text-secondary">Final viewing</span>
-                                    </div>
-                                </div>
-                                <button class="text-primary hover:underline text-xs font-medium">
-                                    View Impact
-                                </button>
-                            </div>
+                        <div class="bg-muted rounded-lg p-4">
+                            <div class="text-xs text-secondary mb-1">Upcoming</div>
+                            <div class="text-2xl font-semibold text-primary">2</div>
                         </div>
                     </div>
                     
-                    <div class="mt-6 pt-6 border-t border-[#E6E6E6]">
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-secondary">Total requests logged:</span>
-                            <span class="font-semibold text-primary">3 items</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="pricing-impact-ledger" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                    <h2 class="text-xl font-semibold text-primary mb-6">Pricing Impact Ledger</h2>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-muted border-b border-[#E6E6E6]">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Date</th>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Item</th>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Type</th>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Agreement</th>
-                                    <th class="px-4 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">One-Time Cost</th>
-                                    <th class="px-4 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Monthly Impact</th>
-                                    <th class="px-4 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Date and Time</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Viewer Name and Company</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Booker</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Notes</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Linked Deal ID</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-[#E6E6E6]">
                                 <tr class="hover:bg-muted transition-all-smooth">
-                                    <td class="px-4 py-4 text-sm text-secondary">14 Nov 2024</td>
-                                    <td class="px-4 py-4 text-sm text-primary font-medium">Additional Meeting Room</td>
+                                    <td class="px-4 py-4 text-sm text-primary">25 Nov 2024, 15:00</td>
+                                    <td class="px-4 py-4 text-sm text-primary">James Mitchell<br><span class="text-xs text-secondary">TechStart Solutions Ltd</span></td>
+                                    <td class="px-4 py-4 text-sm text-primary">Sarah Chen</td>
                                     <td class="px-4 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Modification</span>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-accent text-white">Scheduled</span>
                                     </td>
-                                    <td class="px-4 py-4 text-sm text-primary">Landlord Works</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary font-medium">£12,500</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary font-medium">+£420</td>
-                                    <td class="px-4 py-4 text-right">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-accent text-white">Quoted</span>
-                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">Second viewing - decision maker attending</td>
+                                    <td class="px-4 py-4 text-sm text-primary">DEAL-2024-0892</td>
                                 </tr>
                                 <tr class="hover:bg-muted transition-all-smooth">
-                                    <td class="px-4 py-4 text-sm text-secondary">16 Nov 2024</td>
-                                    <td class="px-4 py-4 text-sm text-primary font-medium">Premium AV Package</td>
+                                    <td class="px-4 py-4 text-sm text-primary">20 Nov 2024, 14:00</td>
+                                    <td class="px-4 py-4 text-sm text-primary">Sarah Mitchell<br><span class="text-xs text-secondary">Knight Frank</span></td>
+                                    <td class="px-4 py-4 text-sm text-primary">Max Reynolds</td>
                                     <td class="px-4 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-accent text-white">Service</span>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500 text-white">Completed</span>
                                     </td>
-                                    <td class="px-4 py-4 text-sm text-primary">UNION Direct</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary font-medium">£8,900</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary font-medium">+£350</td>
-                                    <td class="px-4 py-4 text-right">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-accent text-white">Quoted</span>
-                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">Positive feedback. Requested additional meeting room modification.</td>
+                                    <td class="px-4 py-4 text-sm text-primary">DEAL-2024-0892</td>
                                 </tr>
                                 <tr class="hover:bg-muted transition-all-smooth">
-                                    <td class="px-4 py-4 text-sm text-secondary">18 Nov 2024</td>
-                                    <td class="px-4 py-4 text-sm text-primary font-medium">Kitchen Layout Adjustment</td>
+                                    <td class="px-4 py-4 text-sm text-primary">12 Nov 2024, 10:30</td>
+                                    <td class="px-4 py-4 text-sm text-primary">David Thompson<br><span class="text-xs text-secondary">Knight Frank</span></td>
+                                    <td class="px-4 py-4 text-sm text-primary">Max Reynolds</td>
                                     <td class="px-4 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Modification</span>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500 text-white">Completed</span>
                                     </td>
-                                    <td class="px-4 py-4 text-sm text-primary">Landlord Works</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary font-medium">£4,200</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary font-medium">+£140</td>
-                                    <td class="px-4 py-4 text-right">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">Pending</span>
+                                    <td class="px-4 py-4 text-sm text-secondary">Initial viewing. Space suitable for requirements.</td>
+                                    <td class="px-4 py-4 text-sm text-primary">DEAL-2024-0892</td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-all-smooth">
+                                    <td class="px-4 py-4 text-sm text-primary">05 Nov 2024, 14:00</td>
+                                    <td class="px-4 py-4 text-sm text-primary">Emma Wilson<br><span class="text-xs text-secondary">Direct Inquiry</span></td>
+                                    <td class="px-4 py-4 text-sm text-primary">Tom Townsend</td>
+                                    <td class="px-4 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-500 text-white">No Show</span>
                                     </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">Viewer did not attend. No follow-up requested.</td>
+                                    <td class="px-4 py-4 text-sm text-secondary">—</td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-all-smooth">
+                                    <td class="px-4 py-4 text-sm text-primary">28 Oct 2024, 11:00</td>
+                                    <td class="px-4 py-4 text-sm text-primary">Robert Harris<br><span class="text-xs text-secondary">CBRE</span></td>
+                                    <td class="px-4 py-4 text-sm text-primary">Sarah Chen</td>
+                                    <td class="px-4 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500 text-white">Completed</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">Space too large for current requirements.</td>
+                                    <td class="px-4 py-4 text-sm text-secondary">—</td>
                                 </tr>
                             </tbody>
-                            <tfoot class="bg-muted border-t-2 border-primary">
-                                <tr>
-                                    <td colspan="4" class="px-4 py-4 text-sm font-semibold text-primary text-right">Total Impact</td>
-                                    <td class="px-4 py-4 text-sm font-semibold text-primary text-right">£25,600</td>
-                                    <td class="px-4 py-4 text-sm font-semibold text-primary text-right">+£910/mo</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Deal Artifacts Tab -->
+            <div id="deal-artifacts-section" class="space-y-6 hidden">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h2 class="text-xl font-semibold text-primary mb-6">Documents & Artifacts</h2>
                     
-                    <div class="mt-6 pt-6 border-t border-[#E6E6E6]">
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="bg-muted rounded-lg p-4">
-                                <div class="text-xs text-secondary mb-1">Revised Monthly Total</div>
-                                <div class="text-xl font-semibold text-primary">£19,410</div>
-                                <div class="text-xs text-secondary mt-1">Base £18,500 + £910 add-ons</div>
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Proposals</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-pdf text-red-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">proposal.pdf</div>
+                                            <div class="text-xs text-secondary">PDF • 1.2 MB • 15 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="bg-muted rounded-lg p-4">
-                                <div class="text-xs text-secondary mb-1">One-Time Costs</div>
-                                <div class="text-xl font-semibold text-primary">£25,600</div>
-                                <div class="text-xs text-secondary mt-1">Payable on completion</div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Heads of Terms Versions</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-contract text-blue-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">HoT_v3_final.pdf</div>
+                                            <div class="text-xs text-secondary">PDF • 245 KB • 20 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-contract text-blue-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">HoT_v2_draft.pdf</div>
+                                            <div class="text-xs text-secondary">PDF • 238 KB • 18 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="bg-muted rounded-lg p-4">
-                                <div class="text-xs text-secondary mb-1">Agreement Split</div>
-                                <div class="text-xl font-semibold text-primary">2 / 1</div>
-                                <div class="text-xs text-secondary mt-1">Landlord / UNION direct</div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Draft Contracts</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-signature text-purple-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">lease_draft_v1.docx</div>
+                                            <div class="text-xs text-secondary">DOCX • 456 KB • 22 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Offer Letters</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-invoice text-green-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">offer_letter_final.pdf</div>
+                                            <div class="text-xs text-secondary">PDF • 189 KB • 16 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Financial Models</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-excel text-yellow-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">financial_model_v2.xlsx</div>
+                                            <div class="text-xs text-secondary">XLSX • 2.4 MB • 19 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Approval Notes</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-lines text-gray-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">landlord_approval_notes.pdf</div>
+                                            <div class="text-xs text-secondary">PDF • 124 KB • 18 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Internal Negotiation Notes</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-pen text-indigo-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">negotiation_notes_internal.docx</div>
+                                            <div class="text-xs text-secondary">DOCX • 89 KB • 17 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Signed Documents</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                    <div class="flex items-center space-x-4 flex-1">
+                                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-file-signature text-green-600 text-xl"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary">signed_heads_of_terms.pdf</div>
+                                            <div class="text-xs text-secondary">PDF • 312 KB • 21 Nov 2024</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="text-primary hover:text-accent p-2">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div id="commercial-notes" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-semibold text-primary">Commercial Notes</h2>
-                        <button class="text-primary hover:underline text-sm font-medium flex items-center space-x-2">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Add Note</span>
-                        </button>
+            </div>
+            
+            <!-- Fit-out Tab -->
+            <div id="fitout-section" class="space-y-6 hidden">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h2 class="text-xl font-semibold text-primary mb-6">Fit-out Details</h2>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="text-xs text-secondary mb-2">Fit-out Type</div>
+                            <div class="text-sm font-semibold text-primary mb-4">Cat A</div>
+                            
+                            <div class="text-xs text-secondary mb-2">Fit-out Condition Notes</div>
+                            <p class="text-sm text-primary mb-4">Standard Category A fit-out completed in 2022. Includes suspended ceiling, LED lighting, carpet tiles, and basic kitchen facilities. Space is ready for tenant-specific Category B works.</p>
+                            
+                            <div class="text-xs text-secondary mb-2">Furniture Included</div>
+                            <ul class="text-sm text-primary space-y-1 mb-4">
+                                <li>• 42 ergonomic office chairs</li>
+                                <li>• 12 meeting room chairs</li>
+                                <li>• 8 standing desks (adjustable height)</li>
+                                <li>• 2 reception area sofas</li>
+                                <li>• Kitchen dining table and 6 chairs</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <div class="text-xs text-secondary mb-2">Planned Works</div>
+                            <ul class="text-sm text-primary space-y-1 mb-4">
+                                <li>• Additional meeting room conversion (8-person capacity)</li>
+                                <li>• Kitchen layout adjustment and refrigeration upgrade</li>
+                                <li>• Premium AV installation in all meeting rooms</li>
+                                <li>• Branded signage installation</li>
+                            </ul>
+                            
+                            <div class="text-xs text-secondary mb-2">Contractor Details</div>
+                            <div class="text-sm text-primary mb-1">BuildRight Construction Ltd</div>
+                            <div class="text-xs text-secondary mb-4">Contact: John Smith, 020 7123 4567, john.smith@buildright.co.uk</div>
+                            
+                            <div class="text-xs text-secondary mb-2">Warranty or Servicing Info</div>
+                            <p class="text-sm text-primary">12-month warranty on all fit-out works. Annual servicing contract available for HVAC and AV systems through UNION maintenance services.</p>
+                        </div>
                     </div>
                     
+                    <div class="border-t border-[#E6E6E6] pt-6">
+                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Photos</h3>
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="aspect-square bg-muted rounded-lg flex items-center justify-center border border-[#E6E6E6]">
+                                <i class="fa-solid fa-image text-secondary text-2xl"></i>
+                            </div>
+                            <div class="aspect-square bg-muted rounded-lg flex items-center justify-center border border-[#E6E6E6]">
+                                <i class="fa-solid fa-image text-secondary text-2xl"></i>
+                            </div>
+                            <div class="aspect-square bg-muted rounded-lg flex items-center justify-center border border-[#E6E6E6]">
+                                <i class="fa-solid fa-image text-secondary text-2xl"></i>
+                            </div>
+                            <div class="aspect-square bg-muted rounded-lg flex items-center justify-center border border-[#E6E6E6]">
+                                <i class="fa-solid fa-image text-secondary text-2xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-[#E6E6E6] pt-6 mt-6">
+                        <h3 class="text-sm font-semibold text-secondary uppercase tracking-wider mb-4">Documents</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                <div class="flex items-center space-x-4 flex-1">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-file-pdf text-blue-600 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-semibold text-primary">fitout_drawings_final.pdf</div>
+                                        <div class="text-xs text-secondary">Fit-out Drawings • PDF • 3.2 MB • 10 Nov 2024</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-primary hover:text-accent p-2">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                    <button class="text-primary hover:text-accent p-2">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                                <div class="flex items-center space-x-4 flex-1">
+                                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                        <i class="fa-solid fa-file-lines text-gray-600 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-sm font-semibold text-primary">furniture_inventory.xlsx</div>
+                                        <div class="text-xs text-secondary">Inventories • XLSX • 456 KB • 8 Nov 2024</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-primary hover:text-accent p-2">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                    <button class="text-primary hover:text-accent p-2">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activity & Files Tab -->
+            <div id="activity-section" class="space-y-6 hidden">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h2 class="text-xl font-semibold text-primary mb-6">Activity Timeline</h2>
                     <div class="space-y-4">
-                        <div class="border-l-4 border-primary bg-muted rounded-r-lg p-4">
-                            <div class="flex items-start justify-between mb-2">
-                                <div class="flex items-center space-x-3">
-                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="Max" class="w-8 h-8 rounded-full object-cover">
-                                    <div>
-                                        <div class="text-sm font-semibold text-primary">Max Reynolds</div>
-                                        <div class="text-xs text-secondary">20 Nov 2024, 14:32</div>
-                                    </div>
-                                </div>
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-file-contract text-white text-xs"></i>
                             </div>
-                            <p class="text-sm text-primary">Tenant is flexible on term length but wants certainty on AV pricing before HoTs. Confirmed they're comfortable with UNION direct agreement for services.</p>
-                        </div>
-                        
-                        <div class="border-l-4 border-accent bg-muted rounded-r-lg p-4">
-                            <div class="flex items-start justify-between mb-2">
-                                <div class="flex items-center space-x-3">
-                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-8 h-8 rounded-full object-cover">
-                                    <div>
-                                        <div class="text-sm font-semibold text-primary">Tom Townsend</div>
-                                        <div class="text-xs text-secondary">18 Nov 2024, 09:15</div>
-                                    </div>
-                                </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-primary mb-1">Heads of Terms Signed</div>
+                                <div class="text-xs text-secondary mb-2">Document signed by both parties</div>
+                                <div class="text-xs text-secondary">Max Reynolds • 21 Nov 2024, 16:45</div>
                             </div>
-                            <p class="text-sm text-primary">Disposal agent confirmed landlord can accommodate meeting room modification within 6 weeks. Budget agreed at £12,500 fixed price.</p>
                         </div>
-                        
-                        <div class="border-l-4 border-secondary bg-muted rounded-r-lg p-4">
-                            <div class="flex items-start justify-between mb-2">
-                                <div class="flex items-center space-x-3">
-                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" alt="Max" class="w-8 h-8 rounded-full object-cover">
-                                    <div>
-                                        <div class="text-sm font-semibold text-primary">Max Reynolds</div>
-                                        <div class="text-xs text-secondary">15 Nov 2024, 16:48</div>
-                                    </div>
-                                </div>
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-calendar-check text-white text-xs"></i>
                             </div>
-                            <p class="text-sm text-primary">Initial proposal sent at base pricing. Awaiting feedback on modifications before revising commercial terms for HoTs.</p>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-primary mb-1">Viewing Scheduled</div>
+                                <div class="text-xs text-secondary mb-2">Second viewing booked for 25 Nov 2024</div>
+                                <div class="text-xs text-secondary">Sarah Chen • 19 Nov 2024, 11:30</div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div id="comparison-scenarios" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                    <h2 class="text-xl font-semibold text-primary mb-6">Pricing Scenarios Comparison</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-muted border-b border-[#E6E6E6]">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Scenario</th>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Mode</th>
-                                    <th class="px-4 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Monthly Base</th>
-                                    <th class="px-4 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Add-Ons</th>
-                                    <th class="px-4 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Total Monthly</th>
-                                    <th class="px-4 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">One-Time</th>
-                                    <th class="px-4 py-3 text-center text-xs font-semibold text-secondary uppercase tracking-wider">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-[#E6E6E6]">
-                                <tr class="hover:bg-muted transition-all-smooth">
-                                    <td class="px-4 py-4 text-sm text-primary font-medium">Base Offer</td>
-                                    <td class="px-4 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">All-Inclusive</span>
-                                    </td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary">£18,500</td>
-                                    <td class="px-4 py-4 text-sm text-right text-secondary">—</td>
-                                    <td class="px-4 py-4 text-sm text-right font-semibold text-primary">£18,500</td>
-                                    <td class="px-4 py-4 text-sm text-right text-secondary">—</td>
-                                    <td class="px-4 py-4 text-center">
-                                        <button class="text-primary hover:underline text-xs font-medium">View</button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-muted transition-all-smooth bg-muted">
-                                    <td class="px-4 py-4 text-sm text-primary font-medium">With Modifications</td>
-                                    <td class="px-4 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">All-Inclusive</span>
-                                    </td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary">£18,500</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary">+£910</td>
-                                    <td class="px-4 py-4 text-sm text-right font-semibold text-primary">£19,410</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary">£25,600</td>
-                                    <td class="px-4 py-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Current</span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-muted transition-all-smooth">
-                                    <td class="px-4 py-4 text-sm text-primary font-medium">Bolt-On Alternative</td>
-                                    <td class="px-4 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">Bolt-On</span>
-                                    </td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary">£12,600</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary">+£6,250</td>
-                                    <td class="px-4 py-4 text-sm text-right font-semibold text-primary">£18,850</td>
-                                    <td class="px-4 py-4 text-sm text-right text-primary">£25,600</td>
-                                    <td class="px-4 py-4 text-center">
-                                        <button class="text-primary hover:underline text-xs font-medium">View</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="mt-6 pt-6 border-t border-[#E6E6E6]">
-                        <div class="flex items-start space-x-3">
-                            <i class="fa-solid fa-lightbulb text-accent text-lg"></i>
-                            <div>
-                                <div class="text-sm font-semibold text-primary mb-1">Recommendation</div>
-                                <p class="text-sm text-secondary">All-Inclusive mode recommended for this tenant profile. Simplifies budgeting and aligns with their preference for consolidated billing. Bolt-On alternative available if they want direct control over service contracts.</p>
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-primary mb-1">Viewing Completed</div>
+                                <div class="text-xs text-secondary mb-2">First viewing completed successfully</div>
+                                <div class="text-xs text-secondary">Max Reynolds • 12 Nov 2024, 12:15</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-file-invoice text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-primary mb-1">Proposal Sent</div>
+                                <div class="text-xs text-secondary mb-2">Initial proposal document sent to tenant</div>
+                                <div class="text-xs text-secondary">Max Reynolds • 15 Nov 2024, 16:48</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-upload text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-primary mb-1">File Uploaded</div>
+                                <div class="text-xs text-secondary mb-2">Floor plan updated</div>
+                                <div class="text-xs text-secondary">Tom Townsend • 10 Nov 2024, 14:20</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h2 class="text-xl font-semibold text-primary mb-6">Files</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-file-pdf text-red-600 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold text-primary">floor_plan_99b_04.pdf</div>
+                                    <div class="text-xs text-secondary">PDF • 2.4 MB • 10 Nov 2024</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-file-image text-blue-600 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold text-primary">unit_photos.zip</div>
+                                    <div class="text-xs text-secondary">ZIP • 8.7 MB • 8 Nov 2024</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-file-pdf text-green-600 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold text-primary">epc_certificate.pdf</div>
+                                    <div class="text-xs text-secondary">PDF • 456 KB • 5 Nov 2024</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all-smooth">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-file-word text-yellow-600 text-xl"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold text-primary">unit_specification.docx</div>
+                                    <div class="text-xs text-secondary">DOCX • 1.1 MB • 3 Nov 2024</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="text-primary hover:text-accent p-2">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
         </div>
@@ -624,6 +874,41 @@
 <script>
 window.addEventListener('load', function() {
     console.log('Unit Overview page loaded successfully');
+    
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const sections = {
+        'commercials': document.getElementById('commercials-section'),
+        'viewings': document.getElementById('viewings-section'),
+        'deal-artifacts': document.getElementById('deal-artifacts-section'),
+        'fitout': document.getElementById('fitout-section'),
+        'activity': document.getElementById('activity-section')
+    };
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+            
+            // Update button styles
+            tabButtons.forEach(btn => {
+                btn.classList.remove('text-primary', 'border-primary');
+                btn.classList.add('text-secondary', 'border-transparent');
+            });
+            this.classList.remove('text-secondary', 'border-transparent');
+            this.classList.add('text-primary', 'border-primary');
+            
+            // Show/hide sections
+            Object.values(sections).forEach(section => {
+                if (section) {
+                    section.classList.add('hidden');
+                }
+            });
+            
+            if (sections[targetTab]) {
+                sections[targetTab].classList.remove('hidden');
+            }
+        });
+    });
 });
 </script>
 
