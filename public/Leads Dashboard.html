@@ -202,6 +202,63 @@
 
     <div id="toast-root" class="fixed right-8 bottom-8 space-y-3 z-50"></div>
 
+    <!-- Disqualification Modal -->
+    <div id="disqualify-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+      <div class="flex min-h-screen items-center justify-center p-4">
+        <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">
+          <div class="flex items-center justify-between border-b border-[#E6E6E6] px-6 py-4">
+            <h2 class="text-xl font-semibold text-primary">Disqualify Lead</h2>
+            <button
+              id="modal-close-btn"
+              type="button"
+              class="text-secondary hover:text-primary transition-base"
+              aria-label="Close"
+            >
+              <i class="fa-solid fa-times text-xl"></i>
+            </button>
+          </div>
+          <div class="px-6 py-4">
+            <p class="text-sm text-secondary mb-4">Please select a reason for disqualifying this lead:</p>
+            <form id="disqualify-form" class="space-y-3">
+              <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-[#E6E6E6] hover:bg-muted transition-base">
+                <input type="radio" name="reason" value="wrong-size" class="text-primary focus:ring-primary" required>
+                <span class="text-sm text-primary">Wrong Size</span>
+              </label>
+              <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-[#E6E6E6] hover:bg-muted transition-base">
+                <input type="radio" name="reason" value="wrong-timing" class="text-primary focus:ring-primary" required>
+                <span class="text-sm text-primary">Wrong Timing</span>
+              </label>
+              <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-[#E6E6E6] hover:bg-muted transition-base">
+                <input type="radio" name="reason" value="duplicate" class="text-primary focus:ring-primary" required>
+                <span class="text-sm text-primary">Duplicate</span>
+              </label>
+              <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-[#E6E6E6] hover:bg-muted transition-base">
+                <input type="radio" name="reason" value="broker-dropped-out" class="text-primary focus:ring-primary" required>
+                <span class="text-sm text-primary">Broker Dropped Out</span>
+              </label>
+            </form>
+          </div>
+          <div class="border-t border-[#E6E6E6] px-6 py-4 flex items-center justify-end space-x-3">
+            <button
+              id="modal-cancel-btn"
+              type="button"
+              class="px-4 py-2 text-sm border border-[#E6E6E6] rounded-lg text-primary hover:bg-muted transition-base"
+            >
+              Cancel
+            </button>
+            <button
+              id="modal-submit-btn"
+              type="button"
+              class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-base"
+            >
+              Disqualify Lead
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="leads-data.js"></script>
     <script src="sidebar.js" defer></script>
     <script>
@@ -261,6 +318,8 @@
 
         function renderTable() {
           const filtered = leads.filter((lead) => {
+            // Filter out archived leads
+            if (lead.archived) return false;
             const matchesGrade = state.grade ? lead.grade === state.grade : true;
             const matchesSource = state.source ? lead.source === state.source : true;
             const matchesStatus = state.status ? lead.status === state.status : true;
@@ -326,11 +385,13 @@
         }
 
         function renderKpis() {
-          const total = leads.length;
-          const hot = leads.filter((lead) => lead.grade === 'A').length;
+          // Only count non-archived leads
+          const activeLeads = leads.filter((lead) => !lead.archived);
+          const total = activeLeads.length;
+          const hot = activeLeads.filter((lead) => lead.grade === 'A').length;
           const conversion = window.LEAD_UTILS?.getConversionRate() || 0;
           const avgResponse =
-            leads.reduce((sum, lead) => sum + (lead.responseTimeHours || 0), 0) / Math.max(total, 1);
+            activeLeads.reduce((sum, lead) => sum + (lead.responseTimeHours || 0), 0) / Math.max(total, 1);
 
           document.querySelector('[data-kpi="total-leads"]').textContent = total;
           document.querySelector('[data-kpi="hot-leads"]').textContent = hot;
@@ -348,6 +409,99 @@
           setTimeout(() => toast.remove(), 3500);
         }
 
+        let currentDisqualifyLeadId = null;
+
+        function openDisqualifyModal(leadId) {
+          currentDisqualifyLeadId = leadId;
+          const modal = document.getElementById('disqualify-modal');
+          modal.classList.remove('hidden');
+          // Reset form
+          document.getElementById('disqualify-form').reset();
+        }
+
+        function closeDisqualifyModal() {
+          const modal = document.getElementById('disqualify-modal');
+          modal.classList.add('hidden');
+          currentDisqualifyLeadId = null;
+          document.getElementById('disqualify-form').reset();
+        }
+
+        function submitDisqualification() {
+          if (!currentDisqualifyLeadId) return;
+
+          const form = document.getElementById('disqualify-form');
+          const formData = new FormData(form);
+          const reason = formData.get('reason');
+
+          if (!reason) {
+            pushToast('Please select a disqualification reason.');
+            return;
+          }
+
+          // Find the lead and mark as archived
+          const lead = leads.find((l) => l.id === currentDisqualifyLeadId);
+          if (lead) {
+            lead.archived = true;
+            lead.disqualificationReason = reason;
+            lead.disqualifiedAt = new Date().toISOString();
+
+            // Close modal
+            closeDisqualifyModal();
+
+            // Refresh table and KPIs
+            renderTable();
+            renderKpis();
+
+            // Show success message
+            const reasonLabels = {
+              'wrong-size': 'Wrong Size',
+              'wrong-timing': 'Wrong Timing',
+              'duplicate': 'Duplicate',
+              'broker-dropped-out': 'Broker Dropped Out'
+            };
+            pushToast(`Lead ${currentDisqualifyLeadId} has been disqualified (${reasonLabels[reason]}) and moved to archived.`);
+          }
+        }
+
+        // Set up modal event listeners
+        const modal = document.getElementById('disqualify-modal');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalSubmitBtn = document.getElementById('modal-submit-btn');
+
+        if (modalBackdrop) {
+          modalBackdrop.addEventListener('click', closeDisqualifyModal);
+        }
+        if (modalCloseBtn) {
+          modalCloseBtn.addEventListener('click', closeDisqualifyModal);
+        }
+        if (modalCancelBtn) {
+          modalCancelBtn.addEventListener('click', closeDisqualifyModal);
+        }
+        if (modalSubmitBtn) {
+          modalSubmitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            submitDisqualification();
+          });
+        }
+
+        // Prevent form submission from reloading page
+        const disqualifyForm = document.getElementById('disqualify-form');
+        if (disqualifyForm) {
+          disqualifyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitDisqualification();
+          });
+        }
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeDisqualifyModal();
+          }
+        });
+
         tableBody.addEventListener('click', (event) => {
           const button = event.target.closest('[data-action]');
           if (!button) return;
@@ -357,7 +511,7 @@
           } else if (action === 'assign') {
             pushToast(`Assignment workflow initiated for ${leadId}.`);
           } else if (action === 'disqualify') {
-            pushToast(`Lead ${leadId} flagged for review.`);
+            openDisqualifyModal(leadId);
           }
         });
 
