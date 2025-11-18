@@ -202,6 +202,72 @@
 
     <div id="toast-root" class="fixed right-8 bottom-8 space-y-3 z-50"></div>
 
+    <!-- Assignment Modal -->
+    <div id="assign-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+      <div class="flex min-h-screen items-center justify-center p-4">
+        <div id="assign-modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">
+          <div class="flex items-center justify-between border-b border-[#E6E6E6] px-6 py-4">
+            <h2 class="text-xl font-semibold text-primary">Assign Lead</h2>
+            <button
+              id="assign-modal-close-btn"
+              type="button"
+              class="text-secondary hover:text-primary transition-base"
+              aria-label="Close"
+            >
+              <i class="fa-solid fa-times text-xl"></i>
+            </button>
+          </div>
+          <div class="px-6 py-4">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Select Team Member</label>
+                <form id="assign-form" class="space-y-3">
+                  <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-[#E6E6E6] hover:bg-muted transition-base">
+                    <input type="radio" name="teamMember" value="Tom" class="text-primary focus:ring-primary" required>
+                    <span class="text-sm text-primary">Tom</span>
+                  </label>
+                  <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-[#E6E6E6] hover:bg-muted transition-base">
+                    <input type="radio" name="teamMember" value="Max" class="text-primary focus:ring-primary" required>
+                    <span class="text-sm text-primary">Max</span>
+                  </label>
+                  <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-[#E6E6E6] hover:bg-muted transition-base">
+                    <input type="radio" name="teamMember" value="Dani" class="text-primary focus:ring-primary" required>
+                    <span class="text-sm text-primary">Dani</span>
+                  </label>
+                </form>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Internal Note</label>
+                <textarea
+                  id="assign-internal-note"
+                  rows="3"
+                  placeholder="Add an internal note about this assignment..."
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-[#E6E6E6] px-6 py-4 flex items-center justify-end space-x-3">
+            <button
+              id="assign-modal-cancel-btn"
+              type="button"
+              class="px-4 py-2 text-sm border border-[#E6E6E6] rounded-lg text-primary hover:bg-muted transition-base"
+            >
+              Cancel
+            </button>
+            <button
+              id="assign-modal-submit-btn"
+              type="button"
+              class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-base"
+            >
+              Assign Lead
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Disqualification Modal -->
     <div id="disqualify-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
       <div class="flex min-h-screen items-center justify-center p-4">
@@ -357,9 +423,14 @@
                   </td>
                   <td class="px-4 py-4 text-secondary">${lead.source}</td>
                   <td class="px-4 py-4">
-                    <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">
-                      ${lead.status}
-                    </span>
+                    <div class="flex flex-col gap-1">
+                      <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">
+                        ${lead.status}
+                      </span>
+                      ${lead.assignedTo ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-50 text-sky-700 border border-sky-200">
+                        <i class="fa-solid fa-user mr-1.5"></i>${lead.assignedTo}
+                      </span>` : ''}
+                    </div>
                   </td>
                   <td class="px-4 py-4 text-secondary">${window.LEAD_UTILS?.formatDate(lead.date)}</td>
                   <td class="px-4 py-4 space-x-2">
@@ -409,7 +480,85 @@
           setTimeout(() => toast.remove(), 3500);
         }
 
+        let currentAssignLeadId = null;
         let currentDisqualifyLeadId = null;
+
+        function openAssignModal(leadId) {
+          currentAssignLeadId = leadId;
+          const modal = document.getElementById('assign-modal');
+          const lead = leads.find((l) => l.id === leadId);
+          
+          // Pre-fill if already assigned
+          if (lead && lead.assignedTo) {
+            const form = document.getElementById('assign-form');
+            const radio = form.querySelector(`input[value="${lead.assignedTo}"]`);
+            if (radio) radio.checked = true;
+          } else {
+            document.getElementById('assign-form').reset();
+          }
+          
+          // Clear internal note field
+          document.getElementById('assign-internal-note').value = '';
+          
+          modal.classList.remove('hidden');
+        }
+
+        function closeAssignModal() {
+          const modal = document.getElementById('assign-modal');
+          modal.classList.add('hidden');
+          currentAssignLeadId = null;
+          document.getElementById('assign-form').reset();
+          document.getElementById('assign-internal-note').value = '';
+        }
+
+        function submitAssignment() {
+          if (!currentAssignLeadId) return;
+
+          const form = document.getElementById('assign-form');
+          const formData = new FormData(form);
+          const teamMember = formData.get('teamMember');
+          const internalNote = document.getElementById('assign-internal-note').value.trim();
+
+          if (!teamMember) {
+            pushToast('Please select a team member.');
+            return;
+          }
+
+          // Find the lead and assign it
+          const lead = leads.find((l) => l.id === currentAssignLeadId);
+          if (lead) {
+            lead.assignedTo = teamMember;
+            lead.assignedAt = new Date().toISOString();
+            
+            // Add internal note
+            if (internalNote) {
+              if (!lead.internalNotes) {
+                lead.internalNotes = [];
+              }
+              lead.internalNotes.push({
+                note: internalNote,
+                addedAt: new Date().toISOString(),
+                type: 'assignment'
+              });
+            }
+
+            // Update status if it's still "New"
+            if (lead.status === 'New') {
+              lead.status = 'Assigned';
+            }
+
+            // Close modal
+            closeAssignModal();
+
+            // Refresh table and KPIs
+            renderTable();
+            renderKpis();
+
+            // Show success message
+            const noteText = internalNote ? ` with note` : '';
+            pushToast(`Lead ${currentAssignLeadId} has been assigned to ${teamMember}${noteText}.`);
+          }
+        }
 
         function openDisqualifyModal(leadId) {
           currentDisqualifyLeadId = leadId;
@@ -463,7 +612,39 @@
           }
         }
 
-        // Set up modal event listeners
+        // Set up assignment modal event listeners
+        const assignModal = document.getElementById('assign-modal');
+        const assignModalBackdrop = document.getElementById('assign-modal-backdrop');
+        const assignModalCloseBtn = document.getElementById('assign-modal-close-btn');
+        const assignModalCancelBtn = document.getElementById('assign-modal-cancel-btn');
+        const assignModalSubmitBtn = document.getElementById('assign-modal-submit-btn');
+
+        if (assignModalBackdrop) {
+          assignModalBackdrop.addEventListener('click', closeAssignModal);
+        }
+        if (assignModalCloseBtn) {
+          assignModalCloseBtn.addEventListener('click', closeAssignModal);
+        }
+        if (assignModalCancelBtn) {
+          assignModalCancelBtn.addEventListener('click', closeAssignModal);
+        }
+        if (assignModalSubmitBtn) {
+          assignModalSubmitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            submitAssignment();
+          });
+        }
+
+        // Prevent form submission from reloading page
+        const assignForm = document.getElementById('assign-form');
+        if (assignForm) {
+          assignForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitAssignment();
+          });
+        }
+
+        // Set up disqualification modal event listeners
         const modal = document.getElementById('disqualify-modal');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const modalCloseBtn = document.getElementById('modal-close-btn');
@@ -495,10 +676,14 @@
           });
         }
 
-        // Close modal on ESC key
+        // Close modals on ESC key
         document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-            closeDisqualifyModal();
+          if (e.key === 'Escape') {
+            if (!assignModal.classList.contains('hidden')) {
+              closeAssignModal();
+            } else if (!modal.classList.contains('hidden')) {
+              closeDisqualifyModal();
+            }
           }
         });
 
@@ -509,7 +694,7 @@
           if (action === 'view' || action === 'qualify') {
             window.location.href = `Lead Qualification.html?id=${leadId}`;
           } else if (action === 'assign') {
-            pushToast(`Assignment workflow initiated for ${leadId}.`);
+            openAssignModal(leadId);
           } else if (action === 'disqualify') {
             openDisqualifyModal(leadId);
           }
