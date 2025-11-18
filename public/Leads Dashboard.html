@@ -60,6 +60,14 @@
       .scroll-hidden::-webkit-scrollbar {
         display: none;
       }
+
+      #qualify-slideout {
+        transform: translateX(100%);
+      }
+
+      #qualify-slideout.hidden {
+        transform: translateX(100%);
+      }
     </style>
   </head>
   <body class="antialiased bg-[#F0F0F0]">
@@ -201,6 +209,204 @@
     </template>
 
     <div id="toast-root" class="fixed right-8 bottom-8 space-y-3 z-50"></div>
+
+    <!-- Qualification Slide-Out -->
+    <div id="qualify-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity"></div>
+    <div id="qualify-slideout" class="hidden fixed inset-y-0 right-0 w-full max-w-2xl bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col">
+      <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between z-10">
+        <h2 class="text-xl font-semibold text-primary">Qualify Lead</h2>
+        <button
+          id="qualify-close-btn"
+          type="button"
+          class="text-secondary hover:text-primary transition-base"
+          aria-label="Close"
+        >
+          <i class="fa-solid fa-times text-xl"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-6">
+        <form id="qualify-form" class="space-y-6">
+          <!-- Qualification Status -->
+          <div>
+            <label class="block text-sm font-medium text-primary mb-2">Qualification Status</label>
+            <select
+              id="qualify-status"
+              class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+            >
+              <option value="New">New</option>
+              <option value="In Qualification">In Qualification</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Assigned">Assigned</option>
+              <option value="Proposal Sent">Proposal Sent</option>
+              <option value="Follow-up">Follow-up</option>
+              <option value="Nurture">Nurture</option>
+            </select>
+          </div>
+
+          <!-- Requirement Details -->
+          <div class="space-y-4">
+            <h3 class="text-sm font-semibold text-primary uppercase tracking-wide">Requirement Details</h3>
+            
+            <div>
+              <label class="block text-sm font-medium text-primary mb-2">Size</label>
+              <input
+                type="text"
+                id="qualify-size"
+                placeholder="e.g., 28,000-32,000 sq ft"
+                class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-primary mb-2">Timeline</label>
+              <select
+                id="qualify-timeline"
+                class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+              >
+                <option value="Immediate">Immediate</option>
+                <option value="1 month">1 month</option>
+                <option value="2-4 weeks">2-4 weeks</option>
+                <option value="1-3 months">1-3 months</option>
+                <option value="3 months">3 months</option>
+                <option value="3-6 months">3-6 months</option>
+                <option value="4 months">4 months</option>
+                <option value="6 months">6 months</option>
+                <option value="6+ months">6+ months</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-primary mb-2">Key Notes</label>
+              <textarea
+                id="qualify-notes"
+                rows="4"
+                placeholder="Add key notes about the requirement..."
+                class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none resize-none"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Lead Grade -->
+          <div>
+            <label class="block text-sm font-medium text-primary mb-2">Lead Grade</label>
+            <select
+              id="qualify-grade"
+              class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+            >
+              <option value="A">A - Hot Lead</option>
+              <option value="B">B - Warm Lead</option>
+              <option value="C">C - Cool Lead</option>
+              <option value="D">D - Cold Lead</option>
+              <option value="U">U - Unqualified</option>
+            </select>
+          </div>
+
+          <!-- Score Adjustments -->
+          <div class="space-y-4">
+            <h3 class="text-sm font-semibold text-primary uppercase tracking-wide">Score Adjustments</h3>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Budget (0-25)</label>
+                <input
+                  type="number"
+                  id="qualify-budget"
+                  min="0"
+                  max="25"
+                  step="5"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Authority (0-25)</label>
+                <input
+                  type="number"
+                  id="qualify-authority"
+                  min="0"
+                  max="25"
+                  step="5"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Need (0-25)</label>
+                <input
+                  type="number"
+                  id="qualify-need"
+                  min="0"
+                  max="25"
+                  step="5"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Timeline (0-25)</label>
+                <input
+                  type="number"
+                  id="qualify-timeline-score"
+                  min="0"
+                  max="25"
+                  step="5"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Property Fit (0-10)</label>
+                <input
+                  type="number"
+                  id="qualify-property-fit"
+                  min="0"
+                  max="10"
+                  step="1"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Source Quality (0-5)</label>
+                <input
+                  type="number"
+                  id="qualify-source-quality"
+                  min="0"
+                  max="5"
+                  step="1"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Company Profile (0-5)</label>
+                <input
+                  type="number"
+                  id="qualify-company-profile"
+                  min="0"
+                  max="5"
+                  step="1"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="sticky bottom-0 bg-white border-t border-[#E6E6E6] px-6 py-4 flex items-center justify-end space-x-3">
+        <button
+          id="qualify-cancel-btn"
+          type="button"
+          class="px-4 py-2 text-sm border border-[#E6E6E6] rounded-lg text-primary hover:bg-muted transition-base"
+        >
+          Cancel
+        </button>
+        <button
+          id="qualify-submit-btn"
+          type="button"
+          class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-base"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
 
     <!-- Assignment Modal -->
     <div id="assign-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
@@ -480,8 +686,116 @@
           setTimeout(() => toast.remove(), 3500);
         }
 
+        let currentQualifyLeadId = null;
         let currentAssignLeadId = null;
         let currentDisqualifyLeadId = null;
+
+        function openQualifySlideout(leadId) {
+          currentQualifyLeadId = leadId;
+          const lead = leads.find((l) => l.id === leadId);
+          if (!lead) return;
+
+          // Populate form with current lead data
+          document.getElementById('qualify-status').value = lead.status || 'New';
+          document.getElementById('qualify-size').value = lead.requirement?.size || '';
+          document.getElementById('qualify-timeline').value = lead.requirement?.timeline || '';
+          document.getElementById('qualify-notes').value = lead.requirement?.notes || '';
+          document.getElementById('qualify-grade').value = lead.grade || 'U';
+          
+          // BANT scores
+          document.getElementById('qualify-budget').value = lead.bant?.budget || 0;
+          document.getElementById('qualify-authority').value = lead.bant?.authority || 0;
+          document.getElementById('qualify-need').value = lead.bant?.need || 0;
+          document.getElementById('qualify-timeline-score').value = lead.bant?.timeline || 0;
+          
+          // Bonus scores
+          document.getElementById('qualify-property-fit').value = lead.bonus?.propertyFit || 0;
+          document.getElementById('qualify-source-quality').value = lead.bonus?.sourceQuality || 0;
+          document.getElementById('qualify-company-profile').value = lead.bonus?.companyProfile || 0;
+
+          // Show slide-out
+          const overlay = document.getElementById('qualify-overlay');
+          const slideout = document.getElementById('qualify-slideout');
+          overlay.classList.remove('hidden');
+          slideout.classList.remove('hidden');
+          // Trigger animation
+          setTimeout(() => {
+            slideout.style.transform = 'translateX(0)';
+          }, 10);
+        }
+
+        function closeQualifySlideout() {
+          const overlay = document.getElementById('qualify-overlay');
+          const slideout = document.getElementById('qualify-slideout');
+          slideout.style.transform = 'translateX(100%)';
+          setTimeout(() => {
+            overlay.classList.add('hidden');
+            slideout.classList.add('hidden');
+          }, 300);
+          currentQualifyLeadId = null;
+        }
+
+        function submitQualification() {
+          if (!currentQualifyLeadId) return;
+
+          const lead = leads.find((l) => l.id === currentQualifyLeadId);
+          if (!lead) return;
+
+          // Update qualification status
+          lead.status = document.getElementById('qualify-status').value;
+
+          // Update requirement details
+          if (!lead.requirement) lead.requirement = {};
+          lead.requirement.size = document.getElementById('qualify-size').value;
+          lead.requirement.timeline = document.getElementById('qualify-timeline').value;
+          lead.requirement.notes = document.getElementById('qualify-notes').value;
+
+          // Update BANT scores
+          if (!lead.bant) lead.bant = {};
+          lead.bant.budget = parseInt(document.getElementById('qualify-budget').value) || 0;
+          lead.bant.authority = parseInt(document.getElementById('qualify-authority').value) || 0;
+          lead.bant.need = parseInt(document.getElementById('qualify-need').value) || 0;
+          lead.bant.timeline = parseInt(document.getElementById('qualify-timeline-score').value) || 0;
+
+          // Update bonus scores
+          if (!lead.bonus) lead.bonus = {};
+          lead.bonus.propertyFit = parseInt(document.getElementById('qualify-property-fit').value) || 0;
+          lead.bonus.sourceQuality = parseInt(document.getElementById('qualify-source-quality').value) || 0;
+          lead.bonus.companyProfile = parseInt(document.getElementById('qualify-company-profile').value) || 0;
+
+          // Recalculate scores using LEAD_UTILS
+          const bantScore = lead.bant.budget + lead.bant.authority + lead.bant.need + lead.bant.timeline;
+          const bonusScore = lead.bonus.propertyFit + lead.bonus.sourceQuality + lead.bonus.companyProfile;
+          const hasUnknown = Object.values(lead.bant).some((value) => value === 0);
+          
+          // Update grade - use manual selection or calculate from score
+          const manualGrade = document.getElementById('qualify-grade').value;
+          const calculatedGradeInfo = window.LEAD_UTILS?.determineGradeFromScore(bantScore, hasUnknown);
+          
+          // If manual grade is set and different from calculated, use manual
+          // Otherwise use calculated grade
+          if (manualGrade && manualGrade !== calculatedGradeInfo?.grade) {
+            lead.grade = manualGrade;
+          } else {
+            lead.grade = calculatedGradeInfo?.grade || 'U';
+          }
+
+          lead.bantScore = bantScore;
+          lead.bonusScore = bonusScore;
+          lead.totalScore = bantScore + bonusScore;
+          lead.gradeInfo = calculatedGradeInfo;
+          lead.hasUnknown = hasUnknown;
+
+          // Close slide-out
+          closeQualifySlideout();
+
+          // Refresh table and KPIs
+          renderTable();
+          renderKpis();
+
+          // Show success message
+          pushToast(`Lead ${currentQualifyLeadId} has been updated successfully.`);
+        }
 
         function openAssignModal(leadId) {
           currentAssignLeadId = leadId;
@@ -612,6 +926,38 @@
           }
         }
 
+        // Set up qualification slide-out event listeners
+        const qualifyOverlay = document.getElementById('qualify-overlay');
+        const qualifySlideout = document.getElementById('qualify-slideout');
+        const qualifyCloseBtn = document.getElementById('qualify-close-btn');
+        const qualifyCancelBtn = document.getElementById('qualify-cancel-btn');
+        const qualifySubmitBtn = document.getElementById('qualify-submit-btn');
+
+        if (qualifyOverlay) {
+          qualifyOverlay.addEventListener('click', closeQualifySlideout);
+        }
+        if (qualifyCloseBtn) {
+          qualifyCloseBtn.addEventListener('click', closeQualifySlideout);
+        }
+        if (qualifyCancelBtn) {
+          qualifyCancelBtn.addEventListener('click', closeQualifySlideout);
+        }
+        if (qualifySubmitBtn) {
+          qualifySubmitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            submitQualification();
+          });
+        }
+
+        // Prevent form submission from reloading page
+        const qualifyForm = document.getElementById('qualify-form');
+        if (qualifyForm) {
+          qualifyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitQualification();
+          });
+        }
+
         // Set up assignment modal event listeners
         const assignModal = document.getElementById('assign-modal');
         const assignModalBackdrop = document.getElementById('assign-modal-backdrop');
@@ -676,10 +1022,12 @@
           });
         }
 
-        // Close modals on ESC key
+        // Close modals and slide-out on ESC key
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') {
-            if (!assignModal.classList.contains('hidden')) {
+            if (!qualifySlideout.classList.contains('hidden')) {
+              closeQualifySlideout();
+            } else if (!assignModal.classList.contains('hidden')) {
               closeAssignModal();
             } else if (!modal.classList.contains('hidden')) {
               closeDisqualifyModal();
@@ -691,8 +1039,10 @@
           const button = event.target.closest('[data-action]');
           if (!button) return;
           const { action, leadId } = button.dataset;
-          if (action === 'view' || action === 'qualify') {
+          if (action === 'view') {
             window.location.href = `Lead Qualification.html?id=${leadId}`;
+          } else if (action === 'qualify') {
+            openQualifySlideout(leadId);
           } else if (action === 'assign') {
             openAssignModal(leadId);
           } else if (action === 'disqualify') {
