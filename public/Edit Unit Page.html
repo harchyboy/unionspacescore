@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <title>Edit Unit</title>
+    <script src='https://cdn.tailwindcss.com'></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "var(--border)",
+                        input: "var(--input)",
+                        ring: "var(--ring)",
+                        background: "var(--background)",
+                        foreground: "var(--foreground)",
+                        primary: {
+                            DEFAULT: "var(--primary)",
+                            foreground: "var(--primary-foreground)",
+                        },
+                        secondary: {
+                            DEFAULT: "var(--secondary)",
+                            foreground: "var(--secondary-foreground)",
+                        },
+                        destructive: {
+                            DEFAULT: "var(--destructive)",
+                            foreground: "var(--destructive-foreground)",
+                        },
+                        muted: {
+                            DEFAULT: "var(--muted)",
+                            foreground: "var(--muted-foreground)",
+                        },
+                        accent: {
+                            DEFAULT: "var(--accent)",
+                            foreground: "var(--accent-foreground)",
+                        },
+                        popover: {
+                            DEFAULT: "var(--popover)",
+                            foreground: "var(--popover-foreground)",
+                        },
+                        card: {
+                            DEFAULT: "var(--card)",
+                            foreground: "var(--card-foreground)",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                    fontFamily: {
+                        sans: ["var(--font-sans)"],
+                        serif: ["var(--font-serif)"],
+                        mono: ["var(--font-mono)"],
+                    },
+                    boxShadow: {
+                        'DEFAULT': 'var(--shadow)',
+                    },
+                },
+            }
+        }
+    </script>
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #FAFAFA;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --primary: #252525;
+            --primary-foreground: #ffffff;
+            --secondary: #8E8E8E;
+            --secondary-foreground: #ffffff;
+            --muted: #FAFAFA;
+            --muted-foreground: #0f172a;
+            --accent: #8E8E8E;
+            --accent-foreground: #ffffff;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #E6E6E6;
+            --input: #FFFFFF;
+            --ring: #94a3b8;
+            --font-sans: Inter, sans-serif;
+            --font-serif: Georgia, serif;
+            --font-mono: JetBrains Mono, monospace;
+            --radius: 10px;
+            --shadow: -2px 4px 12px 4px rgba(51,51,51,0.05);
+        }
+
+        ::-webkit-scrollbar { display: none;}
+
+        body {
+            font-family: var(--font-sans);
+            background-color: #F0F0F0;
+            color: #252525;
+        }
+
+        .transition-all-smooth {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+
+        body.embedded #sidebar,
+        body.embedded header#header {
+            display: none;
+        }
+
+        body.embedded #main-content {
+            margin-left: 0;
+        }
+    </style>
+    <script src="sidebar.js" defer></script>
+</head>
+<body class="antialiased">
+
+<div id="app-shell" class="flex h-screen overflow-hidden">
+
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="units"></aside>
+
+    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+
+        <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-6 flex-1">
+                <a href="Units More Detail Card.html" class="text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div class="relative flex-1 max-w-xl">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <input type="text" placeholder="Search properties, units, contacts..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                </button>
+                <button class="p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-question-circle text-lg"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="page-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-4">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h1 class="text-3xl font-semibold text-primary">Edit Unit</h1>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-secondary">99 Bishopsgate</span>
+                        </div>
+                        <p class="text-secondary text-sm">Update availability, marketing, and operational fields.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button id="cancel-edit-btn" type="button" class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth">
+                        Cancel
+                    </button>
+                    <button id="save-edit-btn" type="button" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save changes</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="unit-form-content" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-4 py-6 md:px-8">
+            <div class="space-y-6 max-w-5xl mx-auto">
+                <form id="unit-edit-form" class="space-y-6">
+                    <section id="unit-basics" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Unit basics</h2>
+                            <p class="text-sm text-secondary mt-1">Core info shown on broker materials.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-name">Unit name / label <span class="text-destructive">*</span></label>
+                                <input id="unit-name" name="unitName" type="text" required value="99B-04 Suite A" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-secondary/70">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-floor">Floor</label>
+                                <input id="unit-floor" name="floor" type="text" value="04" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-type">Unit type</label>
+                                <select id="unit-type" name="unitType" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select type</option>
+                                    <option value="office" selected>Office</option>
+                                    <option value="retail">Retail</option>
+                                    <option value="industrial">Industrial</option>
+                                    <option value="studio">Studio</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-description">Description</label>
+                                <textarea id="unit-description" name="description" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">South-east corner suite with plug-and-play fit-out and 3 meeting rooms.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="internal-ref">Internal reference code</label>
+                                <input id="internal-ref" name="internalReference" type="text" value="99B-04-A" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="space-details" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Space details</h2>
+                            <p class="text-sm text-secondary mt-1">Sizing, layout, and occupancy metadata.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-area">Area (sq ft) <span class="text-destructive">*</span></label>
+                                <input id="unit-area" name="areaSqft" type="number" value="4200" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="desk-count">Desk count</label>
+                                <input id="desk-count" name="deskCount" type="number" value="42" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="meeting-rooms">Meeting rooms</label>
+                                <input id="meeting-rooms" name="meetingRooms" type="number" value="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="occupancy-status">Occupancy status</label>
+                                <select id="occupancy-status" name="occupancyStatus" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select status</option>
+                                    <option value="occupied">Occupied</option>
+                                    <option value="vacant" selected>Vacant</option>
+                                    <option value="under-offer">Under offer</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="layout-type">Layout type</label>
+                                <select id="layout-type" name="layoutType" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select layout</option>
+                                    <option value="open-plan" selected>Open plan</option>
+                                    <option value="cellular">Cellular</option>
+                                    <option value="mixed">Mixed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="max-capacity">Maximum capacity</label>
+                                <input id="max-capacity" name="maxCapacity" type="number" value="60" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="availability-status" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Availability & status</h2>
+                            <p class="text-sm text-secondary mt-1">Keep terms and pipeline aligned.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-status">Unit availability status <span class="text-destructive">*</span></label>
+                                <select id="unit-status" name="status" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="available" selected>Available</option>
+                                    <option value="under-offer">Under offer</option>
+                                    <option value="let">Let</option>
+                                    <option value="held">Held</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="available-from">Available from date</label>
+                                <input id="available-from" name="availableFrom" type="date" value="2025-01-15" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="tenant-name">Tenant (if let)</label>
+                                <input id="tenant-name" name="tenant" type="text" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="ACME Industries">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="let-details">Let / under-offer details</label>
+                                <textarea id="let-details" name="letDetails" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">Heads agreed verbally, expecting HoTs by 20 Jan.</textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="availability-notes">Internal availability notes</label>
+                                <textarea id="availability-notes" name="availabilityNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">Priority suite for tech briefs—hold if tenant requirement #TR-445 escalates.</textarea>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-muted rounded-xl border border-dashed border-[#E6E6E6] p-4 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-sm font-semibold text-primary">
+                                <i class="fa-solid fa-link"></i>
+                                <span>Pipeline deals (FR-008)</span>
+                            </div>
+                            <p class="text-sm text-secondary">Linked requirement: TR-445 · HoTs draft due 24 Jan.</p>
+                        </div>
+                    </section>
+
+                    <section id="commercial-terms" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Commercial terms</h2>
+                            <p class="text-sm text-secondary mt-1">Update pricing and incentive data.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="quoting-rent">Quoting rent</label>
+                                <div class="flex gap-3">
+                                    <input id="quoting-rent" name="quotingRent" type="number" value="82.5" class="flex-1 px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                                    <select id="rent-unit" name="rentUnit" class="w-40 px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                        <option value="psf" selected>per sq ft</option>
+                                        <option value="pcm">per month</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="service-charge">Service charge (per sq ft)</label>
+                                <input id="service-charge" name="serviceCharge" type="number" value="13.5" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="business-rates">Business rates estimate</label>
+                                <input id="business-rates" name="businessRates" type="number" value="18.75" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="incentives">Incentives</label>
+                                <textarea id="incentives" name="incentives" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">2 months rent free on 5-year term, landlord to fund reception refresh.</textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="additional-charges">Additional charges / packages</label>
+                                <textarea id="additional-charges" name="additionalCharges" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">Smart office bundle (£850/mo) includes sensors + concierge.</textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="visibility-marketing" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Visibility & marketing</h2>
+                            <p class="text-sm text-secondary mt-1">Control what brokers see.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-visibility">Visibility <span class="text-destructive">*</span></label>
+                                <select id="unit-visibility" name="visibility" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="public">Public</option>
+                                    <option value="private" selected>Private</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="marketing-status">Marketing status</label>
+                                <select id="marketing-status" name="marketingStatus" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="draft">Draft</option>
+                                    <option value="coming-soon">Coming soon</option>
+                                    <option value="live" selected>Live</option>
+                                    <option value="paused">Paused</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2">Broker network</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <label class="inline-flex items-center gap-2 text-sm px-3 py-2 border border-[#E6E6E6] rounded-full cursor-pointer hover:bg-muted/60">
+                                        <input type="checkbox" name="brokerNetwork" value="union" class="text-primary rounded" checked>
+                                        <span>UNION preferred</span>
+                                    </label>
+                                    <label class="inline-flex items-center gap-2 text-sm px-3 py-2 border border-[#E6E6E6] rounded-full cursor-pointer hover:bg-muted/60">
+                                        <input type="checkbox" name="brokerNetwork" value="flex" class="text-primary rounded" checked>
+                                        <span>Flex brokers</span>
+                                    </label>
+                                    <label class="inline-flex items-center gap-2 text-sm px-3 py-2 border border-[#E6E6E6] rounded-full cursor-pointer hover:bg-muted/60">
+                                        <input type="checkbox" name="brokerNetwork" value="agencies" class="text-primary rounded">
+                                        <span>Agencies</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="disposal-agent">Disposal agent</label>
+                                <input id="disposal-agent" name="disposalAgent" type="text" value="Knight Frank · Sarah Johnson" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">
+                            </div>
+                            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="upload-floorplan">Upload floor plan</label>
+                                    <input id="upload-floorplan" name="marketingFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="upload-epc">Upload EPC</label>
+                                    <input id="upload-epc" name="marketingEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="upload-photos">Upload photos</label>
+                                    <input id="upload-photos" name="marketingPhotos" type="file" accept="image/*" multiple class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="documents-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Documents</h2>
+                            <p class="text-sm text-secondary mt-1">Update compliance docs & media.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-floorplan">Floor plan</label>
+                                <input id="doc-floorplan" name="docFloorplan" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                                <p class="text-xs text-secondary mt-2 flex items-center gap-2"><i class="fa-solid fa-file-pdf text-primary"></i> Current: 99B-04-floorplan.pdf</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-epc">EPC</label>
+                                <input id="doc-epc" name="docEpc" type="file" accept=".pdf,.png,.jpg,.jpeg" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                                <p class="text-xs text-secondary mt-2 flex items-center gap-2"><i class="fa-solid fa-file text-primary"></i> Current: EPC-99B-SuiteA.pdf</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-photos">Photos</label>
+                                <input id="doc-photos" name="docPhotos" type="file" accept="image/*" multiple class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                                <p class="text-xs text-secondary mt-2">Currently 12 assets uploaded.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="doc-other">Other compliance documents</label>
+                                <input id="doc-other" name="docOther" type="file" multiple class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="amenities-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Amenities</h2>
+                            <p class="text-sm text-secondary mt-1">Update the amenity checklist.</p>
+                        </div>
+                        <div>
+                            <div class="grid grid-cols-1 gap-2">
+                                <div class="text-xs text-secondary">Select everything included with this unit.</div>
+                                <div id="amenities-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2" aria-label="Amenities multi-select"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="comfort-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Comfort & HVAC</h2>
+                            <p class="text-sm text-secondary mt-1">Update glazing + servicing notes.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="windows-type">Windows type</label>
+                                <select id="windows-type" name="windowsType" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select windows type</option>
+                                    <option value="full-height" selected>Full height</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="limited">Limited</option>
+                                    <option value="none">None</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="hvac-servicing">HVAC servicing</label>
+                                <select id="hvac-servicing" name="hvacServicing" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select servicing</option>
+                                    <option value="included" selected>Included in landlord service charge</option>
+                                    <option value="tenant">Tenant responsible</option>
+                                    <option value="shared">Shared system</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="mechanical-resp">Mechanical responsibility</label>
+                                <select id="mechanical-resp" name="mechanicalResponsibility" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="">Select party</option>
+                                    <option value="tenant">Tenant</option>
+                                    <option value="landlord" selected>Landlord</option>
+                                    <option value="mixed">Shared responsibility</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="last-serviced">Last servicing date</label>
+                                <input id="last-serviced" name="lastServicingDate" type="date" value="2024-11-30" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="hvac-notes">HVAC notes</label>
+                                <input id="hvac-notes" name="hvacNotes" type="text" value="VRF system – scheduled upgrade for fan coils Q2." class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="internal-use" class="bg-white rounded-lg border border-[#E6E6E6] p-6 md:p-8">
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Internal use & operational data</h2>
+                            <p class="text-sm text-secondary mt-1">Internal only, never shown externally.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="data-health-score">Data health score</label>
+                                <input id="data-health-score" name="dataHealthScore" type="number" min="0" max="100" value="92" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2" for="valve-sync-status">Valve Sync status</label>
+                                <select id="valve-sync-status" name="valveSyncStatus" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
+                                    <option value="in-sync" selected>In sync with property</option>
+                                    <option value="pending">Pending update</option>
+                                    <option value="issue">Requires attention</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="data-health-notes">Data health notes</label>
+                                <textarea id="data-health-notes" name="dataHealthNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">Need refreshed photos after minor reconfiguration in March.</textarea>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="internal-notes">Internal operations notes</label>
+                                <textarea id="internal-notes" name="internalNotes" rows="4" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">Hold handover call with landlord ops to align on HVAC upgrade timing.</textarea>
+                            </div>
+                            <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="work-orders">Work orders</label>
+                                    <textarea id="work-orders" name="workOrders" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">New signage order pending contractor quote.</textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="maintenance-notes">Maintenance notes</label>
+                                    <textarea id="maintenance-notes" name="maintenanceNotes" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">MEP snag cleared Feb 2025 – confirm commissioning certificate uploaded.</textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-primary mb-2" for="past-tenants">Past tenants</label>
+                                    <textarea id="past-tenants" name="pastTenants" rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70">Previous occupier: SynthLabs (2021-2024) – vacated after consolidation.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+
+                <div id="automation-info" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-robot text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-semibold text-primary mb-2">What happens after you save?</h3>
+                            <ul class="space-y-2 text-sm text-secondary">
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-primary mr-2 mt-0.5"></i>
+                                    <span>Changes sync to the unit dossier and broker feeds.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-primary mr-2 mt-0.5"></i>
+                                    <span>Linked tenant requirements are re-scored automatically.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check text-primary mr-2 mt-0.5"></i>
+                                    <span>Ops tasks receive a notification when HVAC / documents change.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="form-actions" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6">
+                    <button id="back-to-unit" class="text-secondary hover:text-primary text-sm font-medium flex items-center space-x-2 self-start">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Back to Unit Overview</span>
+                    </button>
+                    <div class="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
+                        <button class="border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth" id="discard-unit-btn">
+                            Discard changes
+                        </button>
+                        <button class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2" id="primary-save-btn">
+                            <i class="fa-solid fa-check"></i>
+                            <span>Save changes</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+    const amenities = [
+        "24/7 access","Air conditioning","Backup internet connection","Balcony","Brainstorming rooms","Breakout areas","Business lounge","Cafe","Call handling","Car parking","CAT 5/6/7 cabling","CCTV","Changing rooms","Cleaning","Coffee","Conference rooms","Cycle parking","Wi Fi","DDA compliance","Disabled access","Dog friendly","Event space","Exercise studio","Filtered water","Fully furnished","Games lounge","Gym","Kitchen","Lift","Lockers","Mail handling","Meeting rooms","Mindfulness rooms","On site barista","On site staff","Outdoor space","Phone booths","Printing","Restaurant","Restaurant on site","Rooftop terrace","Secretarial services","Secure server rooms","Security guards","Showers","Single sex toilets","Snacks and refreshments","Storage","Unisex toilets","Video conferencing","VOIP","Wellness room"
+    ];
+
+    const precheckedAmenities = new Set(["24/7 access","Air conditioning","Meeting rooms","Video conferencing","Phone booths","Dog friendly","Filtered water","Gym","Kitchen","Showers","Cycle parking","Coffee","Secure server rooms"]);
+
+    const amenitiesContainer = document.getElementById('amenities-list');
+    if (amenitiesContainer) {
+        amenities.forEach(option => {
+            const label = document.createElement('label');
+            label.className = 'flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-muted/50 transition-colors';
+
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.name = 'amenities';
+            input.value = option;
+            if (precheckedAmenities.has(option)) {
+                input.checked = true;
+            }
+            input.className = 'w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-2 focus:ring-primary/30 cursor-pointer';
+            input.tabIndex = -1;
+            input.addEventListener('focus', function(e) {
+                e.preventDefault();
+                this.blur();
+            });
+
+            const text = document.createElement('span');
+            text.className = 'text-sm text-primary';
+            text.textContent = option;
+
+            label.appendChild(input);
+            label.appendChild(text);
+            amenitiesContainer.appendChild(label);
+        });
+    }
+
+    const form = document.getElementById('unit-edit-form');
+    const saveButtons = [document.getElementById('save-edit-btn'), document.getElementById('primary-save-btn')];
+    const cancelButtons = [document.getElementById('cancel-edit-btn'), document.getElementById('discard-unit-btn'), document.getElementById('back-to-unit')];
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
+    }
+
+    saveButtons.forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+                toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Unit details updated and synced.</span>';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3200);
+            });
+        }
+    });
+
+    cancelButtons.forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'Units More Detail Card.html';
+            });
+        }
+    });
+
+    (function() {
+        function addEmbeddedClass() {
+            if (window.self !== window.top) {
+                document.documentElement.classList.add('embedded');
+                if (document.body) {
+                    document.body.classList.add('embedded');
+                }
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', addEmbeddedClass);
+        } else {
+            addEmbeddedClass();
+        }
+    })();
+});
+</script>
+
+</body>
+</html>
+

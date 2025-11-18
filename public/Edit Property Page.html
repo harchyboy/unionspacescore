@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+  <title>Edit Property</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            border: "var(--border)",
+            input: "var(--input)",
+            ring: "var(--ring)",
+            background: "var(--background)",
+            foreground: "var(--foreground)",
+            primary: { DEFAULT: "var(--primary)", foreground: "var(--primary-foreground)" },
+            secondary: { DEFAULT: "var(--secondary)", foreground: "var(--secondary-foreground)" },
+            destructive: { DEFAULT: "var(--destructive)", foreground: "var(--destructive-foreground)" },
+            muted: { DEFAULT: "var(--muted)", foreground: "var(--muted-foreground)" },
+            accent: { DEFAULT: "var(--accent)", foreground: "var(--accent-foreground)" },
+            card: { DEFAULT: "var(--card)", foreground: "var(--card-foreground)" },
+          },
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
+          fontFamily: {
+            sans: ["var(--font-sans)"],
+            serif: ["var(--font-serif)"],
+            mono: ["var(--font-mono)"],
+          },
+          boxShadow: { DEFAULT: "var(--shadow)" },
+        },
+      },
+    };
+  </script>
+  <script>
+    window.FontAwesomeConfig = { autoReplaceSvg: "nest" };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background: #fafafa;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --primary: #252525;
+      --primary-foreground: #ffffff;
+      --secondary: #8e8e8e;
+      --secondary-foreground: #ffffff;
+      --muted: #fafafa;
+      --muted-foreground: #0f172a;
+      --accent: #8e8e8e;
+      --accent-foreground: #ffffff;
+      --destructive: #ef4444;
+      --destructive-foreground: #ffffff;
+      --border: #e6e6e6;
+      --input: #ffffff;
+      --ring: #94a3b8;
+      --font-sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --font-serif: Georgia, serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --radius: 10px;
+      --shadow: -2px 4px 12px 4px rgba(51, 51, 51, 0.05);
+    }
+    ::-webkit-scrollbar { display: none; }
+    html, body { min-height: 100%; }
+    body { font-family: var(--font-sans); background-color: #f0f0f0; color: #252525; }
+    .transition-all-smooth { transition: all 0.2s ease-in-out; }
+    .hover-lift:hover { transform: translateY(-2px); }
+  </style>
+  <script src="sidebar.js" defer></script>
+</head>
+<body class="antialiased">
+  <div id="app-shell" class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" aria-label="Primary" data-sidebar-placeholder data-active="properties"></aside>
+
+    <main id="main-content" class="flex-1 flex flex-col">
+      <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-6 flex-1">
+          <a href="Properties Detailed Card.html" class="text-secondary hover:text-primary text-sm flex items-center space-x-2" aria-label="Back to Property">
+            <i class="fa-solid fa-arrow-left"></i><span>Back to Property</span>
+          </a>
+          <div class="relative flex-1 max-w-xl">
+            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-secondary"></i>
+            <input aria-label="Search" type="text" placeholder="Search properties, units, contacts" class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button class="relative p-2 text-secondary hover:text-primary transition-all-smooth" aria-label="Notifications"><i class="fa-solid fa-bell text-lg"></i><span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span></button>
+          <button class="p-2 text-secondary hover:text-primary transition-all-smooth" aria-label="Help"><i class="fa-solid fa-question-circle text-lg"></i></button>
+        </div>
+      </header>
+
+      <section class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="flex items-center space-x-3 mb-2">
+              <h1 class="text-3xl font-semibold text-primary">Edit Property</h1>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-secondary">Last updated 2h ago</span>
+            </div>
+            <p class="text-secondary text-sm">99 Bishopsgate · London EC2M · Broker-ready</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <button id="discard-property-btn" class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth">
+              Cancel
+            </button>
+            <button id="save-property-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>Save changes</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <div class="flex-1 overflow-y-auto bg-[#F0F0F0]">
+        <div class="max-w-6xl mx-auto px-8 py-8 space-y-8">
+          <!-- Identity -->
+          <section class="bg-white border border-[#E6E6E6] rounded-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-semibold text-primary">Identity & Location</h2>
+                <p class="text-sm text-secondary mt-1">Name, codes, address, and summary copy.</p>
+              </div>
+              <span class="text-xs text-secondary flex items-center gap-1"><i class="fa-solid fa-check text-primary"></i> Broker-ready</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Property name <span class="text-destructive">*</span></label>
+                <input type="text" value="99 Bishopsgate" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Internal code</label>
+                <input type="text" value="99B-LON" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Street address</label>
+                <input type="text" value="99 Bishopsgate" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-primary mb-2">City</label>
+                  <input type="text" value="London" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-primary mb-2">Postcode</label>
+                  <input type="text" value="EC2M 3XD" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Submarket</label>
+                <select class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option selected>City Core</option>
+                  <option>Shoreditch</option>
+                  <option>Mayfair</option>
+                  <option>Canary Wharf</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Headline description</label>
+                <textarea rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">Iconic City tower with concierge-level front-of-house, brand new Cat B floors, and seamless broker workflow.</textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Building data -->
+          <section class="bg-white border border-[#E6E6E6] rounded-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-semibold text-primary">Building data</h2>
+                <p class="text-sm text-secondary mt-1">Size, lifts, amenities, refurbishment dates.</p>
+              </div>
+              <span class="text-xs text-secondary flex items-center gap-1"><i class="fa-solid fa-database text-primary"></i> Data health 92%</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Total size (sq ft)</label>
+                <input type="number" value="450000" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Floors</label>
+                <input type="number" value="26" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Year refurbished</label>
+                <input type="number" value="2023" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-primary mb-2">Lifts & services</label>
+                <input type="text" value="8 passenger, 2 goods, dedicated concierge" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Parking / end-of-trip</label>
+                <input type="text" value="Bike store (60 racks) + partner parking 2 min walk" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+            </div>
+          </section>
+
+          <!-- Marketing -->
+          <section class="bg-white border border-[#E6E6E6] rounded-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-semibold text-primary">Marketing & visibility</h2>
+                <p class="text-sm text-secondary mt-1">Set what brokers and partners can see.</p>
+              </div>
+              <span class="text-xs text-secondary flex items-center gap-1"><i class="fa-solid fa-bullhorn text-primary"></i> Live to brokers</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Marketing status</label>
+                <select class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option>Draft</option>
+                  <option>Coming Soon</option>
+                  <option selected>Broker-ready</option>
+                  <option>Off-market</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Visibility</label>
+                <select class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option>Public</option>
+                  <option selected>Private</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Broker set</label>
+                <input type="text" value="Private · 10 preferred brokers" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Availability narrative</label>
+                <textarea rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">Floors 2-9 available Q1 2025, high-rise availability after Q3 once fitted-out tenant vacates.</textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Contacts -->
+          <section class="bg-white border border-[#E6E6E6] rounded-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-semibold text-primary">Contacts & ownership</h2>
+                <p class="text-sm text-secondary mt-1">Landlord, disposal agents, and ops contacts.</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Landlord name</label>
+                <input type="text" value="British Land" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Landlord contact</label>
+                <input type="text" value="property.management@britishland.com" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Disposal agent</label>
+                <input type="text" value="Sarah Johnson · Knight Frank" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Disposal agent email</label>
+                <input type="email" value="sarah.johnson@knightfrank.com" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Ops lead</label>
+                <input type="text" value="Tom Davies" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Ops notes</label>
+                <textarea rows="3" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">Weekly landlord sync Tuesday 10am; highlight HVAC upgrade dependencies.</textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Documents -->
+          <section class="bg-white border border-[#E6E6E6] rounded-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-semibold text-primary">Documents & media</h2>
+                <p class="text-sm text-secondary mt-1">Replace brochures, EPCs, video, and imagery.</p>
+              </div>
+              <button class="text-primary hover:underline text-sm font-medium flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Bulk upload</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Brochure PDF</label>
+                <input type="file" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                <p class="text-xs text-secondary mt-2">Current: 99B-brochure-v5.pdf</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">EPC</label>
+                <input type="file" class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                <p class="text-xs text-secondary mt-2">Grade B · expires 2034</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Hero imagery</label>
+                <input type="file" accept="image/*" multiple class="w-full text-sm text-secondary border border-dashed border-[#E6E6E6] rounded-lg bg-muted/40 px-4 py-3 cursor-pointer file:mr-4 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 transition">
+                <p class="text-xs text-secondary mt-2">12 assets uploaded · last refreshed Oct 2024</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Virtual tour / video</label>
+                <input type="url" value="https://video.unionspaces.co/99B-tour" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+              </div>
+            </div>
+          </section>
+
+          <!-- Ops -->
+          <section class="bg-white border border-[#E6E6E6] rounded-lg p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-semibold text-primary">Operations & compliance</h2>
+                <p class="text-sm text-secondary mt-1">Workflow toggles, risk, and internal notes.</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Valve Sync status</label>
+                <select class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option selected>Aligned</option>
+                  <option>Pending update</option>
+                  <option>Requires review</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Risk rating</label>
+                <select class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option>Low</option>
+                  <option selected>Moderate</option>
+                  <option>High</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Ops checks complete</label>
+                <select class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                  <option selected>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+              <div class="md:col-span-3">
+                <label class="block text-sm font-medium text-primary mb-2">Internal notes</label>
+                <textarea rows="4" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">Refresh landlord ESG statement before publishing Q2 marketing campaign.</textarea>
+              </div>
+            </div>
+          </section>
+
+          <div class="bg-white border border-[#E6E6E6] rounded-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center space-x-3 text-sm text-secondary">
+              <i class="fa-solid fa-robot text-primary"></i>
+              <span>Saving updates triggers broker feed refresh + unit dossier regeneration.</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button class="text-secondary hover:text-primary text-sm" id="back-to-detail">Back to property</button>
+              <button class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2" id="footer-save">
+                <i class="fa-solid fa-check"></i>
+                <span>Save & publish</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('load', function() {
+      const saveButtons = [document.getElementById('save-property-btn'), document.getElementById('footer-save')];
+      const cancelButtons = [document.getElementById('discard-property-btn'), document.getElementById('back-to-detail')];
+
+      saveButtons.forEach(btn => {
+        if (!btn) return;
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const toast = document.createElement('div');
+          toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+          toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Property changes saved and sync is running.</span>';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3200);
+        });
+      });
+
+      cancelButtons.forEach(btn => {
+        if (!btn) return;
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = 'Properties Detailed Card.html';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+
