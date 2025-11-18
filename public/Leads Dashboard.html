@@ -177,6 +177,11 @@
                   class="px-3 py-2 rounded-lg border border-[#E6E6E6] text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">All Statuses</option>
+                  <option value="New">New</option>
+                  <option value="In Qualification">In Qualification</option>
+                  <option value="Nurture">Nurture</option>
+                  <option value="Assigned">Assigned</option>
+                  <option value="Qualified">Qualified</option>
                 </select>
               </div>
             </div>
@@ -235,11 +240,9 @@
             >
               <option value="New">New</option>
               <option value="In Qualification">In Qualification</option>
-              <option value="Qualified">Qualified</option>
-              <option value="Assigned">Assigned</option>
-              <option value="Proposal Sent">Proposal Sent</option>
-              <option value="Follow-up">Follow-up</option>
               <option value="Nurture">Nurture</option>
+              <option value="Assigned">Assigned</option>
+              <option value="Qualified">Qualified</option>
             </select>
           </div>
 
@@ -550,12 +553,8 @@
           option.textContent = source;
           sourceFilter.appendChild(option);
         });
-        uniqueValues('status').forEach((status) => {
-          const option = document.createElement('option');
-          option.value = status;
-          option.textContent = status;
-          statusFilter.appendChild(option);
-        });
+        // Status filter is now hardcoded to only show valid enum values
+        // No need to populate from leads data
 
         gradeButtons.forEach((button) => {
           button.addEventListener('click', () => {
@@ -590,8 +589,14 @@
 
         function renderTable() {
           const filtered = leads.filter((lead) => {
-            // Filter out archived leads
-            if (lead.archived) return false;
+            // Filter out archived leads and converted leads
+            if (lead.archived || lead.convertedToOpportunity) return false;
+            // Only show leads with valid status values
+            const validStatuses = ['New', 'In Qualification', 'Nurture', 'Assigned', 'Qualified'];
+            if (!validStatuses.includes(lead.status)) {
+              // Normalize invalid statuses to 'New'
+              lead.status = 'New';
+            }
             const matchesGrade = state.grade ? lead.grade === state.grade : true;
             const matchesSource = state.source ? lead.source === state.source : true;
             const matchesStatus = state.status ? lead.status === state.status : true;
@@ -696,7 +701,10 @@
           if (!lead) return;
 
           // Populate form with current lead data
-          document.getElementById('qualify-status').value = lead.status || 'New';
+          // Ensure status is one of the valid enum values
+          const validStatuses = ['New', 'In Qualification', 'Nurture', 'Assigned', 'Qualified'];
+          const currentStatus = validStatuses.includes(lead.status) ? lead.status : 'New';
+          document.getElementById('qualify-status').value = currentStatus;
           document.getElementById('qualify-size').value = lead.requirement?.size || '';
           document.getElementById('qualify-timeline').value = lead.requirement?.timeline || '';
           document.getElementById('qualify-notes').value = lead.requirement?.notes || '';
@@ -741,14 +749,48 @@
           const lead = leads.find((l) => l.id === currentQualifyLeadId);
           if (!lead) return;
 
+          // Get form values
+          const selectedStatus = document.getElementById('qualify-status').value;
+          const size = document.getElementById('qualify-size').value.trim();
+          const timeline = document.getElementById('qualify-timeline').value;
+          const notes = document.getElementById('qualify-notes').value.trim();
+
+          // Validate required fields if status is Qualified
+          if (selectedStatus === 'Qualified') {
+            const errors = [];
+            
+            if (!lead.contact?.name) errors.push('Contact name');
+            if (!lead.company) errors.push('Company');
+            if (!size && !lead.requirement?.size) errors.push('Size or desk count');
+            if (!lead.requirement?.locations || lead.requirement.locations.length === 0) errors.push('Area/location');
+            if (!lead.requirement?.budgetRange) errors.push('Indicative budget');
+            if (!lead.source) errors.push('Source');
+            if (!notes && !lead.requirement?.notes) errors.push('Requirement summary/notes');
+            
+            if (errors.length > 0) {
+              pushToast(`Missing required fields: ${errors.join(', ')}. Please complete all fields before qualifying.`);
+              return;
+            }
+          }
+
           // Update qualification status
-          lead.status = document.getElementById('qualify-status').value;
+          // Ensure status is one of the valid enum values
+          const validStatuses = ['New', 'In Qualification', 'Nurture', 'Assigned', 'Qualified'];
+          lead.status = validStatuses.includes(selectedStatus) ? selectedStatus : 'New';
+
+          // Status transition logic
+          // If user is saving requirement fields and status is not Qualified, set to In Qualification
+          if (selectedStatus !== 'Qualified' && selectedStatus !== 'Nurture' && (size || timeline || notes)) {
+            if (lead.status === 'New') {
+              lead.status = 'In Qualification';
+            }
+          }
 
           // Update requirement details
           if (!lead.requirement) lead.requirement = {};
-          lead.requirement.size = document.getElementById('qualify-size').value;
-          lead.requirement.timeline = document.getElementById('qualify-timeline').value;
-          lead.requirement.notes = document.getElementById('qualify-notes').value;
+          if (size) lead.requirement.size = size;
+          if (timeline) lead.requirement.timeline = timeline;
+          if (notes) lead.requirement.notes = notes;
 
           // Update BANT scores
           if (!lead.bant) lead.bant = {};
@@ -786,6 +828,47 @@
           lead.gradeInfo = calculatedGradeInfo;
           lead.hasUnknown = hasUnknown;
 
+          // If status is Qualified, convert to opportunity
+          if (selectedStatus === 'Qualified') {
+            // Convert lead to opportunity
+            const opportunity = {
+              id: `OPP-${Date.now()}`,
+              leadReference: lead.reference,
+              leadId: lead.id,
+              company: lead.company,
+              contact: lead.contact,
+              source: lead.source,
+              stage: 'intake',
+              status: 'New',
+              requirement: {
+                size: lead.requirement.size,
+                locations: lead.requirement.locations || [],
+                budgetRange: lead.requirement.budgetRange || '',
+                timeline: lead.requirement.timeline,
+                notes: lead.requirement.notes
+              },
+              grade: lead.grade,
+              bantScore: lead.bantScore,
+              bonusScore: lead.bonusScore,
+              totalScore: lead.totalScore,
+              createdAt: new Date().toISOString(),
+              convertedFromLead: lead.id
+            };
+
+            // Initialize opportunities data if it doesn't exist
+            if (!window.OPPORTUNITIES_DATA) {
+              window.OPPORTUNITIES_DATA = [];
+            }
+
+            // Add opportunity to Intake column
+            window.OPPORTUNITIES_DATA.push(opportunity);
+
+            // Mark lead as converted (don't delete, just mark for filtering)
+            lead.convertedToOpportunity = true;
+            lead.convertedAt = new Date().toISOString();
+            lead.opportunityId = opportunity.id;
+          }
+
           // Close slide-out
           closeQualifySlideout();
 
@@ -793,8 +876,17 @@
           renderTable();
           renderKpis();
 
+          // Refresh Pipeline view if it exists
+          if (typeof window.refreshPipelineBoard === 'function') {
+            window.refreshPipelineBoard();
+          }
+
           // Show success message
-          pushToast(`Lead ${currentQualifyLeadId} has been updated successfully.`);
+          if (selectedStatus === 'Qualified') {
+            pushToast(`Lead ${currentQualifyLeadId} has been qualified and converted to opportunity. Moved to Pipeline Intake.`);
+          } else {
+            pushToast(`Lead ${currentQualifyLeadId} has been updated successfully.`);
+          }
         }
 
         function openAssignModal(leadId) {
@@ -856,8 +948,9 @@
               });
             }
 
-            // Update status if it's still "New"
-            if (lead.status === 'New') {
+            // Set status to Assigned when assigning for the first time
+            const validStatuses = ['New', 'In Qualification', 'Nurture', 'Assigned', 'Qualified'];
+            if (!validStatuses.includes(lead.status) || lead.status === 'New' || lead.status === 'In Qualification') {
               lead.status = 'Assigned';
             }
 

@@ -234,7 +234,7 @@
       contact: { name: 'Hannah Osei', email: 'hannah.osei@greenwave.energy', phone: '+44 20 8123 9933' },
       company: 'Greenwave Energy',
       source: 'Broker Referral',
-      status: 'Proposal Sent',
+      status: 'Qualified',
       date: '2025-11-02',
       responseTimeHours: 1.8,
       requirement: {
@@ -357,7 +357,7 @@
       contact: { name: 'Amelia Price', email: 'amelia.price@novumdesign.studio', phone: '+44 20 8123 9987' },
       company: 'Novum Design Studio',
       source: 'Web Form',
-      status: 'Disqualified',
+      status: 'Nurture',
       date: '2025-10-18',
       responseTimeHours: 30,
       requirement: {
@@ -387,7 +387,7 @@
       contact: { name: 'Jamal Carter', email: 'jamal.carter@metrocapital.co', phone: '+44 20 7554 2211' },
       company: 'Metro Capital',
       source: 'Phone Call',
-      status: 'Follow-up',
+      status: 'In Qualification',
       date: '2025-11-05',
       responseTimeHours: 4.5,
       requirement: {
@@ -418,7 +418,7 @@
       contact: { name: 'Eva Klein', email: 'eva.klein@polar-logix.com', phone: '+44 20 6006 9812' },
       company: 'Polar Logix',
       source: 'Email',
-      status: 'Proposal Sent',
+      status: 'Qualified',
       date: '2025-10-27',
       responseTimeHours: 2.8,
       requirement: {
@@ -703,6 +703,18 @@
   }
 
   leadsSeed.forEach(computeLeadScores);
+
+  // Normalize lead statuses to valid enum values
+  const validStatuses = ['New', 'In Qualification', 'Nurture', 'Assigned', 'Qualified'];
+  leadsSeed.forEach((lead) => {
+    if (!validStatuses.includes(lead.status)) {
+      lead.status = 'New';
+    }
+    // Ensure default status is New if not set
+    if (!lead.status) {
+      lead.status = 'New';
+    }
+  });
 
   function formatDate(dateStr) {
     const date = new Date(dateStr);

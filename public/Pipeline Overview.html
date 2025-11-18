@@ -319,90 +319,8 @@
                         </div>
                     </div>
                     
-                    <div class="flex-1 overflow-y-auto p-3 space-y-3">
-                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
-                            <div class="flex items-start justify-between mb-3">
-                                <div>
-                                    <h4 class="text-sm font-semibold text-slate mb-1">TechFlow Solutions</h4>
-                                    <p class="text-xs text-concrete">Via: Knight Frank</p>
-                                </div>
-                                <span class="inline-flex items-center px-2 py-0.5 bg-red-100 text-red-800 text-xs font-semibold rounded">
-                                    Hot
-                                </span>
-                            </div>
-                            <div class="space-y-2 text-xs text-concrete">
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-users w-4 mr-2"></i>
-                                    <span>35 desks</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
-                                    <span>City of London</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
-                                    <span>£85k-£95k budget</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
-                                    <span>2 hours ago</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
-                            <div class="flex items-start justify-between mb-3">
-                                <div>
-                                    <h4 class="text-sm font-semibold text-slate mb-1">Quantum Analytics</h4>
-                                    <p class="text-xs text-concrete">Via: JLL</p>
-                                </div>
-                            </div>
-                            <div class="space-y-2 text-xs text-concrete">
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-users w-4 mr-2"></i>
-                                    <span>50 desks</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
-                                    <span>Shoreditch / Old Street</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
-                                    <span>£120k budget</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
-                                    <span>5 hours ago</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
-                            <div class="flex items-start justify-between mb-3">
-                                <div>
-                                    <h4 class="text-sm font-semibold text-slate mb-1">Creative Minds Ltd</h4>
-                                    <p class="text-xs text-concrete">Via: Cushman & Wakefield</p>
-                                </div>
-                            </div>
-                            <div class="space-y-2 text-xs text-concrete">
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-users w-4 mr-2"></i>
-                                    <span>25 desks</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
-                                    <span>Soho / Covent Garden</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
-                                    <span>£65k budget</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fa-solid fa-clock w-4 mr-2"></i>
-                                    <span>1 day ago</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="intake-opportunities" class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <!-- Opportunities will be dynamically rendered here -->
                     </div>
                     
                     <div class="p-3 border-t border-concrete/30">
@@ -1575,6 +1493,107 @@
 
 <script>
 window.addEventListener('load', function() {
+    // Initialize opportunities data if it doesn't exist
+    if (!window.OPPORTUNITIES_DATA) {
+        window.OPPORTUNITIES_DATA = [];
+    }
+
+    // Function to format time ago
+    function formatTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 60) {
+            return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`;
+        } else if (diffHours < 24) {
+            return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
+        } else if (diffDays < 7) {
+            return `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`;
+        } else {
+            return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' });
+        }
+    }
+
+    // Function to render opportunity card
+    function renderOpportunityCard(opp) {
+        const locations = opp.requirement?.locations?.join(' / ') || 'Location TBD';
+        const budget = opp.requirement?.budgetRange || 'Budget TBD';
+        const size = opp.requirement?.size || 'Size TBD';
+        
+        // Estimate desks from size (rough calculation: ~100 sq ft per desk)
+        const sizeMatch = size.match(/([\d,]+)/);
+        const sqft = sizeMatch ? parseInt(sizeMatch[1].replace(/,/g, '')) : 0;
+        const estimatedDesks = sqft > 0 ? Math.round(sqft / 100) : null;
+        
+        const hotBadge = opp.grade === 'A' ? '<span class="inline-flex items-center px-2 py-0.5 bg-red-100 text-red-800 text-xs font-semibold rounded">Hot</span>' : '';
+        const sourceText = opp.source ? `Via: ${opp.source}` : 'Direct';
+
+        return `
+            <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer" data-opportunity-id="${opp.id}">
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate mb-1">${opp.company}</h4>
+                        <p class="text-xs text-concrete">${sourceText}</p>
+                    </div>
+                    ${hotBadge}
+                </div>
+                <div class="space-y-2 text-xs text-concrete">
+                    ${estimatedDesks ? `<div class="flex items-center">
+                        <i class="fa-solid fa-users w-4 mr-2"></i>
+                        <span>${estimatedDesks} desks</span>
+                    </div>` : ''}
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-location-dot w-4 mr-2"></i>
+                        <span>${locations}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-sterling-sign w-4 mr-2"></i>
+                        <span>${budget}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-clock w-4 mr-2"></i>
+                        <span>${formatTimeAgo(opp.createdAt)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Function to render Intake column
+    function renderIntakeColumn() {
+        const intakeContainer = document.getElementById('intake-opportunities');
+        if (!intakeContainer) return;
+
+        const intakeOpps = (window.OPPORTUNITIES_DATA || []).filter(opp => opp.stage === 'intake');
+        
+        if (intakeOpps.length === 0) {
+            intakeContainer.innerHTML = '<p class="text-xs text-concrete text-center py-4">No opportunities in Intake</p>';
+            // Update count
+            const countSpan = document.querySelector('#stage-intake h3 + .text-concrete');
+            if (countSpan) countSpan.textContent = '0';
+            return;
+        }
+
+        intakeContainer.innerHTML = intakeOpps.map(opp => renderOpportunityCard(opp)).join('');
+        
+        // Update count
+        const countSpan = document.querySelector('#stage-intake h3 + .text-concrete');
+        if (countSpan) countSpan.textContent = intakeOpps.length.toString();
+    }
+
+    // Global function to refresh pipeline board
+    window.refreshPipelineBoard = function() {
+        renderIntakeColumn();
+        // Add other column renders here as needed
+    };
+
+    // Initial render
+    renderIntakeColumn();
+
     // Pipeline board has isolated horizontal scroll - like an iframe
     // Horizontal scrolling in Kanban doesn't affect page scroll
 
