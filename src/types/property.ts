@@ -6,7 +6,7 @@ export interface Unit {
   floor: string; // e.g. 3rd
   sizeSqFt: number;
   desks: number;
-  fitOut: 'Shell' | 'Cat A' | 'Cat A+';
+  fitOut: 'Unfitted' | 'Part Fitted' | 'Fitted';
   status: 'Available' | 'Under Offer' | 'Let' | 'Closed';
   pricePsf?: number;
   pricePcm?: number;
@@ -33,7 +33,7 @@ export interface Property {
   marketing: {
     visibility: 'Private' | 'Public';
     status: 'Draft' | 'Broker-Ready' | 'On Market';
-    fitOut: 'Shell' | 'Cat A' | 'Cat A+';
+    fitOut: 'Unfitted' | 'Part Fitted' | 'Fitted';
     brokerSet?: string;
     valveSyncStatus?: 'synced' | 'pending' | 'error';
     valveSyncError?: string;

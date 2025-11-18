@@ -87,7 +87,7 @@ describe('properties API', () => {
         marketing: {
           visibility: 'Public',
           status: 'On Market',
-          fitOut: 'Cat A',
+          fitOut: 'Part Fitted',
         },
         units: [],
       };
@@ -116,7 +116,7 @@ describe('properties API', () => {
         marketing: {
           visibility: 'Private',
           status: 'Draft',
-          fitOut: 'Shell',
+          fitOut: 'Unfitted',
         },
         units: [],
       };
@@ -161,7 +161,7 @@ describe('properties API', () => {
         marketing: {
           visibility: 'Public',
           status: 'On Market',
-          fitOut: 'Cat A',
+          fitOut: 'Part Fitted',
         },
         units: [],
       };

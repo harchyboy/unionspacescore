@@ -19,7 +19,7 @@ vi.mock('../../api/properties', () => ({
       marketing: {
         visibility: 'Private',
         status: 'Draft',
-        fitOut: 'Shell',
+        fitOut: 'Unfitted',
       },
       units: [],
     }),

@@ -8,7 +8,7 @@ export interface DealRequirement {
   locations?: string[];
   moveWindow?: { start?: string; end?: string };
   budget?: { min?: number; max?: number };
-  fitOut?: 'Shell' | 'Cat A' | 'Cat A+';
+  fitOut?: 'Unfitted' | 'Part Fitted' | 'Fitted';
   amenities?: string[];
 }
 

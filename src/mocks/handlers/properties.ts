@@ -29,7 +29,7 @@ export const seedProperties: Property[] = [
     marketing: {
       visibility: 'Public',
       status: 'On Market',
-      fitOut: 'Cat A+',
+      fitOut: 'Fitted',
     },
     compliance: {
       epc: {
@@ -60,7 +60,7 @@ export const seedProperties: Property[] = [
         floor: '3rd',
         sizeSqFt: 2500,
         desks: 12,
-        fitOut: 'Cat A+',
+        fitOut: 'Fitted',
         status: 'Available',
         pricePsf: 65,
         pricePcm: 13500,
@@ -72,7 +72,7 @@ export const seedProperties: Property[] = [
         floor: '5th',
         sizeSqFt: 3200,
         desks: 16,
-        fitOut: 'Cat A+',
+        fitOut: 'Fitted',
         status: 'Under Offer',
         pricePsf: 68,
         pricePcm: 17400,
@@ -84,7 +84,7 @@ export const seedProperties: Property[] = [
         floor: '7th',
         sizeSqFt: 1800,
         desks: 9,
-        fitOut: 'Cat A',
+        fitOut: 'Part Fitted',
         status: 'Let',
         pricePsf: 60,
         pricePcm: 9000,
@@ -112,7 +112,7 @@ export const seedProperties: Property[] = [
     marketing: {
       visibility: 'Private',
       status: 'Draft',
-      fitOut: 'Shell',
+      fitOut: 'Unfitted',
     },
     units: [],
     stats: {
@@ -135,7 +135,7 @@ export const seedProperties: Property[] = [
     marketing: {
       visibility: 'Public',
       status: 'Broker-Ready',
-      fitOut: 'Cat A',
+      fitOut: 'Part Fitted',
     },
     units: [],
     stats: {
@@ -241,7 +241,7 @@ export const propertyHandlers = [
       marketing: payload.marketing || {
         visibility: 'Private',
         status: 'Draft',
-        fitOut: 'Shell',
+        fitOut: 'Unfitted',
       },
       units: payload.units || [],
       stats: {

@@ -17,7 +17,7 @@ const mockProperty: Property = {
   marketing: {
     visibility: 'Public',
     status: 'On Market',
-    fitOut: 'Cat A',
+    fitOut: 'Part Fitted',
   },
   units: [],
   stats: {

@@ -17,7 +17,7 @@ const basicsSchema = z.object({
 const marketingSchema = z.object({
   visibility: z.enum(['Private', 'Public']),
   status: z.enum(['Draft', 'Broker-Ready', 'On Market']),
-  fitOut: z.enum(['Shell', 'Cat A', 'Cat A+']),
+  fitOut: z.enum(['Unfitted', 'Part Fitted', 'Fitted']),
 });
 
 type BasicsFormData = z.infer<typeof basicsSchema>;
@@ -32,7 +32,7 @@ export function PropertyNew() {
     marketing: {
       visibility: 'Private',
       status: 'Draft',
-      fitOut: 'Shell',
+      fitOut: 'Unfitted',
     },
     units: [],
   });
@@ -59,7 +59,7 @@ export function PropertyNew() {
     defaultValues: {
       visibility: 'Private',
       status: 'Draft',
-      fitOut: 'Shell',
+      fitOut: 'Unfitted',
     },
   });
 
@@ -420,9 +420,9 @@ export function PropertyNew() {
                 {...registerMarketing('fitOut')}
                 className="w-full px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
               >
-                <option value="Shell">Shell</option>
-                <option value="Cat A">Cat A</option>
-                <option value="Cat A+">Cat A+</option>
+                <option value="Unfitted">Unfitted</option>
+                <option value="Part Fitted">Part Fitted</option>
+                <option value="Fitted">Fitted</option>
               </select>
               {marketingErrors.fitOut && (
                 <p className="mt-1 text-sm text-red-600">{marketingErrors.fitOut.message}</p>
