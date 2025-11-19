@@ -574,12 +574,15 @@
           renderTable();
         });
 
-        document.getElementById('refresh-board').addEventListener('click', () => {
-          pushToast('Sync started — fetching latest broker and marketing data.');
-          setTimeout(() => {
-            pushToast('CRM sync complete. No conflicts detected.');
-          }, 2200);
-        });
+        const refreshButton = document.getElementById('refresh-board');
+        if (refreshButton) {
+          refreshButton.addEventListener('click', () => {
+            pushToast('Sync started — fetching latest broker and marketing data.');
+            setTimeout(() => {
+              pushToast('CRM sync complete. No conflicts detected.');
+            }, 2200);
+          });
+        }
 
         function renderTable() {
           const filtered = leads.filter((lead) => {
