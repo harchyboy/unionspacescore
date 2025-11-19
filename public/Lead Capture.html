@@ -217,6 +217,19 @@
                     </select>
                   </div>
                   <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Authority</label>
+                    <select
+                      name="authority"
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    >
+                      <option value="unknown">Unknown</option>
+                      <option value="manager">Manager</option>
+                      <option value="director">Director</option>
+                      <option value="c-suite">C-suite</option>
+                      <option value="final">Final decision maker</option>
+                    </select>
+                  </div>
+                  <div>
                     <label class="text-xs font-semibold text-secondary uppercase">Requirement Notes</label>
                     <textarea
                       name="notes"
@@ -292,6 +305,7 @@
         const budgetSelect = form.elements['budget'];
         const timelineSelect = form.elements['timeline'];
         const notesInput = form.elements['notes'];
+        const authoritySelect = form.elements['authority'];
 
         const leadScoreText = document.getElementById('lead-score-text');
         const pillBudget = document.getElementById('pill-budget');
@@ -327,8 +341,13 @@
           Hot: 'bg-emerald-50 border-emerald-200 text-emerald-800'
         };
 
-        const authorityStyle = 'bg-muted border-[#E6E6E6] text-secondary';
-        pillAuthority.className = `${pillBaseClass} ${authorityStyle}`;
+        const authorityStyleMap = {
+          Unknown: 'bg-muted border-[#E6E6E6] text-secondary',
+          Manager: 'bg-white border-[#E6E6E6] text-secondary',
+          Director: 'bg-amber-50 border-amber-200 text-amber-800',
+          'C-suite': 'bg-amber-50 border-amber-200 text-amber-800',
+          'Final decision maker': 'bg-emerald-50 border-emerald-200 text-emerald-800'
+        };
 
         cards.forEach((card) => {
           const input = card.querySelector('input');
@@ -343,7 +362,8 @@
           { element: sizeInput, event: 'input' },
           { element: budgetSelect, event: 'change' },
           { element: timelineSelect, event: 'change' },
-          { element: notesInput, event: 'input' }
+          { element: notesInput, event: 'input' },
+          { element: authoritySelect, event: 'change' }
         ];
 
         watchers.forEach(({ element, event }) => {
@@ -407,6 +427,25 @@
             needStatus = 'Medium';
           }
 
+          const authorityValue = authoritySelect.value || 'unknown';
+          const authorityLabelMap = {
+            unknown: 'Unknown',
+            manager: 'Manager',
+            director: 'Director',
+            'c-suite': 'C-suite',
+            final: 'Final decision maker'
+          };
+          const authorityLabel = authorityLabelMap[authorityValue] || 'Unknown';
+          if (authorityValue === 'manager') {
+            score += 5;
+          } else if (authorityValue === 'director') {
+            score += 10;
+          } else if (authorityValue === 'c-suite') {
+            score += 15;
+          } else if (authorityValue === 'final') {
+            score += 20;
+          }
+
           const label = score >= 70 ? 'Hot' : score >= 40 ? 'Warm' : 'Cold';
           leadScoreText.textContent = `Lead score: ${score} / 100 (${label})`;
           leadScoreText.className = `${chipBaseClass} ${chipColorMap[label]}`;
@@ -419,6 +458,10 @@
 
           pillTiming.textContent = `Timing: ${timingStatus}`;
           pillTiming.className = `${pillBaseClass} ${timingStyleMap[timingStatus]}`;
+
+          const authorityStyle = authorityStyleMap[authorityLabel] || authorityStyleMap['Unknown'];
+          pillAuthority.textContent = `Authority: ${authorityLabel}`;
+          pillAuthority.className = `${pillBaseClass} ${authorityStyle}`;
         }
 
         function pushToast(message) {
