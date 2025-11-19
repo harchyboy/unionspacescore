@@ -417,15 +417,39 @@
             timingStatus = 'Cold';
           }
 
-          const notesLength = notesInput.value.trim().length;
+          const notesValue = notesInput.value.trim();
+          const notesLength = notesValue.length;
           let needStatus = 'Low';
-          if (notesLength > 200) {
-            score += 20;
-            needStatus = 'High';
-          } else if (notesLength > 80) {
-            score += 10;
+          let needScore = 0;
+
+          if (notesLength >= 40 && notesLength <= 120) {
+            needScore = 10;
             needStatus = 'Medium';
+          } else if (notesLength > 120) {
+            needScore = 20;
+            needStatus = 'High';
           }
+
+          const lowerNotes = notesValue.toLowerCase();
+          const technicalKeywords = /(lab|laboratory|technical|specialist)/i;
+          const esgKeywords = /(esg|sustainability|epc|compliance)/i;
+
+          if (technicalKeywords.test(lowerNotes)) {
+            needScore += 5;
+          }
+          if (esgKeywords.test(lowerNotes)) {
+            needScore += 5;
+          }
+
+          needScore = Math.min(needScore, 25);
+          if (needScore >= 20) {
+            needStatus = 'High';
+          } else if (needScore >= 10) {
+            needStatus = 'Medium';
+          } else {
+            needStatus = 'Low';
+          }
+          score += needScore;
 
           const authorityValue = authoritySelect.value || 'unknown';
           const authorityLabelMap = {
@@ -453,7 +477,7 @@
           pillBudget.textContent = `Budget: ${budgetStatus}`;
           pillBudget.className = `${pillBaseClass} ${budgetStyleMap[budgetStatus]}`;
 
-          pillNeed.textContent = `Need: ${needStatus}`;
+          pillNeed.innerHTML = `Need: ${needStatus} <span class="ml-1 text-[11px] font-normal text-secondary">(${needScore} pts)</span>`;
           pillNeed.className = `${pillBaseClass} ${needStyleMap[needStatus]}`;
 
           pillTiming.textContent = `Timing: ${timingStatus}`;
