@@ -400,7 +400,7 @@
           type="button"
           class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-base"
         >
-          Save Changes
+          Qualify Lead
         </button>
       </div>
     </div>
@@ -740,14 +740,17 @@
           currentQualifyLeadId = null;
         }
 
-        function submitQualification() {
+        function submitQualification(forceQualified = false) {
           if (!currentQualifyLeadId) return;
 
           const lead = leads.find((l) => l.id === currentQualifyLeadId);
           if (!lead) return;
 
           // Get form values
-          const selectedStatus = document.getElementById('qualify-status').value;
+          const selectedStatus = forceQualified ? 'Qualified' : document.getElementById('qualify-status').value;
+          if (forceQualified) {
+            document.getElementById('qualify-status').value = 'Qualified';
+          }
           const size = document.getElementById('qualify-size').value.trim();
           const timeline = document.getElementById('qualify-timeline').value;
           const notes = document.getElementById('qualify-notes').value.trim();
@@ -1035,7 +1038,7 @@
         if (qualifySubmitBtn) {
           qualifySubmitBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            submitQualification();
+            submitQualification(true);
           });
         }
 
