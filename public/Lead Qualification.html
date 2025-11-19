@@ -710,6 +710,7 @@
 
         document.getElementById('save-progress').addEventListener('click', () => {
           pushToast(`Lead ${lead.reference} updated and synced to CRM.`);
+          setTimeout(() => window.location.reload(), 1200);
         });
 
         updateScore();
