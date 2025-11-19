@@ -81,7 +81,7 @@
               Apply BANT scoring, validate bonus signals, and align the right property match.
             </p>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 flex-wrap justify-end">
             <a
               href="Leads Dashboard.html"
               class="px-4 py-2 text-sm border border-[#E6E6E6] rounded-lg text-primary hover:bg-muted transition"
@@ -96,6 +96,12 @@
             >
               View Property Detail
             </a>
+            <button
+              id="edit-lead-btn"
+              class="px-4 py-2 text-sm border border-[#E6E6E6] rounded-lg text-primary hover:bg-muted transition"
+            >
+              Edit Lead
+            </button>
             <button
               id="save-progress"
               class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition"
@@ -336,6 +342,183 @@
       </main>
     </div>
 
+    <!-- Edit Lead Modal -->
+    <div id="edit-lead-modal" class="hidden fixed inset-0 z-50">
+      <div class="flex min-h-screen items-center justify-center p-4">
+        <div id="edit-lead-backdrop" class="fixed inset-0 bg-black bg-opacity-40"></div>
+        <div class="relative bg-white rounded-2xl shadow-xl max-w-4xl w-full">
+          <div class="flex items-center justify-between border-b border-[#E6E6E6] px-6 py-4">
+            <div>
+              <h2 class="text-xl font-semibold text-primary">Edit lead details</h2>
+              <p class="text-sm text-secondary">Changes apply locally for this session only.</p>
+            </div>
+            <button
+              id="edit-lead-close"
+              type="button"
+              class="text-secondary hover:text-primary transition"
+              aria-label="Close edit modal"
+            >
+              <i class="fa-solid fa-times text-lg"></i>
+            </button>
+          </div>
+          <form id="edit-lead-form" class="px-6 py-5 space-y-6">
+            <div>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Contact</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-secondary">Name</label>
+                  <input
+                    type="text"
+                    name="contactName"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    placeholder="Sophie Blake"
+                    required
+                  />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Company</label>
+                  <input
+                    type="text"
+                    name="company"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    placeholder="Arcadia Retail"
+                    required
+                  />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    placeholder="sophie@example.com"
+                  />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Phone</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    placeholder="+44 20 7000 0000"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Lead meta</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-secondary">Source</label>
+                  <select
+                    name="source"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                  >
+                    <option>Broker Referral</option>
+                    <option>Web Form</option>
+                    <option>Email</option>
+                    <option>Phone Call</option>
+                    <option>Cold Outreach</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Status</label>
+                  <select
+                    name="status"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                  >
+                    <option>New</option>
+                    <option>In Qualification</option>
+                    <option>Assigned</option>
+                    <option>Qualified</option>
+                    <option>Nurture</option>
+                    <option>Unqualified</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Requirement</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-secondary">Space size</label>
+                  <input
+                    type="text"
+                    name="size"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    placeholder="28,000-32,000 sq ft"
+                  />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Locations</label>
+                  <input
+                    type="text"
+                    name="locations"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    placeholder="City Core, Canary Wharf"
+                  />
+                  <p class="text-xs text-secondary mt-1">Comma separate multiple locations.</p>
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Budget range</label>
+                  <select
+                    name="budgetRange"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                  >
+                    <option>£100k+ annual</option>
+                    <option>£50k-£99k annual</option>
+                    <option>£25k-£49k annual</option>
+                    <option>£10k-£24k annual</option>
+                    <option>Under £10k annual</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Timeline</label>
+                  <select
+                    name="timeline"
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                  >
+                    <option>Immediate</option>
+                    <option>Short-term (2-4 weeks)</option>
+                    <option>1-3 months</option>
+                    <option>3-6 months</option>
+                    <option>6+ months</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mt-4">
+                <label class="text-sm text-secondary">Requirement notes</label>
+                <textarea
+                  name="notes"
+                  rows="3"
+                  class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                  placeholder="Flagship HQ relocation for UK retail leadership."
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 border-t border-[#E6E6E6] pt-4">
+              <button
+                type="button"
+                id="edit-lead-cancel"
+                class="px-4 py-2 text-sm border border-[#E6E6E6] rounded-lg text-primary hover:bg-muted transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition"
+              >
+                Save changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <div id="toast-root" class="fixed bottom-8 right-8 space-y-3 z-50"></div>
 
     <script src="leads-data.js"></script>
@@ -356,16 +539,117 @@
         const bantSelects = document.querySelectorAll('[data-bant-select]');
         const bantSliders = document.querySelectorAll('[data-bant-slider]');
         const bonusSelects = document.querySelectorAll('[data-bonus-select]');
+        const leadTitleEl = document.getElementById('lead-title');
+        const leadSubtitleEl = document.getElementById('lead-subtitle');
+        const detailLink = document.getElementById('open-detail-link');
+        const reqSizeEl = document.getElementById('req-size');
+        const reqLocationsEl = document.getElementById('req-locations');
+        const reqBudgetEl = document.getElementById('req-budget');
+        const reqTimelineEl = document.getElementById('req-timeline');
+        const reqNotesEl = document.getElementById('req-notes');
 
-        document.getElementById('lead-title').textContent = `${lead.contact.name} · ${lead.company}`;
-        document.getElementById('lead-subtitle').textContent = `${lead.reference} · ${lead.source} · ${lead.status}`;
-        document.getElementById('open-detail-link').href = `Lead Qualification.html?id=${lead.id}`;
+        detailLink.href = `Lead Qualification.html?id=${lead.id}`;
 
-        document.getElementById('req-size').textContent = lead.requirement.size;
-        document.getElementById('req-locations').textContent = lead.requirement.locations.join(', ');
-        document.getElementById('req-budget').textContent = lead.requirement.budgetRange;
-        document.getElementById('req-timeline').textContent = lead.requirement.timeline;
-        document.getElementById('req-notes').textContent = lead.requirement.notes;
+        function refreshLeadHeader() {
+          leadTitleEl.textContent = `${lead.contact.name} · ${lead.company}`;
+          leadSubtitleEl.textContent = `${lead.reference} · ${lead.source} · ${lead.status}`;
+        }
+
+        function refreshRequirementCard() {
+          reqSizeEl.textContent = lead.requirement.size || 'Not specified';
+          const formattedLocations =
+            Array.isArray(lead.requirement.locations) && lead.requirement.locations.length
+              ? lead.requirement.locations.join(', ')
+              : 'Not specified';
+          reqLocationsEl.textContent = formattedLocations;
+          reqBudgetEl.textContent = lead.requirement.budgetRange || 'Not specified';
+          reqTimelineEl.textContent = lead.requirement.timeline || 'Not specified';
+          reqNotesEl.textContent = lead.requirement.notes || 'No notes captured.';
+        }
+
+        refreshLeadHeader();
+        refreshRequirementCard();
+
+        const editLeadButton = document.getElementById('edit-lead-btn');
+        const editLeadModal = document.getElementById('edit-lead-modal');
+        const editLeadForm = document.getElementById('edit-lead-form');
+        const editLeadCancel = document.getElementById('edit-lead-cancel');
+        const editLeadClose = document.getElementById('edit-lead-close');
+        const editLeadBackdrop = document.getElementById('edit-lead-backdrop');
+
+        function toggleBodyScroll(shouldLock) {
+          document.body.classList.toggle('overflow-hidden', shouldLock);
+        }
+
+        function populateEditForm() {
+          if (!editLeadForm) return;
+          editLeadForm.elements.contactName.value = lead.contact.name || '';
+          editLeadForm.elements.company.value = lead.company || '';
+          editLeadForm.elements.email.value = lead.contact.email || '';
+          editLeadForm.elements.phone.value = lead.contact.phone || '';
+          editLeadForm.elements.source.value = lead.source || 'Broker Referral';
+          editLeadForm.elements.status.value = lead.status || 'New';
+          editLeadForm.elements.size.value = lead.requirement.size || '';
+          editLeadForm.elements.locations.value =
+            Array.isArray(lead.requirement.locations) && lead.requirement.locations.length
+              ? lead.requirement.locations.join(', ')
+              : '';
+          editLeadForm.elements.budgetRange.value = lead.requirement.budgetRange || '£100k+ annual';
+          editLeadForm.elements.timeline.value = lead.requirement.timeline || 'Immediate';
+          editLeadForm.elements.notes.value = lead.requirement.notes || '';
+        }
+
+        function openEditModal() {
+          if (!editLeadModal) return;
+          populateEditForm();
+          editLeadModal.classList.remove('hidden');
+          toggleBodyScroll(true);
+        }
+
+        function closeEditModal() {
+          if (!editLeadModal) return;
+          editLeadModal.classList.add('hidden');
+          toggleBodyScroll(false);
+        }
+
+        function handleEditSubmit(event) {
+          event.preventDefault();
+          const formData = new FormData(editLeadForm);
+          lead.contact.name = (formData.get('contactName') || '').trim();
+          lead.company = (formData.get('company') || '').trim();
+          lead.contact.email = (formData.get('email') || '').trim();
+          lead.contact.phone = (formData.get('phone') || '').trim();
+          lead.source = formData.get('source') || lead.source;
+          lead.status = formData.get('status') || lead.status;
+          lead.requirement.size = (formData.get('size') || '').trim();
+          const locationsInput = formData.get('locations') || '';
+          const locationList = locationsInput
+            .split(',')
+            .map((value) => value.trim())
+            .filter(Boolean);
+          lead.requirement.locations = locationList;
+          lead.requirement.budgetRange = formData.get('budgetRange') || lead.requirement.budgetRange;
+          lead.requirement.timeline = formData.get('timeline') || lead.requirement.timeline;
+          lead.requirement.notes = (formData.get('notes') || '').trim();
+
+          refreshLeadHeader();
+          refreshRequirementCard();
+          closeEditModal();
+          pushToast('Lead updated for this session.');
+        }
+
+        if (editLeadButton && editLeadForm) {
+          editLeadButton.addEventListener('click', openEditModal);
+          editLeadForm.addEventListener('submit', handleEditSubmit);
+          [editLeadCancel, editLeadClose, editLeadBackdrop].forEach((el) => {
+            el && el.addEventListener('click', closeEditModal);
+          });
+          window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && editLeadModal && !editLeadModal.classList.contains('hidden')) {
+              closeEditModal();
+            }
+          });
+        }
 
         bantSelects.forEach((select) => {
           const key = select.dataset.bantSelect;
