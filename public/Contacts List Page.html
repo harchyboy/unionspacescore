@@ -198,6 +198,8 @@
                 <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">Brokers</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Disposal Agents</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Traditional Tenant Reps</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Landlords</button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Clients / Occupiers</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Suppliers</button>
                 <div class="flex-1"></div>
                 <button class="text-secondary hover:text-primary text-sm flex items-center space-x-1">
@@ -1784,6 +1786,20 @@
                                 <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
                             </label>
                             <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="landlord" class="sr-only peer">
+                                <i class="fa-solid fa-landmark text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Landlords</span>
+                                <span class="text-xs text-secondary mt-1">Landlord representative</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                            </label>
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
+                                <input type="radio" name="type" value="client-occupier" class="sr-only peer">
+                                <i class="fa-solid fa-user text-3xl text-secondary peer-checked:text-primary mb-3"></i>
+                                <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Clients / Occupiers</span>
+                                <span class="text-xs text-secondary mt-1">Active customer contact</span>
+                                <div class="absolute inset-0 border-2 border-transparent peer-checked:border-primary rounded-lg pointer-events-none"></div>
+                            </label>
+                            <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
                                 <input type="radio" name="type" value="supplier" class="sr-only peer">
                                 <i class="fa-solid fa-wrench text-3xl text-secondary peer-checked:text-primary mb-3"></i>
                                 <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Suppliers</span>
@@ -2076,6 +2092,7 @@ function showContactDetails(row) {
         'Disposal Agent': 'bg-secondary text-white',
         'Tenant': 'bg-accent text-white',
         'Landlord': 'bg-muted text-primary',
+        'Client / Occupier': 'bg-purple-600 text-white',
         'Supplier': 'bg-muted text-primary'
     };
     
@@ -2084,6 +2101,7 @@ function showContactDetails(row) {
         'Disposal Agent': 'fa-building',
         'Tenant': 'fa-user-tie',
         'Landlord': 'fa-landmark',
+        'Client / Occupier': 'fa-user',
         'Supplier': 'fa-wrench'
     };
     
@@ -2638,6 +2656,8 @@ function filterContacts() {
         'Brokers': 'Flex Broker',
         'Disposal Agents': 'Disposal Agent',
         'Traditional Tenant Reps': 'Tenant',
+        'Landlords': 'Landlord',
+        'Clients / Occupiers': 'Client / Occupier',
         'Suppliers': 'Supplier'
     };
     
@@ -2705,8 +2725,15 @@ function clearAllFilters() {
     
     // Reset type filter buttons
     document.querySelectorAll('#page-header button').forEach(function(btn) {
-        if (btn.textContent.trim() === 'Brokers' || btn.textContent.trim() === 'Disposal Agents' || 
-            btn.textContent.trim() === 'Traditional Tenant Reps' || btn.textContent.trim() === 'Suppliers') {
+        const text = btn.textContent.trim();
+        if (
+            text === 'Brokers' ||
+            text === 'Disposal Agents' ||
+            text === 'Traditional Tenant Reps' ||
+            text === 'Landlords' ||
+            text === 'Clients / Occupiers' ||
+            text === 'Suppliers'
+        ) {
             btn.classList.remove('text-primary', 'border-primary');
             btn.classList.add('text-secondary', 'border-transparent');
         }
@@ -2837,14 +2864,26 @@ window.addEventListener('load', function() {
     const typeButtons = document.querySelectorAll('#page-header button');
     typeButtons.forEach(function(btn) {
         const btnText = btn.textContent.trim();
-        if (btnText === 'Brokers' || btnText === 'Disposal Agents' || 
-            btnText === 'Traditional Tenant Reps' || btnText === 'Suppliers') {
+    if (
+        btnText === 'Brokers' ||
+        btnText === 'Disposal Agents' ||
+        btnText === 'Traditional Tenant Reps' ||
+        btnText === 'Landlords' ||
+        btnText === 'Clients / Occupiers' ||
+        btnText === 'Suppliers'
+    ) {
             btn.addEventListener('click', function() {
                 // Update button styles
                 typeButtons.forEach(function(b) {
                     const bText = b.textContent.trim();
-                    if (bText === 'Brokers' || bText === 'Disposal Agents' || 
-                        bText === 'Traditional Tenant Reps' || bText === 'Suppliers') {
+                if (
+                    bText === 'Brokers' ||
+                    bText === 'Disposal Agents' ||
+                    bText === 'Traditional Tenant Reps' ||
+                    bText === 'Landlords' ||
+                    bText === 'Clients / Occupiers' ||
+                    bText === 'Suppliers'
+                ) {
                         b.classList.remove('text-primary', 'border-primary');
                         b.classList.add('text-secondary', 'border-transparent');
                     }
