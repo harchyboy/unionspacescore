@@ -16,6 +16,7 @@ const typeLabels: Record<Contact['type'], string> = {
   tenant: 'Traditional Tenant Reps',
   landlord: 'Landlord',
   supplier: 'Suppliers',
+  occupier: 'Clients / Occupiers',
   internal: 'Internal',
 };
 
@@ -25,6 +26,7 @@ const typeIcons: Record<Contact['type'], string> = {
   tenant: 'fa-user-tie',
   landlord: 'fa-landmark',
   supplier: 'fa-wrench',
+  occupier: 'fa-briefcase',
   internal: 'fa-user',
 };
 
@@ -89,7 +91,11 @@ export function ContactRow({ contact }: ContactRowProps) {
                 ? 'bg-secondary text-white'
                 : contact.type === 'tenant'
                   ? 'bg-accent text-white'
-                  : 'bg-muted text-primary'
+                  : contact.type === 'landlord'
+                    ? 'bg-blue-600 text-white'
+                    : contact.type === 'occupier'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-muted text-primary'
           }`}
         >
           <i className={`fa-solid ${typeIcons[contact.type]} mr-1.5`}></i>

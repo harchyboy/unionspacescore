@@ -15,9 +15,10 @@ import type { ContactType, RelationshipHealth } from '../../types/contact';
 const contactTypes: { value: ContactType; label: string }[] = [
   { value: 'flex-broker', label: 'Flex Broker' },
   { value: 'disposal-agent', label: 'Disposal Agent' },
-  { value: 'tenant', label: 'Tenant/Prospect' },
+  { value: 'tenant', label: 'Traditional Tenant Rep' },
   { value: 'landlord', label: 'Landlord' },
   { value: 'supplier', label: 'Supplier' },
+  { value: 'occupier', label: 'Client / Occupier' },
   { value: 'internal', label: 'Internal' },
 ];
 

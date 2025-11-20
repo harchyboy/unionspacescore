@@ -17,21 +17,32 @@ import type { ContactType, RelationshipHealth } from '../../types/contact';
 const CONTACT_TAB_BROKERS = 'flex-broker' as const;
 const CONTACT_TAB_DISPOSAL_AGENTS = 'disposal-agent' as const;
 const CONTACT_TAB_TENANT_REPS = 'tenant' as const;
+const CONTACT_TAB_LANDLORDS = 'landlord' as const;
 const CONTACT_TAB_SUPPLIERS = 'supplier' as const;
+const CONTACT_TAB_OCCUPIERS = 'occupier' as const;
 
 // Tab configuration matching ContactType enum
 const CONTACT_TABS = [
   { value: CONTACT_TAB_BROKERS, label: 'Brokers' },
   { value: CONTACT_TAB_DISPOSAL_AGENTS, label: 'Disposal Agents' },
   { value: CONTACT_TAB_TENANT_REPS, label: 'Traditional Tenant Reps' },
+  { value: CONTACT_TAB_LANDLORDS, label: 'Landlords' },
   { value: CONTACT_TAB_SUPPLIERS, label: 'Suppliers' },
+  { value: CONTACT_TAB_OCCUPIERS, label: 'Clients / Occupiers' },
 ] as const;
 
 type ContactTabValue = (typeof CONTACT_TABS)[number]['value'];
 
 // Map tab value to contact type (direct mapping since tabs use ContactType values)
 function getContactTypeForTab(tab: string): ContactType | null {
-  if (tab === CONTACT_TAB_BROKERS || tab === CONTACT_TAB_DISPOSAL_AGENTS || tab === CONTACT_TAB_TENANT_REPS || tab === CONTACT_TAB_SUPPLIERS) {
+  if (
+    tab === CONTACT_TAB_BROKERS ||
+    tab === CONTACT_TAB_DISPOSAL_AGENTS ||
+    tab === CONTACT_TAB_TENANT_REPS ||
+    tab === CONTACT_TAB_LANDLORDS ||
+    tab === CONTACT_TAB_SUPPLIERS ||
+    tab === CONTACT_TAB_OCCUPIERS
+  ) {
     return tab as ContactType;
   }
   return null;
@@ -52,7 +63,14 @@ export function ContactsList() {
   // Get initial active tab from URL or default to brokers
   const getInitialTab = (): ContactTabValue => {
     const urlTab = searchParams.get('contactType');
-    if (urlTab === CONTACT_TAB_BROKERS || urlTab === CONTACT_TAB_DISPOSAL_AGENTS || urlTab === CONTACT_TAB_TENANT_REPS || urlTab === CONTACT_TAB_SUPPLIERS) {
+    if (
+      urlTab === CONTACT_TAB_BROKERS ||
+      urlTab === CONTACT_TAB_DISPOSAL_AGENTS ||
+      urlTab === CONTACT_TAB_TENANT_REPS ||
+      urlTab === CONTACT_TAB_LANDLORDS ||
+      urlTab === CONTACT_TAB_SUPPLIERS ||
+      urlTab === CONTACT_TAB_OCCUPIERS
+    ) {
       return urlTab as ContactTabValue;
     }
     return CONTACT_TAB_BROKERS; // Default to brokers
@@ -76,7 +94,14 @@ export function ContactsList() {
   // Sync active tab with URL on mount and when URL changes
   useEffect(() => {
     const urlTab = searchParams.get('contactType');
-    if (urlTab === CONTACT_TAB_BROKERS || urlTab === CONTACT_TAB_DISPOSAL_AGENTS || urlTab === CONTACT_TAB_TENANT_REPS || urlTab === CONTACT_TAB_SUPPLIERS) {
+    if (
+      urlTab === CONTACT_TAB_BROKERS ||
+      urlTab === CONTACT_TAB_DISPOSAL_AGENTS ||
+      urlTab === CONTACT_TAB_TENANT_REPS ||
+      urlTab === CONTACT_TAB_LANDLORDS ||
+      urlTab === CONTACT_TAB_SUPPLIERS ||
+      urlTab === CONTACT_TAB_OCCUPIERS
+    ) {
       if (activeTab !== urlTab) {
         setActiveTab(urlTab as ContactTabValue);
       }

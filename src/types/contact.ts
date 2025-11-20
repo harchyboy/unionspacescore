@@ -4,6 +4,7 @@ export type ContactType =
   | 'tenant'
   | 'landlord'
   | 'supplier'
+  | 'occupier'
   | 'internal';
 
 export type RelationshipHealth = 'excellent' | 'good' | 'fair' | 'needs-attention';
