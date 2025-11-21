@@ -667,45 +667,47 @@
         }
 
         function showCompanyDetails(row) {
-            const name = row.dataset.companyName;
-            const type = row.dataset.companyType;
-            const status = row.dataset.companyStatus;
-            const owner = row.dataset.companyOwner;
-            const viewings = parseInt(row.dataset.companyViewings) || 0;
-            const deals = parseInt(row.dataset.companyDeals) || 0;
-            const revenue = parseInt(row.dataset.companyRevenue) || 0;
-            const properties = parseInt(row.dataset.companyProperties) || 0;
-            const people = parseInt(row.dataset.companyPeople) || 0;
-
-            // Parse linked properties and people data
-            let propertiesData = [];
-            let peopleData = [];
+            console.log('showCompanyDetails called', row);
             try {
-                if (row.dataset.companyPropertiesData) {
-                    propertiesData = JSON.parse(row.dataset.companyPropertiesData);
+                const name = row.dataset.companyName;
+                const type = row.dataset.companyType;
+                const status = row.dataset.companyStatus;
+                const owner = row.dataset.companyOwner;
+                const viewings = parseInt(row.dataset.companyViewings) || 0;
+                const deals = parseInt(row.dataset.companyDeals) || 0;
+                const revenue = parseInt(row.dataset.companyRevenue) || 0;
+                const properties = parseInt(row.dataset.companyProperties) || 0;
+                const people = parseInt(row.dataset.companyPeople) || 0;
+
+                // Parse linked properties and people data
+                let propertiesData = [];
+                let peopleData = [];
+                try {
+                    if (row.dataset.companyPropertiesData) {
+                        propertiesData = JSON.parse(row.dataset.companyPropertiesData);
+                    }
+                    if (row.dataset.companyPeopleData) {
+                        peopleData = JSON.parse(row.dataset.companyPeopleData);
+                    }
+                } catch (e) {
+                    console.error('Error parsing company data:', e);
                 }
-                if (row.dataset.companyPeopleData) {
-                    peopleData = JSON.parse(row.dataset.companyPeopleData);
-                }
-            } catch (e) {
-                console.error('Error parsing company data:', e);
-            }
 
-            const statusColors = {
-                'Active': 'bg-green-100 text-green-800',
-                'Dormant': 'bg-gray-100 text-gray-800',
-                'Prospect': 'bg-amber-100 text-amber-800'
-            };
+                const statusColors = {
+                    'Active': 'bg-green-100 text-green-800',
+                    'Dormant': 'bg-gray-100 text-gray-800',
+                    'Prospect': 'bg-amber-100 text-amber-800'
+                };
 
-            const typeIcons = {
-                'Agency': 'fa-handshake',
-                'Landlord': 'fa-building',
-                'Supplier': 'fa-truck',
-                'Client': 'fa-briefcase'
-            };
+                const typeIcons = {
+                    'Agency': 'fa-handshake',
+                    'Landlord': 'fa-building',
+                    'Supplier': 'fa-truck',
+                    'Client': 'fa-briefcase'
+                };
 
-            // Generate properties list HTML
-            const propertiesListHTML = propertiesData.length > 0
+                // Generate properties list HTML
+                const propertiesListHTML = propertiesData.length > 0
                 ? propertiesData.map(prop => `
                     <div class="flex items-center justify-between p-4 border-b border-[#E6E6E6] last:border-b-0 hover:bg-[#F0F0F0] transition-colors">
                         <div class="flex-1">
@@ -739,7 +741,7 @@
                 `).join('')
                 : '<div class="text-center py-8 text-secondary"><p>No linked people</p></div>';
 
-            document.getElementById('company-details-content').innerHTML = `
+                document.getElementById('company-details-content').innerHTML = `
                 <div class="bg-white border-b border-[#E6E6E6] px-8 py-6 sticky top-0 z-10">
                     <div class="flex items-center space-x-4 mb-6">
                         <button onclick="closeCompanyDetails()" class="text-secondary hover:text-primary transition-all-smooth p-2">
@@ -1054,9 +1056,25 @@
                 </div>
             `;
 
-            // Show overlay and panel
-            document.getElementById('company-details-overlay').classList.remove('hidden');
-            document.getElementById('company-details-panel').classList.add('open');
+                // Show overlay and panel
+                const overlay = document.getElementById('company-details-overlay');
+                const panel = document.getElementById('company-details-panel');
+                if (overlay && panel) {
+                    overlay.classList.remove('hidden');
+                    panel.classList.add('open');
+                } else {
+                    console.error('Company details panel elements not found');
+                }
+            } catch (error) {
+                console.error('Error showing company details:', error);
+                // Still try to open the panel even if content generation failed
+                const overlay = document.getElementById('company-details-overlay');
+                const panel = document.getElementById('company-details-panel');
+                if (overlay && panel) {
+                    overlay.classList.remove('hidden');
+                    panel.classList.add('open');
+                }
+            }
         }
 
         function closeCompanyDetails() {
@@ -1239,18 +1257,26 @@
             // Status filter
             document.getElementById('filter-status').addEventListener('change', applyFilters);
             
-            // Add click handlers to company rows
-            document.querySelectorAll('.company-row').forEach(function(row) {
-                row.addEventListener('click', function(e) {
+            // Add click handlers to company rows using event delegation
+            const tableBody = document.querySelector('tbody');
+            if (tableBody) {
+                tableBody.addEventListener('click', function(e) {
+                    const row = e.target.closest('.company-row');
+                    if (!row) return;
+                    
                     // Don't trigger if clicking on checkbox, button, or inside a button
                     if (e.target.tagName === 'INPUT' || 
                         e.target.tagName === 'BUTTON' || 
                         e.target.closest('button')) {
                         return;
                     }
+                    
+                    console.log('Company row clicked', row);
                     showCompanyDetails(row);
                 });
-            });
+            } else {
+                console.error('Table body not found for event delegation');
+            }
         });
     </script>
 </body>
