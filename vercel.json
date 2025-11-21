@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node build-static.js",
+  "buildCommand": "pnpm run build:vercel",
   "outputDirectory": "dist",
   "installCommand": "pnpm install",
   "framework": null,
