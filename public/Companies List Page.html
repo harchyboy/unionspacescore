@@ -794,28 +794,261 @@
                             <div class="text-2xl font-semibold text-primary">${people}</div>
                         </div>
                     </div>
+
+                    <!-- Tabs Navigation -->
+                    <div class="flex items-center space-x-4 mt-6 border-b border-[#E6E6E6]">
+                        <button onclick="switchCompanyTab('overview')" class="company-tab px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary" data-tab="overview">Overview</button>
+                        <button onclick="switchCompanyTab('people')" class="company-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="people">People</button>
+                        <button onclick="switchCompanyTab('properties')" class="company-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="properties">Properties</button>
+                        <button onclick="switchCompanyTab('deals')" class="company-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="deals">Deals</button>
+                        <button onclick="switchCompanyTab('activity')" class="company-tab px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" data-tab="activity">Activity</button>
+                    </div>
                 </div>
 
-                <div class="bg-[#F0F0F0] p-8 space-y-6">
-                    <!-- Linked Properties Section -->
-                    <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
-                        <div class="px-6 py-4 border-b border-[#E6E6E6]">
-                            <h3 class="text-lg font-semibold text-primary">Linked Properties</h3>
-                            <p class="text-xs text-secondary mt-1">${properties} ${properties === 1 ? 'property' : 'properties'} linked to this company</p>
-                        </div>
-                        <div class="max-h-96 overflow-y-auto">
-                            ${propertiesListHTML}
+                <div class="bg-[#F0F0F0] p-8">
+                    <!-- Overview Tab -->
+                    <div id="company-tab-overview" class="company-tab-content">
+                        <div class="space-y-6">
+                            <!-- Company Summary -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                                <h3 class="text-lg font-semibold text-primary mb-4">Company Summary</h3>
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Company Type</label>
+                                        <span class="text-sm text-primary">${type}</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Status</label>
+                                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${statusColors[status] || 'bg-muted text-primary'}">${status}</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Owner</label>
+                                        <span class="text-sm text-primary">${owner}</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Total Revenue YTD</label>
+                                        <span class="text-sm font-semibold text-primary">${formatCurrency(revenue)}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Relationship Notes -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                                <h3 class="text-lg font-semibold text-primary mb-4">Relationship Notes</h3>
+                                <p class="text-sm text-secondary">${name} has been a ${status.toLowerCase()} ${type.toLowerCase()} since 2023. ${owner} manages this relationship and has established strong connections across ${properties} properties and ${people} contacts.</p>
+                            </div>
+
+                            <!-- Recent Activity Timeline -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                                <h3 class="text-lg font-semibold text-primary mb-4">Recent Activity</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-eye text-blue-800"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary mb-1">Viewing Scheduled</div>
+                                            <div class="text-xs text-secondary">Property viewing arranged for 99 Bishopsgate - 2 days ago</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                                        <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-handshake text-green-800"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary mb-1">Deal Updated</div>
+                                            <div class="text-xs text-secondary">Deal "Tech Hub London" moved to 2nd Viewing stage - 5 days ago</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                                        <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-envelope text-amber-800"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary mb-1">Email Sent</div>
+                                            <div class="text-xs text-secondary">Proposal sent to ${owner} - 1 week ago</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-comment-dots text-gray-800"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-semibold text-primary mb-1">Note Added</div>
+                                            <div class="text-xs text-secondary">Relationship notes updated by ${owner} - 2 weeks ago</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Linked People Section -->
-                    <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
-                        <div class="px-6 py-4 border-b border-[#E6E6E6]">
-                            <h3 class="text-lg font-semibold text-primary">Linked People</h3>
-                            <p class="text-xs text-secondary mt-1">${people} ${people === 1 ? 'person' : 'people'} linked to this company</p>
+                    <!-- People Tab -->
+                    <div id="company-tab-people" class="company-tab-content hidden">
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                            <div class="px-6 py-4 border-b border-[#E6E6E6]">
+                                <h3 class="text-lg font-semibold text-primary">All Contacts</h3>
+                                <p class="text-xs text-secondary mt-1">${people} ${people === 1 ? 'contact' : 'contacts'} linked to this company</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-[#fafafa] border-b border-[#E6E6E6]">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Role</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Phone / Email</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Activity Count</th>
+                                            <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-[#E6E6E6]">
+                                        ${peopleData.length > 0
+                                            ? peopleData.map(person => `
+                                                <tr class="hover:bg-[#fafafa] transition-colors">
+                                                    <td class="px-6 py-4">
+                                                        <div class="flex items-center space-x-3">
+                                                            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                                                                ${person.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                                                            </div>
+                                                            <div class="font-medium text-primary text-sm">${person.name}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4 text-sm text-secondary">${person.role}</td>
+                                                    <td class="px-6 py-4">
+                                                        <div class="text-sm text-primary">${person.email}</div>
+                                                        ${person.phone ? `<div class="text-xs text-secondary">${person.phone}</div>` : ''}
+                                                    </td>
+                                                    <td class="px-6 py-4 text-sm text-secondary">${Math.floor(Math.random() * 20) + 5}</td>
+                                                    <td class="px-6 py-4 text-right">
+                                                        <a href="Contacts List Page.html" class="text-primary hover:underline text-sm font-medium">View Contact</a>
+                                                    </td>
+                                                </tr>
+                                            `).join('')
+                                            : '<tr><td colspan="5" class="px-6 py-8 text-center text-secondary">No contacts found</td></tr>'
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="max-h-96 overflow-y-auto">
-                            ${peopleListHTML}
+                    </div>
+
+                    <!-- Properties Tab -->
+                    <div id="company-tab-properties" class="company-tab-content hidden">
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                            <div class="px-6 py-4 border-b border-[#E6E6E6]">
+                                <h3 class="text-lg font-semibold text-primary">Linked Properties</h3>
+                                <p class="text-xs text-secondary mt-1">${properties} ${properties === 1 ? 'property' : 'properties'} linked to this company</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-[#fafafa] border-b border-[#E6E6E6]">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Property Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Address</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Relationship Type</th>
+                                            ${type === 'Agency' ? '<th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Viewings</th>' : ''}
+                                            ${type === 'Landlord' ? '<th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Occupancy</th>' : ''}
+                                            ${type === 'Supplier' ? '<th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Service Category</th>' : ''}
+                                            <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-[#E6E6E6]">
+                                        ${propertiesData.length > 0
+                                            ? propertiesData.map(prop => {
+                                                let relationshipType = '';
+                                                let extraColumn = '';
+                                                if (type === 'Agency') {
+                                                    relationshipType = 'Brokered';
+                                                    extraColumn = `<td class="px-6 py-4 text-sm text-secondary">${Math.floor(Math.random() * 10) + 1}</td>`;
+                                                } else if (type === 'Landlord') {
+                                                    relationshipType = 'Owned';
+                                                    extraColumn = `<td class="px-6 py-4 text-sm text-secondary">${Math.floor(Math.random() * 30) + 70}%</td>`;
+                                                } else if (type === 'Supplier') {
+                                                    relationshipType = 'Service Provider';
+                                                    const categories = ['Cleaning', 'HVAC', 'Security', 'Maintenance', 'IT Support'];
+                                                    extraColumn = `<td class="px-6 py-4 text-sm text-secondary">${categories[Math.floor(Math.random() * categories.length)]}</td>`;
+                                                } else {
+                                                    relationshipType = 'Occupied';
+                                                }
+                                                return `
+                                                    <tr class="hover:bg-[#fafafa] transition-colors">
+                                                        <td class="px-6 py-4 font-medium text-primary text-sm">${prop.name}</td>
+                                                        <td class="px-6 py-4 text-sm text-secondary">${prop.address}</td>
+                                                        <td class="px-6 py-4 text-sm text-secondary">${relationshipType}</td>
+                                                        ${extraColumn}
+                                                        <td class="px-6 py-4 text-right">
+                                                            <a href="Property List Dashboard.html" class="text-primary hover:underline text-sm font-medium">View Property</a>
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                            }).join('')
+                                            : '<tr><td colspan="5" class="px-6 py-8 text-center text-secondary">No properties found</td></tr>'
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deals Tab -->
+                    <div id="company-tab-deals" class="company-tab-content hidden">
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                            <div class="px-6 py-4 border-b border-[#E6E6E6]">
+                                <h3 class="text-lg font-semibold text-primary">Deals</h3>
+                                <p class="text-xs text-secondary mt-1">${deals} ${deals === 1 ? 'deal' : 'deals'} connected to this company</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-[#fafafa] border-b border-[#E6E6E6]">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Deal Name</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Deal Stage</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Property</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Role</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Value</th>
+                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Last Update</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-[#E6E6E6]">
+                                        ${generateDealsData(name, type, deals).map(deal => `
+                                            <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer" onclick="window.location.href='Pipeline Overview.html'">
+                                                <td class="px-6 py-4 font-medium text-primary text-sm">${deal.name}</td>
+                                                <td class="px-6 py-4">
+                                                    <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${deal.stageColor}">${deal.stage}</span>
+                                                </td>
+                                                <td class="px-6 py-4 text-sm text-secondary">${deal.property}</td>
+                                                <td class="px-6 py-4 text-sm text-secondary">${deal.role}</td>
+                                                <td class="px-6 py-4 text-sm font-semibold text-primary">${formatCurrency(deal.value)}</td>
+                                                <td class="px-6 py-4 text-sm text-secondary">${deal.lastUpdate}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Tab -->
+                    <div id="company-tab-activity" class="company-tab-content hidden">
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                            <h3 class="text-lg font-semibold text-primary mb-4">Activity Timeline</h3>
+                            <div class="space-y-4">
+                                ${generateActivityData(name, type, viewings, deals).map(activity => `
+                                    <div class="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6] last:border-b-0">
+                                        <div class="w-10 h-10 ${activity.iconBg} rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid ${activity.icon} ${activity.iconColor}"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <div class="text-sm font-semibold text-primary">${activity.title}</div>
+                                                <div class="text-xs text-secondary">${activity.time}</div>
+                                            </div>
+                                            <div class="text-xs text-secondary">${activity.description}</div>
+                                            ${activity.badge ? `<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${activity.badgeColor} mt-2">${activity.badge}</span>` : ''}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -829,6 +1062,132 @@
         function closeCompanyDetails() {
             document.getElementById('company-details-overlay').classList.add('hidden');
             document.getElementById('company-details-panel').classList.remove('open');
+        }
+
+        function switchCompanyTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.company-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active state from all tabs
+            document.querySelectorAll('.company-tab').forEach(tab => {
+                tab.classList.remove('text-primary', 'border-primary');
+                tab.classList.add('text-secondary', 'border-transparent');
+            });
+            
+            // Show selected tab content
+            const selectedContent = document.getElementById('company-tab-' + tabName);
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+            
+            // Add active state to selected tab
+            const selectedTab = document.querySelector(\`.company-tab[data-tab="\${tabName}"]\`);
+            if (selectedTab) {
+                selectedTab.classList.remove('text-secondary', 'border-transparent');
+                selectedTab.classList.add('text-primary', 'border-primary');
+            }
+        }
+
+        function generateDealsData(companyName, companyType, dealCount) {
+            const deals = [];
+            const stages = ['Intake', 'Qualification', 'Matching', 'Viewing', '2nd Viewing', 'Proposal', 'HoTs', 'Legals'];
+            const stageColors = {
+                'Intake': 'bg-gray-100 text-gray-800',
+                'Qualification': 'bg-blue-100 text-blue-800',
+                'Matching': 'bg-purple-100 text-purple-800',
+                'Viewing': 'bg-amber-100 text-amber-800',
+                '2nd Viewing': 'bg-amber-100 text-amber-800',
+                'Proposal': 'bg-green-100 text-green-800',
+                'HoTs': 'bg-teal-100 text-teal-800',
+                'Legals': 'bg-indigo-100 text-indigo-800'
+            };
+            const properties = ['99 Bishopsgate', 'The Leadenhall Building', 'Principal Place', '20 Fenchurch Street', '30 St Mary Axe'];
+            const roles = {
+                'Agency': 'Broker',
+                'Landlord': 'Landlord',
+                'Supplier': 'Supplier',
+                'Client': 'Tenant'
+            };
+            
+            for (let i = 0; i < Math.min(dealCount, 10); i++) {
+                const stage = stages[Math.floor(Math.random() * stages.length)];
+                deals.push({
+                    name: \`Deal \${i + 1} - \${properties[Math.floor(Math.random() * properties.length)]}\`,
+                    stage: stage,
+                    stageColor: stageColors[stage] || 'bg-gray-100 text-gray-800',
+                    property: properties[Math.floor(Math.random() * properties.length)],
+                    role: roles[companyType] || 'Participant',
+                    value: Math.floor(Math.random() * 2000000) + 500000,
+                    lastUpdate: \`\${Math.floor(Math.random() * 7) + 1} days ago\`
+                });
+            }
+            return deals;
+        }
+
+        function generateActivityData(companyName, companyType, viewings, deals) {
+            const activities = [];
+            const viewingProperties = ['99 Bishopsgate', 'The Leadenhall Building', 'Principal Place', '20 Fenchurch Street'];
+            
+            // Add viewing activities
+            for (let i = 0; i < Math.min(viewings, 5); i++) {
+                activities.push({
+                    icon: 'fa-eye',
+                    iconBg: 'bg-blue-100',
+                    iconColor: 'text-blue-800',
+                    title: 'Viewing Scheduled',
+                    description: \`Property viewing arranged for \${viewingProperties[Math.floor(Math.random() * viewingProperties.length)]}\`,
+                    time: \`\${Math.floor(Math.random() * 7) + 1} days ago\`,
+                    badge: 'Viewing',
+                    badgeColor: 'bg-blue-100 text-blue-800'
+                });
+            }
+            
+            // Add deal activities
+            for (let i = 0; i < Math.min(deals, 5); i++) {
+                const stages = ['Moved to Proposal', 'Deal Updated', 'Stage Changed'];
+                activities.push({
+                    icon: 'fa-handshake',
+                    iconBg: 'bg-green-100',
+                    iconColor: 'text-green-800',
+                    title: stages[Math.floor(Math.random() * stages.length)],
+                    description: \`Deal "\${viewingProperties[Math.floor(Math.random() * viewingProperties.length)]}" updated\`,
+                    time: \`\${Math.floor(Math.random() * 14) + 1} days ago\`,
+                    badge: 'Deal',
+                    badgeColor: 'bg-green-100 text-green-800'
+                });
+            }
+            
+            // Add communication activities
+            activities.push({
+                icon: 'fa-envelope',
+                iconBg: 'bg-amber-100',
+                iconColor: 'text-amber-800',
+                title: 'Email Sent',
+                description: 'Proposal and property details sent',
+                time: '3 days ago',
+                badge: 'Email',
+                badgeColor: 'bg-amber-100 text-amber-800'
+            });
+            
+            activities.push({
+                icon: 'fa-comment-dots',
+                iconBg: 'bg-gray-100',
+                iconColor: 'text-gray-800',
+                title: 'Note Added',
+                description: 'Relationship notes updated',
+                time: '1 week ago',
+                badge: 'Note',
+                badgeColor: 'bg-gray-100 text-gray-800'
+            });
+            
+            // Sort by time (most recent first)
+            return activities.sort((a, b) => {
+                const timeA = parseInt(a.time);
+                const timeB = parseInt(b.time);
+                return timeA - timeB;
+            });
         }
 
         // Filter functionality
