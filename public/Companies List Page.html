@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <title>Companies</title>
+    <script src='https://cdn.tailwindcss.com'></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#252525',
+                    secondary: '#8E8E8E',
+                    slate: '#252525',
+                    concrete: '#8E8E8E',
+                    stone: '#F0F0F0',
+                },
+            },
+        },
+    }
+    </script>
+    <script>
+      window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+      :root {
+        --primary: #252525;
+        --secondary: #8E8E8E;
+        --slate: #252525;
+        --concrete: #8E8E8E;
+        --stone: #F0F0F0;
+      }
+    </style>
+</head>
+<body class="bg-stone font-sans">
+    <div class="flex min-h-screen">
+        <div data-sidebar-placeholder data-active="companies"></div>
+        <script src="sidebar.js"></script>
+
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <div class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h1 class="text-3xl font-semibold text-primary mb-2">Companies</h1>
+                        <p class="text-secondary text-sm">
+                            Manage company relationships and track performance
+                        </p>
+                    </div>
+                    <a href="Companies Adding Card.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium flex items-center">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        Add company
+                    </a>
+                </div>
+
+                <div class="mt-6 flex items-center space-x-4">
+                    <div class="flex-1 max-w-md">
+                        <div class="relative">
+                            <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                            <input type="search" placeholder="Search by company name..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                    </div>
+                    <select class="w-48 px-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>All Types</option>
+                        <option>Agency</option>
+                        <option>Landlord</option>
+                        <option>Supplier</option>
+                        <option>Client</option>
+                    </select>
+                    <select class="w-48 px-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Dormant</option>
+                        <option>Prospect</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-8 py-6">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-[#fafafa] border-b border-[#E6E6E6]">
+                                <tr>
+                                    <th class="px-4 py-3 text-xs font-semibold text-[#8e8e8e] uppercase tracking-wider text-left">Company name</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-[#8e8e8e] uppercase tracking-wider text-left">Type</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-[#8e8e8e] uppercase tracking-wider text-left">Relationship owner</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-[#8e8e8e] uppercase tracking-wider text-left">Status</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-[#8e8e8e] uppercase tracking-wider text-right">Total viewings YTD</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-[#8e8e8e] uppercase tracking-wider text-right">Total deals YTD</th>
+                                    <th class="px-4 py-3 text-xs font-semibold text-[#8e8e8e] uppercase tracking-wider text-right">Revenue YTD</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#E6E6E6]">
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                    <td class="px-4 py-4 text-sm font-medium text-primary">Knight Frank</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Agency</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">Tom Davies</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">45</td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">12</td>
+                                    <td class="px-4 py-4 text-sm font-medium text-primary text-right">£1,250,000</td>
+                                </tr>
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                    <td class="px-4 py-4 text-sm font-medium text-primary">Moorgate Estate Ltd</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Landlord</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">Sarah Mitchell</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">28</td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">8</td>
+                                    <td class="px-4 py-4 text-sm font-medium text-primary text-right">£890,000</td>
+                                </tr>
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                    <td class="px-4 py-4 text-sm font-medium text-primary">CleanPro Services</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Supplier</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">David Chen</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">15</td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">5</td>
+                                    <td class="px-4 py-4 text-sm font-medium text-primary text-right">£125,000</td>
+                                </tr>
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                    <td class="px-4 py-4 text-sm font-medium text-primary">TechCorp Ltd</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Client</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary">James Patterson</td>
+                                    <td class="px-4 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">Active</span>
+                                    </td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">32</td>
+                                    <td class="px-4 py-4 text-sm text-secondary text-right">10</td>
+                                    <td class="px-4 py-4 text-sm font-medium text-primary text-right">£2,100,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+
