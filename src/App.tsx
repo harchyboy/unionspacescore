@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { MockStoreProvider } from './store/useMockStore';
+import { CompanyStoreProvider } from './store/useCompanyStore';
 import { PropertiesList } from './pages/properties/List';
 import { PropertyDetails } from './pages/properties/Details';
 import { PropertyNew } from './pages/properties/New';
@@ -26,6 +27,9 @@ import { ContactsList } from './pages/contacts/List';
 import { ContactDetailsPage } from './pages/contacts/ContactDetailsPage';
 import { ContactNew } from './pages/contacts/New';
 import { ContactEdit } from './pages/contacts/Edit';
+import { CompaniesList } from './pages/companies/List';
+import { CompanyNew } from './pages/companies/New';
+import { CompanyDetails } from './pages/companies/Details';
 import { isFeatureEnabled, FEATURES, isContactsOnlyMode } from './config/features';
 
 // Placeholder pages for modules not yet implemented
@@ -60,9 +64,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MockStoreProvider>
-        <BrowserRouter>
-          <AppShell>
-            <Routes>
+        <CompanyStoreProvider>
+          <BrowserRouter>
+            <AppShell>
+              <Routes>
               {/* Dashboard */}
               {isFeatureEnabled(FEATURES.OVERVIEW) && (
                 <Route path="/" element={<Tom />} />
@@ -172,6 +177,10 @@ function App() {
                   <Route path="/contacts/:id" element={<ContactDetailsPage />} />
                   <Route path="/contacts/:id/edit" element={<ContactEdit />} />
                   <Route path="/contacts/new" element={<ContactNew />} />
+                  {/* Companies */}
+                  <Route path="/contacts/companies" element={<CompaniesList />} />
+                  <Route path="/contacts/companies/new" element={<CompanyNew />} />
+                  <Route path="/contacts/companies/:companyId" element={<CompanyDetails />} />
                 </>
               )}
               {isFeatureEnabled(FEATURES.ANALYTICS) && (
@@ -189,9 +198,10 @@ function App() {
 
               {/* Catch-all: redirect to default route if contacts-only, otherwise 404 */}
               <Route path="*" element={<Navigate to={defaultRoute} replace />} />
-          </Routes>
-        </AppShell>
-      </BrowserRouter>
+            </Routes>
+          </AppShell>
+        </BrowserRouter>
+        </CompanyStoreProvider>
       </MockStoreProvider>
     </QueryClientProvider>
   );

@@ -1,7 +1,8 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
 import type { Deal } from '../../types/deal';
 import { MatchingTab } from './tabs/MatchingTab';
+import { useCompanyStore } from '../../store/useCompanyStore';
 
 // Mock deal data - in production this would come from an API
 const mockDeal: Deal = {
@@ -13,6 +14,43 @@ const mockDeal: Deal = {
   status: 'Active',
   proposalConfigStatus: 'none',
 };
+
+// Extended mock deal data with company IDs (as per requirements)
+interface ExtendedDeal {
+  id: string;
+  name: string;
+  propertyId: string;
+  tenantCompanyId: string;
+  brokerCompanyId?: string;
+}
+
+interface ExtendedProperty {
+  id: string;
+  name: string;
+  landlordCompanyId: string;
+  disposalAgentCompanyId?: string;
+}
+
+// Mock deals with company IDs
+const mockDeals: ExtendedDeal[] = [
+  {
+    id: '1',
+    name: 'Tech Hub London',
+    propertyId: 'prop-1',
+    tenantCompanyId: 'comp-4', // TechCorp Ltd
+    brokerCompanyId: 'comp-1', // Knight Frank
+  },
+];
+
+// Mock properties with company IDs
+const mockProperties: ExtendedProperty[] = [
+  {
+    id: 'prop-1',
+    name: '42 Moorgate',
+    landlordCompanyId: 'comp-2', // Moorgate Estate Ltd
+    disposalAgentCompanyId: 'comp-1', // Knight Frank (also acting as disposal agent)
+  },
+];
 
 // Mock contact data
 const mockContacts = {
@@ -267,6 +305,17 @@ export function DealOverview() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [deal] = useState<Deal>(mockDeal);
+  const { getCompanyById } = useCompanyStore();
+
+  // Get the extended deal data
+  const extendedDeal = mockDeals.find((d) => d.id === id);
+  const property = extendedDeal ? mockProperties.find((p) => p.id === extendedDeal.propertyId) : undefined;
+
+  // Resolve company names
+  const landlordCompany = property ? getCompanyById(property.landlordCompanyId) : undefined;
+  const disposalAgentCompany = property?.disposalAgentCompanyId ? getCompanyById(property.disposalAgentCompanyId) : undefined;
+  const tenantCompany = extendedDeal ? getCompanyById(extendedDeal.tenantCompanyId) : undefined;
+  const brokerCompany = extendedDeal?.brokerCompanyId ? getCompanyById(extendedDeal.brokerCompanyId) : undefined;
 
   const handleGenerateProposal = () => {
     const hasConfig = 
@@ -952,6 +1001,61 @@ export function DealOverview() {
                 <span className="text-xs text-[#8E8E8E]">Response Time (Avg)</span>
                 <span className="text-sm font-semibold text-[#252525]">4.2 hours</span>
               </div>
+            </div>
+          </div>
+
+          {/* Companies on this deal */}
+          <div className="border-t border-[#8E8E8E]/30 px-6 py-4">
+            <h3 className="text-sm font-semibold text-[#252525] uppercase tracking-wide mb-4">Companies on this deal</h3>
+            <div className="space-y-3">
+              <div>
+                <div className="text-xs text-[#8E8E8E] uppercase tracking-wide mb-1">Landlord</div>
+                {landlordCompany ? (
+                  <Link
+                    to={`/contacts/companies/${landlordCompany.id}`}
+                    className="text-sm font-medium text-[#252525] hover:text-primary hover:underline"
+                  >
+                    {landlordCompany.name}
+                  </Link>
+                ) : (
+                  <div className="text-sm text-[#8E8E8E]">Not available</div>
+                )}
+              </div>
+              {disposalAgentCompany && (
+                <div>
+                  <div className="text-xs text-[#8E8E8E] uppercase tracking-wide mb-1">Disposal agent</div>
+                  <Link
+                    to={`/contacts/companies/${disposalAgentCompany.id}`}
+                    className="text-sm font-medium text-[#252525] hover:text-primary hover:underline"
+                  >
+                    {disposalAgentCompany.name}
+                  </Link>
+                </div>
+              )}
+              <div>
+                <div className="text-xs text-[#8E8E8E] uppercase tracking-wide mb-1">Tenant</div>
+                {tenantCompany ? (
+                  <Link
+                    to={`/contacts/companies/${tenantCompany.id}`}
+                    className="text-sm font-medium text-[#252525] hover:text-primary hover:underline"
+                  >
+                    {tenantCompany.name}
+                  </Link>
+                ) : (
+                  <div className="text-sm text-[#8E8E8E]">Not available</div>
+                )}
+              </div>
+              {brokerCompany && (
+                <div>
+                  <div className="text-xs text-[#8E8E8E] uppercase tracking-wide mb-1">Agency</div>
+                  <Link
+                    to={`/contacts/companies/${brokerCompany.id}`}
+                    className="text-sm font-medium text-[#252525] hover:text-primary hover:underline"
+                  >
+                    {brokerCompany.name}
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
