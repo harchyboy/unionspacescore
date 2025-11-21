@@ -66,21 +66,21 @@
                     <div class="flex-1 max-w-md">
                         <div class="relative">
                             <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
-                            <input type="search" placeholder="Search by company name..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-primary">
+                            <input type="search" id="search-input" placeholder="Search by company name..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary placeholder-secondary focus:outline-none focus:ring-2 focus:ring-primary">
                         </div>
                     </div>
-                    <select class="w-48 px-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Types</option>
-                        <option>Agency</option>
-                        <option>Landlord</option>
-                        <option>Supplier</option>
-                        <option>Client</option>
+                    <select id="filter-type" class="w-48 px-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Types</option>
+                        <option value="Agency">Agency</option>
+                        <option value="Landlord">Landlord</option>
+                        <option value="Supplier">Supplier</option>
+                        <option value="Client">Client</option>
                     </select>
-                    <select class="w-48 px-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Status</option>
-                        <option>Active</option>
-                        <option>Dormant</option>
-                        <option>Prospect</option>
+                    <select id="filter-status" class="w-48 px-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Dormant">Dormant</option>
+                        <option value="Prospect">Prospect</option>
                     </select>
                 </div>
             </div>
@@ -831,8 +831,56 @@
             document.getElementById('company-details-panel').classList.remove('open');
         }
 
-        // Add click handlers to company rows
+        // Filter functionality
+        function applyFilters() {
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            const typeFilter = document.getElementById('filter-type').value;
+            const statusFilter = document.getElementById('filter-status').value;
+            
+            const rows = document.querySelectorAll('.company-row');
+            let visibleCount = 0;
+            
+            rows.forEach(function(row) {
+                const name = row.dataset.companyName.toLowerCase();
+                const type = row.dataset.companyType;
+                const status = row.dataset.companyStatus;
+                
+                // Check search query
+                const matchesSearch = !searchQuery || name.includes(searchQuery);
+                
+                // Check type filter
+                const matchesType = typeFilter === 'all' || type === typeFilter;
+                
+                // Check status filter
+                const matchesStatus = statusFilter === 'all' || status === statusFilter;
+                
+                // Show/hide row
+                if (matchesSearch && matchesType && matchesStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Add event listeners for filters
         window.addEventListener('load', function() {
+            // Search input
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(applyFilters, 300);
+            });
+            
+            // Type filter
+            document.getElementById('filter-type').addEventListener('change', applyFilters);
+            
+            // Status filter
+            document.getElementById('filter-status').addEventListener('change', applyFilters);
+            
+            // Add click handlers to company rows
             document.querySelectorAll('.company-row').forEach(function(row) {
                 row.addEventListener('click', function(e) {
                     // Don't trigger if clicking on checkbox, button, or inside a button
