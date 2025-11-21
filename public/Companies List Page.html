@@ -1101,7 +1101,7 @@
             }
             
             // Add active state to selected tab
-            const selectedTab = document.querySelector(\`.company-tab[data-tab="\${tabName}"]\`);
+            const selectedTab = document.querySelector(`.company-tab[data-tab="${tabName}"]`);
             if (selectedTab) {
                 selectedTab.classList.remove('text-secondary', 'border-transparent');
                 selectedTab.classList.add('text-primary', 'border-primary');
@@ -1132,13 +1132,13 @@
             for (let i = 0; i < Math.min(dealCount, 10); i++) {
                 const stage = stages[Math.floor(Math.random() * stages.length)];
                 deals.push({
-                    name: \`Deal \${i + 1} - \${properties[Math.floor(Math.random() * properties.length)]}\`,
+                    name: `Deal ${i + 1} - ${properties[Math.floor(Math.random() * properties.length)]}`,
                     stage: stage,
                     stageColor: stageColors[stage] || 'bg-gray-100 text-gray-800',
                     property: properties[Math.floor(Math.random() * properties.length)],
                     role: roles[companyType] || 'Participant',
                     value: Math.floor(Math.random() * 2000000) + 500000,
-                    lastUpdate: \`\${Math.floor(Math.random() * 7) + 1} days ago\`
+                    lastUpdate: `${Math.floor(Math.random() * 7) + 1} days ago`
                 });
             }
             return deals;
@@ -1155,8 +1155,8 @@
                     iconBg: 'bg-blue-100',
                     iconColor: 'text-blue-800',
                     title: 'Viewing Scheduled',
-                    description: \`Property viewing arranged for \${viewingProperties[Math.floor(Math.random() * viewingProperties.length)]}\`,
-                    time: \`\${Math.floor(Math.random() * 7) + 1} days ago\`,
+                    description: `Property viewing arranged for ${viewingProperties[Math.floor(Math.random() * viewingProperties.length)]}`,
+                    time: `${Math.floor(Math.random() * 7) + 1} days ago`,
                     badge: 'Viewing',
                     badgeColor: 'bg-blue-100 text-blue-800'
                 });
@@ -1170,8 +1170,8 @@
                     iconBg: 'bg-green-100',
                     iconColor: 'text-green-800',
                     title: stages[Math.floor(Math.random() * stages.length)],
-                    description: \`Deal "\${viewingProperties[Math.floor(Math.random() * viewingProperties.length)]}" updated\`,
-                    time: \`\${Math.floor(Math.random() * 14) + 1} days ago\`,
+                    description: `Deal "${viewingProperties[Math.floor(Math.random() * viewingProperties.length)]}" updated`,
+                    time: `${Math.floor(Math.random() * 14) + 1} days ago`,
                     badge: 'Deal',
                     badgeColor: 'bg-green-100 text-green-800'
                 });
