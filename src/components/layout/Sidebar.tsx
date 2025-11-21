@@ -105,9 +105,15 @@ const allNavSections: NavSection[] = [
     items: [
       {
         key: 'contacts',
-        label: 'Contacts',
+        label: 'People',
         icon: 'fa-users',
         href: '/contacts',
+      },
+      {
+        key: 'companies',
+        label: 'Companies',
+        icon: 'fa-building',
+        href: '/contacts/companies',
       },
       {
         key: 'analytics',
@@ -143,6 +149,7 @@ function getFilteredNavSections(): NavSection[] {
           tickets: FEATURES.TICKETS,
           suppliers: FEATURES.SUPPLIERS,
           contacts: FEATURES.CONTACTS,
+          companies: FEATURES.CONTACTS, // Companies uses the same feature flag as contacts
           analytics: FEATURES.ANALYTICS,
           settings: FEATURES.SETTINGS,
         };
@@ -197,6 +204,7 @@ export function Sidebar() {
     if (path.startsWith('/services')) return 'services';
     if (path.startsWith('/tickets')) return 'tickets';
     if (path.startsWith('/suppliers')) return 'suppliers';
+    if (path.startsWith('/contacts/companies')) return 'companies';
     if (path.startsWith('/contacts')) return 'contacts';
     if (path.startsWith('/analytics')) return 'analytics';
     if (path.startsWith('/settings')) return 'settings';
