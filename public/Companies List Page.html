@@ -33,6 +33,13 @@
         --concrete: #8E8E8E;
         --stone: #F0F0F0;
       }
+      .slide-over {
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+      }
+      .slide-over.open {
+        transform: translateX(0);
+      }
     </style>
 </head>
 <body class="bg-stone font-sans">
@@ -94,7 +101,16 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-[#E6E6E6]">
-                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer company-row" 
+                                    data-company-name="Knight Frank"
+                                    data-company-type="Agency"
+                                    data-company-status="Active"
+                                    data-company-owner="Tom Davies"
+                                    data-company-viewings="45"
+                                    data-company-deals="12"
+                                    data-company-revenue="1250000"
+                                    data-company-properties="8"
+                                    data-company-people="24">
                                     <td class="px-4 py-4 text-sm font-medium text-primary">Knight Frank</td>
                                     <td class="px-4 py-4 text-sm">
                                         <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Agency</span>
@@ -107,7 +123,16 @@
                                     <td class="px-4 py-4 text-sm text-secondary text-right">12</td>
                                     <td class="px-4 py-4 text-sm font-medium text-primary text-right">£1,250,000</td>
                                 </tr>
-                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer company-row"
+                                    data-company-name="Moorgate Estate Ltd"
+                                    data-company-type="Landlord"
+                                    data-company-status="Active"
+                                    data-company-owner="Sarah Mitchell"
+                                    data-company-viewings="28"
+                                    data-company-deals="8"
+                                    data-company-revenue="890000"
+                                    data-company-properties="12"
+                                    data-company-people="6">
                                     <td class="px-4 py-4 text-sm font-medium text-primary">Moorgate Estate Ltd</td>
                                     <td class="px-4 py-4 text-sm">
                                         <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Landlord</span>
@@ -120,7 +145,16 @@
                                     <td class="px-4 py-4 text-sm text-secondary text-right">8</td>
                                     <td class="px-4 py-4 text-sm font-medium text-primary text-right">£890,000</td>
                                 </tr>
-                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer company-row"
+                                    data-company-name="CleanPro Services"
+                                    data-company-type="Supplier"
+                                    data-company-status="Active"
+                                    data-company-owner="David Chen"
+                                    data-company-viewings="15"
+                                    data-company-deals="5"
+                                    data-company-revenue="125000"
+                                    data-company-properties="3"
+                                    data-company-people="8">
                                     <td class="px-4 py-4 text-sm font-medium text-primary">CleanPro Services</td>
                                     <td class="px-4 py-4 text-sm">
                                         <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Supplier</span>
@@ -133,7 +167,16 @@
                                     <td class="px-4 py-4 text-sm text-secondary text-right">5</td>
                                     <td class="px-4 py-4 text-sm font-medium text-primary text-right">£125,000</td>
                                 </tr>
-                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer">
+                                <tr class="hover:bg-[#fafafa] transition-colors cursor-pointer company-row"
+                                    data-company-name="TechCorp Ltd"
+                                    data-company-type="Client"
+                                    data-company-status="Active"
+                                    data-company-owner="James Patterson"
+                                    data-company-viewings="32"
+                                    data-company-deals="10"
+                                    data-company-revenue="2100000"
+                                    data-company-properties="5"
+                                    data-company-people="18">
                                     <td class="px-4 py-4 text-sm font-medium text-primary">TechCorp Ltd</td>
                                     <td class="px-4 py-4 text-sm">
                                         <span class="inline-flex items-center px-2 py-1 bg-muted text-primary text-xs font-medium rounded">Client</span>
@@ -153,6 +196,142 @@
             </div>
         </main>
     </div>
+
+    <!-- Company Details Slide-Over Panel -->
+    <div id="company-details-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50" onclick="closeCompanyDetails()"></div>
+    <div id="company-details-panel" class="slide-over fixed right-0 top-0 bottom-0 w-5/6 max-w-7xl bg-white shadow-2xl z-50 overflow-y-auto">
+        <div id="company-details-content">
+            <div class="text-center py-12 text-secondary">
+                <i class="fa-solid fa-building text-4xl mb-4"></i>
+                <p>Select a company to view details</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-GB', {
+                style: 'currency',
+                currency: 'GBP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            }).format(value);
+        }
+
+        function showCompanyDetails(row) {
+            const name = row.dataset.companyName;
+            const type = row.dataset.companyType;
+            const status = row.dataset.companyStatus;
+            const owner = row.dataset.companyOwner;
+            const viewings = parseInt(row.dataset.companyViewings) || 0;
+            const deals = parseInt(row.dataset.companyDeals) || 0;
+            const revenue = parseInt(row.dataset.companyRevenue) || 0;
+            const properties = parseInt(row.dataset.companyProperties) || 0;
+            const people = parseInt(row.dataset.companyPeople) || 0;
+
+            const statusColors = {
+                'Active': 'bg-green-100 text-green-800',
+                'Dormant': 'bg-gray-100 text-gray-800',
+                'Prospect': 'bg-amber-100 text-amber-800'
+            };
+
+            const typeIcons = {
+                'Agency': 'fa-handshake',
+                'Landlord': 'fa-building',
+                'Supplier': 'fa-truck',
+                'Client': 'fa-briefcase'
+            };
+
+            document.getElementById('company-details-content').innerHTML = `
+                <div class="bg-white border-b border-[#E6E6E6] px-8 py-6 sticky top-0 z-10">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <button onclick="closeCompanyDetails()" class="text-secondary hover:text-primary transition-all-smooth p-2">
+                            <i class="fa-solid fa-arrow-left text-lg"></i>
+                        </button>
+                        <div class="flex items-center space-x-4 flex-1">
+                            <div class="w-16 h-16 bg-primary rounded-lg flex items-center justify-center text-white text-2xl">
+                                <i class="fa-solid ${typeIcons[type] || 'fa-building'}"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h1 class="text-2xl font-semibold text-primary">${name}</h1>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary">${type}</span>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusColors[status] || 'bg-muted text-primary'}">${status}</span>
+                                </div>
+                                <div class="text-sm text-secondary">
+                                    Relationship Owner: <span class="text-primary font-medium">${owner}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>Contact</span>
+                            </button>
+                            <button class="p-2.5 text-secondary hover:text-primary transition-all-smooth">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Key Stats Grid -->
+                    <div class="grid grid-cols-5 gap-4">
+                        <div class="bg-[#F0F0F0] rounded-lg p-4">
+                            <div class="text-xs font-medium text-secondary uppercase tracking-wider mb-1">Total Viewings</div>
+                            <div class="text-2xl font-semibold text-primary">${viewings}</div>
+                        </div>
+                        <div class="bg-[#F0F0F0] rounded-lg p-4">
+                            <div class="text-xs font-medium text-secondary uppercase tracking-wider mb-1">Deals Connected</div>
+                            <div class="text-2xl font-semibold text-primary">${deals}</div>
+                        </div>
+                        <div class="bg-[#F0F0F0] rounded-lg p-4">
+                            <div class="text-xs font-medium text-secondary uppercase tracking-wider mb-1">Revenue Attribution</div>
+                            <div class="text-2xl font-semibold text-primary">${formatCurrency(revenue)}</div>
+                        </div>
+                        <div class="bg-[#F0F0F0] rounded-lg p-4">
+                            <div class="text-xs font-medium text-secondary uppercase tracking-wider mb-1">Linked Properties</div>
+                            <div class="text-2xl font-semibold text-primary">${properties}</div>
+                        </div>
+                        <div class="bg-[#F0F0F0] rounded-lg p-4">
+                            <div class="text-xs font-medium text-secondary uppercase tracking-wider mb-1">Linked People</div>
+                            <div class="text-2xl font-semibold text-primary">${people}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#F0F0F0] p-8">
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Company Overview</h3>
+                        <p class="text-sm text-secondary">Additional company details and information will be displayed here.</p>
+                    </div>
+                </div>
+            `;
+
+            // Show overlay and panel
+            document.getElementById('company-details-overlay').classList.remove('hidden');
+            document.getElementById('company-details-panel').classList.add('open');
+        }
+
+        function closeCompanyDetails() {
+            document.getElementById('company-details-overlay').classList.add('hidden');
+            document.getElementById('company-details-panel').classList.remove('open');
+        }
+
+        // Add click handlers to company rows
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.company-row').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on checkbox, button, or inside a button
+                    if (e.target.tagName === 'INPUT' || 
+                        e.target.tagName === 'BUTTON' || 
+                        e.target.closest('button')) {
+                        return;
+                    }
+                    showCompanyDetails(row);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
 
