@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <title>Create New Deal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: '#252525',
+                        concrete: '#8E8E8E',
+                        stone: '#F0F0F0',
+                        primary: '#252525'
+                    },
+                    fontFamily: {
+                        'haltung': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script src="sidebar.js" defer></script>
+</head>
+<body class="bg-stone font-haltung">
+
+<div class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-white border-r border-concrete/20 flex flex-col fixed left-0 top-0 bottom-0 z-50" data-sidebar-placeholder data-active="deals"></aside>
+
+    <div class="flex-1 ml-64">
+    <header id="header" class="bg-white border-b border-concrete/30 sticky top-0 z-40">
+        <div class="flex items-center justify-between px-8 py-4">
+            <div class="flex items-center space-x-6">
+                <a href="Pipeline Overview.html" class="text-concrete hover:text-slate transition-colors">
+                    <i class="fa-solid fa-arrow-left text-lg"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-semibold text-slate">Create New Deal</h1>
+                    <p class="text-sm text-concrete mt-0.5">Set up a new deal with its structure type</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-concrete hover:text-slate transition-colors">
+                    <i class="fa-regular fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-slate rounded-full"></span>
+                </button>
+                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-8 py-6">
+        <form id="create-deal-form" onsubmit="handleCreateDeal(event)">
+            <div class="bg-white rounded-lg border border-concrete/30 p-6 mb-6">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate mb-2">
+                            Deal Name <span class="text-red-600">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="deal-name" 
+                            required
+                            placeholder="e.g., Tech Hub London"
+                            class="w-full px-4 py-2.5 bg-stone border border-concrete/30 rounded-lg text-sm text-slate placeholder-concrete focus:outline-none focus:border-slate"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate mb-2">
+                            Deal Structure <span class="text-red-600">*</span>
+                        </label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button 
+                                type="button"
+                                onclick="selectDealType('AllInclusive')"
+                                id="deal-type-all-inclusive"
+                                class="p-6 border-2 border-concrete/30 rounded-lg text-left transition-all hover:border-slate"
+                            >
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <input
+                                        type="radio"
+                                        name="deal-type"
+                                        value="AllInclusive"
+                                        id="radio-all-inclusive"
+                                        required
+                                        class="w-4 h-4 text-slate border-concrete/30 focus:ring-slate"
+                                    />
+                                    <h3 class="text-lg font-semibold text-slate">All Inclusive</h3>
+                                </div>
+                                <p class="text-sm text-concrete ml-7">
+                                    Services can be bundled into rent or handled as separate agreements
+                                </p>
+                            </button>
+
+                            <button 
+                                type="button"
+                                onclick="selectDealType('BoltOn')"
+                                id="deal-type-bolt-on"
+                                class="p-6 border-2 border-concrete/30 rounded-lg text-left transition-all hover:border-slate"
+                            >
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <input
+                                        type="radio"
+                                        name="deal-type"
+                                        value="BoltOn"
+                                        id="radio-bolt-on"
+                                        required
+                                        class="w-4 h-4 text-slate border-concrete/30 focus:ring-slate"
+                                    />
+                                    <h3 class="text-lg font-semibold text-slate">Bolt On</h3>
+                                </div>
+                                <p class="text-sm text-concrete ml-7">
+                                    Each service handled explicitly per agreement route
+                                </p>
+                            </button>
+                        </div>
+                        <p id="deal-type-error" class="mt-2 text-sm text-red-600 hidden">Deal structure is required</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate mb-2">
+                            Property ID
+                        </label>
+                        <input 
+                            type="text" 
+                            id="property-id"
+                            placeholder="Optional: Property identifier"
+                            class="w-full px-4 py-2.5 bg-stone border border-concrete/30 rounded-lg text-sm text-slate placeholder-concrete focus:outline-none focus:border-slate"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate mb-2">
+                            Tenant Company ID
+                        </label>
+                        <input 
+                            type="text" 
+                            id="tenant-company-id"
+                            placeholder="Optional: Tenant company identifier"
+                            class="w-full px-4 py-2.5 bg-stone border border-concrete/30 rounded-lg text-sm text-slate placeholder-concrete focus:outline-none focus:border-slate"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end space-x-3">
+                <a 
+                    href="Pipeline Overview.html"
+                    class="px-4 py-2 text-sm text-concrete hover:text-slate border border-concrete/30 rounded-lg transition-colors"
+                >
+                    Cancel
+                </a>
+                <button 
+                    type="submit"
+                    class="px-6 py-2 text-sm bg-slate text-white rounded-lg font-medium hover:bg-slate/90 transition-colors"
+                >
+                    <i class="fa-solid fa-check mr-2"></i>
+                    Create Deal
+                </button>
+            </div>
+        </form>
+    </main>
+    </div>
+</div>
+
+<script>
+    function selectDealType(type) {
+        // Update radio button
+        const radio = document.getElementById(`radio-${type === 'AllInclusive' ? 'all-inclusive' : 'bolt-on'}`);
+        radio.checked = true;
+        
+        // Update visual state
+        const allInclusiveBtn = document.getElementById('deal-type-all-inclusive');
+        const boltOnBtn = document.getElementById('deal-type-bolt-on');
+        
+        if (type === 'AllInclusive') {
+            allInclusiveBtn.classList.add('border-slate', 'bg-slate/5');
+            boltOnBtn.classList.remove('border-slate', 'bg-slate/5');
+        } else {
+            boltOnBtn.classList.add('border-slate', 'bg-slate/5');
+            allInclusiveBtn.classList.remove('border-slate', 'bg-slate/5');
+        }
+        
+        // Clear error
+        document.getElementById('deal-type-error').classList.add('hidden');
+    }
+
+    function handleCreateDeal(event) {
+        event.preventDefault();
+        
+        const dealName = document.getElementById('deal-name').value.trim();
+        const dealType = document.querySelector('input[name="deal-type"]:checked')?.value;
+        const propertyId = document.getElementById('property-id').value.trim();
+        const tenantCompanyId = document.getElementById('tenant-company-id').value.trim();
+        
+        // Validation
+        if (!dealName) {
+            alert('Deal name is required');
+            return;
+        }
+        
+        if (!dealType) {
+            document.getElementById('deal-type-error').classList.remove('hidden');
+            return;
+        }
+        
+        // Store deal in localStorage (mock)
+        const deals = JSON.parse(localStorage.getItem('union.deals') || '[]');
+        const newDeal = {
+            id: `deal-${Date.now()}`,
+            name: dealName,
+            type: dealType,
+            propertyId: propertyId || undefined,
+            tenantCompanyId: tenantCompanyId || undefined,
+            stage: 'Lead',
+            serviceLines: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        deals.push(newDeal);
+        localStorage.setItem('union.deals', JSON.stringify(deals));
+        
+        // Navigate to pipeline (or deal detail page if we had one)
+        window.location.href = 'Pipeline Overview.html';
+    }
+</script>
+
+</body>
+</html>
+

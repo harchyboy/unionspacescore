@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <title>Proposal Configuration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: '#252525',
+                        concrete: '#8E8E8E',
+                        stone: '#F0F0F0',
+                        primary: '#252525'
+                    },
+                    fontFamily: {
+                        'haltung': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script src="sidebar.js" defer></script>
+</head>
+<body class="bg-stone font-haltung">
+
+<div class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-white border-r border-concrete/20 flex flex-col fixed left-0 top-0 bottom-0 z-50" data-sidebar-placeholder data-active="deals"></aside>
+
+    <div class="flex-1 ml-64">
+    <header id="header" class="bg-white border-b border-concrete/30 sticky top-0 z-40">
+        <div class="flex items-center justify-between px-8 py-4">
+            <div class="flex items-center space-x-6">
+                <a href="Pipeline Overview.html" class="text-concrete hover:text-slate transition-colors">
+                    <i class="fa-solid fa-arrow-left text-lg"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-semibold text-slate">Proposal Configuration</h1>
+                    <p class="text-sm text-concrete mt-0.5">Configure services and their routing for this deal</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-concrete hover:text-slate transition-colors">
+                    <i class="fa-regular fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-slate rounded-full"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-8 py-6">
+        <!-- Deal Info Header -->
+        <div class="bg-white rounded-lg border border-concrete/30 p-6 mb-6">
+            <div class="grid grid-cols-4 gap-6">
+                <div>
+                    <div class="text-sm text-concrete mb-1">Deal Name</div>
+                    <div class="text-base font-medium text-slate" id="deal-name-display">Loading...</div>
+                </div>
+                <div>
+                    <div class="text-sm text-concrete mb-1">Property</div>
+                    <div class="text-base font-medium text-slate" id="deal-property-display">N/A</div>
+                </div>
+                <div>
+                    <div class="text-sm text-concrete mb-1">Tenant</div>
+                    <div class="text-base font-medium text-slate" id="deal-tenant-display">N/A</div>
+                </div>
+                <div>
+                    <div class="text-sm text-concrete mb-1">Deal Type</div>
+                    <span id="deal-type-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate text-white">
+                        Loading...
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Table -->
+        <div class="bg-white rounded-lg border border-concrete/30 p-6 mb-6">
+            <h2 class="text-lg font-semibold text-slate mb-4">Services</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-concrete/30">
+                            <th class="text-left py-3 px-4 text-sm font-medium text-slate">Service Name</th>
+                            <th class="text-left py-3 px-4 text-sm font-medium text-slate">Category</th>
+                            <th class="text-left py-3 px-4 text-sm font-medium text-slate">Included</th>
+                            <th class="text-left py-3 px-4 text-sm font-medium text-slate">Route</th>
+                        </tr>
+                    </thead>
+                    <tbody id="services-table-body">
+                        <!-- Services will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Post-sign info note -->
+        <div id="post-sign-note" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 hidden">
+            <div class="flex items-start space-x-2">
+                <i class="fa-solid fa-info-circle text-blue-600 mt-0.5"></i>
+                <p class="text-sm text-blue-800">
+                    Post sign additions always create direct UNION agreements.
+                </p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end space-x-3">
+            <a 
+                href="Pipeline Overview.html"
+                class="px-4 py-2 text-sm text-concrete hover:text-slate border border-concrete/30 rounded-lg transition-colors"
+            >
+                Cancel
+            </a>
+            <button 
+                onclick="handleSaveConfiguration()"
+                class="px-6 py-2 text-sm bg-slate text-white rounded-lg font-medium hover:bg-slate/90 transition-colors"
+            >
+                <i class="fa-solid fa-check mr-2"></i>
+                Save Configuration
+            </button>
+        </div>
+    </main>
+    </div>
+</div>
+
+<script>
+    // Available services
+    const AVAILABLE_SERVICES = [
+        { name: 'Base Rent', category: 'Base' },
+        { name: 'Cleaning', category: 'Cleaning' },
+        { name: 'Internet', category: 'Internet' },
+        { name: 'IT Support', category: 'ITSupport' },
+        { name: 'AV Equipment', category: 'AV' },
+        { name: 'Meeting Room Credits', category: 'MeetingRooms' },
+        { name: 'Variable Print', category: 'Printing' },
+        { name: 'Coffee Service', category: 'Coffee' },
+        { name: 'Food & Beverage', category: 'FoodBeverage' },
+        { name: 'Plants', category: 'Plants' },
+        { name: 'Daytime Housekeeper', category: 'DaytimeHousekeeper' },
+        { name: 'Other Variable Service', category: 'OtherVariable' }
+    ];
+
+    // Always UNION categories
+    const ALWAYS_UNION_CATEGORIES = ['AV', 'MeetingRooms', 'Printing', 'FoodBeverage', 'OtherVariable'];
+
+    let currentDeal = null;
+    let serviceLines = [];
+
+    // Load deal from URL or localStorage
+    function loadDeal() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const dealId = urlParams.get('dealId') || urlParams.get('id');
+        
+        if (dealId) {
+            const deals = JSON.parse(localStorage.getItem('union.deals') || '[]');
+            currentDeal = deals.find(d => d.id === dealId);
+        }
+        
+        if (!currentDeal) {
+            // Create mock deal for demo
+            currentDeal = {
+                id: 'demo-deal-1',
+                name: 'Tech Hub London',
+                property: '42 Moorgate, Floor 7',
+                tenant: 'TechCorp Ltd',
+                type: 'AllInclusive',
+                stage: 'Proposal',
+                serviceLines: []
+            };
+        }
+        
+        serviceLines = currentDeal.serviceLines || [];
+        renderDealInfo();
+        renderServices();
+        
+        // Show post-sign note if deal is Signed or Live
+        if (currentDeal.stage === 'Signed' || currentDeal.stage === 'Live') {
+            document.getElementById('post-sign-note').classList.remove('hidden');
+        }
+    }
+
+    function renderDealInfo() {
+        document.getElementById('deal-name-display').textContent = currentDeal.name;
+        document.getElementById('deal-property-display').textContent = currentDeal.property || 'N/A';
+        document.getElementById('deal-tenant-display').textContent = currentDeal.tenant || 'N/A';
+        
+        const badge = document.getElementById('deal-type-badge');
+        badge.textContent = currentDeal.type === 'AllInclusive' ? 'All Inclusive' : 'Bolt On';
+        badge.className = currentDeal.type === 'AllInclusive' 
+            ? 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate text-white'
+            : 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-600 text-white';
+    }
+
+    function getAvailableRoutes(category) {
+        if (ALWAYS_UNION_CATEGORIES.includes(category)) {
+            return [{ value: 'UnionAgreement', label: 'UNION Agreement' }];
+        }
+        
+        if (currentDeal.type === 'AllInclusive') {
+            const routes = [
+                { value: 'BundledInRent', label: 'Bundled in Rent' },
+                { value: 'UnionAgreement', label: 'UNION Agreement' }
+            ];
+            if (['Cleaning', 'Plants', 'Internet'].includes(category)) {
+                routes.push({ value: 'LandlordAgreement', label: 'Landlord Agreement' });
+            }
+            return routes;
+        } else {
+            const routes = [{ value: 'UnionAgreement', label: 'UNION Agreement' }];
+            if (['Cleaning', 'Plants', 'Internet'].includes(category)) {
+                routes.push({ value: 'LandlordAgreement', label: 'Landlord Agreement' });
+            }
+            return routes;
+        }
+    }
+
+    function renderServices() {
+        const tbody = document.getElementById('services-table-body');
+        tbody.innerHTML = '';
+        
+        AVAILABLE_SERVICES.forEach(service => {
+            const existingLine = serviceLines.find(sl => sl.name === service.name);
+            const line = existingLine || {
+                id: `line-${Date.now()}-${Math.random()}`,
+                name: service.name,
+                category: service.category,
+                included: false,
+                route: 'UnionAgreement',
+                isPostSignAddition: false
+            };
+            
+            const isAlwaysUnion = ALWAYS_UNION_CATEGORIES.includes(service.category);
+            const isLocked = line.isPostSignAddition || isAlwaysUnion;
+            const availableRoutes = getAvailableRoutes(service.category);
+            
+            const row = document.createElement('tr');
+            row.className = 'border-b border-concrete/30';
+            row.innerHTML = `
+                <td class="py-3 px-4">
+                    <span class="text-sm text-slate">${service.name}</span>
+                </td>
+                <td class="py-3 px-4">
+                    <span class="text-sm text-concrete">${service.category}</span>
+                </td>
+                <td class="py-3 px-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            ${line.included ? 'checked' : ''}
+                            ${isLocked && !line.included ? 'disabled' : ''}
+                            onchange="toggleService('${line.id}', ${line.included})"
+                            class="w-4 h-4 text-slate border-concrete/30 rounded focus:ring-slate"
+                        />
+                    </label>
+                </td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center space-x-2">
+                        <select
+                            id="route-${line.id}"
+                            ${!line.included || isLocked ? 'disabled' : ''}
+                            onchange="updateRoute('${line.id}', this.value)"
+                            class="min-w-[160px] px-3 py-2 bg-stone border border-concrete/30 rounded-lg text-sm text-slate focus:outline-none focus:border-slate"
+                        >
+                            ${availableRoutes.map(r => 
+                                `<option value="${r.value}" ${line.route === r.value ? 'selected' : ''}>${r.label}</option>`
+                            ).join('')}
+                        </select>
+                        ${isAlwaysUnion && line.included ? 
+                            '<span class="text-xs text-concrete italic">Always direct UNION agreement</span>' : ''}
+                        ${line.isPostSignAddition ? 
+                            '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border border-concrete/30 text-slate">Post-sign</span>' : ''}
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function toggleService(lineId, currentIncluded) {
+        const line = serviceLines.find(sl => sl.id === lineId);
+        if (!line) return;
+        
+        if (line.isPostSignAddition) return;
+        
+        line.included = !currentIncluded;
+        
+        // Auto-set route based on deal type and category
+        if (line.included) {
+            if (ALWAYS_UNION_CATEGORIES.includes(line.category)) {
+                line.route = 'UnionAgreement';
+            } else if (currentDeal.type === 'AllInclusive') {
+                line.route = 'BundledInRent';
+            } else {
+                line.route = 'UnionAgreement';
+            }
+        }
+        
+        renderServices();
+    }
+
+    function updateRoute(lineId, newRoute) {
+        const line = serviceLines.find(sl => sl.id === lineId);
+        if (line) {
+            line.route = newRoute;
+        }
+    }
+
+    function handleSaveConfiguration() {
+        // Normalize service lines
+        const normalizedLines = serviceLines
+            .filter(line => line.included)
+            .map(line => {
+                // Apply normalization rules
+                if (ALWAYS_UNION_CATEGORIES.includes(line.category)) {
+                    line.route = 'UnionAgreement';
+                } else if (currentDeal.type === 'BoltOn' && line.route === 'BundledInRent') {
+                    line.route = 'UnionAgreement';
+                }
+                return line;
+            });
+        
+        // Update deal
+        currentDeal.serviceLines = normalizedLines;
+        currentDeal.updatedAt = new Date().toISOString();
+        
+        // Save to localStorage
+        const deals = JSON.parse(localStorage.getItem('union.deals') || '[]');
+        const index = deals.findIndex(d => d.id === currentDeal.id);
+        if (index >= 0) {
+            deals[index] = currentDeal;
+        } else {
+            deals.push(currentDeal);
+        }
+        localStorage.setItem('union.deals', JSON.stringify(deals));
+        
+        // Navigate to proposal builder
+        window.location.href = `Proposal Builder.html?dealId=${currentDeal.id}`;
+    }
+
+    // Initialize on load
+    loadDeal();
+</script>
+
+</body>
+</html>
+
