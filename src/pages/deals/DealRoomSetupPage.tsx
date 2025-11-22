@@ -1,220 +1,270 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useMemo } from 'react';
-import { useMockStore } from '../../store/useMockStore';
-import { useToast } from '../../hooks/useToast';
-import { Button } from '../../components/ui/Button';
-import { Select } from '../../components/ui/Select';
-import { Textarea } from '../../components/ui/Textarea';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
 import { Card } from '../../components/ui/Card';
-import type { AgreementPlan } from '../../types/dealRoom';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import type { Deal, ServiceLine, ServiceRoute } from '../../types/deal';
+import { summariseAgreementPlan, isAlwaysUnionCategory } from '../../utils/dealRules';
 
-const SERVICES = [
-  { code: 'CLEANING', name: 'Cleaning', locked: false },
-  { code: 'IT', name: 'IT', locked: false },
-  { code: 'INTERNET', name: 'Internet', locked: true },
-  { code: 'AV', name: 'AV', locked: false },
-  { code: 'COFFEE', name: 'Coffee', locked: false },
-  { code: 'PLANTS', name: 'Plants', locked: false },
-  { code: 'HOUSEKEEPER', name: 'Daytime Housekeeper', locked: false },
-];
+// Load deal from localStorage (mock)
+function loadDeal(dealId: string): Deal | null {
+  try {
+    const deals = JSON.parse(localStorage.getItem('union.deals') || '[]');
+    return deals.find((d: Deal) => d.id === dealId) || null;
+  } catch {
+    return null;
+  }
+}
 
 export function DealRoomSetupPage() {
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
-  const { state, confirmSetup } = useMockStore();
-  const { showToast, toasts, removeToast, ToastComponent } = useToast();
+  const [deal, setDeal] = useState<Deal | null>(null);
 
-  const [dealType, setDealType] = useState<'AllInclusive' | 'BoltOn'>('AllInclusive');
-  const [services, setServices] = useState(
-    SERVICES.map((s) => ({
-      ...s,
-      included: s.code === 'INTERNET', // Internet is included by default
-      route: (s.code === 'INTERNET' ? 'Landlord' : 'UnionDirect') as 'Landlord' | 'UnionDirect' | 'Supplier',
-      notes: '',
-    }))
-  );
+  useEffect(() => {
+    if (dealId) {
+      const loadedDeal = loadDeal(dealId);
+      if (loadedDeal) {
+        setDeal(loadedDeal);
+      }
+    }
+  }, [dealId]);
 
-  const summary = useMemo(() => {
-    const includedServices = services.filter((s) => s.included);
-    return {
-      landlordAgreements: includedServices.filter((s) => s.route === 'Landlord').length,
-      unionAgreements: includedServices.filter((s) => s.route === 'UnionDirect').length,
-      supplierAgreements: includedServices.filter((s) => s.route === 'Supplier').length,
-    };
-  }, [services]);
+  const dealType = deal?.type || 'AllInclusive';
 
-  const updateService = (code: string, updates: Partial<(typeof services)[0]>) => {
-    setServices((prev) => prev.map((s) => (s.code === code ? { ...s, ...updates } : s)));
-  };
+  // Memoize serviceLines to avoid dependency issues
+  const serviceLines = useMemo(() => deal?.serviceLines || [], [deal?.serviceLines]);
 
-  const handleConfirm = () => {
-    const plan: AgreementPlan = {
-      dealType,
-      services: services.map((s) => ({
-        code: s.code,
-        name: s.name,
-        included: s.included,
-        route: s.route,
-        notes: s.notes || undefined,
-        locked: s.locked,
-      })),
-      summary,
+  // Group services by route
+  const servicesByRoute = useMemo(() => {
+    const grouped: Record<ServiceRoute, ServiceLine[]> = {
+      BundledInRent: [],
+      LandlordAgreement: [],
+      UnionAgreement: [],
     };
 
-    confirmSetup(plan);
-    showToast('Setup confirmed', 'success');
-    navigate(`/deals/${dealId}/deal-room?tab=agreements`);
-  };
+    serviceLines.forEach((line) => {
+      if (line.included) {
+        grouped[line.route].push(line);
+      }
+    });
 
-  const deal = state.deal;
-  const proposal = deal.proposal;
+    return grouped;
+  }, [serviceLines]);
+
+  // Summary counts
+  const summary = useMemo(() => summariseAgreementPlan(serviceLines.filter((l) => l.included)), [serviceLines]);
+
+  if (!deal) {
+    return (
+      <div className="px-8 py-6">
+        <p className="text-secondary">Loading deal...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="px-8 py-6">
-      <ToastComponent toasts={toasts} onRemove={removeToast} />
       <div className="mb-6">
+        <Link
+          to={`/deals/${dealId}`}
+          className="text-sm text-secondary hover:text-primary flex items-center space-x-2 mb-2"
+        >
+          <i className="fa-solid fa-chevron-left text-xs"></i>
+          <span>Back to Deal Overview</span>
+        </Link>
         <h1 className="text-3xl font-semibold text-primary mb-2">Deal Room Setup</h1>
-        <p className="text-secondary">Configure agreement plan for {deal.tenant.name}</p>
+        <p className="text-secondary">Final structure after rules are applied</p>
       </div>
 
-      {/* Header strip */}
+      {/* Header with deal info and type badge */}
       <Card className="mb-6">
         <div className="grid grid-cols-4 gap-6">
           <div>
-            <div className="text-sm text-secondary mb-1">Tenant</div>
-            <div className="text-base font-medium text-primary">{deal.tenant.name}</div>
+            <div className="text-sm text-secondary mb-1">Deal Name</div>
+            <div className="text-base font-medium text-primary">{deal.name}</div>
           </div>
           <div>
             <div className="text-sm text-secondary mb-1">Property</div>
-            <div className="text-base font-medium text-primary">
-              {deal.property.name}
-              {deal.property.unit && `, ${deal.property.unit}`}
-            </div>
+            <div className="text-base font-medium text-primary">{deal.property || 'N/A'}</div>
           </div>
           <div>
-            <div className="text-sm text-secondary mb-1">Proposal Totals</div>
-            <div className="text-base font-medium text-primary">
-              £{proposal.totals.monthly.toLocaleString()}/mo
-              <span className="text-secondary text-sm ml-2">+ £{proposal.totals.setup.toLocaleString()} setup</span>
-            </div>
+            <div className="text-sm text-secondary mb-1">Tenant</div>
+            <div className="text-base font-medium text-primary">{deal.tenant || 'N/A'}</div>
           </div>
           <div>
-            <Select
-              label="Deal Type"
-              options={[
-                { value: 'AllInclusive', label: 'All Inclusive' },
-                { value: 'BoltOn', label: 'Bolt On' },
-              ]}
-              value={dealType}
-              onChange={(e) => setDealType(e.target.value as 'AllInclusive' | 'BoltOn')}
-            />
+            <div className="text-sm text-secondary mb-1">Deal Type</div>
+            <Badge variant={dealType === 'AllInclusive' ? 'primary' : 'secondary'}>
+              {dealType === 'AllInclusive' ? 'All Inclusive' : 'Bolt On'}
+            </Badge>
           </div>
         </div>
       </Card>
 
-      {/* Service table */}
-      <Card className="mb-6">
-        <h2 className="text-lg font-semibold text-primary mb-4">Services</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-[#E6E6E6]">
-                <th className="text-left py-3 px-4 text-sm font-medium text-primary">Service</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-primary">Included</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-primary">Route</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-primary">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {services.map((service) => (
-                <tr key={service.code} className="border-b border-[#E6E6E6]">
-                  <td className="py-3 px-4">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-primary">{service.name}</span>
-                      {service.locked && (
-                        <i className="fa-solid fa-lock text-secondary text-xs" title="Locked"></i>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={service.included}
-                        onChange={(e) => updateService(service.code, { included: e.target.checked })}
-                        disabled={service.locked}
-                        className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary"
-                      />
-                    </label>
-                  </td>
-                  <td className="py-3 px-4">
-                    <Select
-                      options={[
-                        { value: 'Landlord', label: 'Landlord' },
-                        { value: 'UnionDirect', label: 'Union Direct' },
-                        { value: 'Supplier', label: 'Supplier' },
-                      ]}
-                      value={service.route}
-                      onChange={(e) =>
-                        updateService(service.code, { route: e.target.value as 'Landlord' | 'UnionDirect' | 'Supplier' })
-                      }
-                      disabled={!service.included || service.locked}
-                      className="min-w-[140px]"
-                    />
-                  </td>
-                  <td className="py-3 px-4">
-                    <Textarea
-                      value={service.notes}
-                      onChange={(e) => updateService(service.code, { notes: e.target.value })}
-                      disabled={!service.included || service.locked}
-                      placeholder="Add notes..."
-                      rows={1}
-                      className="min-w-[200px]"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {/* Landlord appetite info */}
-      <Card className="mb-6">
-        <h2 className="text-lg font-semibold text-primary mb-2">Landlord Appetite</h2>
-        <p className="text-sm text-secondary">
-          Landlords typically prefer to handle services that are core to the building infrastructure, such as Internet
-          connectivity. Union Direct services are managed by UNION, while Supplier agreements are with third-party
-          vendors.
-        </p>
-      </Card>
-
-      {/* Summary */}
+      {/* Summary cards */}
       <Card className="mb-6">
         <h2 className="text-lg font-semibold text-primary mb-4">Agreement Summary</h2>
         <div className="grid grid-cols-3 gap-4">
+          <div className="bg-muted p-4 rounded-lg">
+            <div className="text-sm text-secondary mb-1">Bundled in Rent</div>
+            <div className="text-2xl font-semibold text-primary">{summary.bundledInRent}</div>
+          </div>
           <div className="bg-muted p-4 rounded-lg">
             <div className="text-sm text-secondary mb-1">Landlord Agreements</div>
             <div className="text-2xl font-semibold text-primary">{summary.landlordAgreements}</div>
           </div>
           <div className="bg-muted p-4 rounded-lg">
-            <div className="text-sm text-secondary mb-1">Union Agreements</div>
+            <div className="text-sm text-secondary mb-1">UNION Agreements</div>
             <div className="text-2xl font-semibold text-primary">{summary.unionAgreements}</div>
-          </div>
-          <div className="bg-muted p-4 rounded-lg">
-            <div className="text-sm text-secondary mb-1">Supplier Agreements</div>
-            <div className="text-2xl font-semibold text-primary">{summary.supplierAgreements}</div>
           </div>
         </div>
       </Card>
 
+      {/* Services grouped by route */}
+      <div className="space-y-6 mb-6">
+        {/* Bundled in Rent */}
+        {dealType === 'AllInclusive' && servicesByRoute.BundledInRent.length > 0 && (
+          <Card>
+            <h2 className="text-lg font-semibold text-primary mb-4">
+              Bundled in Rent ({servicesByRoute.BundledInRent.length})
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-[#E6E6E6]">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-primary">Service Name</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-primary">Category</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {servicesByRoute.BundledInRent.map((line) => (
+                    <tr key={line.id} className="border-b border-[#E6E6E6]">
+                      <td className="py-3 px-4">
+                        <span className="text-sm text-primary">{line.name}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm text-secondary">{line.category}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        {/* Landlord Agreements */}
+        {servicesByRoute.LandlordAgreement.length > 0 && (
+          <Card>
+            <h2 className="text-lg font-semibold text-primary mb-4">
+              Landlord Agreements ({servicesByRoute.LandlordAgreement.length})
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-[#E6E6E6]">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-primary">Service Name</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-primary">Category</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {servicesByRoute.LandlordAgreement.map((line) => (
+                    <tr key={line.id} className="border-b border-[#E6E6E6]">
+                      <td className="py-3 px-4">
+                        <span className="text-sm text-primary">{line.name}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className="text-sm text-secondary">{line.category}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        {/* UNION Agreements */}
+        {servicesByRoute.UnionAgreement.length > 0 && (
+          <Card>
+            <h2 className="text-lg font-semibold text-primary mb-4">
+              UNION Agreements ({servicesByRoute.UnionAgreement.length})
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-[#E6E6E6]">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-primary">Service Name</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-primary">Category</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-primary">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {servicesByRoute.UnionAgreement.map((line) => {
+                    const isVariable = isAlwaysUnionCategory(line.category);
+                    return (
+                      <tr key={line.id} className="border-b border-[#E6E6E6]">
+                        <td className="py-3 px-4">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm text-primary">{line.name}</span>
+                            {line.isPostSignAddition && (
+                              <Badge variant="outline" size="sm">
+                                Post-sign
+                              </Badge>
+                            )}
+                            {isVariable && (
+                              <Badge variant="secondary" size="sm">
+                                Variable
+                              </Badge>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className="text-sm text-secondary">{line.category}</span>
+                        </td>
+                        <td className="py-3 px-4">
+                          {isVariable && (
+                            <span className="text-xs text-secondary italic">
+                              Always direct UNION agreement
+                            </span>
+                          )}
+                          {line.isPostSignAddition && (
+                            <span className="text-xs text-secondary italic">
+                              Added after signing
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        {/* Empty state */}
+        {serviceLines.filter((l) => l.included).length === 0 && (
+          <Card>
+            <div className="text-center py-8">
+              <p className="text-secondary">No services configured yet.</p>
+              <p className="text-sm text-secondary mt-2">
+                Configure services in the Proposal Configuration screen.
+              </p>
+            </div>
+          </Card>
+        )}
+      </div>
+
       {/* Actions */}
-      <div className="flex justify-end">
-        <Button onClick={handleConfirm} icon="fa-check">
-          Confirm Setup
+      <div className="flex items-center justify-end space-x-3">
+        <Button variant="outline" onClick={() => navigate(`/deals/${dealId}`)}>
+          Back to Deal
+        </Button>
+        <Button onClick={() => navigate(`/deals/${dealId}/deal-room`)} icon="fa-arrow-right">
+          Continue to Deal Room
         </Button>
       </div>
     </div>
   );
 }
-

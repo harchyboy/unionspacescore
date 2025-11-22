@@ -14,6 +14,7 @@ import { Viewings } from './pages/deals/Viewings';
 import { ProposalBuilder } from './pages/deals/ProposalBuilder';
 import { ProposalConfiguration } from './pages/deals/ProposalConfiguration';
 import { DealOverview } from './pages/deals/DealOverview';
+import { DealNew } from './pages/deals/DealNew';
 import { DecisionScreen } from './pages/deals/DecisionScreen';
 import { DealRoomSetup } from './pages/deals/DealRoomSetup';
 import { HeadsOfTerms } from './pages/deals/HeadsOfTerms';
@@ -78,7 +79,9 @@ function App() {
               {isFeatureEnabled(FEATURES.DEALS) && (
                 <>
                   <Route path="/deals" element={<PipelineOverview />} />
+                  <Route path="/deals/new" element={<DealNew />} />
                   <Route path="/deals/:id" element={<DealOverview />} />
+                  <Route path="/deals/:id/proposal/configuration" element={<ProposalConfiguration />} />
                   <Route path="/deals/:id/proposal/configure" element={<ProposalConfiguration />} />
                   <Route path="/deals/:id/proposal/builder" element={<ProposalBuilder />} />
                   <Route path="/deals/:id/proposal" element={<ProposalBuilder />} />

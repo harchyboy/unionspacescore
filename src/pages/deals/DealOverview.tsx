@@ -324,7 +324,7 @@ export function DealOverview() {
       deal.hasProposalConfiguration === true;
 
     if (!hasConfig) {
-      navigate(`/deals/${id}/proposal/configure`);
+      navigate(`/deals/${id}/proposal/configuration`);
     } else {
       navigate(`/deals/${id}/proposal/builder`);
     }
