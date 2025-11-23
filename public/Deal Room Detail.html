@@ -102,6 +102,16 @@
         .transition-all-smooth {
             transition: all 0.2s ease-in-out;
         }
+        
+        /* Hide sidebar and header when embedded in iframe/slide-out */
+        body.embedded #sidebar,
+        body.embedded #header {
+            display: none;
+        }
+        
+        body.embedded #main-content {
+            margin-left: 0;
+        }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -940,6 +950,11 @@ function openHotsDocument() {
     if (dealData && dealData.headsOfTerms.latestDocumentUrl) {
         window.open(dealData.headsOfTerms.latestDocumentUrl, '_blank');
     }
+}
+
+// Check if page is loaded in iframe and add embedded class
+if (window.self !== window.top) {
+    document.body.classList.add('embedded');
 }
 
 // Load on page load
