@@ -107,7 +107,6 @@
             transform: translateY(-2px);
         }
     </style>
-    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
     <script src="sidebar.js" defer></script>
 </head>
 <body class="antialiased">
@@ -173,10 +172,6 @@
                     <span>Lost</span>
                 </span>
             </div>
-        </div>
-        
-        <div id="chart-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
-            <div id="deals-chart" style="height: 200px;"></div>
         </div>
         
         <div id="metrics-strip" class="px-8 py-6 space-y-6">
@@ -345,7 +340,7 @@
                                 </th>
                                 <th class="px-4 py-3 text-left">
                                     <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="stage">
-                                        <span>Stage & Health</span>
+                                        <span>Stage and health</span>
                                         <i class="fa-solid fa-sort text-xs"></i>
                                     </button>
                                 </th>
@@ -790,17 +785,24 @@ function renderDealRow(deal, index) {
                         stageColor === 'destructive' ? 'bg-destructive text-white' :
                         'bg-muted text-primary'
                     }">${deal.stage}</span>
-                    <div class="flex items-center gap-1.5">
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                            riskColor === 'destructive' ? 'bg-destructive text-white' :
-                            riskColor === 'warning' ? 'bg-yellow-500 text-white' :
-                            'bg-green-600 text-white'
-                        }">${deal.status.risk}</span>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                            approvalColor === 'destructive' ? 'bg-destructive text-white' :
-                            approvalColor === 'warning' ? 'bg-yellow-500 text-white' :
-                            'bg-green-600 text-white'
-                        }">${getApprovalText(deal.status.approvals)}</span>
+                    <div class="flex items-center gap-2 text-xs text-secondary">
+                        <span class="inline-flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full ${
+                                riskColor === 'destructive' ? 'bg-destructive' :
+                                riskColor === 'warning' ? 'bg-yellow-500' :
+                                'bg-green-600'
+                            }"></span>
+                            <span class="lowercase">${deal.status.risk.toLowerCase()} risk</span>
+                        </span>
+                        <span class="text-secondary">•</span>
+                        <span class="inline-flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full ${
+                                approvalColor === 'destructive' ? 'bg-destructive' :
+                                approvalColor === 'warning' ? 'bg-yellow-500' :
+                                'bg-green-600'
+                            }"></span>
+                            <span class="lowercase">Approval ${getApprovalText(deal.status.approvals).toLowerCase()}</span>
+                        </span>
                     </div>
                 </div>
             </td>
@@ -889,7 +891,6 @@ function filterDeals() {
     sortDeals();
     renderDeals();
     updateMetrics();
-    renderChart();
 }
 
 function sortDeals() {
@@ -906,8 +907,27 @@ function sortDeals() {
                 bVal = b.property.name;
                 break;
             case 'stage':
-                aVal = a.stage;
-                bVal = b.stage;
+                // Sort by Stage first, then Risk, then Approvals
+                const stageOrder = { 'Viewing': 1, 'Heads of Terms': 2, 'Legals': 3, 'Signed': 4, 'Lost': 5 };
+                const riskOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
+                const approvalOrder = { 'Pending': 2, 'Rejected': 3, 'Approved': 1 };
+                
+                const aStage = stageOrder[a.stage] || 99;
+                const bStage = stageOrder[b.stage] || 99;
+                if (aStage !== bStage) {
+                    return sortOrder === 'asc' ? (aStage - bStage) : (bStage - aStage);
+                }
+                
+                const aRisk = riskOrder[a.status.risk] || 0;
+                const bRisk = riskOrder[b.status.risk] || 0;
+                if (aRisk !== bRisk) {
+                    return sortOrder === 'asc' ? (aRisk - bRisk) : (bRisk - aRisk);
+                }
+                
+                const aApproval = approvalOrder[getApprovalText(a.status.approvals)] || 0;
+                const bApproval = approvalOrder[getApprovalText(b.status.approvals)] || 0;
+                aVal = aApproval;
+                bVal = bApproval;
                 break;
             case 'owner':
                 aVal = a.owner.name;
@@ -988,108 +1008,10 @@ document.querySelectorAll('[data-sort]').forEach(btn => {
     });
 });
 
-function renderChart() {
-    try {
-        // Generate last 6 months of data
-        const months = [];
-        const now = new Date();
-        for (let i = 5; i >= 0; i--) {
-            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            months.push(date.toLocaleDateString('en-GB', { month: 'short' }));
-        }
-        
-        // Calculate deal counts by stage for each month (mock historical data)
-        // In a real app, this would come from historical data
-        const viewingData = [4, 5, 5, 6, 6, filteredDeals.filter(d => d.stage === 'Viewing').length];
-        const hotsData = [2, 2, 3, 3, 3, filteredDeals.filter(d => d.stage === 'Heads of Terms').length];
-        const legalsData = [1, 1, 2, 2, 2, filteredDeals.filter(d => d.stage === 'Legals').length];
-        const signedData = [0, 0, 0, 0, 1, filteredDeals.filter(d => d.stage === 'Signed').length];
-        
-        const chartData = [
-            {
-                type: 'scatter',
-                mode: 'lines',
-                name: 'Viewing',
-                x: months,
-                y: viewingData,
-                line: { color: '#252525', width: 2.5 },
-                marker: { size: 6 }
-            },
-            {
-                type: 'scatter',
-                mode: 'lines',
-                name: 'Heads of Terms',
-                x: months,
-                y: hotsData,
-                line: { color: '#eab308', width: 2.5 },
-                marker: { size: 6 }
-            },
-            {
-                type: 'scatter',
-                mode: 'lines',
-                name: 'Legals',
-                x: months,
-                y: legalsData,
-                line: { color: '#f59e0b', width: 2.5 },
-                marker: { size: 6 }
-            },
-            {
-                type: 'scatter',
-                mode: 'lines',
-                name: 'Signed',
-                x: months,
-                y: signedData,
-                line: { color: '#16a34a', width: 2.5 },
-                marker: { size: 6 }
-            }
-        ];
-        
-        const layout = {
-            margin: { t: 10, r: 20, b: 40, l: 50 },
-            plot_bgcolor: '#ffffff',
-            paper_bgcolor: '#ffffff',
-            xaxis: {
-                gridcolor: '#E6E6E6',
-                showgrid: true,
-                zeroline: false
-            },
-            yaxis: {
-                title: 'Deal Count',
-                gridcolor: '#E6E6E6',
-                showgrid: true,
-                zeroline: false
-            },
-            legend: {
-                orientation: 'h',
-                y: -0.2,
-                x: 0.5,
-                xanchor: 'center',
-                font: { size: 11 }
-            },
-            hovermode: 'x unified'
-        };
-        
-        const config = {
-            responsive: true,
-            displayModeBar: false,
-            displaylogo: false
-        };
-        
-        Plotly.newPlot('deals-chart', chartData, layout, config);
-    } catch(e) {
-        console.error('Chart rendering error:', e);
-        const chartEl = document.getElementById('deals-chart');
-        if (chartEl) {
-            chartEl.innerHTML = '<div class="flex items-center justify-center h-full text-secondary text-sm">Chart unavailable</div>';
-        }
-    }
-}
-
 // Initial render
 sortDeals();
 renderDeals();
 updateMetrics();
-renderChart();
 </script>
 
 </body>
