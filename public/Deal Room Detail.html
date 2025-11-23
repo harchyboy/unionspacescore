@@ -637,6 +637,21 @@ function getInitials(name) {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
+// Safe element update helper
+function safeSetText(elementId, text) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = text;
+    }
+}
+
+function safeSetHTML(elementId, html) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = html;
+    }
+}
+
 // Get stage badge color
 function getStageBadgeClass(stage) {
     const classes = {
@@ -719,10 +734,13 @@ async function loadDeal() {
 
 // Show error
 function showError(message) {
-    document.getElementById('loading-state').classList.add('hidden');
-    document.getElementById('error-state').classList.remove('hidden');
-    document.getElementById('deal-content').classList.add('hidden');
-    document.getElementById('error-message').textContent = message;
+    const loadingState = document.getElementById('loading-state');
+    const errorState = document.getElementById('error-state');
+    const dealContent = document.getElementById('deal-content');
+    if (loadingState) loadingState.classList.add('hidden');
+    if (errorState) errorState.classList.remove('hidden');
+    if (dealContent) dealContent.classList.add('hidden');
+    safeSetText('error-message', message);
 }
 
 // Render deal
@@ -734,10 +752,12 @@ function renderDeal() {
     const d = dealData;
     
     // Header
-    document.getElementById('deal-name').textContent = d.deal.name;
+    safeSetText('deal-name', d.deal.name);
     const stageBadge = document.getElementById('stage-badge');
-    stageBadge.textContent = d.deal.stage;
-    stageBadge.className = `inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium ${getStageBadgeClass(d.deal.stage)}`;
+    if (stageBadge) {
+        stageBadge.textContent = d.deal.stage;
+        stageBadge.className = `inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium ${getStageBadgeClass(d.deal.stage)}`;
+    }
     
     // Update stage filter buttons
     document.querySelectorAll('#stage-filters-bar button').forEach(btn => {
@@ -749,10 +769,10 @@ function renderDeal() {
         }
     });
     
-    document.getElementById('property-name-header').textContent = d.property.name;
-    document.getElementById('unit-size-header').textContent = `${d.unit.sizeSqFt.toLocaleString()} sq ft`;
-    document.getElementById('tenant-company-header').textContent = d.tenantCompany.name;
-    document.getElementById('requirement-code').textContent = d.deal.requirementCode;
+    safeSetText('property-name-header', d.property.name);
+    safeSetText('unit-size-header', `${d.unit.sizeSqFt.toLocaleString()} sq ft`);
+    safeSetText('tenant-company-header', d.tenantCompany.name);
+    safeSetText('requirement-code', d.deal.requirementCode);
     
     // Owner
     const ownerDiv = document.getElementById('deal-owner');
@@ -767,35 +787,36 @@ function renderDeal() {
     }
     
     // Commercial snapshot
-    document.getElementById('monthly-rent').textContent = formatCurrency(d.pricing.monthlyRent);
-    document.getElementById('annual-rent').textContent = `${formatCurrency(d.pricing.annualRent)} / year`;
-    document.getElementById('rent-per-sqft').textContent = `£${d.pricing.rentPerSqFt.toFixed(2)}`;
-    document.getElementById('business-rates').textContent = formatCurrency(d.pricing.businessRates);
-    document.getElementById('service-charge').textContent = formatCurrency(d.pricing.serviceCharge);
-    document.getElementById('building-insurance').textContent = formatCurrency(d.pricing.buildingInsurance);
-    document.getElementById('utilities-cap').textContent = formatCurrency(d.pricing.utilitiesCap);
-    document.getElementById('deposit').textContent = formatCurrency(d.pricing.deposit.amount);
+    safeSetText('monthly-rent', formatCurrency(d.pricing.monthlyRent));
+    safeSetText('annual-rent', `${formatCurrency(d.pricing.annualRent)} / year`);
+    safeSetText('rent-per-sqft', `£${d.pricing.rentPerSqFt.toFixed(2)}`);
+    safeSetText('business-rates', formatCurrency(d.pricing.businessRates));
+    safeSetText('service-charge', formatCurrency(d.pricing.serviceCharge));
+    safeSetText('building-insurance', formatCurrency(d.pricing.buildingInsurance));
+    safeSetText('utilities-cap', formatCurrency(d.pricing.utilitiesCap));
+    safeSetText('deposit', formatCurrency(d.pricing.deposit.amount));
     
+    const lastPriceChangeEl = document.getElementById('last-price-change');
     if (d.pricing.lastPriceChange) {
         const change = d.pricing.lastPriceChange;
-        document.getElementById('price-change-details').textContent = formatDate(change.date);
-        document.getElementById('last-price-change').classList.remove('hidden');
+        safeSetText('price-change-details', formatDate(change.date));
+        if (lastPriceChangeEl) lastPriceChangeEl.classList.remove('hidden');
     } else {
-        document.getElementById('last-price-change').classList.add('hidden');
+        if (lastPriceChangeEl) lastPriceChangeEl.classList.add('hidden');
     }
     
     // All inclusive package
     if (d.allInclusivePackage) {
         const ai = d.allInclusivePackage;
-        document.getElementById('ai-building-total').textContent = formatCurrency(ai.buildingCosts.total / 12);
-        document.getElementById('managed-services-total').textContent = formatCurrency(ai.managedServices.total / 12);
-        document.getElementById('combined-monthly').textContent = formatCurrency(ai.combinedMonthly);
+        safeSetText('ai-building-total', formatCurrency(ai.buildingCosts.total / 12));
+        safeSetText('managed-services-total', formatCurrency(ai.managedServices.total / 12));
+        safeSetText('combined-monthly', formatCurrency(ai.combinedMonthly));
     } else {
         // Calculate from pricing if no all-inclusive package
         const buildingTotal = (d.pricing.annualRent + d.pricing.businessRates + d.pricing.serviceCharge + d.pricing.buildingInsurance) / 12;
-        document.getElementById('ai-building-total').textContent = formatCurrency(buildingTotal);
-        document.getElementById('managed-services-total').textContent = formatCurrency(d.pricing.unionServices / 12);
-        document.getElementById('combined-monthly').textContent = formatCurrency(buildingTotal + (d.pricing.unionServices / 12));
+        safeSetText('ai-building-total', formatCurrency(buildingTotal));
+        safeSetText('managed-services-total', formatCurrency(d.pricing.unionServices / 12));
+        safeSetText('combined-monthly', formatCurrency(buildingTotal + (d.pricing.unionServices / 12)));
     }
     
     // Managed Services Breakdown with icons
@@ -829,95 +850,104 @@ function renderDeal() {
     }
     
     // Proposal Versions (Section 5)
-    document.getElementById('current-proposal-label').textContent = d.proposal.label;
-    document.getElementById('current-proposal-date').textContent = `Issued ${formatDate(d.proposal.issuedDate)}`;
-    document.getElementById('current-proposal-changes').textContent = d.proposal.changes || 'Initial proposal version';
+    safeSetText('current-proposal-label', d.proposal.label);
+    safeSetText('current-proposal-date', `Issued ${formatDate(d.proposal.issuedDate)}`);
+    safeSetText('current-proposal-changes', d.proposal.changes || 'Initial proposal version');
     
     const previousProposals = d.proposalVersions || [];
+    const previousProposalsSection = document.getElementById('previous-proposals-section');
+    const previousProposalsList = document.getElementById('previous-proposals-list');
     if (previousProposals.length > 0) {
-        document.getElementById('previous-proposals-section').classList.remove('hidden');
-        document.getElementById('previous-proposals-list').innerHTML = previousProposals.map(p => `
-            <div class="flex items-center justify-between py-2 border-b border-[#E6E6E6] last:border-0">
-                <div>
-                    <a href="${p.url || '#'}" class="text-sm text-primary hover:underline font-medium">${p.label}</a>
-                    <div class="text-xs text-secondary">${formatDate(p.issuedDate)}</div>
+        if (previousProposalsSection) previousProposalsSection.classList.remove('hidden');
+        if (previousProposalsList) {
+            previousProposalsList.innerHTML = previousProposals.map(p => `
+                <div class="flex items-center justify-between py-2 border-b border-[#E6E6E6] last:border-0">
+                    <div>
+                        <a href="${p.url || '#'}" class="text-sm text-primary hover:underline font-medium">${p.label}</a>
+                        <div class="text-xs text-secondary">${formatDate(p.issuedDate)}</div>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        }
     } else {
-        document.getElementById('previous-proposals-section').classList.add('hidden');
+        if (previousProposalsSection) previousProposalsSection.classList.add('hidden');
     }
     
     // Requirement summary
-    document.getElementById('req-size').textContent = `${d.requirement.sizeSqFt.toLocaleString()} sq ft`;
-    document.getElementById('req-desks').textContent = d.requirement.deskCount.toString();
-    document.getElementById('req-budget').textContent = formatCurrency(d.requirement.budget / 12) + ' /mo';
-    document.getElementById('req-timing').textContent = d.requirement.timing;
+    safeSetText('req-size', `${d.requirement.sizeSqFt.toLocaleString()} sq ft`);
+    safeSetText('req-desks', d.requirement.deskCount.toString());
+    safeSetText('req-budget', formatCurrency(d.requirement.budget / 12) + ' /mo');
+    safeSetText('req-timing', d.requirement.timing);
     const locationsDiv = document.getElementById('preferred-locations');
     if (locationsDiv) {
         locationsDiv.innerHTML = d.requirement.preferredLocations.map(loc => 
             `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">${loc}</span>`
         ).join('');
     }
-    document.getElementById('must-haves').innerHTML = d.requirement.mustHaves.map(h => `<div>• ${h}</div>`).join('');
+    safeSetHTML('must-haves', d.requirement.mustHaves.map(h => `<div>• ${h}</div>`).join(''));
+    const redLinesSection = document.getElementById('red-lines-section');
     if (d.requirement.redLines && d.requirement.redLines.length > 0) {
-        document.getElementById('red-lines').innerHTML = d.requirement.redLines.map(r => `<div>• ${r}</div>`).join('');
-        document.getElementById('red-lines-section').classList.remove('hidden');
+        safeSetHTML('red-lines', d.requirement.redLines.map(r => `<div>• ${r}</div>`).join(''));
+        if (redLinesSection) redLinesSection.classList.remove('hidden');
     } else {
-        document.getElementById('red-lines-section').classList.add('hidden');
+        if (redLinesSection) redLinesSection.classList.add('hidden');
     }
-    document.getElementById('decision-maker').textContent = `${d.requirement.decisionMaker.name}, ${d.requirement.decisionMaker.role}`;
-    document.getElementById('budget-status').textContent = d.requirement.budgetStatus;
+    safeSetText('decision-maker', `${d.requirement.decisionMaker.name}, ${d.requirement.decisionMaker.role}`);
+    safeSetText('budget-status', d.requirement.budgetStatus);
     
     // Property and unit
-    document.getElementById('property-name').textContent = d.property.name;
-    document.getElementById('property-address').textContent = d.property.address;
-    document.getElementById('property-submarket').textContent = d.property.submarket;
-    document.getElementById('unit-size').textContent = `${d.unit.sizeSqFt.toLocaleString()} sq ft`;
-    document.getElementById('unit-floor').textContent = d.unit.floor;
+    safeSetText('property-name', d.property.name);
+    safeSetText('property-address', d.property.address);
+    safeSetText('property-submarket', d.property.submarket);
+    safeSetText('unit-size', `${d.unit.sizeSqFt.toLocaleString()} sq ft`);
+    safeSetText('unit-floor', d.unit.floor);
     const fitoutBadge = document.getElementById('unit-fitout-badge');
     if (fitoutBadge) {
         fitoutBadge.textContent = d.unit.fitOutStatus;
     }
-    document.getElementById('unit-availability').textContent = formatDate(d.unit.availabilityDate);
-    document.getElementById('visibility-flags').innerHTML = d.unit.visibilityFlags.map(flag => 
+    safeSetText('unit-availability', formatDate(d.unit.availabilityDate));
+    safeSetHTML('visibility-flags', d.unit.visibilityFlags.map(flag => 
         `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${flag === 'Broker-Ready' ? 'bg-primary text-white' : 'bg-muted text-primary border border-[#E6E6E6]'}">${flag}</span>`
-    ).join('');
+    ).join(''));
     
     // Move-in and Operational Notes (Section 9)
-    document.getElementById('target-move-in-date').textContent = d.requirement.targetMoveInDate ? formatDate(d.requirement.targetMoveInDate) : formatDate(d.unit.availabilityDate);
+    safeSetText('target-move-in-date', d.requirement.targetMoveInDate ? formatDate(d.requirement.targetMoveInDate) : formatDate(d.unit.availabilityDate));
     
     const timelineSensitivities = d.operationalNotes?.timelineSensitivities || [];
+    const timelineSensitivitiesSection = document.getElementById('timeline-sensitivities-section');
     if (timelineSensitivities.length > 0) {
-        document.getElementById('timeline-sensitivities-section').classList.remove('hidden');
-        document.getElementById('timeline-sensitivities').innerHTML = timelineSensitivities.map(s => `<div>• ${s}</div>`).join('');
+        if (timelineSensitivitiesSection) timelineSensitivitiesSection.classList.remove('hidden');
+        safeSetHTML('timeline-sensitivities', timelineSensitivities.map(s => `<div>• ${s}</div>`).join(''));
     } else {
-        document.getElementById('timeline-sensitivities-section').classList.add('hidden');
+        if (timelineSensitivitiesSection) timelineSensitivitiesSection.classList.add('hidden');
     }
     
     const redFlags = d.operationalNotes?.redFlags || [];
+    const redFlagsSection = document.getElementById('red-flags-section');
     if (redFlags.length > 0) {
-        document.getElementById('red-flags-section').classList.remove('hidden');
-        document.getElementById('red-flags').innerHTML = redFlags.map(f => `<div>• ${f}</div>`).join('');
+        if (redFlagsSection) redFlagsSection.classList.remove('hidden');
+        safeSetHTML('red-flags', redFlags.map(f => `<div>• ${f}</div>`).join(''));
     } else {
-        document.getElementById('red-flags-section').classList.add('hidden');
+        if (redFlagsSection) redFlagsSection.classList.add('hidden');
     }
     
     // Viewing information
     const viewingsDiv = document.getElementById('viewings-content');
-    if (d.viewingsSummary.nextViewing) {
-        const v = d.viewingsSummary.nextViewing;
-        viewingsDiv.innerHTML = `
-            <div class="mb-2">
-                <div class="text-sm font-medium text-primary">Next: ${formatDate(v.date)} ${v.time}</div>
-                <div class="text-xs text-secondary">${v.brokerName} • ${v.status}</div>
-            </div>
-        `;
-    } else {
-        viewingsDiv.innerHTML = '<div class="text-sm text-secondary mb-2">No upcoming viewings</div>';
+    if (viewingsDiv) {
+        if (d.viewingsSummary.nextViewing) {
+            const v = d.viewingsSummary.nextViewing;
+            viewingsDiv.innerHTML = `
+                <div class="mb-2">
+                    <div class="text-sm font-medium text-primary">Next: ${formatDate(v.date)} ${v.time}</div>
+                    <div class="text-xs text-secondary">${v.brokerName} • ${v.status}</div>
+                </div>
+            `;
+        } else {
+            viewingsDiv.innerHTML = '<div class="text-sm text-secondary mb-2">No upcoming viewings</div>';
+        }
     }
-    document.getElementById('total-viewings-text').textContent = `${d.viewingsSummary.totalViewings} total viewings`;
-    document.getElementById('last-viewing-text').textContent = d.viewingsSummary.lastViewingDate ? `Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : '';
+    safeSetText('total-viewings-text', `${d.viewingsSummary.totalViewings} total viewings`);
+    safeSetText('last-viewing-text', d.viewingsSummary.lastViewingDate ? `Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : '');
     
     // Heads of Terms
     const hotsStatus = d.headsOfTerms.status;
@@ -938,10 +968,10 @@ function renderDeal() {
         hotsStatusBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${hotsStatusClasses[hotsStatus] || 'bg-muted text-primary'}`;
     }
     
-    document.getElementById('hots-term-length').textContent = d.headsOfTerms.termYears ? `${d.headsOfTerms.termYears} years` : 'TBD';
-    document.getElementById('hots-break-clause').textContent = d.headsOfTerms.breakOption || 'TBD';
-    document.getElementById('hots-rent-review').textContent = d.headsOfTerms.upliftPattern || 'TBD';
-    document.getElementById('hots-deposit').textContent = d.headsOfTerms.deposit ? `${d.headsOfTerms.deposit.months} months rent (${formatCurrency(d.headsOfTerms.deposit.amount)})` : 'TBD';
+    safeSetText('hots-term-length', d.headsOfTerms.termYears ? `${d.headsOfTerms.termYears} years` : 'TBD');
+    safeSetText('hots-break-clause', d.headsOfTerms.breakOption || 'TBD');
+    safeSetText('hots-rent-review', d.headsOfTerms.upliftPattern || 'TBD');
+    safeSetText('hots-deposit', d.headsOfTerms.deposit ? `${d.headsOfTerms.deposit.months} months rent (${formatCurrency(d.headsOfTerms.deposit.amount)})` : 'TBD');
     
     const hotsLastUpdated = document.getElementById('hots-last-updated');
     if (hotsLastUpdated) {
