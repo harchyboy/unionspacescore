@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <title>Deal Room</title>
+    <script src='https://cdn.tailwindcss.com'></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                },
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                    serif: ["var(--font-serif)"],
+                    mono: ["var(--font-mono)"],
+                },
+                boxShadow: {
+                    'DEFAULT': 'var(--shadow)',
+                },
+            },
+        }
+    }
+    </script>
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #FAFAFA;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --primary: #252525;
+            --primary-foreground: #ffffff;
+            --secondary: #8E8E8E;
+            --secondary-foreground: #ffffff;
+            --muted: #FAFAFA;
+            --muted-foreground: #0f172a;
+            --accent: #8E8E8E;
+            --accent-foreground: #ffffff;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #E6E6E6;
+            --input: #FFFFFF;
+            --ring: #94a3b8;
+            --font-sans: Inter, sans-serif;
+            --font-serif: Georgia, serif;
+            --font-mono: JetBrains Mono, monospace;
+            --radius: 10px;
+            --shadow: -2px 4px 12px 4px rgba(51,51,51,0.05);
+        }
+        
+        ::-webkit-scrollbar { display: none;}
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: #F0F0F0;
+            color: #252525;
+        }
+        
+        .transition-all-smooth {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+    <script src="sidebar.js" defer></script>
+</head>
+<body class="antialiased">
+
+<div id="app-shell" class="flex h-screen overflow-hidden">
+    
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="deal-room"></aside>
+    
+    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+        
+        <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-6 flex-1">
+                <div class="relative flex-1 max-w-xl">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <input type="text" placeholder="Search deals, properties, contacts..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                </button>
+                <button class="p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-question-circle text-lg"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div id="page-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <h1 class="text-3xl font-semibold text-primary mb-2">Acme Corp — Floor 3 West</h1>
+                    <div class="flex items-center space-x-3 text-sm text-secondary">
+                        <span>99 Bishopsgate</span>
+                        <span>•</span>
+                        <span>3,200 sq ft</span>
+                        <span>•</span>
+                        <span>Acme Corporation Ltd</span>
+                        <span>•</span>
+                        <span class="text-primary font-medium">REQ-2024-042</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white">
+                        Heads of Terms
+                    </span>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-8 h-8 rounded-full object-cover">
+                    </div>
+                    <button class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit Deal</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="stage-filters-bar" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
+            <div class="flex items-center space-x-3">
+                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                    Viewing
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg">
+                    Heads of Terms
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                    Legals
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                    Signed
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                    Lost
+                </button>
+            </div>
+        </div>
+        
+        <div id="deal-room-content" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
+            
+            <div class="grid grid-cols-3 gap-6 mb-6">
+                
+                <div class="col-span-2 space-y-6">
+                    
+                    <div id="commercial-snapshot-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-primary">Commercial Snapshot</h3>
+                            <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
+                                <i class="fa-solid fa-clock"></i>
+                                <span>Updated 2h ago</span>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-6">
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Rent (Monthly)</div>
+                                <div class="text-2xl font-semibold text-primary">£12,800</div>
+                                <div class="text-xs text-secondary mt-1">£153,600 / year</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Rent per sq ft</div>
+                                <div class="text-2xl font-semibold text-primary">£48</div>
+                                <div class="text-xs text-secondary mt-1">Per sq ft / year</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Business Rates</div>
+                                <div class="text-2xl font-semibold text-primary">£2,100</div>
+                                <div class="text-xs text-secondary mt-1">Monthly estimate</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Service Charge</div>
+                                <div class="text-2xl font-semibold text-primary">£1,600</div>
+                                <div class="text-xs text-secondary mt-1">Monthly</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Insurance</div>
+                                <div class="text-2xl font-semibold text-primary">£320</div>
+                                <div class="text-xs text-secondary mt-1">Monthly</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Utilities Cap</div>
+                                <div class="text-2xl font-semibold text-primary">£800</div>
+                                <div class="text-xs text-secondary mt-1">Monthly maximum</div>
+                            </div>
+                            <div class="col-span-3 pt-4 border-t border-[#E6E6E6]">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-xs text-secondary mb-1">Deposit Required</div>
+                                        <div class="text-xl font-semibold text-primary">£38,400</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-xs text-secondary mb-1">Last Price Change</div>
+                                        <div class="text-sm text-primary">14 Nov 2024</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="all-inclusive-package-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-6">All-Inclusive Package</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-building text-secondary"></i>
+                                    <span class="text-sm text-primary">Building Costs Total</span>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£16,820</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-concierge-bell text-secondary"></i>
+                                    <span class="text-sm text-primary">Managed Services Total</span>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£4,280</span>
+                            </div>
+                            <div class="flex items-center justify-between py-4 bg-muted rounded-lg px-4 mt-4">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-check-circle text-primary text-xl"></i>
+                                    <span class="text-base font-semibold text-primary">Final All-Inclusive Monthly</span>
+                                </div>
+                                <span class="text-2xl font-semibold text-primary">£21,100</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="managed-services-breakdown-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-6">Managed Services Breakdown</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <i class="fa-solid fa-broom text-secondary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm text-primary">Office Cleaning</div>
+                                        <div class="text-xs text-secondary">£120 × 12 cleans/month</div>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£1,440</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <i class="fa-solid fa-wifi text-secondary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm text-primary">Dedicated Internet</div>
+                                        <div class="text-xs text-secondary">1Gbps fibre</div>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£800</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <i class="fa-solid fa-mug-hot text-secondary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm text-primary">Coffee & Refreshments</div>
+                                        <div class="text-xs text-secondary">£18 × 40 people</div>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£720</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <i class="fa-solid fa-phone text-secondary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm text-primary">Reception Services</div>
+                                        <div class="text-xs text-secondary">9am–6pm weekdays</div>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£1,200</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3">
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <i class="fa-solid fa-shield-halved text-secondary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm text-primary">Security & Access Control</div>
+                                        <div class="text-xs text-secondary">24/7 monitoring</div>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£120</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="space-y-6">
+                    
+                    <div id="requirement-summary-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-6">Requirement Summary</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Size</div>
+                                <div class="text-sm text-primary font-medium">3,000 – 3,500 sq ft</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Desks</div>
+                                <div class="text-sm text-primary font-medium">35 – 40</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Budget</div>
+                                <div class="text-sm text-primary font-medium">£18,000 – £22,000 /mo</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Timing</div>
+                                <div class="text-sm text-primary font-medium">Q1 2025</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-2">Locations</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">City Core</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Shoreditch</span>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-[#E6E6E6]">
+                                <div class="text-xs text-secondary mb-2">Must-Haves</div>
+                                <div class="space-y-1 text-xs text-primary">
+                                    <div>• Natural light</div>
+                                    <div>• Meeting rooms</div>
+                                    <div>• Bike storage</div>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-[#E6E6E6]">
+                                <div class="text-xs text-secondary mb-2">Red Lines</div>
+                                <div class="space-y-1 text-xs text-primary">
+                                    <div>• No basement spaces</div>
+                                    <div>• No shared WCs</div>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-[#E6E6E6]">
+                                <div class="text-xs text-secondary mb-1">Decision Maker</div>
+                                <div class="text-sm text-primary font-medium">Sarah Chen, CFO</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Budget Approval</div>
+                                <div class="text-sm text-primary">Board approved</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="property-unit-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                        <h3 class="text-lg font-semibold text-primary mb-6">Property & Unit</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Property</div>
+                                <div class="text-sm text-primary font-medium">99 Bishopsgate</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Address</div>
+                                <div class="text-sm text-primary">99 Bishopsgate, London EC2M 3XD</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Submarket</div>
+                                <div class="text-sm text-primary font-medium">City Core (CCORE)</div>
+                            </div>
+                            <div class="pt-4 border-t border-[#E6E6E6]">
+                                <div class="text-xs text-secondary mb-1">Unit Size</div>
+                                <div class="text-sm text-primary font-medium">3,200 sq ft</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Floor</div>
+                                <div class="text-sm text-primary">3rd Floor, West Wing</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Fit-out Status</div>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Availability</div>
+                                <div class="text-sm text-primary">Available Now</div>
+                            </div>
+                            <div class="pt-4 border-t border-[#E6E6E6]">
+                                <div class="text-xs text-secondary mb-2">Visibility</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Private</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+            <div id="heads-of-terms-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-primary">Heads of Terms</h3>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
+                        <i class="fa-solid fa-check mr-1"></i>
+                        Agreed
+                    </span>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <div class="text-xs text-secondary mb-1">Term Length</div>
+                        <div class="text-sm text-primary font-medium">5 years</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-1">Break Clause</div>
+                        <div class="text-sm text-primary font-medium">Year 3 (mutual)</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-1">Rent Review</div>
+                        <div class="text-sm text-primary font-medium">Annual, RPI-linked (capped 3%)</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-1">Deposit</div>
+                        <div class="text-sm text-primary font-medium">3 months rent (£38,400)</div>
+                    </div>
+                    <div class="col-span-2 pt-4 border-t border-[#E6E6E6]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Last Updated</div>
+                                <div class="text-sm text-primary">18 Nov 2024</div>
+                            </div>
+                            <button class="text-sm text-primary hover:underline flex items-center space-x-2">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span>View HoTs Document</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="union-service-agreement-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+                <h3 class="text-lg font-semibold text-primary mb-6">UNION Service Agreement</h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <div class="text-xs text-secondary mb-2">Agreement Status</div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white">
+                            Sent to Tenant
+                        </span>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-2">Latest Agreement</div>
+                        <button class="text-sm text-primary hover:underline flex items-center space-x-2">
+                            <i class="fa-solid fa-file-contract"></i>
+                            <span>View Agreement v2.1</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="lease-status-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+                <h3 class="text-lg font-semibold text-primary mb-6">Lease Status</h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <div class="text-xs text-secondary mb-2">Lease Progress</div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white">
+                            In Legals
+                        </span>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-1">HoTs Reference</div>
+                        <div class="text-sm text-primary font-medium">HOT-2024-042</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="documents-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-primary">Documents</h3>
+                    <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
+                        <i class="fa-solid fa-upload"></i>
+                        <span>Upload</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                            <i class="fa-solid fa-gavel text-primary text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-primary mb-1">Legal</div>
+                        <div class="text-xs text-secondary">8 files</div>
+                    </div>
+                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                            <i class="fa-solid fa-sterling-sign text-primary text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-primary mb-1">Commercial</div>
+                        <div class="text-xs text-secondary">5 files</div>
+                    </div>
+                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                            <i class="fa-solid fa-map text-primary text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-primary mb-1">Plans</div>
+                        <div class="text-xs text-secondary">12 files</div>
+                    </div>
+                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                            <i class="fa-solid fa-bullhorn text-primary text-xl"></i>
+                        </div>
+                        <div class="text-sm font-medium text-primary mb-1">Marketing</div>
+                        <div class="text-xs text-secondary">18 files</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                
+                <div id="approvals-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Approvals</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-secondary mb-2">Current Status</div>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
+                                <i class="fa-solid fa-check mr-1"></i>
+                                Approved
+                            </span>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Last Decision</div>
+                            <div class="text-sm text-primary font-medium">Board approved 15 Nov 2024</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Pending Actions</div>
+                            <div class="text-sm text-primary font-medium">None</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="risk-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Risk</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-secondary mb-2">Risk Score</div>
+                            <div class="flex items-center space-x-3">
+                                <div class="text-2xl font-semibold text-primary">Low</div>
+                                <div class="flex-1 bg-muted rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-2">Key Drivers</div>
+                            <div class="space-y-1 text-xs text-primary">
+                                <div>• Strong tenant covenant</div>
+                                <div>• Proven sector performance</div>
+                                <div>• Low vacancy risk</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Mitigation</div>
+                            <div class="text-sm text-primary">Deposit held, guarantor in place</div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="grid grid-cols-2 gap-6">
+                
+                <div id="activity-stream-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-primary">Activity</h3>
+                        <button class="text-xs text-secondary hover:text-primary">View all</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-check text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm text-primary font-medium">HoTs agreed and signed</div>
+                                <div class="text-xs text-secondary mt-1">Tom Harrison · 2h ago</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-file-contract text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm text-primary font-medium">UNION agreement sent to tenant</div>
+                                <div class="text-xs text-secondary mt-1">System · 4h ago</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3 pb-4 border-b border-[#E6E6E6]">
+                            <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 border border-[#E6E6E6]">
+                                <i class="fa-solid fa-comments text-secondary text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm text-primary font-medium">Call with tenant CFO</div>
+                                <div class="text-xs text-secondary mt-1">Max Chen · 1d ago</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 border border-[#E6E6E6]">
+                                <i class="fa-solid fa-building text-secondary text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm text-primary font-medium">Final viewing completed</div>
+                                <div class="text-xs text-secondary mt-1">Tom Harrison · 3d ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tasks-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-primary">Tasks</h3>
+                        <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Add</span>
+                        </button>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-muted rounded-lg">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                            <div class="ml-3 flex-1">
+                                <div class="text-sm text-primary font-medium">Chase tenant signature on UNION agreement</div>
+                                <div class="text-xs text-destructive mt-1">Due tomorrow</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-muted rounded-lg">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                            <div class="ml-3 flex-1">
+                                <div class="text-sm text-primary font-medium">Confirm move-in date with tenant</div>
+                                <div class="text-xs text-secondary mt-1">Due 25 Nov</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-muted rounded-lg">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                            <div class="ml-3 flex-1">
+                                <div class="text-sm text-primary font-medium">Schedule internet survey</div>
+                                <div class="text-xs text-secondary mt-1">Due 28 Nov</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 border border-[#E6E6E6] rounded-lg opacity-50">
+                            <input type="checkbox" checked disabled class="w-4 h-4 text-primary border-[#E6E6E6] rounded">
+                            <div class="ml-3 flex-1">
+                                <div class="text-sm text-secondary line-through">Send HoTs to landlord solicitor</div>
+                                <div class="text-xs text-secondary mt-1">Completed 18 Nov</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </main>
+    
+</div>
+
+</body>
+</html>
+
