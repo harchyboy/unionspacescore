@@ -225,7 +225,8 @@ union-core/
 │   └── pre-commit          # Pre-commit hook
 ├── e2e/                    # Playwright e2e tests
 │   └── properties.spec.ts  # Property area e2e tests
-├── public/                 # Static assets
+├── public/                 # Static assets (HTML files - edit these)
+├── dist/                   # Build output (generated, not tracked in git)
 ├── src/
 │   ├── api/               # API layer
 │   │   ├── properties.ts  # Property API functions and React Query hooks
@@ -351,6 +352,8 @@ pnpm build
 ```
 
 The production build will be in the `dist/` directory.
+
+**Note on Static HTML Files**: The `public/` directory contains static HTML files (like `Units Details Page.html`). These are the source files - always edit files in `public/`, not `dist/`. The build script (`build-static.js`) automatically copies all files from `public/` to `dist/` when you run `pnpm build`. The `dist/` directory is git-ignored and should not be manually edited.
 
 ## Deployment
 
