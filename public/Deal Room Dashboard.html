@@ -106,6 +106,46 @@
         .hover-lift:hover {
             transform: translateY(-2px);
         }
+        
+        .chip-filter.active {
+            opacity: 1;
+        }
+        
+        .chip-filter.active[data-stage="Viewing"] {
+            background-color: #252525 !important;
+            color: #ffffff !important;
+            border-color: #252525 !important;
+        }
+        
+        .chip-filter.active[data-stage="Heads of Terms"],
+        .chip-filter.active[data-stage="Legals"] {
+            background-color: #eab308 !important;
+            color: #ffffff !important;
+            border-color: #eab308 !important;
+        }
+        
+        .chip-filter.active[data-stage="Signed"] {
+            background-color: #16a34a !important;
+            color: #ffffff !important;
+            border-color: #16a34a !important;
+        }
+        
+        .chip-filter.active[data-stage="Lost"] {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #ef4444 !important;
+        }
+        
+        @media (max-width: 768px) {
+            #metrics-strip .flex {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            #metrics-strip .flex > div {
+                flex: 1 1 calc(50% - 0.5rem);
+                min-width: 140px;
+            }
+        }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -142,95 +182,61 @@
                     <h1 class="text-3xl font-semibold text-primary mb-2">Deal Rooms</h1>
                     <p class="text-secondary text-sm">Scan every live deal, spot issues, and jump into the right Deal Room</p>
                 </div>
-                <button id="create-deal-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
-                    <i class="fa-solid fa-plus"></i>
+                <button id="create-deal-btn" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <i class="fa-solid fa-plus text-xs"></i>
                     <span>Create new deal</span>
                 </button>
             </div>
         </div>
         
-        <div id="summary-chips" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
+        <div id="summary-chips" class="bg-white border-b border-[#E6E6E6] px-8 py-3">
             <div class="flex items-center gap-3 flex-wrap">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" style="background-color: rgba(37, 37, 37, 0.1); color: #252525; border: 1px solid rgba(37, 37, 37, 0.2);" id="chip-viewing">
+                <button type="button" class="chip-filter inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer" style="background-color: rgba(37, 37, 37, 0.1); color: #252525; border: 1px solid rgba(37, 37, 37, 0.2);" data-stage="Viewing" id="chip-viewing">
                     <span class="font-semibold mr-1.5" id="chip-viewing-count">0</span>
                     <span>Viewing</span>
-                </span>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" style="background-color: rgba(234, 179, 8, 0.1); color: #92400e; border: 1px solid rgba(234, 179, 8, 0.2);" id="chip-hots">
+                </button>
+                <button type="button" class="chip-filter inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer" style="background-color: rgba(234, 179, 8, 0.1); color: #92400e; border: 1px solid rgba(234, 179, 8, 0.2);" data-stage="Heads of Terms" id="chip-hots">
                     <span class="font-semibold mr-1.5" id="chip-hots-count">0</span>
                     <span>Heads of Terms</span>
-                </span>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" style="background-color: rgba(234, 179, 8, 0.1); color: #92400e; border: 1px solid rgba(234, 179, 8, 0.2);" id="chip-legals">
+                </button>
+                <button type="button" class="chip-filter inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer" style="background-color: rgba(234, 179, 8, 0.1); color: #92400e; border: 1px solid rgba(234, 179, 8, 0.2);" data-stage="Legals" id="chip-legals">
                     <span class="font-semibold mr-1.5" id="chip-legals-count">0</span>
                     <span>Legals</span>
-                </span>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" style="background-color: rgba(22, 163, 74, 0.1); color: #166534; border: 1px solid rgba(22, 163, 74, 0.2);" id="chip-signed">
+                </button>
+                <button type="button" class="chip-filter inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer" style="background-color: rgba(22, 163, 74, 0.1); color: #166534; border: 1px solid rgba(22, 163, 74, 0.2);" data-stage="Signed" id="chip-signed">
                     <span class="font-semibold mr-1.5" id="chip-signed-count">0</span>
                     <span>Signed</span>
-                </span>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" style="background-color: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.2);" id="chip-lost">
+                </button>
+                <button type="button" class="chip-filter inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer" style="background-color: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.2);" data-stage="Lost" id="chip-lost">
                     <span class="font-semibold mr-1.5" id="chip-lost-count">0</span>
                     <span>Lost</span>
-                </span>
+                </button>
             </div>
         </div>
         
-        <div id="metrics-strip" class="px-8 py-6 space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Total Open Deals</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-primary" id="metric-open-deals">0</p>
-                    </div>
+        <div id="metrics-strip" class="bg-white border-b border-[#E6E6E6] px-8 py-3">
+            <div class="flex items-center gap-4 flex-wrap">
+                <!-- Core Metrics -->
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-3 shadow-sm flex-1 min-w-[140px]">
+                    <p class="text-xs text-secondary mb-1">Total Open Deals</p>
+                    <p class="text-2xl font-semibold text-primary" id="metric-open-deals">0</p>
                 </div>
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Total Monthly Value</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-primary" id="metric-monthly-value">£0</p>
-                    </div>
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-3 shadow-sm flex-1 min-w-[140px]">
+                    <p class="text-xs text-secondary mb-1">Total Monthly Value</p>
+                    <p class="text-2xl font-semibold text-primary" id="metric-monthly-value">£0</p>
                 </div>
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Viewing</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-primary" id="metric-viewing">0</p>
-                    </div>
+                
+                <!-- Spacer between groups -->
+                <div class="w-4 hidden md:block"></div>
+                
+                <!-- Alerts -->
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-3 shadow-sm flex-1 min-w-[140px]">
+                    <p class="text-xs text-secondary mb-1">High Risk Deals</p>
+                    <p class="text-2xl font-semibold text-destructive" id="metric-high-risk">0</p>
                 </div>
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Heads of Terms</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-primary" id="metric-hots">0</p>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Legals</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-primary" id="metric-legals">0</p>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Signed</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-primary" id="metric-signed">0</p>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Lost</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-primary" id="metric-lost">0</p>
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">High-Risk Deals</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-destructive" id="metric-high-risk">0</p>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-                    <p class="text-xs uppercase tracking-wide text-secondary">Deals Blocked in Approvals</p>
-                    <div class="flex items-end justify-between mt-3">
-                        <p class="text-3xl font-semibold text-destructive" id="metric-blocked-approvals">0</p>
-                    </div>
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-3 shadow-sm flex-1 min-w-[140px]">
+                    <p class="text-xs text-secondary mb-1">Deals Blocked in Approvals</p>
+                    <p class="text-2xl font-semibold text-destructive" id="metric-blocked-approvals">0</p>
                 </div>
             </div>
         </div>
@@ -757,7 +763,7 @@ function renderDealRow(deal, index) {
     const assetDetails = [unitInfo, sizeInfo].filter(Boolean).join(' • ');
     
     return `
-        <tr class="${bgClass} hover:bg-[#fafafa] transition-all cursor-pointer" onclick="window.location.href='Deal Room Setup.html?deal=${deal.id}'">
+        <tr class="${bgClass} hover:bg-[#fafafa] transition-all cursor-pointer" onclick="window.location.href='Deal Room Detail.html?dealId=${deal.id}'">
             <td class="px-4 py-4">
                 <div class="font-medium text-primary hover:text-primary/80">${deal.name}</div>
                 ${deal.requirementCode ? `<div class="text-xs text-secondary mt-0.5">${deal.requirementCode}</div>` : ''}
@@ -823,7 +829,7 @@ function renderDealRow(deal, index) {
                 ` : '<span class="text-sm text-secondary">Up to date</span>'}
             </td>
             <td class="px-4 py-4 text-right">
-                <a href="Deal Room Setup.html?deal=${deal.id}" class="text-primary hover:text-primary/80 text-sm font-medium" onclick="event.stopPropagation()">View Deal Room</a>
+                <a href="Deal Room Detail.html?dealId=${deal.id}" class="text-primary hover:text-primary/80 text-sm font-medium" onclick="event.stopPropagation()">View Deal Room</a>
             </td>
         </tr>
     `;
@@ -850,11 +856,6 @@ function updateMetrics() {
     
     document.getElementById('metric-open-deals').textContent = openDeals.length;
     document.getElementById('metric-monthly-value').textContent = formatCurrency(totalMonthlyValue);
-    document.getElementById('metric-viewing').textContent = viewing;
-    document.getElementById('metric-hots').textContent = hots;
-    document.getElementById('metric-legals').textContent = legals;
-    document.getElementById('metric-signed').textContent = signed;
-    document.getElementById('metric-lost').textContent = lost;
     document.getElementById('metric-high-risk').textContent = highRisk;
     document.getElementById('metric-blocked-approvals').textContent = blockedApprovals;
     
@@ -978,7 +979,22 @@ function renderDeals() {
 
 // Event listeners
 document.getElementById('search-input').addEventListener('input', filterDeals);
-document.getElementById('filter-stage').addEventListener('change', filterDeals);
+document.getElementById('filter-stage').addEventListener('change', (e) => {
+    const selectedStage = e.target.value;
+    
+    // Update chip selection
+    document.querySelectorAll('.chip-filter').forEach(chip => {
+        chip.classList.remove('active');
+        if (chip.getAttribute('data-stage') === selectedStage) {
+            chip.classList.add('active');
+            selectedStageChip = chip;
+        } else if (selectedStage === 'all') {
+            selectedStageChip = null;
+        }
+    });
+    
+    filterDeals();
+});
 document.getElementById('filter-owner').addEventListener('change', filterDeals);
 document.getElementById('filter-deal-type').addEventListener('change', filterDeals);
 document.getElementById('filter-property').addEventListener('change', filterDeals);
@@ -991,6 +1007,13 @@ document.getElementById('clear-filters').addEventListener('click', () => {
     document.getElementById('filter-deal-type').value = 'all';
     document.getElementById('filter-property').value = 'all';
     document.getElementById('filter-tenant').value = 'all';
+    
+    // Clear chip selection
+    if (selectedStageChip) {
+        selectedStageChip.classList.remove('active');
+        selectedStageChip = null;
+    }
+    
     filterDeals();
 });
 
@@ -1005,6 +1028,34 @@ document.querySelectorAll('[data-sort]').forEach(btn => {
         }
         sortDeals();
         renderDeals();
+    });
+});
+
+// Chip filter functionality
+let selectedStageChip = null;
+
+document.querySelectorAll('.chip-filter').forEach(chip => {
+    chip.addEventListener('click', () => {
+        const stage = chip.getAttribute('data-stage');
+        
+        // Toggle selection
+        if (selectedStageChip === chip) {
+            // Deselect
+            chip.classList.remove('active');
+            selectedStageChip = null;
+            document.getElementById('filter-stage').value = 'all';
+        } else {
+            // Deselect previous
+            if (selectedStageChip) {
+                selectedStageChip.classList.remove('active');
+            }
+            // Select new
+            chip.classList.add('active');
+            selectedStageChip = chip;
+            document.getElementById('filter-stage').value = stage;
+        }
+        
+        filterDeals();
     });
 });
 

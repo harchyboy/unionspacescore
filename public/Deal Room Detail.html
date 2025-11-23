@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+    <title>Deal Room</title>
+    <script src='https://cdn.tailwindcss.com'></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                },
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                    serif: ["var(--font-serif)"],
+                    mono: ["var(--font-mono)"],
+                },
+                boxShadow: {
+                    'DEFAULT': 'var(--shadow)',
+                },
+            },
+        }
+    }
+    </script>
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #FAFAFA;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --card-foreground: #0f172a;
+            --primary: #252525;
+            --primary-foreground: #ffffff;
+            --secondary: #8E8E8E;
+            --secondary-foreground: #ffffff;
+            --muted: #FAFAFA;
+            --muted-foreground: #0f172a;
+            --accent: #8E8E8E;
+            --accent-foreground: #ffffff;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #E6E6E6;
+            --input: #FFFFFF;
+            --ring: #94a3b8;
+            --font-sans: Inter, sans-serif;
+            --font-serif: Georgia, serif;
+            --font-mono: JetBrains Mono, monospace;
+            --radius: 10px;
+            --shadow: -2px 4px 12px 4px rgba(51,51,51,0.05);
+        }
+        
+        ::-webkit-scrollbar { display: none;}
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: #F0F0F0;
+            color: #252525;
+        }
+        
+        .transition-all-smooth {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+    <script src="sidebar.js" defer></script>
+</head>
+<body class="antialiased">
+
+<div id="app-shell" class="flex h-screen overflow-hidden">
+    
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="deal-room"></aside>
+    
+    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+        
+        <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-6 flex-1">
+                <div class="relative flex-1 max-w-xl">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
+                    <input type="text" placeholder="Search deals, properties, tickets..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+                </button>
+                <button class="p-2 text-secondary hover:text-primary transition-all-smooth">
+                    <i class="fa-solid fa-question-circle text-lg"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div id="page-content" class="flex-1 overflow-y-auto bg-[#F0F0F0]">
+            <!-- Loading State -->
+            <div id="loading-state" class="flex items-center justify-center h-full">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p class="text-secondary">Loading deal details...</p>
+                </div>
+            </div>
+            
+            <!-- Error State -->
+            <div id="error-state" class="hidden px-8 py-6">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="flex items-center space-x-3 text-destructive mb-2">
+                        <i class="fa-solid fa-exclamation-circle"></i>
+                        <h3 class="font-semibold">Error loading deal</h3>
+                    </div>
+                    <p class="text-secondary text-sm mb-4" id="error-message"></p>
+                    <button onclick="loadDeal()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all-smooth">
+                        Try again
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div id="deal-content" class="hidden">
+                <!-- Page Header -->
+                <div class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h1 class="text-3xl font-semibold text-primary" id="deal-name">Deal Name</h1>
+                                <span id="stage-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"></span>
+                                <span id="deal-type-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]"></span>
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-secondary">
+                                <span id="requirement-code"></span>
+                                <span>•</span>
+                                <span id="deal-dates"></span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3" id="deal-owner">
+                            <!-- Owner avatar and name -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Context Strip -->
+                <div class="bg-white border-b border-[#E6E6E6] px-8 py-3">
+                    <div class="flex items-center gap-6 flex-wrap text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="text-secondary">Property:</span>
+                            <a href="#" id="property-link" class="text-primary hover:underline font-medium"></a>
+                            <span class="text-secondary">•</span>
+                            <a href="#" id="unit-link" class="text-primary hover:underline font-medium"></a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-secondary">Tenant:</span>
+                            <span id="tenant-company" class="text-primary font-medium"></span>
+                            <span class="text-secondary">•</span>
+                            <a href="#" id="tenant-contact-link" class="text-primary hover:underline font-medium"></a>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-secondary">Target move-in:</span>
+                            <span id="move-in-date" class="text-primary font-medium"></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-secondary">Proposal:</span>
+                            <span id="proposal-label" class="text-primary font-medium"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Content Grid -->
+                <div class="px-8 py-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Left Column: Commercial Information -->
+                        <div class="space-y-6">
+                            <!-- Commercial Snapshot Card -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                                <h2 class="text-lg font-semibold text-primary mb-4">Commercial snapshot</h2>
+                                
+                                <div class="space-y-3 mb-4">
+                                    <div class="flex justify-between items-baseline">
+                                        <span class="text-sm text-secondary">Monthly rent</span>
+                                        <span class="text-lg font-semibold text-primary" id="monthly-rent"></span>
+                                    </div>
+                                    <div class="flex justify-between items-baseline">
+                                        <span class="text-sm text-secondary">Annual rent</span>
+                                        <span class="text-base font-medium text-primary" id="annual-rent"></span>
+                                    </div>
+                                    <div class="flex justify-between items-baseline">
+                                        <span class="text-sm text-secondary">Per sq ft</span>
+                                        <span class="text-base font-medium text-primary" id="rent-per-sqft"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t border-[#E6E6E6] pt-3 space-y-2 mb-4">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Business rates</span>
+                                        <span class="text-primary" id="business-rates"></span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Service charge</span>
+                                        <span class="text-primary" id="service-charge"></span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Building insurance</span>
+                                        <span class="text-primary" id="building-insurance"></span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Utilities cap</span>
+                                        <span class="text-primary" id="utilities-cap"></span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">UNION services</span>
+                                        <span class="text-primary" id="union-services"></span>
+                                    </div>
+                                    <div class="flex justify-between text-sm font-medium pt-2 border-t border-[#E6E6E6]">
+                                        <span class="text-primary">Deposit</span>
+                                        <span class="text-primary" id="deposit"></span>
+                                    </div>
+                                </div>
+                                
+                                <div id="last-price-change" class="border-t border-[#E6E6E6] pt-3">
+                                    <div class="text-xs text-secondary mb-1">Last price change</div>
+                                    <div class="text-sm text-primary" id="price-change-details"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- All Inclusive Package Card -->
+                            <div id="all-inclusive-card" class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                                <h2 class="text-lg font-semibold text-primary mb-4">All inclusive package</h2>
+                                
+                                <div class="space-y-3">
+                                    <div>
+                                        <div class="text-xs font-medium text-secondary mb-2">Building costs</div>
+                                        <div class="space-y-1.5 text-sm">
+                                            <div class="flex justify-between">
+                                                <span class="text-secondary">Rent</span>
+                                                <span class="text-primary" id="ai-rent"></span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-secondary">Rates</span>
+                                                <span class="text-primary" id="ai-rates"></span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-secondary">Service charge</span>
+                                                <span class="text-primary" id="ai-service-charge"></span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-secondary">Insurance</span>
+                                                <span class="text-primary" id="ai-insurance"></span>
+                                            </div>
+                                            <div class="flex justify-between font-medium pt-1 border-t border-[#E6E6E6]">
+                                                <span class="text-primary">Total</span>
+                                                <span class="text-primary" id="ai-building-total"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-t border-[#E6E6E6] pt-3">
+                                        <div class="text-xs font-medium text-secondary mb-2">Managed services</div>
+                                        <div class="flex justify-between items-baseline">
+                                            <span class="text-sm text-secondary" id="managed-services-label"></span>
+                                            <span class="text-base font-medium text-primary" id="managed-services-total"></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-t border-[#E6E6E6] pt-3">
+                                        <div class="flex justify-between items-baseline">
+                                            <span class="text-sm font-semibold text-primary">All inclusive monthly</span>
+                                            <span class="text-xl font-semibold text-primary" id="combined-monthly"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column: Context Cards -->
+                        <div class="space-y-6">
+                            <!-- Requirement Summary Card -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                                <h2 class="text-lg font-semibold text-primary mb-4">Requirement summary</h2>
+                                
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <div>
+                                        <div class="text-xs text-secondary mb-1">Size</div>
+                                        <div class="text-sm font-medium text-primary" id="req-size"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-secondary mb-1">Desk count</div>
+                                        <div class="text-sm font-medium text-primary" id="req-desks"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-secondary mb-1">Budget</div>
+                                        <div class="text-sm font-medium text-primary" id="req-budget"></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-secondary mb-1">Timing</div>
+                                        <div class="text-sm font-medium text-primary" id="req-timing"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t border-[#E6E6E6] pt-3 mb-3">
+                                    <div class="text-xs text-secondary mb-2">Preferred locations</div>
+                                    <div class="text-sm text-primary" id="preferred-locations"></div>
+                                </div>
+                                
+                                <div class="border-t border-[#E6E6E6] pt-3 mb-3">
+                                    <div class="text-xs text-secondary mb-2">Must haves</div>
+                                    <ul class="text-sm text-primary space-y-1" id="must-haves"></ul>
+                                </div>
+                                
+                                <div class="border-t border-[#E6E6E6] pt-3 mb-3" id="red-lines-section">
+                                    <div class="text-xs text-secondary mb-2">Red lines</div>
+                                    <ul class="text-sm text-primary space-y-1" id="red-lines"></ul>
+                                </div>
+                                
+                                <div class="border-t border-[#E6E6E6] pt-3">
+                                    <div class="text-sm text-primary">
+                                        <span class="font-medium">Decision maker:</span>
+                                        <span id="decision-maker"></span>
+                                    </div>
+                                    <div class="text-sm text-primary mt-1">
+                                        <span class="font-medium">Budget status:</span>
+                                        <span id="budget-status"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Property and Unit Card -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                                <h2 class="text-lg font-semibold text-primary mb-4">Property and unit</h2>
+                                
+                                <div class="space-y-3 mb-4">
+                                    <div>
+                                        <div class="text-sm font-medium text-primary" id="property-name"></div>
+                                        <div class="text-xs text-secondary" id="property-address"></div>
+                                        <div class="text-xs text-secondary" id="property-submarket"></div>
+                                    </div>
+                                    <div class="border-t border-[#E6E6E6] pt-3">
+                                        <div class="text-sm font-medium text-primary mb-2" id="unit-name"></div>
+                                        <div class="grid grid-cols-2 gap-2 text-xs">
+                                            <div>
+                                                <span class="text-secondary">Floor:</span>
+                                                <span class="text-primary ml-1" id="unit-floor"></span>
+                                            </div>
+                                            <div>
+                                                <span class="text-secondary">Size:</span>
+                                                <span class="text-primary ml-1" id="unit-size"></span>
+                                            </div>
+                                            <div>
+                                                <span class="text-secondary">Fit out:</span>
+                                                <span class="text-primary ml-1" id="unit-fitout"></span>
+                                            </div>
+                                            <div>
+                                                <span class="text-secondary">Available:</span>
+                                                <span class="text-primary ml-1" id="unit-availability"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t border-[#E6E6E6] pt-3">
+                                    <div class="flex flex-wrap gap-2" id="visibility-flags"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Operational Cards Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <!-- Viewings Card -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Viewings</h2>
+                            <div id="viewings-content">
+                                <!-- Next viewing or empty state -->
+                            </div>
+                            <button class="mt-4 text-sm text-primary hover:underline font-medium" onclick="alert('View all viewings')">
+                                View all viewings
+                            </button>
+                        </div>
+                        
+                        <!-- Heads of Terms Card -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Heads of Terms</h2>
+                            <div id="hots-content">
+                                <!-- HoTs status and details -->
+                            </div>
+                            <button id="hots-document-btn" class="mt-4 text-sm text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed" onclick="openHotsDocument()">
+                                Open latest Heads of Terms
+                            </button>
+                        </div>
+                        
+                        <!-- Contract Status Card -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Contract status</h2>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-xs text-secondary mb-1">UNION service agreement</div>
+                                    <div class="text-sm font-medium text-primary" id="union-contract-status"></div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-secondary mb-1">Landlord lease</div>
+                                    <div class="text-sm font-medium text-primary" id="landlord-contract-status"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Documents Card -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Documents</h2>
+                            <div class="space-y-3" id="documents-content">
+                                <!-- Document groups -->
+                            </div>
+                            <button class="mt-4 text-sm text-primary hover:underline font-medium" onclick="alert('View all documents')">
+                                View all documents
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Approvals and Risk Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Approvals Card -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Approvals</h2>
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="text-xs text-secondary mb-1">Current stage</div>
+                                    <div class="text-sm font-medium text-primary" id="approval-stage"></div>
+                                </div>
+                                <div>
+                                    <span id="approval-status-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"></span>
+                                </div>
+                                <div id="approval-last-decision" class="text-sm text-primary">
+                                    <!-- Last decision details -->
+                                </div>
+                                <div class="text-sm text-secondary">
+                                    <span id="open-actions-count"></span> open approval actions
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Risk Card -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Risk</h2>
+                            <div class="space-y-3">
+                                <div>
+                                    <span id="risk-score-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"></span>
+                                </div>
+                                <div id="risk-drivers" class="text-sm text-primary space-y-1">
+                                    <!-- Risk drivers -->
+                                </div>
+                                <div id="risk-mitigation" class="text-sm text-secondary">
+                                    <!-- Mitigation summary -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity and Tasks Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Activity Timeline -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Recent activity</h2>
+                            <div class="space-y-4" id="activity-timeline">
+                                <!-- Activity items -->
+                            </div>
+                        </div>
+                        
+                        <!-- Tasks -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-semibold text-primary">Tasks</h2>
+                                <div class="flex gap-2">
+                                    <button class="text-xs px-3 py-1.5 bg-muted text-primary rounded-lg hover:bg-opacity-80 transition-all-smooth" onclick="alert('Add note')">
+                                        Add note
+                                    </button>
+                                    <button class="text-xs px-3 py-1.5 bg-muted text-primary rounded-lg hover:bg-opacity-80 transition-all-smooth" onclick="alert('Add task')">
+                                        Add task
+                                    </button>
+                                    <button class="text-xs px-3 py-1.5 bg-muted text-primary rounded-lg hover:bg-opacity-80 transition-all-smooth" onclick="alert('Send update')">
+                                        Send update
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="space-y-3" id="tasks-list">
+                                <!-- Task items -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+let dealData = null;
+
+// Get dealId from URL
+function getDealId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('dealId') || params.get('deal');
+}
+
+// Format currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: 'GBP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(amount);
+}
+
+// Format date
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    }).format(date);
+}
+
+// Format date and time
+function formatDateTime(dateString, timeString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const dateStr = formatDate(dateString);
+    return timeString ? `${dateStr}, ${timeString}` : dateStr;
+}
+
+// Get initials
+function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+}
+
+// Get stage badge color
+function getStageBadgeClass(stage) {
+    const classes = {
+        'Viewing': 'bg-primary text-white',
+        'Heads of Terms': 'bg-yellow-500 text-white',
+        'Legals': 'bg-yellow-500 text-white',
+        'Signed': 'bg-green-600 text-white',
+        'Lost': 'bg-destructive text-white',
+    };
+    return classes[stage] || 'bg-muted text-primary';
+}
+
+// Get risk badge color
+function getRiskBadgeClass(risk) {
+    const classes = {
+        'High': 'bg-destructive text-white',
+        'Medium': 'bg-yellow-500 text-white',
+        'Low': 'bg-green-600 text-white',
+    };
+    return classes[risk] || 'bg-muted text-primary';
+}
+
+// Get approval badge color
+function getApprovalBadgeClass(status) {
+    const classes = {
+        'Pending': 'bg-yellow-500 text-white',
+        'Approved': 'bg-green-600 text-white',
+        'Rejected': 'bg-destructive text-white',
+    };
+    return classes[status] || 'bg-muted text-primary';
+}
+
+// Load deal data
+async function loadDeal() {
+    const dealId = getDealId();
+    if (!dealId) {
+        showError('No deal ID provided');
+        return;
+    }
+    
+    document.getElementById('loading-state').classList.remove('hidden');
+    document.getElementById('error-state').classList.add('hidden');
+    document.getElementById('deal-content').classList.add('hidden');
+    
+    try {
+        const response = await fetch(`/api/deals/${dealId}`);
+        if (!response.ok) {
+            throw new Error(`Failed to load deal: ${response.statusText}`);
+        }
+        dealData = await response.json();
+        renderDeal();
+    } catch (error) {
+        console.error('Error loading deal:', error);
+        showError(error.message);
+    }
+}
+
+// Show error
+function showError(message) {
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('error-state').classList.remove('hidden');
+    document.getElementById('deal-content').classList.add('hidden');
+    document.getElementById('error-message').textContent = message;
+}
+
+// Render deal
+function renderDeal() {
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('error-state').classList.add('hidden');
+    document.getElementById('deal-content').classList.remove('hidden');
+    
+    const d = dealData;
+    
+    // Header
+    document.getElementById('deal-name').textContent = d.deal.name;
+    const stageBadge = document.getElementById('stage-badge');
+    stageBadge.textContent = d.deal.stage;
+    stageBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStageBadgeClass(d.deal.stage)}`;
+    
+    const typeBadge = document.getElementById('deal-type-badge');
+    typeBadge.textContent = d.deal.type;
+    
+    document.getElementById('requirement-code').textContent = d.deal.requirementCode;
+    const createdDate = formatDate(d.deal.createdAt);
+    const updatedDate = formatDate(d.deal.updatedAt);
+    document.getElementById('deal-dates').textContent = `Created ${createdDate} • Updated ${updatedDate}`;
+    
+    // Owner
+    const ownerDiv = document.getElementById('deal-owner');
+    if (d.deal.owner.avatar) {
+        ownerDiv.innerHTML = `
+            <img src="${d.deal.owner.avatar}" alt="${d.deal.owner.name}" class="w-10 h-10 rounded-full object-cover">
+            <span class="text-sm font-medium text-primary">${d.deal.owner.name}</span>
+        `;
+    } else {
+        ownerDiv.innerHTML = `
+            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold">${getInitials(d.deal.owner.name)}</div>
+            <span class="text-sm font-medium text-primary">${d.deal.owner.name}</span>
+        `;
+    }
+    
+    // Context strip
+    document.getElementById('property-link').textContent = d.property.name;
+    document.getElementById('property-link').href = `#property-${d.property.id}`;
+    document.getElementById('unit-link').textContent = d.unit.name;
+    document.getElementById('unit-link').href = `#unit-${d.unit.id}`;
+    document.getElementById('tenant-company').textContent = d.tenantCompany.name;
+    document.getElementById('tenant-contact-link').textContent = d.tenantContact.name;
+    document.getElementById('tenant-contact-link').href = `#contact-${d.tenantContact.id}`;
+    document.getElementById('move-in-date').textContent = d.requirement.targetMoveInDate ? formatDate(d.requirement.targetMoveInDate) : formatDate(d.unit.availabilityDate);
+    document.getElementById('proposal-label').textContent = `${d.proposal.label}, issued ${formatDate(d.proposal.issuedDate)}`;
+    
+    // Commercial snapshot
+    document.getElementById('monthly-rent').textContent = formatCurrency(d.pricing.monthlyRent);
+    document.getElementById('annual-rent').textContent = formatCurrency(d.pricing.annualRent);
+    document.getElementById('rent-per-sqft').textContent = `£${d.pricing.rentPerSqFt.toFixed(2)}/sq ft`;
+    document.getElementById('business-rates').textContent = formatCurrency(d.pricing.businessRates);
+    document.getElementById('service-charge').textContent = formatCurrency(d.pricing.serviceCharge);
+    document.getElementById('building-insurance').textContent = formatCurrency(d.pricing.buildingInsurance);
+    document.getElementById('utilities-cap').textContent = formatCurrency(d.pricing.utilitiesCap);
+    document.getElementById('union-services').textContent = formatCurrency(d.pricing.unionServices);
+    document.getElementById('deposit').textContent = `Deposit: ${d.pricing.deposit.months} months equivalent`;
+    
+    if (d.pricing.lastPriceChange) {
+        const change = d.pricing.lastPriceChange;
+        document.getElementById('price-change-details').innerHTML = `
+            ${formatDateTime(change.date, change.time)} • ${change.approver}${change.reason ? ` • ${change.reason}` : ''}
+        `;
+        document.getElementById('last-price-change').classList.remove('hidden');
+    } else {
+        document.getElementById('last-price-change').classList.add('hidden');
+    }
+    
+    // All inclusive package
+    if (d.allInclusivePackage) {
+        document.getElementById('all-inclusive-card').classList.remove('hidden');
+        const ai = d.allInclusivePackage;
+        document.getElementById('ai-rent').textContent = formatCurrency(ai.buildingCosts.rent);
+        document.getElementById('ai-rates').textContent = formatCurrency(ai.buildingCosts.rates);
+        document.getElementById('ai-service-charge').textContent = formatCurrency(ai.buildingCosts.serviceCharge);
+        document.getElementById('ai-insurance').textContent = formatCurrency(ai.buildingCosts.insurance);
+        document.getElementById('ai-building-total').textContent = formatCurrency(ai.buildingCosts.total);
+        document.getElementById('managed-services-label').textContent = ai.managedServices.label;
+        document.getElementById('managed-services-total').textContent = formatCurrency(ai.managedServices.total);
+        document.getElementById('combined-monthly').textContent = formatCurrency(ai.combinedMonthly);
+    } else {
+        document.getElementById('all-inclusive-card').classList.add('hidden');
+    }
+    
+    // Requirement summary
+    document.getElementById('req-size').textContent = `${d.requirement.sizeSqFt.toLocaleString()} sq ft`;
+    document.getElementById('req-desks').textContent = d.requirement.deskCount.toString();
+    document.getElementById('req-budget').textContent = formatCurrency(d.requirement.budget);
+    document.getElementById('req-timing').textContent = d.requirement.timing;
+    document.getElementById('preferred-locations').textContent = d.requirement.preferredLocations.join(', ');
+    document.getElementById('must-haves').innerHTML = d.requirement.mustHaves.map(h => `<li>• ${h}</li>`).join('');
+    if (d.requirement.redLines && d.requirement.redLines.length > 0) {
+        document.getElementById('red-lines').innerHTML = d.requirement.redLines.map(r => `<li>• ${r}</li>`).join('');
+        document.getElementById('red-lines-section').classList.remove('hidden');
+    } else {
+        document.getElementById('red-lines-section').classList.add('hidden');
+    }
+    document.getElementById('decision-maker').textContent = `${d.requirement.decisionMaker.name}, ${d.requirement.decisionMaker.role}`;
+    document.getElementById('budget-status').textContent = d.requirement.budgetStatus;
+    
+    // Property and unit
+    document.getElementById('property-name').textContent = d.property.name;
+    document.getElementById('property-address').textContent = d.property.address;
+    document.getElementById('property-submarket').textContent = d.property.submarket;
+    document.getElementById('unit-name').textContent = d.unit.name;
+    document.getElementById('unit-floor').textContent = d.unit.floor;
+    document.getElementById('unit-size').textContent = `${d.unit.sizeSqFt.toLocaleString()} sq ft`;
+    document.getElementById('unit-fitout').textContent = d.unit.fitOutStatus;
+    document.getElementById('unit-availability').textContent = formatDate(d.unit.availabilityDate);
+    document.getElementById('visibility-flags').innerHTML = d.unit.visibilityFlags.map(flag => 
+        `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">${flag}</span>`
+    ).join('');
+    
+    // Viewings
+    const viewingsDiv = document.getElementById('viewings-content');
+    if (d.viewingsSummary.nextViewing) {
+        const v = d.viewingsSummary.nextViewing;
+        viewingsDiv.innerHTML = `
+            <div class="mb-2">
+                <div class="text-sm font-medium text-primary">${formatDate(v.date)} ${v.time}</div>
+                <div class="text-xs text-secondary">${v.brokerName} • ${v.status}</div>
+            </div>
+            <div class="text-xs text-secondary">${d.viewingsSummary.totalViewings} total viewings${d.viewingsSummary.lastViewingDate ? ` • Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : ''}</div>
+        `;
+    } else {
+        viewingsDiv.innerHTML = `
+            <div class="text-sm text-secondary mb-2">No upcoming viewings</div>
+            <div class="text-xs text-secondary">${d.viewingsSummary.totalViewings} total viewings${d.viewingsSummary.lastViewingDate ? ` • Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : ''}</div>
+        `;
+    }
+    
+    // Heads of Terms
+    const hotsDiv = document.getElementById('hots-content');
+    const hotsStatusBadge = document.createElement('span');
+    hotsStatusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6] mb-3';
+    hotsStatusBadge.textContent = d.headsOfTerms.status;
+    hotsDiv.innerHTML = '';
+    hotsDiv.appendChild(hotsStatusBadge);
+    
+    if (d.headsOfTerms.termYears) {
+        const hotsGrid = document.createElement('div');
+        hotsGrid.className = 'grid grid-cols-2 gap-2 text-sm mt-3';
+        hotsGrid.innerHTML = `
+            <div>
+                <span class="text-secondary">Term:</span>
+                <span class="text-primary ml-1">${d.headsOfTerms.termYears} years</span>
+            </div>
+            ${d.headsOfTerms.breakOption ? `
+            <div>
+                <span class="text-secondary">Break:</span>
+                <span class="text-primary ml-1">${d.headsOfTerms.breakOption}</span>
+            </div>
+            ` : ''}
+            ${d.headsOfTerms.upliftPattern ? `
+            <div>
+                <span class="text-secondary">Uplift:</span>
+                <span class="text-primary ml-1">${d.headsOfTerms.upliftPattern}</span>
+            </div>
+            ` : ''}
+            ${d.headsOfTerms.deposit && !d.pricing.deposit ? `
+            <div>
+                <span class="text-secondary">Deposit:</span>
+                <span class="text-primary ml-1">${d.headsOfTerms.deposit.months} months</span>
+            </div>
+            ` : ''}
+        `;
+        if (d.headsOfTerms.specialConditions) {
+            hotsGrid.innerHTML += `
+                <div class="col-span-2 text-xs text-secondary mt-2">
+                    ${d.headsOfTerms.specialConditions}
+                </div>
+            `;
+        }
+        hotsDiv.appendChild(hotsGrid);
+    }
+    
+    const hotsBtn = document.getElementById('hots-document-btn');
+    if (d.headsOfTerms.latestDocumentUrl) {
+        hotsBtn.disabled = false;
+        hotsBtn.onclick = () => window.open(d.headsOfTerms.latestDocumentUrl, '_blank');
+    } else {
+        hotsBtn.disabled = true;
+    }
+    
+    // Contracts
+    document.getElementById('union-contract-status').textContent = d.contracts.unionServiceAgreement.status;
+    document.getElementById('landlord-contract-status').textContent = d.contracts.landlordLease.status;
+    
+    // Documents
+    const docsDiv = document.getElementById('documents-content');
+    const docGroups = [
+        { key: 'legal', label: 'Legal' },
+        { key: 'commercial', label: 'Commercial' },
+        { key: 'plans', label: 'Plans' },
+        { key: 'marketing', label: 'Marketing' },
+    ];
+    docsDiv.innerHTML = docGroups.map(group => {
+        const doc = d.documentsSummary[group.key];
+        return `
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-medium text-secondary">${group.label}</span>
+                    <span class="text-xs text-secondary">${doc.count} documents</span>
+                </div>
+                ${doc.latest ? `
+                <div class="text-xs text-primary">
+                    ${doc.latest.title} • ${formatDate(doc.latest.date)}
+                </div>
+                ` : ''}
+            </div>
+        `;
+    }).join('');
+    
+    // Approvals
+    document.getElementById('approval-stage').textContent = d.approvals.currentStage;
+    const approvalBadge = document.getElementById('approval-status-badge');
+    approvalBadge.textContent = d.approvals.status;
+    approvalBadge.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getApprovalBadgeClass(d.approvals.status)}`;
+    
+    const approvalDecision = document.getElementById('approval-last-decision');
+    if (d.approvals.lastDecision) {
+        approvalDecision.innerHTML = `
+            ${d.approvals.lastDecision.decision} • ${formatDate(d.approvals.lastDecision.date)} • ${d.approvals.lastDecision.approver}
+        `;
+        approvalDecision.classList.remove('hidden');
+    } else {
+        approvalDecision.classList.add('hidden');
+    }
+    document.getElementById('open-actions-count').textContent = d.approvals.openActionsCount;
+    
+    // Risk
+    const riskBadge = document.getElementById('risk-score-badge');
+    riskBadge.textContent = d.risk.score;
+    riskBadge.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getRiskBadgeClass(d.risk.score)}`;
+    
+    const riskDrivers = document.getElementById('risk-drivers');
+    if (d.risk.drivers && d.risk.drivers.length > 0) {
+        riskDrivers.innerHTML = d.risk.drivers.slice(0, 3).map(driver => `<div>• ${driver}</div>`).join('');
+        riskDrivers.classList.remove('hidden');
+    } else {
+        riskDrivers.classList.add('hidden');
+    }
+    
+    const riskMitigation = document.getElementById('risk-mitigation');
+    if (d.risk.mitigation) {
+        riskMitigation.textContent = d.risk.mitigation;
+        riskMitigation.classList.remove('hidden');
+    } else {
+        riskMitigation.classList.add('hidden');
+    }
+    
+    // Activity
+    const activityDiv = document.getElementById('activity-timeline');
+    const recentActivity = d.activity.slice(0, 10);
+    if (recentActivity.length > 0) {
+        activityDiv.innerHTML = recentActivity.map(act => `
+            <div class="border-l-2 border-[#E6E6E6] pl-4 pb-4 last:pb-0">
+                <div class="text-sm font-medium text-primary">${act.title}</div>
+                <div class="text-xs text-secondary mt-1">
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-muted">${act.type}</span>
+                    <span class="ml-2">${act.userName} • ${formatDate(act.date)}</span>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        activityDiv.innerHTML = '<div class="text-sm text-secondary">No recent activity</div>';
+    }
+    
+    // Tasks
+    const tasksDiv = document.getElementById('tasks-list');
+    const openTasks = d.tasks.filter(t => t.status !== 'Completed');
+    if (openTasks.length > 0) {
+        tasksDiv.innerHTML = openTasks.map(task => {
+            const statusColors = {
+                'Open': 'bg-muted text-primary',
+                'In progress': 'bg-yellow-500 text-white',
+                'Blocked': 'bg-destructive text-white',
+            };
+            return `
+                <div class="border border-[#E6E6E6] rounded-lg p-3">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="text-sm font-medium text-primary flex-1">${task.title}</div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[task.status] || 'bg-muted text-primary'} ml-2">
+                            ${task.status}
+                        </span>
+                    </div>
+                    <div class="text-xs text-secondary">
+                        <span>${task.owner}</span>
+                        ${task.dueDate ? `<span> • Due ${formatDate(task.dueDate)}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else {
+        tasksDiv.innerHTML = '<div class="text-sm text-secondary">No open tasks</div>';
+    }
+}
+
+// Open HoTs document
+function openHotsDocument() {
+    if (dealData && dealData.headsOfTerms.latestDocumentUrl) {
+        window.open(dealData.headsOfTerms.latestDocumentUrl, '_blank');
+    }
+}
+
+// Load on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadDeal();
+});
+</script>
+
+</body>
+</html>
+
