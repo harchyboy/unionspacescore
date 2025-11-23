@@ -111,11 +111,11 @@
 </head>
 <body class="antialiased">
 
-<div id="app-shell" class="flex h-screen overflow-hidden">
+<div id="app-shell" class="flex min-h-screen">
     
     <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="deal-room"></aside>
     
-    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
+    <main id="main-content" class="flex-1 flex flex-col bg-[#F0F0F0]">
         
         <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-6 flex-1">
@@ -165,33 +165,151 @@
             </div>
         </div>
         
-        <div id="stage-filters-bar" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
-            <div class="flex items-center space-x-3">
-                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
-                    Viewing
-                </button>
-                <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg">
-                    Heads of Terms
-                </button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
-                    Legals
-                </button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
-                    Signed
-                </button>
-                <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
-                    Lost
-                </button>
+        <!-- Summary Cards Row -->
+        <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Deal Value Card -->
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Deal Value</div>
+                        <i class="fa-solid fa-sterling-sign text-primary text-sm"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-primary mb-1">£2,100,000</div>
+                    <div class="text-xs text-green-600 font-medium">+5.2% vs initial estimate</div>
+                </div>
+                
+                <!-- Probability Card -->
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Probability</div>
+                        <i class="fa-solid fa-percent text-primary text-sm"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-primary">85%</div>
+                </div>
+                
+                <!-- Days Active Card -->
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Days Active</div>
+                        <i class="fa-solid fa-calendar text-primary text-sm"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-primary mb-1">42</div>
+                    <div class="text-xs text-secondary">Next: Contract Review</div>
+                </div>
             </div>
         </div>
         
-        <div id="deal-room-content" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
-            
-            <div class="grid grid-cols-3 gap-6 mb-6">
+        <!-- Deal Pipeline Progress -->
+        <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-primary mb-1">Deal Pipeline Progress</h3>
+                        <div class="text-sm text-secondary">Progress: 57% Complete</div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="px-4 py-2 text-sm font-medium text-primary bg-blue-50 border border-blue-500 rounded-lg">
+                            All Stages
+                        </button>
+                        <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                            Current Stage
+                        </button>
+                        <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                            Timeline View
+                        </button>
+                    </div>
+                </div>
                 
-                <div class="col-span-2 space-y-6">
+                <!-- Pipeline Stages -->
+                <div class="relative">
+                    <!-- Progress Line -->
+                    <div class="absolute top-8 left-0 right-0 h-0.5 bg-[#E6E6E6] z-0">
+                        <div class="h-full bg-primary" style="width: 57%"></div>
+                    </div>
                     
-                    <div id="commercial-snapshot-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div class="relative flex items-start justify-between">
+                        <!-- Lead Stage -->
+                        <div class="flex flex-col items-center z-10">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                                <i class="fa-solid fa-check text-white text-lg"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-primary mb-1">Lead</div>
+                            <div class="text-xs text-secondary mb-1">Completed</div>
+                            <div class="text-xs text-green-600 font-medium">Oct 5, 2024</div>
+                        </div>
+                        
+                        <!-- Viewing Stage -->
+                        <div class="flex flex-col items-center z-10">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                                <i class="fa-solid fa-check text-white text-lg"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-primary mb-1">Viewing</div>
+                            <div class="text-xs text-secondary mb-1">Completed</div>
+                            <div class="text-xs text-green-600 font-medium">Oct 12, 2024</div>
+                        </div>
+                        
+                        <!-- Proposal Stage -->
+                        <div class="flex flex-col items-center z-10">
+                            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                                <i class="fa-solid fa-check text-white text-lg"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-primary mb-1">Proposal</div>
+                            <div class="text-xs text-secondary mb-1">Completed</div>
+                            <div class="text-xs text-green-600 font-medium">Oct 25, 2024</div>
+                        </div>
+                        
+                        <!-- HoTs Stage (In Progress) -->
+                        <div class="flex flex-col items-center z-10">
+                            <div class="relative">
+                                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-2 ring-4 ring-blue-100">
+                                    <i class="fa-solid fa-clock text-white text-lg"></i>
+                                </div>
+                            </div>
+                            <div class="text-sm font-semibold text-primary mb-1">HoTs</div>
+                            <div class="text-xs text-primary font-medium mb-1">In Progress</div>
+                            <div class="text-xs text-primary font-medium">Due: Nov 15</div>
+                        </div>
+                        
+                        <!-- Contract Stage -->
+                        <div class="flex flex-col items-center z-10">
+                            <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-2 border-2 border-[#E6E6E6]">
+                                <i class="fa-solid fa-file-contract text-secondary text-lg"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-primary mb-1">Contract</div>
+                            <div class="text-xs text-secondary mb-1">Pending</div>
+                            <div class="text-xs text-secondary">Est: Nov 20</div>
+                        </div>
+                        
+                        <!-- Onboarding Stage -->
+                        <div class="flex flex-col items-center z-10">
+                            <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-2 border-2 border-[#E6E6E6]">
+                                <i class="fa-solid fa-gear text-secondary text-lg"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-primary mb-1">Onboarding</div>
+                            <div class="text-xs text-secondary mb-1">Pending</div>
+                            <div class="text-xs text-secondary">Est: Dec 1</div>
+                        </div>
+                        
+                        <!-- Live Stage -->
+                        <div class="flex flex-col items-center z-10">
+                            <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-2 border-2 border-[#E6E6E6]">
+                                <i class="fa-solid fa-flag text-secondary text-lg"></i>
+                            </div>
+                            <div class="text-sm font-semibold text-primary mb-1">Live</div>
+                            <div class="text-xs text-secondary mb-1">Pending</div>
+                            <div class="text-xs text-secondary">Est: Dec 15</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Property Details and Stakeholders Section -->
+        <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Left Column - Commercial Snapshot -->
+                <div class="col-span-2">
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-lg font-semibold text-primary">Commercial Snapshot</h3>
                             <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
@@ -200,52 +318,58 @@
                             </button>
                         </div>
                         <div class="grid grid-cols-3 gap-6">
+                            <!-- Column 1 -->
                             <div>
                                 <div class="text-xs text-secondary mb-1">Rent (Monthly)</div>
                                 <div class="text-2xl font-semibold text-primary">£12,800</div>
                                 <div class="text-xs text-secondary mt-1">£153,600 / year</div>
                             </div>
+                            <!-- Column 2 -->
                             <div>
                                 <div class="text-xs text-secondary mb-1">Rent per sq ft</div>
                                 <div class="text-2xl font-semibold text-primary">£48</div>
                                 <div class="text-xs text-secondary mt-1">Per sq ft / year</div>
                             </div>
+                            <!-- Column 3 -->
                             <div>
                                 <div class="text-xs text-secondary mb-1">Business Rates</div>
                                 <div class="text-2xl font-semibold text-primary">£2,100</div>
                                 <div class="text-xs text-secondary mt-1">Monthly estimate</div>
                             </div>
+                            <!-- Column 1 -->
                             <div>
                                 <div class="text-xs text-secondary mb-1">Service Charge</div>
                                 <div class="text-2xl font-semibold text-primary">£1,600</div>
                                 <div class="text-xs text-secondary mt-1">Monthly</div>
                             </div>
+                            <!-- Column 2 -->
                             <div>
                                 <div class="text-xs text-secondary mb-1">Insurance</div>
                                 <div class="text-2xl font-semibold text-primary">£320</div>
                                 <div class="text-xs text-secondary mt-1">Monthly</div>
                             </div>
+                            <!-- Column 3 -->
                             <div>
                                 <div class="text-xs text-secondary mb-1">Utilities Cap</div>
                                 <div class="text-2xl font-semibold text-primary">£800</div>
                                 <div class="text-xs text-secondary mt-1">Monthly maximum</div>
                             </div>
-                            <div class="col-span-3 pt-4 border-t border-[#E6E6E6]">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Deposit Required</div>
-                                        <div class="text-xl font-semibold text-primary">£38,400</div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="text-xs text-secondary mb-1">Last Price Change</div>
-                                        <div class="text-sm text-primary">14 Nov 2024</div>
-                                    </div>
-                                </div>
+                            <!-- Column 1 -->
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Deposit Required</div>
+                                <div class="text-xl font-semibold text-primary">£38,400</div>
+                            </div>
+                            <!-- Column 2 - Empty -->
+                            <div></div>
+                            <!-- Column 3 -->
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Last Price Change</div>
+                                <div class="text-sm text-primary">14 Nov 2024</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="all-inclusive-package-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div id="all-inclusive-package-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm mt-6">
                         <h3 class="text-lg font-semibold text-primary mb-6">All-Inclusive Package</h3>
                         <div class="space-y-3">
                             <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
@@ -257,24 +381,36 @@
                             </div>
                             <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
                                 <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-concierge-bell text-secondary"></i>
+                                    <i class="fa-solid fa-user text-secondary"></i>
                                     <span class="text-sm text-primary">Managed Services Total</span>
                                 </div>
                                 <span class="text-sm font-semibold text-primary">£4,280</span>
                             </div>
-                            <div class="flex items-center justify-between py-4 bg-muted rounded-lg px-4 mt-4">
+                            <div class="flex items-center justify-between py-4 bg-primary rounded-lg px-4 mt-4">
                                 <div class="flex items-center space-x-3">
-                                    <i class="fa-solid fa-check-circle text-primary text-xl"></i>
-                                    <span class="text-base font-semibold text-primary">Final All-Inclusive Monthly</span>
+                                    <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-check text-primary text-xs"></i>
+                                    </div>
+                                    <span class="text-base font-semibold text-white">Final All-Inclusive Monthly</span>
                                 </div>
-                                <span class="text-2xl font-semibold text-primary">£21,100</span>
+                                <span class="text-2xl font-semibold text-white">£21,100</span>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="managed-services-breakdown-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <div id="managed-services-breakdown-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm mt-6">
                         <h3 class="text-lg font-semibold text-primary mb-6">Managed Services Breakdown</h3>
                         <div class="space-y-3">
+                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                                <div class="flex items-center space-x-3 flex-1">
+                                    <i class="fa-solid fa-shield-halved text-secondary"></i>
+                                    <div class="flex-1">
+                                        <div class="text-sm text-primary">Security & Access Control</div>
+                                        <div class="text-xs text-secondary">24/7 monitoring</div>
+                                    </div>
+                                </div>
+                                <span class="text-sm font-semibold text-primary">£120</span>
+                            </div>
                             <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
                                 <div class="flex items-center space-x-3 flex-1">
                                     <i class="fa-solid fa-broom text-secondary"></i>
@@ -305,7 +441,7 @@
                                 </div>
                                 <span class="text-sm font-semibold text-primary">£720</span>
                             </div>
-                            <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center justify-between py-3">
                                 <div class="flex items-center space-x-3 flex-1">
                                     <i class="fa-solid fa-phone text-secondary"></i>
                                     <div class="flex-1">
@@ -315,76 +451,41 @@
                                 </div>
                                 <span class="text-sm font-semibold text-primary">£1,200</span>
                             </div>
-                            <div class="flex items-center justify-between py-3">
-                                <div class="flex items-center space-x-3 flex-1">
-                                    <i class="fa-solid fa-shield-halved text-secondary"></i>
-                                    <div class="flex-1">
-                                        <div class="text-sm text-primary">Security & Access Control</div>
-                                        <div class="text-xs text-secondary">24/7 monitoring</div>
-                                    </div>
-                                </div>
-                                <span class="text-sm font-semibold text-primary">£120</span>
-                            </div>
                         </div>
                     </div>
-                    
                 </div>
                 
+                <!-- Right Column - Decision and Budget, Property & Unit -->
                 <div class="space-y-6">
-                    
-                    <div id="requirement-summary-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                        <h3 class="text-lg font-semibold text-primary mb-6">Requirement Summary</h3>
+                    <!-- Decision and Budget Card -->
+                    <div id="decision-budget-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                        <h3 class="text-lg font-semibold text-primary mb-6">Decision and Budget</h3>
                         <div class="space-y-4">
                             <div>
-                                <div class="text-xs text-secondary mb-1">Size</div>
-                                <div class="text-sm text-primary font-medium">3,000 – 3,500 sq ft</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-1">Desks</div>
-                                <div class="text-sm text-primary font-medium">35 – 40</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-1">Budget</div>
-                                <div class="text-sm text-primary font-medium">£18,000 – £22,000 /mo</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-1">Timing</div>
-                                <div class="text-sm text-primary font-medium">Q1 2025</div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-2">Locations</div>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">City Core</span>
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Shoreditch</span>
-                                </div>
-                            </div>
-                            <div class="pt-4 border-t border-[#E6E6E6]">
-                                <div class="text-xs text-secondary mb-2">Must-Haves</div>
-                                <div class="space-y-1 text-xs text-primary">
-                                    <div>• Natural light</div>
-                                    <div>• Meeting rooms</div>
-                                    <div>• Bike storage</div>
-                                </div>
-                            </div>
-                            <div class="pt-4 border-t border-[#E6E6E6]">
-                                <div class="text-xs text-secondary mb-2">Red Lines</div>
-                                <div class="space-y-1 text-xs text-primary">
-                                    <div>• No basement spaces</div>
-                                    <div>• No shared WCs</div>
-                                </div>
-                            </div>
-                            <div class="pt-4 border-t border-[#E6E6E6]">
-                                <div class="text-xs text-secondary mb-1">Decision Maker</div>
+                                <div class="text-xs text-secondary mb-1">Decision maker</div>
                                 <div class="text-sm text-primary font-medium">Sarah Chen, CFO</div>
                             </div>
                             <div>
-                                <div class="text-xs text-secondary mb-1">Budget Approval</div>
+                                <div class="text-xs text-secondary mb-1">Commercial sponsor</div>
+                                <div class="text-sm text-primary font-medium">James Patel, COO</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Authority</div>
+                                <div class="text-sm text-primary">Joint sign off CFO and COO</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Budget approval</div>
                                 <div class="text-sm text-primary">Board approved</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-secondary mb-1">Budget ceiling</div>
+                                <div class="text-sm text-primary font-medium">Do not exceed £22,000 per month</div>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="property-unit-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                    <!-- Property & Unit Card -->
+                    <div id="property-unit-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                         <h3 class="text-lg font-semibold text-primary mb-6">Property & Unit</h3>
                         <div class="space-y-4">
                             <div>
@@ -424,12 +525,14 @@
                             </div>
                         </div>
                     </div>
-                    
                 </div>
-                
             </div>
+        </div>
+        
+        <div class="px-8 py-6">
             
-            <div id="heads-of-terms-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+            
+            <div id="heads-of-terms-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-semibold text-primary">Heads of Terms</h3>
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
@@ -469,7 +572,7 @@
                 </div>
             </div>
             
-            <div id="union-service-agreement-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+            <div id="union-service-agreement-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
                 <h3 class="text-lg font-semibold text-primary mb-6">UNION Service Agreement</h3>
                 <div class="grid grid-cols-2 gap-6">
                     <div>
@@ -488,7 +591,7 @@
                 </div>
             </div>
             
-            <div id="lease-status-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+            <div id="lease-status-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
                 <h3 class="text-lg font-semibold text-primary mb-6">Lease Status</h3>
                 <div class="grid grid-cols-2 gap-6">
                     <div>
@@ -504,7 +607,7 @@
                 </div>
             </div>
             
-            <div id="documents-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+            <div id="documents-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-semibold text-primary">Documents</h3>
                     <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
@@ -546,7 +649,7 @@
             
             <div class="grid grid-cols-2 gap-6 mb-6">
                 
-                <div id="approvals-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                <div id="approvals-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                     <h3 class="text-lg font-semibold text-primary mb-6">Approvals</h3>
                     <div class="space-y-4">
                         <div>
@@ -567,7 +670,7 @@
                     </div>
                 </div>
                 
-                <div id="risk-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                <div id="risk-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                     <h3 class="text-lg font-semibold text-primary mb-6">Risk</h3>
                     <div class="space-y-4">
                         <div>
@@ -598,7 +701,7 @@
             
             <div class="grid grid-cols-2 gap-6">
                 
-                <div id="activity-stream-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                <div id="activity-stream-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-semibold text-primary">Activity</h3>
                         <button class="text-xs text-secondary hover:text-primary">View all</button>
@@ -643,7 +746,7 @@
                     </div>
                 </div>
                 
-                <div id="tasks-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                <div id="tasks-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-semibold text-primary">Tasks</h3>
                         <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
