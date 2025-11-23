@@ -96,6 +96,7 @@ function App() {
                   <Route path="/deals/legals" element={<LegalsTracking />} />
                   <Route path="/deals/provisional-orders" element={<ProvisionalOrders />} />
                   <Route path="/deals/handoff" element={<HandoffToOperations />} />
+                  <Route path="/deal-room" element={<DealRoomDashboard />} />
                 </>
               )}
 
@@ -118,7 +119,6 @@ function App() {
                       </DealRoomGuard>
                     }
                   />
-                  <Route path="/deal-room" element={<DealRoomDashboard />} />
                 </>
               )}
 
