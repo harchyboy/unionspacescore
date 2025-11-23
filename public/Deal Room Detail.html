@@ -188,28 +188,42 @@
                     </div>
                 </div>
                 
-                <!-- Context Strip -->
-                <div class="bg-white border-b border-[#E6E6E6] px-8 py-3">
-                    <div class="flex items-center gap-6 flex-wrap text-sm">
-                        <div class="flex items-center gap-2">
-                            <span class="text-secondary">Property:</span>
-                            <a href="#" id="property-link" class="text-primary hover:underline font-medium"></a>
-                            <span class="text-secondary">•</span>
-                            <a href="#" id="unit-link" class="text-primary hover:underline font-medium"></a>
+                <!-- Deal Context Section (Section 1) -->
+                <div class="bg-white border-b border-[#E6E6E6] px-8 py-4">
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-sm">
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Property</div>
+                            <a href="#" id="property-link" class="text-primary hover:underline font-medium block"></a>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-secondary">Tenant:</span>
-                            <span id="tenant-company" class="text-primary font-medium"></span>
-                            <span class="text-secondary">•</span>
-                            <a href="#" id="tenant-contact-link" class="text-primary hover:underline font-medium"></a>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Unit</div>
+                            <a href="#" id="unit-link" class="text-primary hover:underline font-medium block"></a>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-secondary">Target move-in:</span>
-                            <span id="move-in-date" class="text-primary font-medium"></span>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Tenant Company</div>
+                            <span id="tenant-company" class="text-primary font-medium block"></span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-secondary">Proposal:</span>
-                            <span id="proposal-label" class="text-primary font-medium"></span>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Main Contact</div>
+                            <a href="#" id="tenant-contact-link" class="text-primary hover:underline font-medium block"></a>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Requirement Code</div>
+                            <span id="requirement-code-context" class="text-primary font-medium block"></span>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Deal Stage</div>
+                            <span id="deal-stage-context" class="text-primary font-medium block"></span>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Deal Type</div>
+                            <span id="deal-type-context" class="text-primary font-medium block"></span>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Deal Owner</div>
+                            <div class="flex items-center gap-2">
+                                <span id="deal-owner-name" class="text-primary font-medium"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -271,7 +285,7 @@
                                 </div>
                             </div>
                             
-                            <!-- All Inclusive Package Card -->
+                            <!-- All Inclusive Package Card (Section 3) -->
                             <div id="all-inclusive-card" class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
                                 <h2 class="text-lg font-semibold text-primary mb-4">All inclusive package</h2>
                                 
@@ -314,6 +328,59 @@
                                         <div class="flex justify-between items-baseline">
                                             <span class="text-sm font-semibold text-primary">All inclusive monthly</span>
                                             <span class="text-xl font-semibold text-primary" id="combined-monthly"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Managed Services Breakdown (Section 4) -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                                <h2 class="text-lg font-semibold text-primary mb-4">Managed services breakdown</h2>
+                                
+                                <div class="space-y-3">
+                                    <div>
+                                        <div class="text-xs font-medium text-secondary mb-2">Base package</div>
+                                        <div id="managed-services-base" class="space-y-1.5 text-sm">
+                                            <!-- Base services will be populated here -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="managed-services-extras-section" class="border-t border-[#E6E6E6] pt-3">
+                                        <div class="text-xs font-medium text-secondary mb-2">Optional extras</div>
+                                        <div id="managed-services-extras" class="space-y-1.5 text-sm">
+                                            <!-- Optional extras will be populated here -->
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-t border-[#E6E6E6] pt-3">
+                                        <div class="flex justify-between items-baseline">
+                                            <span class="text-sm font-semibold text-primary">Total UNION services</span>
+                                            <span class="text-lg font-semibold text-primary" id="managed-services-running-total"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Proposal Versions (Section 5) -->
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                                <h2 class="text-lg font-semibold text-primary mb-4">Proposal versions</h2>
+                                
+                                <div class="space-y-3">
+                                    <div class="border-b border-[#E6E6E6] pb-3">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div>
+                                                <div class="text-sm font-semibold text-primary" id="current-proposal-label"></div>
+                                                <div class="text-xs text-secondary" id="current-proposal-date"></div>
+                                            </div>
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Current</span>
+                                        </div>
+                                        <div class="text-sm text-primary" id="current-proposal-changes"></div>
+                                    </div>
+                                    
+                                    <div id="previous-proposals-section">
+                                        <div class="text-xs font-medium text-secondary mb-2">Previous versions</div>
+                                        <div id="previous-proposals-list" class="space-y-2">
+                                            <!-- Previous proposals will be populated here -->
                                         </div>
                                     </div>
                                 </div>
@@ -414,48 +481,114 @@
                     
                     <!-- Operational Cards Row -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                        <!-- Viewings Card -->
+                        <!-- Move-in and Operational Notes (Section 9) -->
                         <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
-                            <h2 class="text-lg font-semibold text-primary mb-4">Viewings</h2>
-                            <div id="viewings-content">
-                                <!-- Next viewing or empty state -->
+                            <h2 class="text-lg font-semibold text-primary mb-4">Move-in and operational notes</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="text-xs text-secondary mb-1">Target move-in date</div>
+                                    <div class="text-sm font-medium text-primary" id="target-move-in-date"></div>
+                                </div>
+                                
+                                <div id="timeline-sensitivities-section" class="border-t border-[#E6E6E6] pt-3">
+                                    <div class="text-xs text-secondary mb-2">Timeline sensitivities</div>
+                                    <div id="timeline-sensitivities" class="text-sm text-primary space-y-1">
+                                        <!-- Timeline sensitivities will be populated here -->
+                                    </div>
+                                </div>
+                                
+                                <div id="red-flags-section" class="border-t border-[#E6E6E6] pt-3">
+                                    <div class="text-xs text-secondary mb-2">Red flags</div>
+                                    <div id="red-flags" class="text-sm text-destructive space-y-1">
+                                        <!-- Red flags will be populated here -->
+                                    </div>
+                                </div>
+                                
+                                <div class="border-t border-[#E6E6E6] pt-3">
+                                    <div class="text-xs text-secondary mb-2">Viewing information</div>
+                                    <div id="viewings-content">
+                                        <!-- Next viewing or empty state -->
+                                    </div>
+                                    <div class="text-xs text-secondary mt-2">
+                                        <span id="total-viewings-text"></span>
+                                        <span id="last-viewing-text" class="ml-2"></span>
+                                    </div>
+                                </div>
                             </div>
-                            <button class="mt-4 text-sm text-primary hover:underline font-medium" onclick="alert('View all viewings')">
-                                View all viewings
-                            </button>
                         </div>
                         
-                        <!-- Heads of Terms Card -->
+                        <!-- UNION Service Agreement (Section 6) -->
                         <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
-                            <h2 class="text-lg font-semibold text-primary mb-4">Heads of Terms</h2>
-                            <div id="hots-content">
-                                <!-- HoTs status and details -->
-                            </div>
-                            <button id="hots-document-btn" class="mt-4 text-sm text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed" onclick="openHotsDocument()">
-                                Open latest Heads of Terms
-                            </button>
-                        </div>
-                        
-                        <!-- Contract Status Card -->
-                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
-                            <h2 class="text-lg font-semibold text-primary mb-4">Contract status</h2>
+                            <h2 class="text-lg font-semibold text-primary mb-4">UNION service agreement</h2>
                             <div class="space-y-3">
                                 <div>
-                                    <div class="text-xs text-secondary mb-1">UNION service agreement</div>
-                                    <div class="text-sm font-medium text-primary" id="union-contract-status"></div>
+                                    <span id="union-agreement-status-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium mb-2"></span>
                                 </div>
-                                <div>
-                                    <div class="text-xs text-secondary mb-1">Landlord lease</div>
-                                    <div class="text-sm font-medium text-primary" id="landlord-contract-status"></div>
+                                <div id="union-agreement-draft-section" class="text-sm">
+                                    <a href="#" id="union-agreement-draft-link" class="text-primary hover:underline font-medium">View latest draft</a>
+                                </div>
+                                <div id="union-agreement-signing-section" class="text-xs text-secondary space-y-1">
+                                    <div id="union-agreement-signed-date"></div>
+                                    <div id="union-agreement-signed-by"></div>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Documents Card -->
+                        <!-- Landlord Heads of Terms and Lease (Section 7) -->
                         <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
-                            <h2 class="text-lg font-semibold text-primary mb-4">Documents</h2>
-                            <div class="space-y-3" id="documents-content">
-                                <!-- Document groups -->
+                            <h2 class="text-lg font-semibold text-primary mb-4">Landlord Heads of Terms and lease</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="text-xs text-secondary mb-2">Heads of Terms</div>
+                                    <span id="hots-status-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium mb-3"></span>
+                                    <div id="hots-key-terms" class="space-y-2 text-sm">
+                                        <!-- Key terms will be populated here -->
+                                    </div>
+                                    <button id="hots-document-btn-enhanced" class="mt-3 text-sm text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed" onclick="openHotsDocument()">
+                                        Open latest HoTs document
+                                    </button>
+                                </div>
+                                <div class="border-t border-[#E6E6E6] pt-3">
+                                    <div class="text-xs text-secondary mb-2">Lease</div>
+                                    <span id="lease-status-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stage Rail (Section 8) -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Progress</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="text-xs text-secondary mb-2">UNION package</div>
+                                    <div class="relative">
+                                        <div class="flex items-center">
+                                            <div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                                                <div id="union-package-progress" class="h-full bg-primary transition-all duration-300"></div>
+                                            </div>
+                                            <span id="union-package-status" class="ml-3 text-xs font-medium text-primary"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-secondary mb-2">Lease</div>
+                                    <div class="relative">
+                                        <div class="flex items-center">
+                                            <div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                                                <div id="lease-progress" class="h-full bg-primary transition-all duration-300"></div>
+                                            </div>
+                                            <span id="lease-status-text" class="ml-3 text-xs font-medium text-primary"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Deal Documents (Section 10) -->
+                        <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
+                            <h2 class="text-lg font-semibold text-primary mb-4">Deal documents</h2>
+                            <div class="space-y-4" id="documents-content">
+                                <!-- Document categories will be populated here -->
                             </div>
                             <button class="mt-4 text-sm text-primary hover:underline font-medium" onclick="alert('View all documents')">
                                 View all documents
@@ -683,7 +816,7 @@ function renderDeal() {
         `;
     }
     
-    // Context strip
+    // Deal Context Section (Section 1)
     document.getElementById('property-link').textContent = d.property.name;
     document.getElementById('property-link').href = `#property-${d.property.id}`;
     document.getElementById('unit-link').textContent = d.unit.name;
@@ -691,8 +824,10 @@ function renderDeal() {
     document.getElementById('tenant-company').textContent = d.tenantCompany.name;
     document.getElementById('tenant-contact-link').textContent = d.tenantContact.name;
     document.getElementById('tenant-contact-link').href = `#contact-${d.tenantContact.id}`;
-    document.getElementById('move-in-date').textContent = d.requirement.targetMoveInDate ? formatDate(d.requirement.targetMoveInDate) : formatDate(d.unit.availabilityDate);
-    document.getElementById('proposal-label').textContent = `${d.proposal.label}, issued ${formatDate(d.proposal.issuedDate)}`;
+    document.getElementById('requirement-code-context').textContent = d.deal.requirementCode;
+    document.getElementById('deal-stage-context').textContent = d.deal.stage;
+    document.getElementById('deal-type-context').textContent = d.deal.type;
+    document.getElementById('deal-owner-name').textContent = d.deal.owner.name;
     
     // Commercial snapshot
     document.getElementById('monthly-rent').textContent = formatCurrency(d.pricing.monthlyRent);
@@ -715,7 +850,7 @@ function renderDeal() {
         document.getElementById('last-price-change').classList.add('hidden');
     }
     
-    // All inclusive package
+    // All inclusive package (Section 3)
     if (d.allInclusivePackage) {
         document.getElementById('all-inclusive-card').classList.remove('hidden');
         const ai = d.allInclusivePackage;
@@ -729,6 +864,58 @@ function renderDeal() {
         document.getElementById('combined-monthly').textContent = formatCurrency(ai.combinedMonthly);
     } else {
         document.getElementById('all-inclusive-card').classList.add('hidden');
+    }
+    
+    // Managed Services Breakdown (Section 4)
+    const baseServices = d.managedServices?.basePackage || [
+        { name: 'Cleaning services', amount: d.pricing.unionServices * 0.3 },
+        { name: 'Maintenance', amount: d.pricing.unionServices * 0.25 },
+        { name: 'Security', amount: d.pricing.unionServices * 0.2 },
+        { name: 'Utilities management', amount: d.pricing.unionServices * 0.15 },
+        { name: 'Reception services', amount: d.pricing.unionServices * 0.1 },
+    ];
+    const baseTotal = baseServices.reduce((sum, s) => sum + (s.amount || 0), 0);
+    document.getElementById('managed-services-base').innerHTML = baseServices.map(s => `
+        <div class="flex justify-between">
+            <span class="text-secondary">${s.name}</span>
+            <span class="text-primary">${formatCurrency(s.amount || 0)}</span>
+        </div>
+    `).join('');
+    
+    const optionalExtras = d.managedServices?.optionalExtras || [];
+    if (optionalExtras.length > 0) {
+        document.getElementById('managed-services-extras-section').classList.remove('hidden');
+        document.getElementById('managed-services-extras').innerHTML = optionalExtras.map(s => `
+            <div class="flex justify-between">
+                <span class="text-secondary">${s.name}</span>
+                <span class="text-primary">${formatCurrency(s.amount || 0)}</span>
+            </div>
+        `).join('');
+    } else {
+        document.getElementById('managed-services-extras-section').classList.add('hidden');
+    }
+    
+    const runningTotal = baseTotal + optionalExtras.reduce((sum, s) => sum + (s.amount || 0), 0);
+    document.getElementById('managed-services-running-total').textContent = formatCurrency(runningTotal);
+    
+    // Proposal Versions (Section 5)
+    document.getElementById('current-proposal-label').textContent = d.proposal.label;
+    document.getElementById('current-proposal-date').textContent = `Issued ${formatDate(d.proposal.issuedDate)}`;
+    document.getElementById('current-proposal-changes').textContent = d.proposal.changes || 'Initial proposal version';
+    
+    const previousProposals = d.proposalVersions || [];
+    if (previousProposals.length > 0) {
+        document.getElementById('previous-proposals-section').classList.remove('hidden');
+        document.getElementById('previous-proposals-list').innerHTML = previousProposals.map(p => `
+            <div class="flex items-center justify-between py-2 border-b border-[#E6E6E6] last:border-0">
+                <div>
+                    <a href="${p.url || '#'}" class="text-sm text-primary hover:underline font-medium">${p.label}</a>
+                    <div class="text-xs text-secondary">${formatDate(p.issuedDate)}</div>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        document.getElementById('previous-proposals-section').classList.add('hidden');
     }
     
     // Requirement summary
@@ -760,102 +947,145 @@ function renderDeal() {
         `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">${flag}</span>`
     ).join('');
     
-    // Viewings
+    // Move-in and Operational Notes (Section 9)
+    document.getElementById('target-move-in-date').textContent = d.requirement.targetMoveInDate ? formatDate(d.requirement.targetMoveInDate) : formatDate(d.unit.availabilityDate);
+    
+    const timelineSensitivities = d.operationalNotes?.timelineSensitivities || [];
+    if (timelineSensitivities.length > 0) {
+        document.getElementById('timeline-sensitivities-section').classList.remove('hidden');
+        document.getElementById('timeline-sensitivities').innerHTML = timelineSensitivities.map(s => `<div>• ${s}</div>`).join('');
+    } else {
+        document.getElementById('timeline-sensitivities-section').classList.add('hidden');
+    }
+    
+    const redFlags = d.operationalNotes?.redFlags || [];
+    if (redFlags.length > 0) {
+        document.getElementById('red-flags-section').classList.remove('hidden');
+        document.getElementById('red-flags').innerHTML = redFlags.map(f => `<div>• ${f}</div>`).join('');
+    } else {
+        document.getElementById('red-flags-section').classList.add('hidden');
+    }
+    
+    // Viewing information
     const viewingsDiv = document.getElementById('viewings-content');
     if (d.viewingsSummary.nextViewing) {
         const v = d.viewingsSummary.nextViewing;
         viewingsDiv.innerHTML = `
             <div class="mb-2">
-                <div class="text-sm font-medium text-primary">${formatDate(v.date)} ${v.time}</div>
+                <div class="text-sm font-medium text-primary">Next: ${formatDate(v.date)} ${v.time}</div>
                 <div class="text-xs text-secondary">${v.brokerName} • ${v.status}</div>
             </div>
-            <div class="text-xs text-secondary">${d.viewingsSummary.totalViewings} total viewings${d.viewingsSummary.lastViewingDate ? ` • Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : ''}</div>
         `;
     } else {
-        viewingsDiv.innerHTML = `
-            <div class="text-sm text-secondary mb-2">No upcoming viewings</div>
-            <div class="text-xs text-secondary">${d.viewingsSummary.totalViewings} total viewings${d.viewingsSummary.lastViewingDate ? ` • Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : ''}</div>
-        `;
+        viewingsDiv.innerHTML = '<div class="text-sm text-secondary mb-2">No upcoming viewings</div>';
+    }
+    document.getElementById('total-viewings-text').textContent = `${d.viewingsSummary.totalViewings} total viewings`;
+    document.getElementById('last-viewing-text').textContent = d.viewingsSummary.lastViewingDate ? `Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : '';
+    
+    // UNION Service Agreement (Section 6)
+    const unionStatus = d.contracts.unionServiceAgreement.status;
+    const unionBadge = document.getElementById('union-agreement-status-badge');
+    unionBadge.textContent = unionStatus;
+    const unionStatusClasses = {
+        'Draft': 'bg-muted text-primary border border-[#E6E6E6]',
+        'Sent': 'bg-yellow-500 text-white',
+        'Signed': 'bg-green-600 text-white',
+    };
+    unionBadge.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${unionStatusClasses[unionStatus] || 'bg-muted text-primary'}`;
+    
+    if (d.contracts.unionServiceAgreement.draftUrl) {
+        document.getElementById('union-agreement-draft-section').classList.remove('hidden');
+        document.getElementById('union-agreement-draft-link').href = d.contracts.unionServiceAgreement.draftUrl;
+    } else {
+        document.getElementById('union-agreement-draft-section').classList.add('hidden');
     }
     
-    // Heads of Terms
-    const hotsDiv = document.getElementById('hots-content');
-    const hotsStatusBadge = document.createElement('span');
-    hotsStatusBadge.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6] mb-3';
-    hotsStatusBadge.textContent = d.headsOfTerms.status;
-    hotsDiv.innerHTML = '';
-    hotsDiv.appendChild(hotsStatusBadge);
-    
-    if (d.headsOfTerms.termYears) {
-        const hotsGrid = document.createElement('div');
-        hotsGrid.className = 'grid grid-cols-2 gap-2 text-sm mt-3';
-        hotsGrid.innerHTML = `
-            <div>
-                <span class="text-secondary">Term:</span>
-                <span class="text-primary ml-1">${d.headsOfTerms.termYears} years</span>
-            </div>
-            ${d.headsOfTerms.breakOption ? `
-            <div>
-                <span class="text-secondary">Break:</span>
-                <span class="text-primary ml-1">${d.headsOfTerms.breakOption}</span>
-            </div>
-            ` : ''}
-            ${d.headsOfTerms.upliftPattern ? `
-            <div>
-                <span class="text-secondary">Uplift:</span>
-                <span class="text-primary ml-1">${d.headsOfTerms.upliftPattern}</span>
-            </div>
-            ` : ''}
-            ${d.headsOfTerms.deposit && !d.pricing.deposit ? `
-            <div>
-                <span class="text-secondary">Deposit:</span>
-                <span class="text-primary ml-1">${d.headsOfTerms.deposit.months} months</span>
-            </div>
-            ` : ''}
-        `;
-        if (d.headsOfTerms.specialConditions) {
-            hotsGrid.innerHTML += `
-                <div class="col-span-2 text-xs text-secondary mt-2">
-                    ${d.headsOfTerms.specialConditions}
-                </div>
-            `;
-        }
-        hotsDiv.appendChild(hotsGrid);
+    if (unionStatus === 'Signed' && d.contracts.unionServiceAgreement.signedDate) {
+        document.getElementById('union-agreement-signing-section').classList.remove('hidden');
+        document.getElementById('union-agreement-signed-date').textContent = `Signed: ${formatDate(d.contracts.unionServiceAgreement.signedDate)}`;
+        document.getElementById('union-agreement-signed-by').textContent = d.contracts.unionServiceAgreement.signedBy ? `By: ${d.contracts.unionServiceAgreement.signedBy}` : '';
+    } else {
+        document.getElementById('union-agreement-signing-section').classList.add('hidden');
     }
     
-    const hotsBtn = document.getElementById('hots-document-btn');
+    // Landlord Heads of Terms and Lease (Section 7)
+    const hotsStatus = d.headsOfTerms.status;
+    const hotsStatusBadgeEl = document.getElementById('hots-status-badge');
+    const hotsStatusClasses = {
+        'Not started': 'bg-muted text-primary border border-[#E6E6E6]',
+        'Draft': 'bg-muted text-primary border border-[#E6E6E6]',
+        'Sent': 'bg-yellow-500 text-white',
+        'Negotiating': 'bg-yellow-500 text-white',
+        'Agreed': 'bg-green-600 text-white',
+        'Out of date': 'bg-destructive text-white',
+    };
+    hotsStatusBadgeEl.textContent = hotsStatus;
+    hotsStatusBadgeEl.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${hotsStatusClasses[hotsStatus] || 'bg-muted text-primary'}`;
+    
+    const hotsKeyTerms = document.getElementById('hots-key-terms');
+    if (d.headsOfTerms.termYears || d.headsOfTerms.breakOption || d.headsOfTerms.upliftPattern) {
+        hotsKeyTerms.innerHTML = `
+            ${d.headsOfTerms.termYears ? `<div><span class="text-secondary">Term length:</span> <span class="text-primary ml-1">${d.headsOfTerms.termYears} years</span></div>` : ''}
+            ${d.headsOfTerms.breakOption ? `<div><span class="text-secondary">Break:</span> <span class="text-primary ml-1">${d.headsOfTerms.breakOption}</span></div>` : ''}
+            ${d.headsOfTerms.upliftPattern ? `<div><span class="text-secondary">Uplift pattern:</span> <span class="text-primary ml-1">${d.headsOfTerms.upliftPattern}</span></div>` : ''}
+            ${d.headsOfTerms.deposit ? `<div><span class="text-secondary">Deposit:</span> <span class="text-primary ml-1">${d.headsOfTerms.deposit.months} months (${formatCurrency(d.headsOfTerms.deposit.amount)})</span></div>` : ''}
+        `;
+    } else {
+        hotsKeyTerms.innerHTML = '<div class="text-xs text-secondary">No key terms set yet</div>';
+    }
+    
+    const hotsBtnEnhanced = document.getElementById('hots-document-btn-enhanced');
     if (d.headsOfTerms.latestDocumentUrl) {
-        hotsBtn.disabled = false;
-        hotsBtn.onclick = () => window.open(d.headsOfTerms.latestDocumentUrl, '_blank');
+        hotsBtnEnhanced.disabled = false;
+        hotsBtnEnhanced.onclick = () => window.open(d.headsOfTerms.latestDocumentUrl, '_blank');
     } else {
-        hotsBtn.disabled = true;
+        hotsBtnEnhanced.disabled = true;
     }
     
-    // Contracts
-    document.getElementById('union-contract-status').textContent = d.contracts.unionServiceAgreement.status;
-    document.getElementById('landlord-contract-status').textContent = d.contracts.landlordLease.status;
+    const leaseStatus = d.contracts.landlordLease.status;
+    const leaseBadge = document.getElementById('lease-status-badge');
+    leaseBadge.textContent = leaseStatus;
+    const leaseStatusClasses = {
+        'Not started': 'bg-muted text-primary border border-[#E6E6E6]',
+        'In legals': 'bg-yellow-500 text-white',
+        'Signed': 'bg-green-600 text-white',
+    };
+    leaseBadge.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${leaseStatusClasses[leaseStatus] || 'bg-muted text-primary'}`;
     
-    // Documents
+    // Stage Rail (Section 8)
+    const unionProgress = unionStatus === 'Signed' ? 100 : unionStatus === 'Sent' ? 66 : unionStatus === 'Draft' ? 33 : 0;
+    document.getElementById('union-package-progress').style.width = `${unionProgress}%`;
+    document.getElementById('union-package-status').textContent = unionStatus;
+    
+    const leaseProgress = leaseStatus === 'Signed' ? 100 : leaseStatus === 'In legals' ? 66 : 0;
+    document.getElementById('lease-progress').style.width = `${leaseProgress}%`;
+    document.getElementById('lease-status-text').textContent = leaseStatus;
+    
+    // Deal Documents (Section 10)
     const docsDiv = document.getElementById('documents-content');
     const docGroups = [
-        { key: 'legal', label: 'Legal' },
-        { key: 'commercial', label: 'Commercial' },
-        { key: 'plans', label: 'Plans' },
-        { key: 'marketing', label: 'Marketing' },
+        { key: 'legal', label: 'UNION contracts & Legal', icon: 'fa-file-contract' },
+        { key: 'commercial', label: 'Commercial models', icon: 'fa-chart-line' },
+        { key: 'plans', label: 'EPC, Floor plans & Fit-out', icon: 'fa-drafting-compass' },
+        { key: 'marketing', label: 'Marketing materials', icon: 'fa-images' },
     ];
     docsDiv.innerHTML = docGroups.map(group => {
         const doc = d.documentsSummary[group.key];
         return `
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-xs font-medium text-secondary">${group.label}</span>
-                    <span class="text-xs text-secondary">${doc.count} documents</span>
+            <div class="border-b border-[#E6E6E6] pb-3 last:border-0 last:pb-0">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid ${group.icon} text-secondary text-xs"></i>
+                        <span class="text-sm font-medium text-primary">${group.label}</span>
+                    </div>
+                    <span class="text-xs text-secondary">${doc.count} files</span>
                 </div>
                 ${doc.latest ? `
-                <div class="text-xs text-primary">
-                    ${doc.latest.title} • ${formatDate(doc.latest.date)}
+                <div class="text-xs text-primary ml-5">
+                    <a href="#" class="hover:underline">${doc.latest.title}</a>
+                    <span class="text-secondary ml-2">• ${formatDate(doc.latest.date)}</span>
                 </div>
-                ` : ''}
+                ` : '<div class="text-xs text-secondary ml-5">No documents</div>'}
             </div>
         `;
     }).join('');

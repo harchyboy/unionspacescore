@@ -95,14 +95,38 @@ export interface DealRoomOverview {
     label: string;
     issuedDate: string;
     version: number;
+    changes?: string;
+  };
+  proposalVersions?: Array<{
+    label: string;
+    issuedDate: string;
+    version: number;
+    url?: string;
+  }>;
+  managedServices?: {
+    basePackage: Array<{
+      name: string;
+      amount: number;
+    }>;
+    optionalExtras: Array<{
+      name: string;
+      amount: number;
+    }>;
   };
   contracts: {
     unionServiceAgreement: {
       status: 'Draft' | 'Sent' | 'Signed';
+      draftUrl?: string;
+      signedDate?: string;
+      signedBy?: string;
     };
     landlordLease: {
       status: 'Not started' | 'In legals' | 'Signed';
     };
+  };
+  operationalNotes?: {
+    timelineSensitivities?: string[];
+    redFlags?: string[];
   };
   viewingsSummary: {
     nextViewing?: {
@@ -277,10 +301,40 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       label: 'Proposal v3',
       issuedDate: '2024-01-12',
       version: 3,
+      changes: 'Updated service charge estimate and added flexible payment terms',
+    },
+    proposalVersions: [
+      { label: 'Proposal v2', issuedDate: '2024-01-05', version: 2, url: '/documents/proposal-v2.pdf' },
+      { label: 'Proposal v1', issuedDate: '2023-12-20', version: 1, url: '/documents/proposal-v1.pdf' },
+    ],
+    managedServices: {
+      basePackage: [
+        { name: 'Cleaning services', amount: 10800 },
+        { name: 'Maintenance', amount: 9000 },
+        { name: 'Security', amount: 7200 },
+        { name: 'Utilities management', amount: 5400 },
+        { name: 'Reception services', amount: 3600 },
+      ],
+      optionalExtras: [
+        { name: 'Enhanced IT support', amount: 2000 },
+        { name: 'Premium meeting room access', amount: 1500 },
+      ],
     },
     contracts: {
-      unionServiceAgreement: { status: 'Draft' },
+      unionServiceAgreement: {
+        status: 'Draft',
+        draftUrl: '/documents/union-agreement-draft.pdf',
+      },
       landlordLease: { status: 'Not started' },
+    },
+    operationalNotes: {
+      timelineSensitivities: [
+        'Tenant needs to move in by March 15th for Q1 reporting',
+        'Fit-out work must be completed before move-in',
+      ],
+      redFlags: [
+        'Budget approval still pending from CFO',
+      ],
     },
     viewingsSummary: {
       nextViewing: {
@@ -395,9 +449,26 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       label: 'Proposal v2',
       issuedDate: '2024-01-05',
       version: 2,
+      changes: 'Adjusted pricing based on market conditions',
+    },
+    proposalVersions: [
+      { label: 'Proposal v1', issuedDate: '2023-12-15', version: 1, url: '/documents/proposal-v1.pdf' },
+    ],
+    managedServices: {
+      basePackage: [
+        { name: 'Cleaning services', amount: 7500 },
+        { name: 'Maintenance', amount: 6250 },
+        { name: 'Security', amount: 5000 },
+        { name: 'Utilities management', amount: 3750 },
+        { name: 'Reception services', amount: 2500 },
+      ],
+      optionalExtras: [],
     },
     contracts: {
-      unionServiceAgreement: { status: 'Sent' },
+      unionServiceAgreement: {
+        status: 'Sent',
+        draftUrl: '/documents/union-agreement-sent.pdf',
+      },
       landlordLease: { status: 'In legals' },
     },
     viewingsSummary: {
