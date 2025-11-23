@@ -1252,23 +1252,27 @@ function renderDeal() {
     hotsStatusBadgeEl.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${hotsStatusClasses[hotsStatus] || 'bg-muted text-primary'}`;
     
     const hotsKeyTerms = document.getElementById('hots-key-terms');
-    if (d.headsOfTerms.termYears || d.headsOfTerms.breakOption || d.headsOfTerms.upliftPattern) {
-        hotsKeyTerms.innerHTML = `
-            ${d.headsOfTerms.termYears ? `<div><span class="text-secondary">Term length:</span> <span class="text-primary ml-1">${d.headsOfTerms.termYears} years</span></div>` : ''}
-            ${d.headsOfTerms.breakOption ? `<div><span class="text-secondary">Break:</span> <span class="text-primary ml-1">${d.headsOfTerms.breakOption}</span></div>` : ''}
-            ${d.headsOfTerms.upliftPattern ? `<div><span class="text-secondary">Uplift pattern:</span> <span class="text-primary ml-1">${d.headsOfTerms.upliftPattern}</span></div>` : ''}
-            ${d.headsOfTerms.deposit ? `<div><span class="text-secondary">Deposit:</span> <span class="text-primary ml-1">${d.headsOfTerms.deposit.months} months (${formatCurrency(d.headsOfTerms.deposit.amount)})</span></div>` : ''}
-        `;
-    } else {
-        hotsKeyTerms.innerHTML = '<div class="text-xs text-secondary">No key terms set yet</div>';
+    if (hotsKeyTerms) {
+        if (d.headsOfTerms.termYears || d.headsOfTerms.breakOption || d.headsOfTerms.upliftPattern) {
+            hotsKeyTerms.innerHTML = `
+                ${d.headsOfTerms.termYears ? `<div><span class="text-secondary">Term length:</span> <span class="text-primary ml-1">${d.headsOfTerms.termYears} years</span></div>` : ''}
+                ${d.headsOfTerms.breakOption ? `<div><span class="text-secondary">Break:</span> <span class="text-primary ml-1">${d.headsOfTerms.breakOption}</span></div>` : ''}
+                ${d.headsOfTerms.upliftPattern ? `<div><span class="text-secondary">Uplift pattern:</span> <span class="text-primary ml-1">${d.headsOfTerms.upliftPattern}</span></div>` : ''}
+                ${d.headsOfTerms.deposit ? `<div><span class="text-secondary">Deposit:</span> <span class="text-primary ml-1">${d.headsOfTerms.deposit.months} months (${formatCurrency(d.headsOfTerms.deposit.amount)})</span></div>` : ''}
+            `;
+        } else {
+            hotsKeyTerms.innerHTML = '<div class="text-xs text-secondary">No key terms set yet</div>';
+        }
     }
     
     const hotsBtnEnhanced = document.getElementById('hots-document-btn-enhanced');
-    if (d.headsOfTerms.latestDocumentUrl) {
-        hotsBtnEnhanced.disabled = false;
-        hotsBtnEnhanced.onclick = () => window.open(d.headsOfTerms.latestDocumentUrl, '_blank');
-    } else {
-        hotsBtnEnhanced.disabled = true;
+    if (hotsBtnEnhanced) {
+        if (d.headsOfTerms.latestDocumentUrl) {
+            hotsBtnEnhanced.disabled = false;
+            hotsBtnEnhanced.onclick = () => window.open(d.headsOfTerms.latestDocumentUrl, '_blank');
+        } else {
+            hotsBtnEnhanced.disabled = true;
+        }
     }
     
     const leaseStatus = d.contracts.landlordLease.status;
@@ -1320,21 +1324,31 @@ function renderDeal() {
     }).join('');
     
     // Approvals
-    document.getElementById('approval-stage').textContent = d.approvals.currentStage;
+    const approvalStage = document.getElementById('approval-stage');
+    if (approvalStage) {
+        approvalStage.textContent = d.approvals.currentStage;
+    }
     const approvalBadge = document.getElementById('approval-status-badge');
-    approvalBadge.textContent = d.approvals.status;
-    approvalBadge.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getApprovalBadgeClass(d.approvals.status)}`;
+    if (approvalBadge) {
+        approvalBadge.textContent = d.approvals.status;
+        approvalBadge.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getApprovalBadgeClass(d.approvals.status)}`;
+    }
     
     const approvalDecision = document.getElementById('approval-last-decision');
-    if (d.approvals.lastDecision) {
-        approvalDecision.innerHTML = `
-            ${d.approvals.lastDecision.decision} • ${formatDate(d.approvals.lastDecision.date)} • ${d.approvals.lastDecision.approver}
-        `;
-        approvalDecision.classList.remove('hidden');
-    } else {
-        approvalDecision.classList.add('hidden');
+    if (approvalDecision) {
+        if (d.approvals.lastDecision) {
+            approvalDecision.innerHTML = `
+                ${d.approvals.lastDecision.decision} • ${formatDate(d.approvals.lastDecision.date)} • ${d.approvals.lastDecision.approver}
+            `;
+            approvalDecision.classList.remove('hidden');
+        } else {
+            approvalDecision.classList.add('hidden');
+        }
     }
-    document.getElementById('open-actions-count').textContent = d.approvals.openActionsCount;
+    const openActionsCount = document.getElementById('open-actions-count');
+    if (openActionsCount) {
+        openActionsCount.textContent = d.approvals.openActionsCount;
+    }
     
     // Risk
     const riskBadge = document.getElementById('risk-score-badge');
@@ -1342,19 +1356,23 @@ function renderDeal() {
     riskBadge.className = `inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getRiskBadgeClass(d.risk.score)}`;
     
     const riskDrivers = document.getElementById('risk-drivers');
-    if (d.risk.drivers && d.risk.drivers.length > 0) {
-        riskDrivers.innerHTML = d.risk.drivers.slice(0, 3).map(driver => `<div>• ${driver}</div>`).join('');
-        riskDrivers.classList.remove('hidden');
-    } else {
-        riskDrivers.classList.add('hidden');
+    if (riskDrivers) {
+        if (d.risk.drivers && d.risk.drivers.length > 0) {
+            riskDrivers.innerHTML = d.risk.drivers.slice(0, 3).map(driver => `<div>• ${driver}</div>`).join('');
+            riskDrivers.classList.remove('hidden');
+        } else {
+            riskDrivers.classList.add('hidden');
+        }
     }
     
     const riskMitigation = document.getElementById('risk-mitigation');
-    if (d.risk.mitigation) {
-        riskMitigation.textContent = d.risk.mitigation;
-        riskMitigation.classList.remove('hidden');
-    } else {
-        riskMitigation.classList.add('hidden');
+    if (riskMitigation) {
+        if (d.risk.mitigation) {
+            riskMitigation.textContent = d.risk.mitigation;
+            riskMitigation.classList.remove('hidden');
+        } else {
+            riskMitigation.classList.add('hidden');
+        }
     }
     
     // Activity
