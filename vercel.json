@@ -1,9 +1,19 @@
 {
-  "buildCommand": "node build-static.js",
+  "buildCommand": "pnpm run build:vercel",
   "outputDirectory": "dist",
   "installCommand": "pnpm install",
   "framework": null,
   "cleanUrls": false,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
 
