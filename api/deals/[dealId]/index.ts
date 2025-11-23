@@ -47,6 +47,7 @@ export interface DealRoomOverview {
     name: string;
     address: string;
     submarket: string;
+    parkingSpaces?: number;
   };
   unit: {
     id: string;
@@ -150,6 +151,59 @@ export interface DealRoomOverview {
     specialConditions?: string;
     latestDocumentUrl?: string;
   };
+  headsOfTermsVersions?: Array<{
+    version: number;
+    label: string;
+    date: string;
+    status: 'Current' | 'Approved' | 'Superseded';
+    changes?: string;
+    added?: number;
+    modified?: number;
+    removed?: number;
+  }>;
+  headsOfTermsSections?: Array<{
+    name: string;
+    completeness: number;
+  }>;
+  riskFactors?: Array<{
+    name: string;
+    level: 'High' | 'Medium' | 'Low';
+    description?: string;
+    impact?: string;
+  }>;
+  mitigationStrategies?: Array<{
+    name: string;
+    description?: string;
+    owner: string;
+    status: 'Planned' | 'In Progress' | 'Completed';
+  }>;
+  riskScoreBreakdown?: Array<{
+    name: string;
+    score: number;
+    max: number;
+  }>;
+  approvalsList?: Array<{
+    name: string;
+    status: 'Pending' | 'Approved' | 'Overdue';
+    approver?: string;
+    description?: string;
+    dueDate?: string;
+    date?: string;
+  }>;
+  communications?: Array<{
+    type: 'Email' | 'Phone' | 'Meeting';
+    title: string;
+    description?: string;
+    content?: string;
+    date: string;
+    user: string;
+  }>;
+  internalNotes?: Array<{
+    title?: string;
+    content: string;
+    date: string;
+    user?: string;
+  }>;
   documentsSummary: {
     legal: {
       count: number;
@@ -207,7 +261,9 @@ export interface DealRoomOverview {
     title: string;
     owner: string;
     dueDate?: string;
-    status: 'Open' | 'In progress' | 'Blocked';
+    status: 'Open' | 'In progress' | 'Blocked' | 'Completed';
+    priority?: 'High' | 'Medium' | 'Low';
+    description?: string;
   }>;
 }
 
@@ -256,6 +312,7 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       name: 'Principal Place',
       address: '100 Principal Place, London',
       submarket: 'Shoreditch',
+      parkingSpaces: 12,
     },
     unit: {
       id: 'unit-1',
@@ -355,6 +412,108 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       specialConditions: 'Fit-out contribution of £50,000',
       latestDocumentUrl: '/documents/hots-v1.pdf',
     },
+    headsOfTermsVersions: [
+      {
+        version: 2,
+        label: 'Version 2.1',
+        date: '2024-01-12',
+        status: 'Current',
+        changes: 'Updated commercial terms and added break clause',
+        added: 3,
+        modified: 5,
+        removed: 1,
+      },
+      {
+        version: 2,
+        label: 'Version 2.0',
+        date: '2024-01-05',
+        status: 'Approved',
+        changes: 'Initial draft with base commercial terms',
+      },
+    ],
+    headsOfTermsSections: [
+      { name: 'Parties', completeness: 100 },
+      { name: 'Commercials', completeness: 100 },
+      { name: 'Term', completeness: 80 },
+      { name: 'Responsibilities', completeness: 100 },
+      { name: 'Options', completeness: 45 },
+      { name: 'Conditions', completeness: 70 },
+    ],
+    riskFactors: [
+      {
+        name: 'Timeline Risk',
+        level: 'Medium',
+        description: 'Legal review delays may impact go-live date',
+        impact: 'Potential 1-2 week delay in contract execution',
+      },
+      {
+        name: 'Budget constraints',
+        level: 'Medium',
+        description: 'Budget approval still pending from CFO',
+        impact: 'May require pricing adjustments',
+      },
+    ],
+    mitigationStrategies: [
+      {
+        name: 'Extended payment terms agreed',
+        description: 'Agreed flexible payment schedule to accommodate budget approval',
+        owner: 'Sarah Chen',
+        status: 'Completed',
+      },
+      {
+        name: 'Legal review acceleration',
+        description: 'Implement parallel review process with external counsel',
+        owner: 'Michael Roberts',
+        status: 'In Progress',
+      },
+    ],
+    riskScoreBreakdown: [
+      { name: 'Timeline Risk', score: 3, max: 5 },
+      { name: 'Market Risk', score: 3, max: 5 },
+      { name: 'Credit Risk', score: 1, max: 5 },
+    ],
+    approvalsList: [
+      {
+        name: 'Commercial approval',
+        status: 'Pending',
+        approver: 'Michael Roberts',
+        description: 'Requested pricing review',
+        dueDate: '2024-01-20',
+      },
+      {
+        name: 'Finance Review',
+        status: 'Approved',
+        approver: 'Jennifer Wilson',
+        description: 'Financial terms and projections',
+        date: '2024-01-10',
+      },
+    ],
+    communications: [
+      {
+        type: 'Email',
+        title: 'Email to Legal Team',
+        description: 'Re: HoT Version review requirements',
+        content: 'Please prioritize the review of the updated HoT document. Key changes include break clause options and revised commercial terms...',
+        date: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        user: 'Sarah Chen',
+      },
+      {
+        type: 'Phone',
+        title: 'Client Call',
+        description: 'Progress update and next steps discussion',
+        content: 'Client expressed satisfaction with progress. Confirmed timeline expectations...',
+        date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        user: 'Emma Thompson',
+      },
+    ],
+    internalNotes: [
+      {
+        title: 'Team Meeting Notes',
+        content: 'Team aligned on current priorities. Legal review identified as critical path item.',
+        date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        user: 'Sarah Chen',
+      },
+    ],
     documentsSummary: {
       legal: { count: 2, latest: { title: 'Heads of Terms v1', date: '2024-01-12' } },
       commercial: { count: 4, latest: { title: 'Proposal v3', date: '2024-01-12' } },
@@ -384,9 +543,9 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       { id: 'a5', title: 'Approval requested', type: 'Approval', userName: 'Sarah Chen', date: '2024-01-10T09:00:00Z' },
     ],
     tasks: [
-      { id: 't1', title: 'Send updated HoTs to tenant', owner: 'Sarah Chen', dueDate: '2024-01-20', status: 'Open' },
-      { id: 't2', title: 'Chase legal comments', owner: 'Sarah Chen', dueDate: '2024-01-22', status: 'In progress' },
-      { id: 't3', title: 'Schedule follow-up meeting', owner: 'Sarah Chen', dueDate: '2024-01-18', status: 'Open' },
+      { id: 't1', title: 'Send updated HoTs to tenant', owner: 'Sarah Chen', dueDate: '2024-01-20', status: 'Open', priority: 'High', description: 'Send latest Heads of Terms document to tenant for review' },
+      { id: 't2', title: 'Chase legal comments', owner: 'Sarah Chen', dueDate: '2024-01-22', status: 'In progress', priority: 'High', description: 'Follow up with legal team on HoT review comments' },
+      { id: 't3', title: 'Schedule follow-up meeting', owner: 'Sarah Chen', dueDate: '2024-01-18', status: 'Open', priority: 'Medium', description: 'Schedule meeting with tenant to discuss proposal' },
     ],
   },
   '2': {
@@ -424,6 +583,7 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       name: 'The Leadenhall Building',
       address: '122 Leadenhall Street, London',
       submarket: 'City Core',
+      parkingSpaces: 20,
     },
     unit: {
       id: 'unit-2',
@@ -504,6 +664,48 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       deposit: { months: 3, amount: 36000 },
       latestDocumentUrl: '/documents/hots-final.pdf',
     },
+    headsOfTermsVersions: [
+      {
+        version: 2,
+        label: 'Version 2.0',
+        date: '2024-01-10',
+        status: 'Approved',
+        changes: 'Final agreed terms',
+      },
+    ],
+    headsOfTermsSections: [
+      { name: 'Parties', completeness: 100 },
+      { name: 'Commercials', completeness: 100 },
+      { name: 'Term', completeness: 100 },
+      { name: 'Responsibilities', completeness: 100 },
+      { name: 'Options', completeness: 100 },
+      { name: 'Conditions', completeness: 100 },
+    ],
+    riskFactors: [],
+    mitigationStrategies: [
+      {
+        name: 'All approvals cleared',
+        description: 'All risk mitigation strategies completed',
+        owner: 'Michael Roberts',
+        status: 'Completed',
+      },
+    ],
+    riskScoreBreakdown: [
+      { name: 'Timeline Risk', score: 1, max: 5 },
+      { name: 'Market Risk', score: 2, max: 5 },
+      { name: 'Credit Risk', score: 1, max: 5 },
+    ],
+    approvalsList: [
+      {
+        name: 'Legal review',
+        status: 'Approved',
+        approver: 'Michael Roberts',
+        description: 'Approved for legal stage',
+        date: '2024-01-12',
+      },
+    ],
+    communications: [],
+    internalNotes: [],
     documentsSummary: {
       legal: { count: 5, latest: { title: 'Lease draft v2', date: '2024-01-14' } },
       commercial: { count: 3, latest: { title: 'Proposal v2', date: '2024-01-05' } },
@@ -531,7 +733,7 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       { id: 'a3', title: 'Proposal v2 issued', type: 'Proposal', userName: 'Michael Roberts', date: '2024-01-05T09:00:00Z' },
     ],
     tasks: [
-      { id: 't1', title: 'Review lease amendments', owner: 'Michael Roberts', dueDate: '2024-01-25', status: 'In progress' },
+      { id: 't1', title: 'Review lease amendments', owner: 'Michael Roberts', dueDate: '2024-01-25', status: 'In progress', priority: 'Medium', description: 'Review and approve lease amendments from landlord' },
     ],
   },
 };
@@ -562,7 +764,7 @@ const defaultOverview: DealRoomOverview = {
   },
   tenantCompany: { id: 'tenant-default', name: 'Default Company' },
   tenantContact: { id: 'contact-default', name: 'Contact Name', role: 'CEO' },
-  property: { id: 'prop-default', name: 'Default Property', address: 'Address', submarket: 'City Core' },
+  property: { id: 'prop-default', name: 'Default Property', address: 'Address', submarket: 'City Core', parkingSpaces: 0 },
   unit: {
     id: 'unit-default',
     name: 'Unit 1',
@@ -627,6 +829,15 @@ const defaultOverview: DealRoomOverview = {
   },
   viewingsSummary: { totalViewings: 0 },
   headsOfTerms: { status: 'Not started' },
+  headsOfTermsVersions: [],
+  headsOfTermsSections: [
+    { name: 'Parties', completeness: 0 },
+    { name: 'Commercials', completeness: 0 },
+    { name: 'Term', completeness: 0 },
+    { name: 'Responsibilities', completeness: 0 },
+    { name: 'Options', completeness: 0 },
+    { name: 'Conditions', completeness: 0 },
+  ],
   documentsSummary: {
     legal: { count: 0 },
     commercial: { count: 0 },
@@ -638,10 +849,33 @@ const defaultOverview: DealRoomOverview = {
     status: 'Pending',
     openActionsCount: 1,
   },
+  approvalsList: [
+    {
+      name: 'Initial review',
+      status: 'Pending',
+      approver: 'TBD',
+      description: 'Initial deal review required',
+    },
+  ],
   risk: {
     score: 'Medium',
     drivers: ['New requirement'],
   },
+  riskFactors: [
+    {
+      name: 'New requirement',
+      level: 'Medium',
+      description: 'New deal with limited history',
+    },
+  ],
+  mitigationStrategies: [],
+  riskScoreBreakdown: [
+    { name: 'Timeline Risk', score: 2, max: 5 },
+    { name: 'Market Risk', score: 2, max: 5 },
+    { name: 'Credit Risk', score: 2, max: 5 },
+  ],
+  communications: [],
+  internalNotes: [],
   activity: [],
   tasks: [],
 };
