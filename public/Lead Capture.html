@@ -30,6 +30,7 @@
       rel="stylesheet"
     />
     <script src="https://kit.fontawesome.com/4b37446228.js" crossorigin="anonymous"></script>
+    <script src="sidebar.js" defer></script>
     <style>
       body {
         font-family: 'Inter', sans-serif;
@@ -38,11 +39,12 @@
     </style>
   </head>
   <body class="bg-[#F0F0F0]">
-    <div class="flex h-screen overflow-hidden">
+    <div id="app-shell" class="flex h-screen overflow-hidden">
       <aside
+        id="sidebar"
         data-sidebar-placeholder
         data-active="leads"
-        class="w-64 bg-white border-r border-[#E6E6E6]"
+        class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col"
       ></aside>
 
       <main class="flex-1 overflow-y-auto">
@@ -296,7 +298,6 @@
     <div id="toast-root" class="fixed bottom-8 right-8 space-y-3 z-50"></div>
 
     <script src="leads-data.js"></script>
-    <script src="sidebar.js" defer></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const form = document.getElementById('lead-capture-form');

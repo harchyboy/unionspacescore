@@ -677,6 +677,21 @@
                             <span class="px-3 py-1.5 text-sm font-medium text-white bg-slate rounded-lg">Heads of Terms</span>
                         </div>
 
+                        <!-- Move-in Date and Current Proposal -->
+                        <div class="bg-stone p-4 rounded-lg mb-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-xs text-concrete uppercase tracking-wide mb-1">Target Move-in Date</div>
+                                    <div class="text-sm font-semibold text-slate" id="target-move-in-date">15 Dec 2024</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-concrete uppercase tracking-wide mb-1">Current Proposal</div>
+                                    <div class="text-sm font-semibold text-slate" id="current-proposal">Current proposal v3</div>
+                                    <div class="text-xs text-concrete mt-0.5" id="proposal-date">Issued 12 Jan 2024</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mb-6">
                             <div class="flex items-center mb-4">
                                 <div class="flex-1">
@@ -706,54 +721,25 @@
                             </div>
                         </div>
 
+                        <!-- All-Inclusive Package Live Table -->
                         <div class="bg-stone p-6 rounded-lg mb-6">
-                            <h4 class="text-sm font-semibold text-slate mb-4">UNION All-Inclusive Package</h4>
+                            <h4 class="text-sm font-semibold text-slate mb-4">All-Inclusive Package</h4>
                             <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-check-circle text-green-600 mr-3"></i>
-                                        <span class="text-sm text-slate">Premium fit-out (Cat A+)</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate">£165,000</span>
+                                <div class="flex items-center justify-between py-2">
+                                    <span class="text-sm text-slate">Base rent and building costs</span>
+                                    <span class="text-sm font-medium text-slate" id="base-rent-total">£28,000</span>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-check-circle text-green-600 mr-3"></i>
-                                        <span class="text-sm text-slate">Furniture package (65 desks)</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate">£48,000</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-check-circle text-green-600 mr-3"></i>
-                                        <span class="text-sm text-slate">IT infrastructure & AV</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate">£32,000</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-check-circle text-green-600 mr-3"></i>
-                                        <span class="text-sm text-slate">Daily cleaning service</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate">£2,400/mo</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-check-circle text-green-600 mr-3"></i>
-                                        <span class="text-sm text-slate">Coffee & refreshments</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate">£1,200/mo</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-check-circle text-green-600 mr-3"></i>
-                                        <span class="text-sm text-slate">24/7 support & maintenance</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-slate">£800/mo</span>
+                                <div class="flex items-center justify-between py-2">
+                                    <span class="text-sm text-slate">Managed services total</span>
+                                    <span class="text-sm font-medium text-slate" id="managed-services-total">£4,400</span>
                                 </div>
                                 <div class="pt-3 border-t border-concrete/20 flex items-center justify-between">
-                                    <span class="text-sm font-semibold text-slate">Monthly Total (incl. rent)</span>
-                                    <span class="text-lg font-semibold text-slate">£35,800/mo</span>
+                                    <span class="text-sm font-semibold text-slate">Combined monthly all-inclusive</span>
+                                    <span class="text-lg font-semibold text-slate" id="all-inclusive-total">£32,400</span>
+                                </div>
+                                <div class="pt-2 text-xs text-concrete italic">
+                                    <i class="fa-solid fa-circle-dot mr-1"></i>
+                                    Updates in real time as rent or services change
                                 </div>
                             </div>
                         </div>
@@ -771,6 +757,21 @@
                     </div>
 
                     <div class="space-y-6">
+                        <!-- Contract Status Block -->
+                        <div class="bg-white rounded-lg border border-concrete/20 p-6">
+                            <h4 class="text-sm font-semibold text-slate mb-4">Contract Status</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="text-xs text-concrete uppercase tracking-wide mb-2">UNION Agreement</div>
+                                    <span class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-slate rounded-lg" id="union-agreement-status">Sent</span>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-concrete uppercase tracking-wide mb-2">Lease</div>
+                                    <span class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-orange-500 rounded-lg" id="lease-status">In legals</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="bg-white rounded-lg border border-concrete/20 p-6">
                             <h4 class="text-sm font-semibold text-slate mb-4">Key Contacts</h4>
                             <div class="space-y-4">
@@ -1622,6 +1623,44 @@ window.addEventListener('load', function() {
 
     } catch(e) {
         console.error('Chart rendering error:', e);
+    }
+
+    // All-Inclusive Package Live Updates
+    function updateAllInclusiveTotal() {
+        const baseRentElement = document.getElementById('base-rent-total');
+        const managedServicesElement = document.getElementById('managed-services-total');
+        const allInclusiveElement = document.getElementById('all-inclusive-total');
+        
+        if (baseRentElement && managedServicesElement && allInclusiveElement) {
+            // Extract numeric values from text (remove £ and commas)
+            const baseRent = parseFloat(baseRentElement.textContent.replace(/[£,]/g, '')) || 0;
+            const managedServices = parseFloat(managedServicesElement.textContent.replace(/[£,]/g, '')) || 0;
+            const total = baseRent + managedServices;
+            
+            // Format and update total
+            allInclusiveElement.textContent = '£' + total.toLocaleString('en-GB');
+        }
+    }
+
+    // Initialize totals on load
+    updateAllInclusiveTotal();
+
+    // Watch for changes to base rent or managed services (for real-time updates)
+    // This would typically be connected to your data store/state management
+    // For demo purposes, we'll set up observers that can be triggered when values change
+    const observerConfig = { childList: true, subtree: true, characterData: true };
+    
+    const baseRentObserver = new MutationObserver(updateAllInclusiveTotal);
+    const managedServicesObserver = new MutationObserver(updateAllInclusiveTotal);
+    
+    const baseRentEl = document.getElementById('base-rent-total');
+    const managedServicesEl = document.getElementById('managed-services-total');
+    
+    if (baseRentEl) {
+        baseRentObserver.observe(baseRentEl, observerConfig);
+    }
+    if (managedServicesEl) {
+        managedServicesObserver.observe(managedServicesEl, observerConfig);
     }
 });
 </script>

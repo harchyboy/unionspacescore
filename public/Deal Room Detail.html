@@ -127,6 +127,9 @@
                     <span>•</span>
                     <span class="text-primary font-medium">REQ-2024-042</span>
                 </div>
+                <div class="text-sm text-secondary mt-1">
+                    Main contact: Sarah Chen, CFO
+                </div>
             </div>
             <div class="flex items-center space-x-4">
                 <span class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white">
@@ -143,11 +146,25 @@
         </div>
     </div>
     
+    <!-- Quick Info Strip -->
+    <div class="bg-white border-b border-[#E6E6E6] px-8 py-3">
+        <div class="flex items-center space-x-6 text-sm">
+            <div class="text-secondary">Target move-in:</div>
+            <div class="text-primary font-medium">15 Dec 2024</div>
+            <span class="text-secondary">•</span>
+            <div class="text-secondary">Budget approval:</div>
+            <div class="text-primary font-medium">Board approved</div>
+            <span class="text-secondary">•</span>
+            <div class="text-secondary">Decision maker:</div>
+            <div class="text-primary font-medium">Sarah Chen, CFO</div>
+        </div>
+    </div>
+    
     <!-- Summary Cards Row -->
     <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
         <div class="grid grid-cols-3 gap-6">
             <!-- Deal Value Card -->
-            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+            <div class="bg-white rounded-lg border border-[#E6E6E6] p-4 shadow-sm">
                 <div class="flex items-center justify-between mb-2">
                     <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Deal Value</div>
                     <i class="fa-solid fa-sterling-sign text-primary text-sm"></i>
@@ -157,7 +174,7 @@
             </div>
             
             <!-- Probability Card -->
-            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+            <div class="bg-white rounded-lg border border-[#E6E6E6] p-4 shadow-sm">
                 <div class="flex items-center justify-between mb-2">
                     <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Probability</div>
                     <i class="fa-solid fa-percent text-primary text-sm"></i>
@@ -166,21 +183,21 @@
             </div>
             
             <!-- Days Active Card -->
-            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+            <div class="bg-white rounded-lg border border-[#E6E6E6] p-4 shadow-sm">
                 <div class="flex items-center justify-between mb-2">
                     <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Days Active</div>
                     <i class="fa-solid fa-calendar text-primary text-sm"></i>
                 </div>
                 <div class="text-3xl font-bold text-primary mb-1">42</div>
-                <div class="text-xs text-secondary">Next: Contract Review</div>
+                <div class="text-xs text-secondary">Next: Tenant to sign UNION agreement</div>
             </div>
         </div>
     </div>
     
     <!-- Deal Pipeline Progress -->
     <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
-        <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-6">
+        <div class="bg-white rounded-lg border border-[#E6E6E6] p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
                 <div>
                     <h3 class="text-lg font-semibold text-primary mb-1">Deal Pipeline Progress</h3>
                     <div class="text-sm text-secondary">Progress: 57% Complete</div>
@@ -245,7 +262,11 @@
                         </div>
                         <div class="text-sm font-semibold text-primary mb-1">HoTs</div>
                         <div class="text-xs text-primary font-medium mb-1">In Progress</div>
-                        <div class="text-xs text-primary font-medium">Due: Nov 15</div>
+                        <div class="text-xs text-primary font-medium mb-2">Due: Nov 15</div>
+                        <div class="text-xs text-primary font-medium text-center max-w-[120px]">Next: Tenant to sign UNION agreement</div>
+                        <button class="mt-2 px-3 py-1.5 text-xs font-medium text-primary bg-blue-50 border border-blue-500 rounded-lg hover:bg-blue-100 transition-all-smooth">
+                            Move to next step
+                        </button>
                     </div>
                     
                     <!-- Contract Stage -->
@@ -289,11 +310,10 @@
             <div class="col-span-2">
                 <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold text-primary">Commercial Snapshot</h3>
-                        <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
-                            <i class="fa-solid fa-clock"></i>
-                            <span>Updated 2h ago</span>
-                        </button>
+                        <div>
+                            <h3 class="text-lg font-semibold text-primary mb-1">Commercial Snapshot</h3>
+                            <div class="text-xs text-secondary">Last updated by Max Chen · 2h ago</div>
+                        </div>
                     </div>
                     <div class="grid grid-cols-3 gap-6">
                         <!-- Column 1 -->
@@ -343,6 +363,26 @@
                         <div>
                             <div class="text-xs text-secondary mb-1">Last Price Change</div>
                             <div class="text-sm text-primary">14 Nov 2024</div>
+                            <div class="text-xs text-secondary mt-1">Approved by Max Chen</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Proposal Card -->
+                <div id="current-proposal-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm mt-6">
+                    <h3 class="text-lg font-semibold text-primary mb-4">Current Proposal</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Proposal version</div>
+                            <div class="text-sm text-primary font-medium">Proposal v3</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Date sent</div>
+                            <div class="text-sm text-primary">20 Nov 2024</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Changes</div>
+                            <div class="text-sm text-primary">Reduced rent by £2 psf; added coffee service</div>
                         </div>
                     </div>
                 </div>
@@ -379,7 +419,7 @@
                 <div id="managed-services-breakdown-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm mt-6">
                     <h3 class="text-lg font-semibold text-primary mb-6">Managed Services Breakdown</h3>
                     <div class="space-y-3">
-                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6] hover:bg-muted cursor-pointer transition-all-smooth rounded px-2 -mx-2" onclick="openEditService('security')">
                             <div class="flex items-center space-x-3 flex-1">
                                 <i class="fa-solid fa-shield-halved text-secondary"></i>
                                 <div class="flex-1">
@@ -387,9 +427,12 @@
                                     <div class="text-xs text-secondary">24/7 monitoring</div>
                                 </div>
                             </div>
-                            <span class="text-sm font-semibold text-primary">£120</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-semibold text-primary">£120</span>
+                                <i class="fa-solid fa-pen text-secondary text-xs"></i>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6] hover:bg-muted cursor-pointer transition-all-smooth rounded px-2 -mx-2" onclick="openEditService('cleaning')">
                             <div class="flex items-center space-x-3 flex-1">
                                 <i class="fa-solid fa-broom text-secondary"></i>
                                 <div class="flex-1">
@@ -397,9 +440,12 @@
                                     <div class="text-xs text-secondary">£120 × 12 cleans/month</div>
                                 </div>
                             </div>
-                            <span class="text-sm font-semibold text-primary">£1,440</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-semibold text-primary">£1,440</span>
+                                <i class="fa-solid fa-pen text-secondary text-xs"></i>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6] hover:bg-muted cursor-pointer transition-all-smooth rounded px-2 -mx-2" onclick="openEditService('internet')">
                             <div class="flex items-center space-x-3 flex-1">
                                 <i class="fa-solid fa-wifi text-secondary"></i>
                                 <div class="flex-1">
@@ -407,9 +453,12 @@
                                     <div class="text-xs text-secondary">1Gbps fibre</div>
                                 </div>
                             </div>
-                            <span class="text-sm font-semibold text-primary">£800</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-semibold text-primary">£800</span>
+                                <i class="fa-solid fa-pen text-secondary text-xs"></i>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6] hover:bg-muted cursor-pointer transition-all-smooth rounded px-2 -mx-2" onclick="openEditService('coffee')">
                             <div class="flex items-center space-x-3 flex-1">
                                 <i class="fa-solid fa-mug-hot text-secondary"></i>
                                 <div class="flex-1">
@@ -417,9 +466,12 @@
                                     <div class="text-xs text-secondary">£18 × 40 people</div>
                                 </div>
                             </div>
-                            <span class="text-sm font-semibold text-primary">£720</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-semibold text-primary">£720</span>
+                                <i class="fa-solid fa-pen text-secondary text-xs"></i>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between py-3">
+                        <div class="flex items-center justify-between py-3 hover:bg-muted cursor-pointer transition-all-smooth rounded px-2 -mx-2" onclick="openEditService('reception')">
                             <div class="flex items-center space-x-3 flex-1">
                                 <i class="fa-solid fa-phone text-secondary"></i>
                                 <div class="flex-1">
@@ -427,37 +479,59 @@
                                     <div class="text-xs text-secondary">9am–6pm weekdays</div>
                                 </div>
                             </div>
-                            <span class="text-sm font-semibold text-primary">£1,200</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-sm font-semibold text-primary">£1,200</span>
+                                <i class="fa-solid fa-pen text-secondary text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Edit Service Modal (hidden by default) -->
+                <div id="edit-service-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm max-w-md w-full mx-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-primary">Edit Service</h3>
+                            <button onclick="closeEditService()" class="text-secondary hover:text-primary">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </div>
+                        <div id="edit-service-content" class="space-y-4">
+                            <!-- Content will be populated dynamically -->
+                        </div>
+                        <div class="flex items-center justify-end space-x-3 mt-6">
+                            <button onclick="closeEditService()" class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                                Cancel
+                            </button>
+                            <button onclick="saveService()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all-smooth">
+                                Save Changes
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Right Column - Decision and Budget, Property & Unit -->
+            <!-- Right Column - Decision and Authority, Property & Unit -->
             <div class="space-y-6">
-                <!-- Decision and Budget Card -->
-                <div id="decision-budget-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-                    <h3 class="text-lg font-semibold text-primary mb-6">Decision and Budget</h3>
+                <!-- Decision and Authority Card -->
+                <div id="decision-authority-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Decision and Authority</h3>
                     <div class="space-y-4">
                         <div>
                             <div class="text-xs text-secondary mb-1">Decision maker</div>
                             <div class="text-sm text-primary font-medium">Sarah Chen, CFO</div>
                         </div>
                         <div>
-                            <div class="text-xs text-secondary mb-1">Commercial sponsor</div>
-                            <div class="text-sm text-primary font-medium">James Patel, COO</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-secondary mb-1">Authority</div>
-                            <div class="text-sm text-primary">Joint sign off CFO and COO</div>
-                        </div>
-                        <div>
                             <div class="text-xs text-secondary mb-1">Budget approval</div>
                             <div class="text-sm text-primary">Board approved</div>
                         </div>
                         <div>
+                            <div class="text-xs text-secondary mb-1">Authority</div>
+                            <div class="text-sm text-primary">Joint approval CFO + COO</div>
+                        </div>
+                        <div>
                             <div class="text-xs text-secondary mb-1">Budget ceiling</div>
-                            <div class="text-sm text-primary font-medium">Do not exceed £22,000 per month</div>
+                            <div class="text-sm text-primary font-medium">Do not exceed £22,000/month</div>
                         </div>
                     </div>
                 </div>
@@ -501,6 +575,28 @@
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Private</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Viewings Summary Card -->
+                <div id="viewings-summary-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Viewings Summary</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Next viewing</div>
+                            <div class="text-sm text-primary font-medium">No upcoming viewings</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Viewings completed</div>
+                            <div class="text-sm text-primary font-medium">3</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Last viewing</div>
+                            <div class="text-sm text-primary">3 Nov 2024</div>
+                        </div>
+                        <button onclick="openLogViewing()" class="w-full mt-4 px-4 py-2 text-sm font-medium text-primary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                            Log viewing outcome
+                        </button>
                     </div>
                 </div>
             </div>
@@ -592,29 +688,55 @@
                     <span>Upload</span>
                 </button>
             </div>
+            <!-- Pinned Documents Section -->
+            <div id="pinned-documents" class="mb-6 pb-6 border-b border-[#E6E6E6]">
+                <div class="text-xs text-secondary mb-2">Pinned to overview</div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">
+                        <i class="fa-solid fa-thumbtack text-primary text-xs mr-1"></i>
+                        Legal (8 files)
+                    </span>
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">
+                        <i class="fa-solid fa-thumbtack text-primary text-xs mr-1"></i>
+                        Plans (12 files)
+                    </span>
+                </div>
+            </div>
             <div class="grid grid-cols-4 gap-4">
-                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth relative">
+                    <button onclick="togglePin('legal')" class="absolute top-2 right-2 text-secondary hover:text-primary text-xs" title="Pin to overview">
+                        <i class="fa-solid fa-thumbtack"></i>
+                    </button>
                     <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
                         <i class="fa-solid fa-gavel text-primary text-xl"></i>
                     </div>
                     <div class="text-sm font-medium text-primary mb-1">Legal</div>
                     <div class="text-xs text-secondary">8 files</div>
                 </div>
-                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth relative">
+                    <button onclick="togglePin('commercial')" class="absolute top-2 right-2 text-secondary hover:text-primary text-xs" title="Pin to overview">
+                        <i class="fa-solid fa-thumbtack"></i>
+                    </button>
                     <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
                         <i class="fa-solid fa-sterling-sign text-primary text-xl"></i>
                     </div>
                     <div class="text-sm font-medium text-primary mb-1">Commercial</div>
                     <div class="text-xs text-secondary">5 files</div>
                 </div>
-                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth relative">
+                    <button onclick="togglePin('plans')" class="absolute top-2 right-2 text-secondary hover:text-primary text-xs" title="Pin to overview">
+                        <i class="fa-solid fa-thumbtack"></i>
+                    </button>
                     <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
                         <i class="fa-solid fa-map text-primary text-xl"></i>
                     </div>
                     <div class="text-sm font-medium text-primary mb-1">Plans</div>
                     <div class="text-xs text-secondary">12 files</div>
                 </div>
-                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth relative">
+                    <button onclick="togglePin('marketing')" class="absolute top-2 right-2 text-secondary hover:text-primary text-xs" title="Pin to overview">
+                        <i class="fa-solid fa-thumbtack"></i>
+                    </button>
                     <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
                         <i class="fa-solid fa-bullhorn text-primary text-xl"></i>
                     </div>
@@ -642,7 +764,15 @@
                     </div>
                     <div>
                         <div class="text-xs text-secondary mb-1">Pending Actions</div>
-                        <div class="text-sm text-primary font-medium">None</div>
+                        <div class="text-sm text-primary font-medium">None, clear to proceed</div>
+                    </div>
+                    <div class="pt-4 border-t border-[#E6E6E6] space-y-2">
+                        <button onclick="openSendApproval()" class="w-full px-4 py-2 text-sm font-medium text-primary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                            Send for approval
+                        </button>
+                        <button onclick="openRecordApproval()" class="w-full px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                            Record approval/rejection
+                        </button>
                     </div>
                 </div>
             </div>
@@ -671,6 +801,11 @@
                         <div class="text-xs text-secondary mb-1">Mitigation</div>
                         <div class="text-sm text-primary">Deposit held, guarantor in place</div>
                     </div>
+                    <div class="pt-4 border-t border-[#E6E6E6]">
+                        <button onclick="addMitigationTask()" class="w-full px-4 py-2 text-sm font-medium text-primary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                            Add mitigation task
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -681,7 +816,10 @@
             <div id="activity-stream-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-semibold text-primary">Activity</h3>
-                    <button class="text-xs text-secondary hover:text-primary">View all</button>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="openAddNote()" class="text-xs text-secondary hover:text-primary">Add note</button>
+                        <button class="text-xs text-secondary hover:text-primary">View all</button>
+                    </div>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-start space-x-3 pb-4 border-b border-[#E6E6E6]">
@@ -726,16 +864,20 @@
             <div id="tasks-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-semibold text-primary">Tasks</h3>
-                    <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
-                        <i class="fa-solid fa-plus"></i>
-                        <span>Add</span>
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="openAddFollowUp()" class="text-xs text-secondary hover:text-primary">Add follow-up</button>
+                        <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Add</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="space-y-3">
                     <div class="flex items-center p-3 bg-muted rounded-lg">
                         <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                         <div class="ml-3 flex-1">
                             <div class="text-sm text-primary font-medium">Chase tenant signature on UNION agreement</div>
+                            <div class="text-xs text-secondary mt-1">Owner: Max Chen</div>
                             <div class="text-xs text-destructive mt-1">Due tomorrow</div>
                         </div>
                     </div>
@@ -743,6 +885,7 @@
                         <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                         <div class="ml-3 flex-1">
                             <div class="text-sm text-primary font-medium">Confirm move-in date with tenant</div>
+                            <div class="text-xs text-secondary mt-1">Owner: Max Chen</div>
                             <div class="text-xs text-secondary mt-1">Due 25 Nov</div>
                         </div>
                     </div>
@@ -750,6 +893,7 @@
                         <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                         <div class="ml-3 flex-1">
                             <div class="text-sm text-primary font-medium">Schedule internet survey</div>
+                            <div class="text-xs text-secondary mt-1">Owner: Max Chen</div>
                             <div class="text-xs text-secondary mt-1">Due 28 Nov</div>
                         </div>
                     </div>
@@ -757,6 +901,7 @@
                         <input type="checkbox" checked disabled class="w-4 h-4 text-primary border-[#E6E6E6] rounded">
                         <div class="ml-3 flex-1">
                             <div class="text-sm text-secondary line-through">Send HoTs to landlord solicitor</div>
+                            <div class="text-xs text-secondary mt-1">Owner: Tom Harrison</div>
                             <div class="text-xs text-secondary mt-1">Completed 18 Nov</div>
                         </div>
                     </div>
@@ -768,6 +913,305 @@
     </div>
     
 </div>
+
+<!-- Inline Input Panels -->
+<div id="input-panel-overlay" class="hidden fixed inset-0 bg-black bg-opacity-30 z-40" onclick="closeAllPanels()"></div>
+
+<!-- Add Note Panel -->
+<div id="add-note-panel" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm z-50 w-full max-w-md mx-4">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-primary">Add Note</h3>
+        <button onclick="closeAllPanels()" class="text-secondary hover:text-primary">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+    <textarea id="note-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm mb-4" rows="4" placeholder="Enter your note..."></textarea>
+    <div class="flex items-center justify-end space-x-3">
+        <button onclick="closeAllPanels()" class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+            Cancel
+        </button>
+        <button onclick="saveNote()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all-smooth">
+            Save Note
+        </button>
+    </div>
+</div>
+
+<!-- Log Viewing Panel -->
+<div id="log-viewing-panel" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm z-50 w-full max-w-md mx-4">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-primary">Log Viewing Outcome</h3>
+        <button onclick="closeAllPanels()" class="text-secondary hover:text-primary">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+    <textarea id="viewing-outcome-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm mb-4" rows="4" placeholder="Enter viewing outcome..."></textarea>
+    <div class="flex items-center justify-end space-x-3">
+        <button onclick="closeAllPanels()" class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+            Cancel
+        </button>
+        <button onclick="saveViewingOutcome()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all-smooth">
+            Save
+        </button>
+    </div>
+</div>
+
+<!-- Send for Approval Panel -->
+<div id="send-approval-panel" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm z-50 w-full max-w-md mx-4">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-primary">Send for Approval</h3>
+        <button onclick="closeAllPanels()" class="text-secondary hover:text-primary">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+    <textarea id="approval-note-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm mb-4" rows="4" placeholder="Enter note for approval request..."></textarea>
+    <div class="flex items-center justify-end space-x-3">
+        <button onclick="closeAllPanels()" class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+            Cancel
+        </button>
+        <button onclick="saveApprovalRequest()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all-smooth">
+            Send
+        </button>
+    </div>
+</div>
+
+<!-- Record Approval Panel -->
+<div id="record-approval-panel" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm z-50 w-full max-w-md mx-4">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-primary">Record Approval/Rejection</h3>
+        <button onclick="closeAllPanels()" class="text-secondary hover:text-primary">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+    <div class="mb-4">
+        <label class="text-xs text-secondary mb-1 block">Decision</label>
+        <select id="approval-decision-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm">
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+        </select>
+    </div>
+    <textarea id="approval-record-note-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm mb-4" rows="4" placeholder="Enter note..."></textarea>
+    <div class="flex items-center justify-end space-x-3">
+        <button onclick="closeAllPanels()" class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+            Cancel
+        </button>
+        <button onclick="saveApprovalRecord()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all-smooth">
+            Save
+        </button>
+    </div>
+</div>
+
+<!-- Add Follow-up Panel -->
+<div id="add-followup-panel" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm z-50 w-full max-w-md mx-4">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-primary">Add Follow-up</h3>
+        <button onclick="closeAllPanels()" class="text-secondary hover:text-primary">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+    <div class="mb-4">
+        <label class="text-xs text-secondary mb-1 block">Task</label>
+        <input type="text" id="followup-task-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm" placeholder="Enter follow-up task...">
+    </div>
+    <div class="mb-4">
+        <label class="text-xs text-secondary mb-1 block">Owner</label>
+        <select id="followup-owner-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm">
+            <option value="Max Chen" selected>Max Chen</option>
+            <option value="Tom Harrison">Tom Harrison</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+    <div class="flex items-center justify-end space-x-3">
+        <button onclick="closeAllPanels()" class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+            Cancel
+        </button>
+        <button onclick="saveFollowUp()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all-smooth">
+            Add Follow-up
+        </button>
+    </div>
+</div>
+
+<!-- Add Mitigation Task Panel -->
+<div id="add-mitigation-task-panel" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm z-50 w-full max-w-md mx-4">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-primary">Add Mitigation Task</h3>
+        <button onclick="closeAllPanels()" class="text-secondary hover:text-primary">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+    <div class="mb-4">
+        <label class="text-xs text-secondary mb-1 block">Task</label>
+        <input type="text" id="mitigation-task-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm" placeholder="Enter mitigation task...">
+    </div>
+    <div class="mb-4">
+        <label class="text-xs text-secondary mb-1 block">Owner</label>
+        <select id="mitigation-owner-input" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm">
+            <option value="Max Chen" selected>Max Chen</option>
+            <option value="Tom Harrison">Tom Harrison</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+    <div class="flex items-center justify-end space-x-3">
+        <button onclick="closeAllPanels()" class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+            Cancel
+        </button>
+        <button onclick="saveMitigationTask()" class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all-smooth">
+            Add Task
+        </button>
+    </div>
+</div>
+
+<!-- Modals and Scripts -->
+<script>
+    function openEditService(serviceId) {
+        document.getElementById('edit-service-modal').classList.remove('hidden');
+        // Populate modal content based on serviceId
+        const content = document.getElementById('edit-service-content');
+        content.innerHTML = `
+            <div>
+                <label class="text-xs text-secondary mb-1 block">Service Name</label>
+                <input type="text" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm" value="Service Name">
+            </div>
+            <div>
+                <label class="text-xs text-secondary mb-1 block">Quantity</label>
+                <input type="number" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm" value="1">
+            </div>
+            <div>
+                <label class="text-xs text-secondary mb-1 block">Price</label>
+                <input type="text" class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm" value="£120">
+            </div>
+            <div class="flex items-center">
+                <input type="checkbox" id="remove-service" class="w-4 h-4 text-primary border-[#E6E6E6] rounded">
+                <label for="remove-service" class="ml-2 text-sm text-primary">Remove this service</label>
+            </div>
+        `;
+    }
+    
+    function closeEditService() {
+        document.getElementById('edit-service-modal').classList.add('hidden');
+    }
+    
+    function saveService() {
+        // Save logic here
+        closeEditService();
+    }
+    
+    function openLogViewing() {
+        document.getElementById('input-panel-overlay').classList.remove('hidden');
+        document.getElementById('log-viewing-panel').classList.remove('hidden');
+        document.getElementById('viewing-outcome-input').value = '';
+        document.getElementById('viewing-outcome-input').focus();
+    }
+    
+    function saveViewingOutcome() {
+        const outcome = document.getElementById('viewing-outcome-input').value;
+        if (outcome.trim()) {
+            // Save viewing outcome
+            console.log('Viewing logged:', outcome);
+            closeAllPanels();
+        }
+    }
+    
+    function togglePin(category) {
+        // Toggle pin functionality
+        console.log('Toggle pin:', category);
+    }
+    
+    function openSendApproval() {
+        document.getElementById('input-panel-overlay').classList.remove('hidden');
+        document.getElementById('send-approval-panel').classList.remove('hidden');
+        document.getElementById('approval-note-input').value = '';
+        document.getElementById('approval-note-input').focus();
+    }
+    
+    function saveApprovalRequest() {
+        const note = document.getElementById('approval-note-input').value;
+        if (note.trim()) {
+            // Send for approval
+            console.log('Approval sent:', note);
+            closeAllPanels();
+        }
+    }
+    
+    function openRecordApproval() {
+        document.getElementById('input-panel-overlay').classList.remove('hidden');
+        document.getElementById('record-approval-panel').classList.remove('hidden');
+        document.getElementById('approval-decision-input').value = 'approved';
+        document.getElementById('approval-record-note-input').value = '';
+        document.getElementById('approval-record-note-input').focus();
+    }
+    
+    function saveApprovalRecord() {
+        const decision = document.getElementById('approval-decision-input').value;
+        const note = document.getElementById('approval-record-note-input').value;
+        if (note.trim()) {
+            // Record approval/rejection
+            console.log('Approval recorded:', decision, note);
+            closeAllPanels();
+        }
+    }
+    
+    function addMitigationTask() {
+        document.getElementById('input-panel-overlay').classList.remove('hidden');
+        document.getElementById('add-mitigation-task-panel').classList.remove('hidden');
+        document.getElementById('mitigation-task-input').value = '';
+        document.getElementById('mitigation-owner-input').value = 'Max Chen';
+        document.getElementById('mitigation-task-input').focus();
+    }
+    
+    function saveMitigationTask() {
+        const task = document.getElementById('mitigation-task-input').value;
+        const owner = document.getElementById('mitigation-owner-input').value;
+        if (task.trim()) {
+            // Add task to Tasks card
+            console.log('Mitigation task added:', task, 'Owner:', owner);
+            closeAllPanels();
+        }
+    }
+    
+    function openAddNote() {
+        document.getElementById('input-panel-overlay').classList.remove('hidden');
+        document.getElementById('add-note-panel').classList.remove('hidden');
+        document.getElementById('note-input').value = '';
+        document.getElementById('note-input').focus();
+    }
+    
+    function saveNote() {
+        const note = document.getElementById('note-input').value;
+        if (note.trim()) {
+            // Add note to Activity
+            console.log('Note added:', note);
+            closeAllPanels();
+        }
+    }
+    
+    function openAddFollowUp() {
+        document.getElementById('input-panel-overlay').classList.remove('hidden');
+        document.getElementById('add-followup-panel').classList.remove('hidden');
+        document.getElementById('followup-task-input').value = '';
+        document.getElementById('followup-owner-input').value = 'Max Chen';
+        document.getElementById('followup-task-input').focus();
+    }
+    
+    function saveFollowUp() {
+        const task = document.getElementById('followup-task-input').value;
+        const owner = document.getElementById('followup-owner-input').value;
+        if (task.trim()) {
+            // Add follow-up to Tasks
+            console.log('Follow-up added:', task, 'Owner:', owner);
+            closeAllPanels();
+        }
+    }
+    
+    function closeAllPanels() {
+        document.getElementById('input-panel-overlay').classList.add('hidden');
+        document.getElementById('add-note-panel').classList.add('hidden');
+        document.getElementById('log-viewing-panel').classList.add('hidden');
+        document.getElementById('send-approval-panel').classList.add('hidden');
+        document.getElementById('record-approval-panel').classList.add('hidden');
+        document.getElementById('add-followup-panel').classList.add('hidden');
+        document.getElementById('add-mitigation-task-panel').classList.add('hidden');
+    }
+</script>
 
 </body>
 </html>
