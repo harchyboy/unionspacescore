@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
-    <title>Deal Room</title>
+    <title>Deal Room Detail</title>
     <script src='https://cdn.tailwindcss.com'></script>
     <script>
     tailwind.config = {
@@ -97,1103 +97,677 @@
             font-family: var(--font-sans);
             background-color: #F0F0F0;
             color: #252525;
+            margin: 0;
+            padding: 0;
         }
         
         .transition-all-smooth {
             transition: all 0.2s ease-in-out;
         }
         
-        /* Hide sidebar and header when embedded in iframe/slide-out */
-        body.embedded #sidebar,
-        body.embedded #header {
-            display: none;
-        }
-        
-        body.embedded #main-content {
-            margin-left: 0;
+        .hover-lift:hover {
+            transform: translateY(-2px);
         }
     </style>
-    <script src="sidebar.js" defer></script>
 </head>
 <body class="antialiased">
 
-<div id="app-shell" class="flex h-screen overflow-hidden">
+<div class="min-h-screen bg-[#F0F0F0]">
     
-    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="deal-room"></aside>
-    
-    <main id="main-content" class="flex-1 flex flex-col overflow-hidden">
-        
-        <header id="header" class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-6 flex-1">
-                <div class="relative flex-1 max-w-xl">
-                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
-                    <input type="text" placeholder="Search deals, properties, tickets..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+    <div id="page-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <h1 class="text-3xl font-semibold text-primary mb-2">Acme Corp — Floor 3 West</h1>
+                <div class="flex items-center space-x-3 text-sm text-secondary">
+                    <span>99 Bishopsgate</span>
+                    <span>•</span>
+                    <span>3,200 sq ft</span>
+                    <span>•</span>
+                    <span>Acme Corporation Ltd</span>
+                    <span>•</span>
+                    <span class="text-primary font-medium">REQ-2024-042</span>
                 </div>
             </div>
-            
             <div class="flex items-center space-x-4">
-                <button class="relative p-2 text-secondary hover:text-primary transition-all-smooth">
-                    <i class="fa-solid fa-bell text-lg"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
-                </button>
-                <button class="p-2 text-secondary hover:text-primary transition-all-smooth">
-                    <i class="fa-solid fa-question-circle text-lg"></i>
+                <span class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-primary text-white">
+                    Heads of Terms
+                </span>
+                <div class="flex items-center space-x-2">
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" alt="Tom" class="w-8 h-8 rounded-full object-cover">
+                </div>
+                <button class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                    <i class="fa-solid fa-pen"></i>
+                    <span>Edit Deal</span>
                 </button>
             </div>
-        </header>
-        
-        <div id="page-content" class="flex-1 overflow-y-auto bg-[#F0F0F0]">
-            <!-- Loading State -->
-            <div id="loading-state" class="flex items-center justify-center h-full">
-                <div class="text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p class="text-secondary">Loading deal details...</p>
+        </div>
+    </div>
+    
+    <!-- Summary Cards Row -->
+    <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Deal Value Card -->
+            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Deal Value</div>
+                    <i class="fa-solid fa-sterling-sign text-primary text-sm"></i>
                 </div>
+                <div class="text-3xl font-bold text-primary mb-1">£2,100,000</div>
+                <div class="text-xs text-green-600 font-medium">+5.2% vs initial estimate</div>
             </div>
             
-            <!-- Error State -->
-            <div id="error-state" class="hidden px-8 py-6">
-                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                    <div class="flex items-center space-x-3 text-destructive mb-2">
-                        <i class="fa-solid fa-exclamation-circle"></i>
-                        <h3 class="font-semibold">Error loading deal</h3>
-                    </div>
-                    <p class="text-secondary text-sm mb-4" id="error-message"></p>
-                    <button onclick="loadDeal()" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all-smooth">
-                        Try again
+            <!-- Probability Card -->
+            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Probability</div>
+                    <i class="fa-solid fa-percent text-primary text-sm"></i>
+                </div>
+                <div class="text-3xl font-bold text-primary">85%</div>
+            </div>
+            
+            <!-- Days Active Card -->
+            <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-xs font-semibold text-secondary uppercase tracking-wider">Days Active</div>
+                    <i class="fa-solid fa-calendar text-primary text-sm"></i>
+                </div>
+                <div class="text-3xl font-bold text-primary mb-1">42</div>
+                <div class="text-xs text-secondary">Next: Contract Review</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Deal Pipeline Progress -->
+    <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+        <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-primary mb-1">Deal Pipeline Progress</h3>
+                    <div class="text-sm text-secondary">Progress: 57% Complete</div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="px-4 py-2 text-sm font-medium text-primary bg-blue-50 border border-blue-500 rounded-lg">
+                        All Stages
+                    </button>
+                    <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                        Current Stage
+                    </button>
+                    <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth">
+                        Timeline View
                     </button>
                 </div>
             </div>
             
-            <!-- Main Content -->
-            <div id="deal-content" class="hidden">
-                <!-- Page Header -->
-                <div class="bg-white border-b border-[#E6E6E6] px-8 py-6">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <h1 class="text-3xl font-semibold text-primary mb-2" id="deal-name">Deal Name</h1>
-                            <div class="flex items-center space-x-3 text-sm text-secondary">
-                                <span id="property-name-header"></span>
-                                <span>•</span>
-                                <span id="unit-size-header"></span>
-                                <span>•</span>
-                                <span id="tenant-company-header"></span>
-                                <span>•</span>
-                                <span class="text-primary font-medium" id="requirement-code"></span>
+            <!-- Pipeline Stages -->
+            <div class="relative">
+                <!-- Progress Line -->
+                <div class="absolute top-8 left-0 right-0 h-0.5 bg-[#E6E6E6] z-0">
+                    <div class="h-full bg-primary" style="width: 57%"></div>
+                </div>
+                
+                <div class="relative flex items-start justify-between">
+                    <!-- Lead Stage -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                            <i class="fa-solid fa-check text-white text-lg"></i>
+                        </div>
+                        <div class="text-sm font-semibold text-primary mb-1">Lead</div>
+                        <div class="text-xs text-secondary mb-1">Completed</div>
+                        <div class="text-xs text-green-600 font-medium">Oct 5, 2024</div>
+                    </div>
+                    
+                    <!-- Viewing Stage -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                            <i class="fa-solid fa-check text-white text-lg"></i>
+                        </div>
+                        <div class="text-sm font-semibold text-primary mb-1">Viewing</div>
+                        <div class="text-xs text-secondary mb-1">Completed</div>
+                        <div class="text-xs text-green-600 font-medium">Oct 12, 2024</div>
+                    </div>
+                    
+                    <!-- Proposal Stage -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                            <i class="fa-solid fa-check text-white text-lg"></i>
+                        </div>
+                        <div class="text-sm font-semibold text-primary mb-1">Proposal</div>
+                        <div class="text-xs text-secondary mb-1">Completed</div>
+                        <div class="text-xs text-green-600 font-medium">Oct 25, 2024</div>
+                    </div>
+                    
+                    <!-- HoTs Stage (In Progress) -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="relative">
+                            <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-2 ring-4 ring-blue-100">
+                                <i class="fa-solid fa-clock text-white text-lg"></i>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-4">
-                            <span id="stage-badge" class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium"></span>
-                            <div class="flex items-center space-x-2" id="deal-owner">
-                                <!-- Owner avatar and name -->
-                            </div>
-                            <button class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
-                                <i class="fa-solid fa-pen"></i>
-                                <span>Edit Deal</span>
-                            </button>
+                        <div class="text-sm font-semibold text-primary mb-1">HoTs</div>
+                        <div class="text-xs text-primary font-medium mb-1">In Progress</div>
+                        <div class="text-xs text-primary font-medium">Due: Nov 15</div>
+                    </div>
+                    
+                    <!-- Contract Stage -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-2 border-2 border-[#E6E6E6]">
+                            <i class="fa-solid fa-file-contract text-secondary text-lg"></i>
+                        </div>
+                        <div class="text-sm font-semibold text-primary mb-1">Contract</div>
+                        <div class="text-xs text-secondary mb-1">Pending</div>
+                        <div class="text-xs text-secondary">Est: Nov 20</div>
+                    </div>
+                    
+                    <!-- Onboarding Stage -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-2 border-2 border-[#E6E6E6]">
+                            <i class="fa-solid fa-gear text-secondary text-lg"></i>
+                        </div>
+                        <div class="text-sm font-semibold text-primary mb-1">Onboarding</div>
+                        <div class="text-xs text-secondary mb-1">Pending</div>
+                        <div class="text-xs text-secondary">Est: Dec 1</div>
+                    </div>
+                    
+                    <!-- Live Stage -->
+                    <div class="flex flex-col items-center z-10">
+                        <div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-2 border-2 border-[#E6E6E6]">
+                            <i class="fa-solid fa-flag text-secondary text-lg"></i>
+                        </div>
+                        <div class="text-sm font-semibold text-primary mb-1">Live</div>
+                        <div class="text-xs text-secondary mb-1">Pending</div>
+                        <div class="text-xs text-secondary">Est: Dec 15</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Property Details and Stakeholders Section -->
+    <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Left Column - Commercial Snapshot -->
+            <div class="col-span-2">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-primary">Commercial Snapshot</h3>
+                        <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
+                            <i class="fa-solid fa-clock"></i>
+                            <span>Updated 2h ago</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6">
+                        <!-- Column 1 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Rent (Monthly)</div>
+                            <div class="text-2xl font-semibold text-primary">£12,800</div>
+                            <div class="text-xs text-secondary mt-1">£153,600 / year</div>
+                        </div>
+                        <!-- Column 2 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Rent per sq ft</div>
+                            <div class="text-2xl font-semibold text-primary">£48</div>
+                            <div class="text-xs text-secondary mt-1">Per sq ft / year</div>
+                        </div>
+                        <!-- Column 3 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Business Rates</div>
+                            <div class="text-2xl font-semibold text-primary">£2,100</div>
+                            <div class="text-xs text-secondary mt-1">Monthly estimate</div>
+                        </div>
+                        <!-- Column 1 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Service Charge</div>
+                            <div class="text-2xl font-semibold text-primary">£1,600</div>
+                            <div class="text-xs text-secondary mt-1">Monthly</div>
+                        </div>
+                        <!-- Column 2 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Insurance</div>
+                            <div class="text-2xl font-semibold text-primary">£320</div>
+                            <div class="text-xs text-secondary mt-1">Monthly</div>
+                        </div>
+                        <!-- Column 3 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Utilities Cap</div>
+                            <div class="text-2xl font-semibold text-primary">£800</div>
+                            <div class="text-xs text-secondary mt-1">Monthly maximum</div>
+                        </div>
+                        <!-- Column 1 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Deposit Required</div>
+                            <div class="text-xl font-semibold text-primary">£38,400</div>
+                        </div>
+                        <!-- Column 2 - Empty -->
+                        <div></div>
+                        <!-- Column 3 -->
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Last Price Change</div>
+                            <div class="text-sm text-primary">14 Nov 2024</div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Stage Filters Bar -->
-                <div id="stage-filters-bar" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
-                    <div class="flex items-center space-x-3">
-                        <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth" data-stage="Viewing">
-                            Viewing
-                        </button>
-                        <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth" data-stage="Heads of Terms">
-                            Heads of Terms
-                        </button>
-                        <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth" data-stage="Legals">
-                            Legals
-                        </button>
-                        <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth" data-stage="Signed">
-                            Signed
-                        </button>
-                        <button class="px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth" data-stage="Lost">
-                            Lost
-                        </button>
+                <div id="all-inclusive-package-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm mt-6">
+                    <h3 class="text-lg font-semibold text-primary mb-6">All-Inclusive Package</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-building text-secondary"></i>
+                                <span class="text-sm text-primary">Building Costs Total</span>
+                            </div>
+                            <span class="text-sm font-semibold text-primary">£16,820</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-user text-secondary"></i>
+                                <span class="text-sm text-primary">Managed Services Total</span>
+                            </div>
+                            <span class="text-sm font-semibold text-primary">£4,280</span>
+                        </div>
+                        <div class="flex items-center justify-between py-4 bg-primary rounded-lg px-4 mt-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-check text-primary text-xs"></i>
+                                </div>
+                                <span class="text-base font-semibold text-white">Final All-Inclusive Monthly</span>
+                            </div>
+                            <span class="text-2xl font-semibold text-white">£21,100</span>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Main Content Grid -->
-                <div id="deal-room-content" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
-                    <div class="grid grid-cols-3 gap-6 mb-6">
-                        <!-- Left Column (2 cols) -->
-                        <div class="col-span-2 space-y-6">
-                            <!-- Commercial Snapshot Card -->
-                            <div id="commercial-snapshot-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                                <div class="flex items-center justify-between mb-6">
-                                    <h3 class="text-lg font-semibold text-primary">Commercial Snapshot</h3>
-                                    <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
-                                        <i class="fa-solid fa-clock"></i>
-                                        <span id="last-updated-text">Updated 2h ago</span>
-                                    </button>
-                                </div>
-                                <div class="grid grid-cols-3 gap-6">
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Rent (Monthly)</div>
-                                        <div class="text-2xl font-semibold text-primary" id="monthly-rent"></div>
-                                        <div class="text-xs text-secondary mt-1" id="annual-rent"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Rent per sq ft</div>
-                                        <div class="text-2xl font-semibold text-primary" id="rent-per-sqft"></div>
-                                        <div class="text-xs text-secondary mt-1">Per sq ft / year</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Business Rates</div>
-                                        <div class="text-2xl font-semibold text-primary" id="business-rates"></div>
-                                        <div class="text-xs text-secondary mt-1">Monthly estimate</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Service Charge</div>
-                                        <div class="text-2xl font-semibold text-primary" id="service-charge"></div>
-                                        <div class="text-xs text-secondary mt-1">Monthly</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Insurance</div>
-                                        <div class="text-2xl font-semibold text-primary" id="building-insurance"></div>
-                                        <div class="text-xs text-secondary mt-1">Monthly</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Utilities Cap</div>
-                                        <div class="text-2xl font-semibold text-primary" id="utilities-cap"></div>
-                                        <div class="text-xs text-secondary mt-1">Monthly maximum</div>
-                                    </div>
-                                    <div class="col-span-3 pt-4 border-t border-[#E6E6E6]">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <div class="text-xs text-secondary mb-1">Deposit Required</div>
-                                                <div class="text-xl font-semibold text-primary" id="deposit"></div>
-                                            </div>
-                                            <div class="text-right" id="last-price-change">
-                                                <div class="text-xs text-secondary mb-1">Last Price Change</div>
-                                                <div class="text-sm text-primary" id="price-change-details"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <div id="managed-services-breakdown-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm mt-6">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Managed Services Breakdown</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <i class="fa-solid fa-shield-halved text-secondary"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm text-primary">Security & Access Control</div>
+                                    <div class="text-xs text-secondary">24/7 monitoring</div>
                                 </div>
                             </div>
-                            
-                            <!-- All-Inclusive Package Card -->
-                            <div id="all-inclusive-package-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                                <h3 class="text-lg font-semibold text-primary mb-6">All-Inclusive Package</h3>
-                                <div class="space-y-3">
-                                    <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
-                                        <div class="flex items-center space-x-3">
-                                            <i class="fa-solid fa-building text-secondary"></i>
-                                            <span class="text-sm text-primary">Building Costs Total</span>
-                                        </div>
-                                        <span class="text-sm font-semibold text-primary" id="ai-building-total"></span>
-                                    </div>
-                                    <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
-                                        <div class="flex items-center space-x-3">
-                                            <i class="fa-solid fa-concierge-bell text-secondary"></i>
-                                            <span class="text-sm text-primary">Managed Services Total</span>
-                                        </div>
-                                        <span class="text-sm font-semibold text-primary" id="managed-services-total"></span>
-                                    </div>
-                                    <div class="flex items-center justify-between py-4 bg-muted rounded-lg px-4 mt-4">
-                                        <div class="flex items-center space-x-3">
-                                            <i class="fa-solid fa-check-circle text-primary text-xl"></i>
-                                            <span class="text-base font-semibold text-primary">Final All-Inclusive Monthly</span>
-                                        </div>
-                                        <span class="text-2xl font-semibold text-primary" id="combined-monthly"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Managed Services Breakdown -->
-                            <div id="managed-services-breakdown-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                                <h3 class="text-lg font-semibold text-primary mb-6">Managed Services Breakdown</h3>
-                                <div class="space-y-3" id="managed-services-list">
-                                    <!-- Managed services will be populated here -->
-                                </div>
-                            </div>
-                            
-                            <!-- Proposal Versions (Section 5) -->
-                            <div class="bg-white rounded-lg border border-[#E6E6E6] p-5 shadow-sm">
-                                <h2 class="text-lg font-semibold text-primary mb-4">Proposal versions</h2>
-                                
-                                <div class="space-y-3">
-                                    <div class="border-b border-[#E6E6E6] pb-3">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <div>
-                                                <div class="text-sm font-semibold text-primary" id="current-proposal-label"></div>
-                                                <div class="text-xs text-secondary" id="current-proposal-date"></div>
-                                            </div>
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Current</span>
-                                        </div>
-                                        <div class="text-sm text-primary" id="current-proposal-changes"></div>
-                                    </div>
-                                    
-                                    <div id="previous-proposals-section">
-                                        <div class="text-xs font-medium text-secondary mb-2">Previous versions</div>
-                                        <div id="previous-proposals-list" class="space-y-2">
-                                            <!-- Previous proposals will be populated here -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <span class="text-sm font-semibold text-primary">£120</span>
                         </div>
-                        
-                        <!-- Right Column (1 col) -->
-                        <div class="space-y-6">
-                            <!-- Requirement Summary Card -->
-                            <div id="requirement-summary-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                                <h3 class="text-lg font-semibold text-primary mb-6">Requirement Summary</h3>
-                                <div class="space-y-4">
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Size</div>
-                                        <div class="text-sm text-primary font-medium" id="req-size"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Desks</div>
-                                        <div class="text-sm text-primary font-medium" id="req-desks"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Budget</div>
-                                        <div class="text-sm text-primary font-medium" id="req-budget"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Timing</div>
-                                        <div class="text-sm text-primary font-medium" id="req-timing"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-2">Locations</div>
-                                        <div class="flex flex-wrap gap-2" id="preferred-locations"></div>
-                                    </div>
-                                    <div class="pt-4 border-t border-[#E6E6E6]">
-                                        <div class="text-xs text-secondary mb-2">Must-Haves</div>
-                                        <div class="space-y-1 text-xs text-primary" id="must-haves"></div>
-                                    </div>
-                                    <div class="pt-4 border-t border-[#E6E6E6]" id="red-lines-section">
-                                        <div class="text-xs text-secondary mb-2">Red Lines</div>
-                                        <div class="space-y-1 text-xs text-primary" id="red-lines"></div>
-                                    </div>
-                                    <div class="pt-4 border-t border-[#E6E6E6]">
-                                        <div class="text-xs text-secondary mb-1">Decision Maker</div>
-                                        <div class="text-sm text-primary font-medium" id="decision-maker"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Budget Approval</div>
-                                        <div class="text-sm text-primary" id="budget-status"></div>
-                                    </div>
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <i class="fa-solid fa-broom text-secondary"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm text-primary">Office Cleaning</div>
+                                    <div class="text-xs text-secondary">£120 × 12 cleans/month</div>
                                 </div>
                             </div>
-                            
-                            <!-- Property & Unit Card -->
-                            <div id="property-unit-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                                <h3 class="text-lg font-semibold text-primary mb-6">Property & Unit</h3>
-                                <div class="space-y-4">
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Property</div>
-                                        <div class="text-sm text-primary font-medium" id="property-name"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Address</div>
-                                        <div class="text-sm text-primary" id="property-address"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Submarket</div>
-                                        <div class="text-sm text-primary font-medium" id="property-submarket"></div>
-                                    </div>
-                                    <div class="pt-4 border-t border-[#E6E6E6]">
-                                        <div class="text-xs text-secondary mb-1">Unit Size</div>
-                                        <div class="text-sm text-primary font-medium" id="unit-size"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Floor</div>
-                                        <div class="text-sm text-primary" id="unit-floor"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Fit-out Status</div>
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]" id="unit-fitout-badge"></span>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Availability</div>
-                                        <div class="text-sm text-primary" id="unit-availability"></div>
-                                    </div>
-                                    <div class="pt-4 border-t border-[#E6E6E6]">
-                                        <div class="text-xs text-secondary mb-2">Visibility</div>
-                                        <div class="flex flex-wrap gap-2" id="visibility-flags"></div>
-                                    </div>
+                            <span class="text-sm font-semibold text-primary">£1,440</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <i class="fa-solid fa-wifi text-secondary"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm text-primary">Dedicated Internet</div>
+                                    <div class="text-xs text-secondary">1Gbps fibre</div>
                                 </div>
                             </div>
+                            <span class="text-sm font-semibold text-primary">£800</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-[#E6E6E6]">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <i class="fa-solid fa-mug-hot text-secondary"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm text-primary">Coffee & Refreshments</div>
+                                    <div class="text-xs text-secondary">£18 × 40 people</div>
+                                </div>
+                            </div>
+                            <span class="text-sm font-semibold text-primary">£720</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <i class="fa-solid fa-phone text-secondary"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm text-primary">Reception Services</div>
+                                    <div class="text-xs text-secondary">9am–6pm weekdays</div>
+                                </div>
+                            </div>
+                            <span class="text-sm font-semibold text-primary">£1,200</span>
                         </div>
                     </div>
-                    
-                    <!-- Heads of Terms Card -->
-                    <div id="heads-of-terms-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg font-semibold text-primary">Heads of Terms</h3>
-                            <span id="hots-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
-                                <i class="fa-solid fa-check mr-1"></i>
-                                <span id="hots-status-text">Agreed</span>
-                            </span>
+                </div>
+            </div>
+            
+            <!-- Right Column - Decision and Budget, Property & Unit -->
+            <div class="space-y-6">
+                <!-- Decision and Budget Card -->
+                <div id="decision-budget-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Decision and Budget</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Decision maker</div>
+                            <div class="text-sm text-primary font-medium">Sarah Chen, CFO</div>
                         </div>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <div class="text-xs text-secondary mb-1">Term Length</div>
-                                <div class="text-sm text-primary font-medium" id="hots-term-length"></div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-1">Break Clause</div>
-                                <div class="text-sm text-primary font-medium" id="hots-break-clause"></div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-1">Rent Review</div>
-                                <div class="text-sm text-primary font-medium" id="hots-rent-review"></div>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-1">Deposit</div>
-                                <div class="text-sm text-primary font-medium" id="hots-deposit"></div>
-                            </div>
-                            <div class="col-span-2 pt-4 border-t border-[#E6E6E6]">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-xs text-secondary mb-1">Last Updated</div>
-                                        <div class="text-sm text-primary" id="hots-last-updated"></div>
-                                    </div>
-                                    <button id="hots-document-btn" class="text-sm text-primary hover:underline flex items-center space-x-2" onclick="openHotsDocument()">
-                                        <i class="fa-solid fa-file-pdf"></i>
-                                        <span>View HoTs Document</span>
-                                    </button>
-                                </div>
-                            </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Commercial sponsor</div>
+                            <div class="text-sm text-primary font-medium">James Patel, COO</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Authority</div>
+                            <div class="text-sm text-primary">Joint sign off CFO and COO</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Budget approval</div>
+                            <div class="text-sm text-primary">Board approved</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Budget ceiling</div>
+                            <div class="text-sm text-primary font-medium">Do not exceed £22,000 per month</div>
                         </div>
                     </div>
-                    
-                    <!-- UNION Service Agreement Card -->
-                    <div id="union-service-agreement-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
-                        <h3 class="text-lg font-semibold text-primary mb-6">UNION Service Agreement</h3>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <div class="text-xs text-secondary mb-2">Agreement Status</div>
-                                <span id="union-agreement-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white"></span>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-2">Latest Agreement</div>
-                                <button id="union-agreement-draft-link" class="text-sm text-primary hover:underline flex items-center space-x-2">
-                                    <i class="fa-solid fa-file-contract"></i>
-                                    <span>View Agreement v2.1</span>
-                                </button>
-                            </div>
+                </div>
+                
+                <!-- Property & Unit Card -->
+                <div id="property-unit-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold text-primary mb-6">Property & Unit</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Property</div>
+                            <div class="text-sm text-primary font-medium">99 Bishopsgate</div>
                         </div>
-                    </div>
-                    
-                    <!-- Lease Status Card -->
-                    <div id="lease-status-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
-                        <h3 class="text-lg font-semibold text-primary mb-6">Lease Status</h3>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <div class="text-xs text-secondary mb-2">Lease Progress</div>
-                                <span id="lease-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white"></span>
-                            </div>
-                            <div>
-                                <div class="text-xs text-secondary mb-1">HoTs Reference</div>
-                                <div class="text-sm text-primary font-medium" id="hots-reference"></div>
-                            </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Address</div>
+                            <div class="text-sm text-primary">99 Bishopsgate, London EC2M 3XD</div>
                         </div>
-                    </div>
-                    
-                    <!-- Documents Card -->
-                    <div id="documents-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg font-semibold text-primary">Documents</h3>
-                            <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
-                                <i class="fa-solid fa-upload"></i>
-                                <span>Upload</span>
-                            </button>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Submarket</div>
+                            <div class="text-sm text-primary font-medium">City Core (CCORE)</div>
                         </div>
-                        <div class="grid grid-cols-4 gap-4" id="documents-grid">
-                            <!-- Document categories will be populated here -->
+                        <div class="pt-4 border-t border-[#E6E6E6]">
+                            <div class="text-xs text-secondary mb-1">Unit Size</div>
+                            <div class="text-sm text-primary font-medium">3,200 sq ft</div>
                         </div>
-                    </div>
-                    
-                    <!-- Approvals and Risk Row -->
-                    <div class="grid grid-cols-2 gap-6 mb-6">
-                        <!-- Approvals Card -->
-                        <div id="approvals-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                            <h3 class="text-lg font-semibold text-primary mb-6">Approvals</h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="text-xs text-secondary mb-2">Current Status</div>
-                                    <span id="approval-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
-                                        <i class="fa-solid fa-check mr-1"></i>
-                                        <span id="approval-status-text">Approved</span>
-                                    </span>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-secondary mb-1">Last Decision</div>
-                                    <div class="text-sm text-primary font-medium" id="approval-last-decision"></div>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-secondary mb-1">Pending Actions</div>
-                                    <div class="text-sm text-primary font-medium" id="open-actions-count">None</div>
-                                </div>
-                            </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Floor</div>
+                            <div class="text-sm text-primary">3rd Floor, West Wing</div>
                         </div>
-                        
-                        <!-- Risk Card -->
-                        <div id="risk-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                            <h3 class="text-lg font-semibold text-primary mb-6">Risk</h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="text-xs text-secondary mb-2">Risk Score</div>
-                                    <div class="flex items-center space-x-3">
-                                        <div class="text-2xl font-semibold text-primary" id="risk-score-text"></div>
-                                        <div class="flex-1 bg-muted rounded-full h-2">
-                                            <div id="risk-score-bar" class="bg-primary h-2 rounded-full" style="width: 25%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-secondary mb-2">Key Drivers</div>
-                                    <div class="space-y-1 text-xs text-primary" id="risk-drivers"></div>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-secondary mb-1">Mitigation</div>
-                                    <div class="text-sm text-primary" id="risk-mitigation"></div>
-                                </div>
-                            </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Fit-out Status</div>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Cat A+</span>
                         </div>
-                    </div>
-                    
-                    <!-- Activity and Tasks Section -->
-                    <div class="grid grid-cols-2 gap-6">
-                        <!-- Activity Stream Card -->
-                        <div id="activity-stream-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-semibold text-primary">Activity</h3>
-                                <button class="text-xs text-secondary hover:text-primary">View all</button>
-                            </div>
-                            <div class="space-y-4" id="activity-timeline">
-                                <!-- Activity items -->
-                            </div>
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Availability</div>
+                            <div class="text-sm text-primary">Available Now</div>
                         </div>
-                        
-                        <!-- Tasks Card -->
-                        <div id="tasks-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-semibold text-primary">Tasks</h3>
-                                <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
-                                    <i class="fa-solid fa-plus"></i>
-                                    <span>Add</span>
-                                </button>
-                            </div>
-                            <div class="space-y-3" id="tasks-list">
-                                <!-- Tasks will be populated here -->
+                        <div class="pt-4 border-t border-[#E6E6E6]">
+                            <div class="text-xs text-secondary mb-2">Visibility</div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Broker-Ready</span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">Private</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
-</div>
-
-<script>
-let dealData = null;
-
-// Get dealId from URL
-function getDealId() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('dealId') || params.get('deal');
-}
-
-// Format currency
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-GB', {
-        style: 'currency',
-        currency: 'GBP',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
-
-// Format date
-function formatDate(dateString) {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-GB', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-    }).format(date);
-}
-
-// Format date and time
-function formatDateTime(dateString, timeString) {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const dateStr = formatDate(dateString);
-    return timeString ? `${dateStr}, ${timeString}` : dateStr;
-}
-
-// Get initials
-function getInitials(name) {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-}
-
-// Safe element update helper
-function safeSetText(elementId, text) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = text;
-    }
-}
-
-function safeSetHTML(elementId, html) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.innerHTML = html;
-    }
-}
-
-// Get stage badge color
-function getStageBadgeClass(stage) {
-    const classes = {
-        'Viewing': 'bg-primary text-white',
-        'Heads of Terms': 'bg-yellow-500 text-white',
-        'Legals': 'bg-yellow-500 text-white',
-        'Signed': 'bg-green-600 text-white',
-        'Lost': 'bg-destructive text-white',
-    };
-    return classes[stage] || 'bg-muted text-primary';
-}
-
-// Get risk badge color
-function getRiskBadgeClass(risk) {
-    const classes = {
-        'High': 'bg-destructive text-white',
-        'Medium': 'bg-yellow-500 text-white',
-        'Low': 'bg-green-600 text-white',
-    };
-    return classes[risk] || 'bg-muted text-primary';
-}
-
-// Get approval badge color
-function getApprovalBadgeClass(status) {
-    const classes = {
-        'Pending': 'bg-yellow-500 text-white',
-        'Approved': 'bg-green-600 text-white',
-        'Rejected': 'bg-destructive text-white',
-    };
-    return classes[status] || 'bg-muted text-primary';
-}
-
-// Get time ago
-function getTimeAgo(dateString) {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+    </div>
     
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return formatDate(dateString);
-}
-
-// Open HoTs document
-function openHotsDocument() {
-    if (dealData && dealData.headsOfTerms.latestDocumentUrl) {
-        window.open(dealData.headsOfTerms.latestDocumentUrl, '_blank');
-    }
-}
-
-// Load deal data
-async function loadDeal() {
-    const dealId = getDealId();
-    if (!dealId) {
-        showError('No deal ID provided');
-        return;
-    }
-    
-    document.getElementById('loading-state').classList.remove('hidden');
-    document.getElementById('error-state').classList.add('hidden');
-    document.getElementById('deal-content').classList.add('hidden');
-    
-    try {
-        const response = await fetch(`/api/deals/${dealId}`);
-        if (!response.ok) {
-            throw new Error(`Failed to load deal: ${response.statusText}`);
-        }
-        dealData = await response.json();
-        renderDeal();
-    } catch (error) {
-        console.error('Error loading deal:', error);
-        showError(error.message);
-    }
-}
-
-// Show error
-function showError(message) {
-    const loadingState = document.getElementById('loading-state');
-    const errorState = document.getElementById('error-state');
-    const dealContent = document.getElementById('deal-content');
-    if (loadingState) loadingState.classList.add('hidden');
-    if (errorState) errorState.classList.remove('hidden');
-    if (dealContent) dealContent.classList.add('hidden');
-    safeSetText('error-message', message);
-}
-
-// Render deal
-function renderDeal() {
-    document.getElementById('loading-state').classList.add('hidden');
-    document.getElementById('error-state').classList.add('hidden');
-    document.getElementById('deal-content').classList.remove('hidden');
-    
-    const d = dealData;
-    
-    // Header
-    safeSetText('deal-name', d.deal.name);
-    const stageBadge = document.getElementById('stage-badge');
-    if (stageBadge) {
-        stageBadge.textContent = d.deal.stage;
-        stageBadge.className = `inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium ${getStageBadgeClass(d.deal.stage)}`;
-    }
-    
-    // Update stage filter buttons
-    document.querySelectorAll('#stage-filters-bar button').forEach(btn => {
-        const stage = btn.getAttribute('data-stage');
-        if (stage === d.deal.stage) {
-            btn.className = 'px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg';
-        } else {
-            btn.className = 'px-4 py-2 text-sm font-medium text-secondary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth';
-        }
-    });
-    
-    safeSetText('property-name-header', d.property.name);
-    safeSetText('unit-size-header', `${d.unit.sizeSqFt.toLocaleString()} sq ft`);
-    safeSetText('tenant-company-header', d.tenantCompany.name);
-    safeSetText('requirement-code', d.deal.requirementCode);
-    
-    // Owner
-    const ownerDiv = document.getElementById('deal-owner');
-    if (d.deal.owner.avatar) {
-        ownerDiv.innerHTML = `
-            <img src="${d.deal.owner.avatar}" alt="${d.deal.owner.name}" class="w-8 h-8 rounded-full object-cover">
-        `;
-    } else {
-        ownerDiv.innerHTML = `
-            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-semibold">${getInitials(d.deal.owner.name)}</div>
-        `;
-    }
-    
-    // Commercial snapshot
-    safeSetText('monthly-rent', formatCurrency(d.pricing.monthlyRent));
-    safeSetText('annual-rent', `${formatCurrency(d.pricing.annualRent)} / year`);
-    safeSetText('rent-per-sqft', `£${d.pricing.rentPerSqFt.toFixed(2)}`);
-    safeSetText('business-rates', formatCurrency(d.pricing.businessRates));
-    safeSetText('service-charge', formatCurrency(d.pricing.serviceCharge));
-    safeSetText('building-insurance', formatCurrency(d.pricing.buildingInsurance));
-    safeSetText('utilities-cap', formatCurrency(d.pricing.utilitiesCap));
-    safeSetText('deposit', formatCurrency(d.pricing.deposit.amount));
-    
-    const lastPriceChangeEl = document.getElementById('last-price-change');
-    if (d.pricing.lastPriceChange) {
-        const change = d.pricing.lastPriceChange;
-        safeSetText('price-change-details', formatDate(change.date));
-        if (lastPriceChangeEl) lastPriceChangeEl.classList.remove('hidden');
-    } else {
-        if (lastPriceChangeEl) lastPriceChangeEl.classList.add('hidden');
-    }
-    
-    // All inclusive package
-    if (d.allInclusivePackage) {
-        const ai = d.allInclusivePackage;
-        safeSetText('ai-building-total', formatCurrency(ai.buildingCosts.total / 12));
-        safeSetText('managed-services-total', formatCurrency(ai.managedServices.total / 12));
-        safeSetText('combined-monthly', formatCurrency(ai.combinedMonthly));
-    } else {
-        // Calculate from pricing if no all-inclusive package
-        const buildingTotal = (d.pricing.annualRent + d.pricing.businessRates + d.pricing.serviceCharge + d.pricing.buildingInsurance) / 12;
-        safeSetText('ai-building-total', formatCurrency(buildingTotal));
-        safeSetText('managed-services-total', formatCurrency(d.pricing.unionServices / 12));
-        safeSetText('combined-monthly', formatCurrency(buildingTotal + (d.pricing.unionServices / 12)));
-    }
-    
-    // Managed Services Breakdown with icons
-    const baseServices = d.managedServices?.basePackage || [
-        { name: 'Office Cleaning', amount: d.pricing.unionServices * 0.3, icon: 'fa-broom', description: `£${Math.round(d.pricing.unionServices * 0.3 / 12)} × 12 cleans/month` },
-        { name: 'Dedicated Internet', amount: d.pricing.unionServices * 0.25, icon: 'fa-wifi', description: '1Gbps fibre' },
-        { name: 'Coffee & Refreshments', amount: d.pricing.unionServices * 0.2, icon: 'fa-mug-hot', description: `£${Math.round(d.pricing.unionServices * 0.2 / 12)} × 40 people` },
-        { name: 'Reception Services', amount: d.pricing.unionServices * 0.15, icon: 'fa-phone', description: '9am–6pm weekdays' },
-        { name: 'Security & Access Control', amount: d.pricing.unionServices * 0.1, icon: 'fa-shield-halved', description: '24/7 monitoring' },
-    ];
-    const optionalExtras = d.managedServices?.optionalExtras || [];
-    const allServices = [...baseServices, ...optionalExtras];
-    
-    const servicesList = document.getElementById('managed-services-list');
-    if (servicesList) {
-        servicesList.innerHTML = allServices.map(s => {
-            const monthlyAmount = (s.amount || 0) / 12;
-            return `
-                <div class="flex items-center justify-between py-3 ${allServices.indexOf(s) < allServices.length - 1 ? 'border-b border-[#E6E6E6]' : ''}">
-                    <div class="flex items-center space-x-3 flex-1">
-                        <i class="fa-solid ${s.icon || 'fa-circle'} text-secondary"></i>
-                        <div class="flex-1">
-                            <div class="text-sm text-primary">${s.name}</div>
-                            ${s.description ? `<div class="text-xs text-secondary">${s.description}</div>` : ''}
+    <div class="px-8 py-6">
+        
+        <div id="heads-of-terms-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-primary">Heads of Terms</h3>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
+                    <i class="fa-solid fa-check mr-1"></i>
+                    Agreed
+                </span>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <div class="text-xs text-secondary mb-1">Term Length</div>
+                    <div class="text-sm text-primary font-medium">5 years</div>
+                </div>
+                <div>
+                    <div class="text-xs text-secondary mb-1">Break Clause</div>
+                    <div class="text-sm text-primary font-medium">Year 3 (mutual)</div>
+                </div>
+                <div>
+                    <div class="text-xs text-secondary mb-1">Rent Review</div>
+                    <div class="text-sm text-primary font-medium">Annual, RPI-linked (capped 3%)</div>
+                </div>
+                <div>
+                    <div class="text-xs text-secondary mb-1">Deposit</div>
+                    <div class="text-sm text-primary font-medium">3 months rent (£38,400)</div>
+                </div>
+                <div class="col-span-2 pt-4 border-t border-[#E6E6E6]">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xs text-secondary mb-1">Last Updated</div>
+                            <div class="text-sm text-primary">18 Nov 2024</div>
                         </div>
-                    </div>
-                    <span class="text-sm font-semibold text-primary">${formatCurrency(monthlyAmount)}</span>
-                </div>
-            `;
-        }).join('');
-    }
-    
-    // Proposal Versions (Section 5)
-    safeSetText('current-proposal-label', d.proposal.label);
-    safeSetText('current-proposal-date', `Issued ${formatDate(d.proposal.issuedDate)}`);
-    safeSetText('current-proposal-changes', d.proposal.changes || 'Initial proposal version');
-    
-    const previousProposals = d.proposalVersions || [];
-    const previousProposalsSection = document.getElementById('previous-proposals-section');
-    const previousProposalsList = document.getElementById('previous-proposals-list');
-    if (previousProposals.length > 0) {
-        if (previousProposalsSection) previousProposalsSection.classList.remove('hidden');
-        if (previousProposalsList) {
-            previousProposalsList.innerHTML = previousProposals.map(p => `
-                <div class="flex items-center justify-between py-2 border-b border-[#E6E6E6] last:border-0">
-                    <div>
-                        <a href="${p.url || '#'}" class="text-sm text-primary hover:underline font-medium">${p.label}</a>
-                        <div class="text-xs text-secondary">${formatDate(p.issuedDate)}</div>
+                        <button class="text-sm text-primary hover:underline flex items-center space-x-2">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>View HoTs Document</span>
+                        </button>
                     </div>
                 </div>
-            `).join('');
-        }
-    } else {
-        if (previousProposalsSection) previousProposalsSection.classList.add('hidden');
-    }
-    
-    // Requirement summary
-    safeSetText('req-size', `${d.requirement.sizeSqFt.toLocaleString()} sq ft`);
-    safeSetText('req-desks', d.requirement.deskCount.toString());
-    safeSetText('req-budget', formatCurrency(d.requirement.budget / 12) + ' /mo');
-    safeSetText('req-timing', d.requirement.timing);
-    const locationsDiv = document.getElementById('preferred-locations');
-    if (locationsDiv) {
-        locationsDiv.innerHTML = d.requirement.preferredLocations.map(loc => 
-            `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary border border-[#E6E6E6]">${loc}</span>`
-        ).join('');
-    }
-    safeSetHTML('must-haves', d.requirement.mustHaves.map(h => `<div>• ${h}</div>`).join(''));
-    const redLinesSection = document.getElementById('red-lines-section');
-    if (d.requirement.redLines && d.requirement.redLines.length > 0) {
-        safeSetHTML('red-lines', d.requirement.redLines.map(r => `<div>• ${r}</div>`).join(''));
-        if (redLinesSection) redLinesSection.classList.remove('hidden');
-    } else {
-        if (redLinesSection) redLinesSection.classList.add('hidden');
-    }
-    safeSetText('decision-maker', `${d.requirement.decisionMaker.name}, ${d.requirement.decisionMaker.role}`);
-    safeSetText('budget-status', d.requirement.budgetStatus);
-    
-    // Property and unit
-    safeSetText('property-name', d.property.name);
-    safeSetText('property-address', d.property.address);
-    safeSetText('property-submarket', d.property.submarket);
-    safeSetText('unit-size', `${d.unit.sizeSqFt.toLocaleString()} sq ft`);
-    safeSetText('unit-floor', d.unit.floor);
-    const fitoutBadge = document.getElementById('unit-fitout-badge');
-    if (fitoutBadge) {
-        fitoutBadge.textContent = d.unit.fitOutStatus;
-    }
-    safeSetText('unit-availability', formatDate(d.unit.availabilityDate));
-    safeSetHTML('visibility-flags', d.unit.visibilityFlags.map(flag => 
-        `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${flag === 'Broker-Ready' ? 'bg-primary text-white' : 'bg-muted text-primary border border-[#E6E6E6]'}">${flag}</span>`
-    ).join(''));
-    
-    // Move-in and Operational Notes (Section 9)
-    safeSetText('target-move-in-date', d.requirement.targetMoveInDate ? formatDate(d.requirement.targetMoveInDate) : formatDate(d.unit.availabilityDate));
-    
-    const timelineSensitivities = d.operationalNotes?.timelineSensitivities || [];
-    const timelineSensitivitiesSection = document.getElementById('timeline-sensitivities-section');
-    if (timelineSensitivities.length > 0) {
-        if (timelineSensitivitiesSection) timelineSensitivitiesSection.classList.remove('hidden');
-        safeSetHTML('timeline-sensitivities', timelineSensitivities.map(s => `<div>• ${s}</div>`).join(''));
-    } else {
-        if (timelineSensitivitiesSection) timelineSensitivitiesSection.classList.add('hidden');
-    }
-    
-    const redFlags = d.operationalNotes?.redFlags || [];
-    const redFlagsSection = document.getElementById('red-flags-section');
-    if (redFlags.length > 0) {
-        if (redFlagsSection) redFlagsSection.classList.remove('hidden');
-        safeSetHTML('red-flags', redFlags.map(f => `<div>• ${f}</div>`).join(''));
-    } else {
-        if (redFlagsSection) redFlagsSection.classList.add('hidden');
-    }
-    
-    // Viewing information
-    const viewingsDiv = document.getElementById('viewings-content');
-    if (viewingsDiv) {
-        if (d.viewingsSummary.nextViewing) {
-            const v = d.viewingsSummary.nextViewing;
-            viewingsDiv.innerHTML = `
-                <div class="mb-2">
-                    <div class="text-sm font-medium text-primary">Next: ${formatDate(v.date)} ${v.time}</div>
-                    <div class="text-xs text-secondary">${v.brokerName} • ${v.status}</div>
+            </div>
+        </div>
+        
+        <div id="union-service-agreement-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-primary mb-6">UNION Service Agreement</h3>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <div class="text-xs text-secondary mb-2">Agreement Status</div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white">
+                        Sent to Tenant
+                    </span>
                 </div>
-            `;
-        } else {
-            viewingsDiv.innerHTML = '<div class="text-sm text-secondary mb-2">No upcoming viewings</div>';
-        }
-    }
-    safeSetText('total-viewings-text', `${d.viewingsSummary.totalViewings} total viewings`);
-    safeSetText('last-viewing-text', d.viewingsSummary.lastViewingDate ? `Last: ${formatDate(d.viewingsSummary.lastViewingDate)}` : '');
-    
-    // Heads of Terms
-    const hotsStatus = d.headsOfTerms.status;
-    const hotsStatusText = document.getElementById('hots-status-text');
-    if (hotsStatusText) {
-        hotsStatusText.textContent = hotsStatus === 'Agreed' ? 'Agreed' : hotsStatus === 'Sent' ? 'Sent' : hotsStatus === 'Draft' ? 'Draft' : 'Not started';
-    }
-    const hotsStatusBadge = document.getElementById('hots-status-badge');
-    if (hotsStatusBadge) {
-        const hotsStatusClasses = {
-            'Not started': 'bg-muted text-primary border border-[#E6E6E6]',
-            'Draft': 'bg-muted text-primary border border-[#E6E6E6]',
-            'Sent': 'bg-secondary text-white',
-            'Negotiating': 'bg-secondary text-white',
-            'Agreed': 'bg-primary text-white',
-            'Out of date': 'bg-destructive text-white',
-        };
-        hotsStatusBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${hotsStatusClasses[hotsStatus] || 'bg-muted text-primary'}`;
-    }
-    
-    safeSetText('hots-term-length', d.headsOfTerms.termYears ? `${d.headsOfTerms.termYears} years` : 'TBD');
-    safeSetText('hots-break-clause', d.headsOfTerms.breakOption || 'TBD');
-    safeSetText('hots-rent-review', d.headsOfTerms.upliftPattern || 'TBD');
-    safeSetText('hots-deposit', d.headsOfTerms.deposit ? `${d.headsOfTerms.deposit.months} months rent (${formatCurrency(d.headsOfTerms.deposit.amount)})` : 'TBD');
-    
-    const hotsLastUpdated = document.getElementById('hots-last-updated');
-    if (hotsLastUpdated) {
-        const latestVersion = d.headsOfTermsVersions?.[0];
-        hotsLastUpdated.textContent = latestVersion ? formatDate(latestVersion.date) : formatDate(d.proposal.issuedDate);
-    }
-    
-    const hotsDocumentBtn = document.getElementById('hots-document-btn');
-    if (hotsDocumentBtn && !d.headsOfTerms.latestDocumentUrl) {
-        hotsDocumentBtn.style.opacity = '0.5';
-        hotsDocumentBtn.style.pointerEvents = 'none';
-    }
-    
-    // UNION Service Agreement
-    const unionStatus = d.contracts.unionServiceAgreement.status;
-    const unionBadge = document.getElementById('union-agreement-status-badge');
-    if (unionBadge) {
-        const unionStatusText = unionStatus === 'Draft' ? 'Draft' : unionStatus === 'Sent' ? 'Sent to Tenant' : 'Signed';
-        unionBadge.textContent = unionStatusText;
-        const unionStatusClasses = {
-            'Draft': 'bg-muted text-primary border border-[#E6E6E6]',
-            'Sent': 'bg-secondary text-white',
-            'Signed': 'bg-green-600 text-white',
-        };
-        unionBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${unionStatusClasses[unionStatus] || 'bg-muted text-primary'}`;
-    }
-    
-    const unionDraftLink = document.getElementById('union-agreement-draft-link');
-    if (unionDraftLink) {
-        if (d.contracts.unionServiceAgreement.draftUrl) {
-            unionDraftLink.href = d.contracts.unionServiceAgreement.draftUrl;
-            unionDraftLink.onclick = (e) => {
-                e.preventDefault();
-                window.open(d.contracts.unionServiceAgreement.draftUrl, '_blank');
-            };
-        } else {
-            unionDraftLink.style.opacity = '0.5';
-            unionDraftLink.style.pointerEvents = 'none';
-        }
-    }
-    
-    // Lease Status
-    const leaseStatus = d.contracts.landlordLease.status;
-    const leaseBadge = document.getElementById('lease-status-badge');
-    if (leaseBadge) {
-        const leaseStatusText = leaseStatus === 'Not started' ? 'Not started' : leaseStatus === 'In legals' ? 'In Legals' : 'Signed';
-        leaseBadge.textContent = leaseStatusText;
-        const leaseStatusClasses = {
-            'Not started': 'bg-muted text-primary border border-[#E6E6E6]',
-            'In legals': 'bg-secondary text-white',
-            'Signed': 'bg-green-600 text-white',
-        };
-        leaseBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${leaseStatusClasses[leaseStatus] || 'bg-muted text-primary'}`;
-    }
-    
-    const hotsReference = document.getElementById('hots-reference');
-    if (hotsReference) {
-        hotsReference.textContent = d.deal.requirementCode.replace('REQ', 'HOT');
-    }
-    
-    // Deal Documents
-    const docsGrid = document.getElementById('documents-grid');
-    if (docsGrid) {
-        const docGroups = [
-            { key: 'legal', label: 'Legal', icon: 'fa-gavel' },
-            { key: 'commercial', label: 'Commercial', icon: 'fa-sterling-sign' },
-            { key: 'plans', label: 'Plans', icon: 'fa-map' },
-            { key: 'marketing', label: 'Marketing', icon: 'fa-bullhorn' },
-        ];
-        docsGrid.innerHTML = docGroups.map(group => {
-            const doc = d.documentsSummary[group.key];
-            return `
+                <div>
+                    <div class="text-xs text-secondary mb-2">Latest Agreement</div>
+                    <button class="text-sm text-primary hover:underline flex items-center space-x-2">
+                        <i class="fa-solid fa-file-contract"></i>
+                        <span>View Agreement v2.1</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="lease-status-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-primary mb-6">Lease Status</h3>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <div class="text-xs text-secondary mb-2">Lease Progress</div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-secondary text-white">
+                        In Legals
+                    </span>
+                </div>
+                <div>
+                    <div class="text-xs text-secondary mb-1">HoTs Reference</div>
+                    <div class="text-sm text-primary font-medium">HOT-2024-042</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="documents-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-primary">Documents</h3>
+                <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
+                    <i class="fa-solid fa-upload"></i>
+                    <span>Upload</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-4 gap-4">
                 <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
                     <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
-                        <i class="fa-solid ${group.icon} text-primary text-xl"></i>
+                        <i class="fa-solid fa-gavel text-primary text-xl"></i>
                     </div>
-                    <div class="text-sm font-medium text-primary mb-1">${group.label}</div>
-                    <div class="text-xs text-secondary">${doc.count} files</div>
+                    <div class="text-sm font-medium text-primary mb-1">Legal</div>
+                    <div class="text-xs text-secondary">8 files</div>
                 </div>
-            `;
-        }).join('');
-    }
-    
-    // Approvals
-    const approvalStatusText = document.getElementById('approval-status-text');
-    if (approvalStatusText) {
-        approvalStatusText.textContent = d.approvals.status === 'Approved' ? 'Approved' : d.approvals.status === 'Pending' ? 'Pending' : 'Rejected';
-    }
-    const approvalBadge = document.getElementById('approval-status-badge');
-    if (approvalBadge) {
-        const approvalClasses = {
-            'Pending': 'bg-yellow-500 text-white',
-            'Approved': 'bg-primary text-white',
-            'Rejected': 'bg-destructive text-white',
-        };
-        approvalBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${approvalClasses[d.approvals.status] || 'bg-muted text-primary'}`;
-    }
-    
-    const approvalDecision = document.getElementById('approval-last-decision');
-    if (approvalDecision) {
-        if (d.approvals.lastDecision) {
-            approvalDecision.textContent = `${d.approvals.lastDecision.decision} ${formatDate(d.approvals.lastDecision.date)}`;
-        } else {
-            approvalDecision.textContent = 'No decisions yet';
-        }
-    }
-    const openActionsCount = document.getElementById('open-actions-count');
-    if (openActionsCount) {
-        openActionsCount.textContent = d.approvals.openActionsCount > 0 ? d.approvals.openActionsCount.toString() : 'None';
-    }
-    
-    // Risk
-    const riskScoreText = document.getElementById('risk-score-text');
-    if (riskScoreText) {
-        riskScoreText.textContent = d.risk.score;
-    }
-    const riskScoreBar = document.getElementById('risk-score-bar');
-    if (riskScoreBar) {
-        const riskPercent = d.risk.score === 'High' ? 75 : d.risk.score === 'Medium' ? 50 : 25;
-        riskScoreBar.style.width = `${riskPercent}%`;
-        riskScoreBar.className = `h-2 rounded-full ${d.risk.score === 'High' ? 'bg-destructive' : d.risk.score === 'Medium' ? 'bg-yellow-500' : 'bg-primary'}`;
-    }
-    
-    const riskDrivers = document.getElementById('risk-drivers');
-    if (riskDrivers) {
-        if (d.risk.drivers && d.risk.drivers.length > 0) {
-            riskDrivers.innerHTML = d.risk.drivers.slice(0, 3).map(driver => `<div>• ${driver}</div>`).join('');
-        } else {
-            riskDrivers.innerHTML = '<div>• No risk drivers identified</div>';
-        }
-    }
-    
-    const riskMitigation = document.getElementById('risk-mitigation');
-    if (riskMitigation) {
-        riskMitigation.textContent = d.risk.mitigation || 'No mitigation strategies in place';
-    }
-    
-    // Activity
-    const activityDiv = document.getElementById('activity-timeline');
-    const recentActivity = d.activity.slice(0, 4);
-    if (recentActivity.length > 0) {
-        activityDiv.innerHTML = recentActivity.map(act => {
-            let iconClass = 'fa-check';
-            let bgClass = 'bg-primary';
-            if (act.type === 'Document' || act.type === 'Proposal') {
-                iconClass = 'fa-file-contract';
-                bgClass = 'bg-secondary';
-            } else if (act.type === 'Viewing') {
-                iconClass = 'fa-building';
-                bgClass = 'bg-muted border border-[#E6E6E6]';
-            } else if (act.type === 'Communication' || act.type === 'Call') {
-                iconClass = 'fa-comments';
-                bgClass = 'bg-muted border border-[#E6E6E6]';
-            }
-            const timeAgo = getTimeAgo(act.date);
-            return `
-                <div class="flex items-start space-x-3 ${recentActivity.indexOf(act) < recentActivity.length - 1 ? 'pb-4 border-b border-[#E6E6E6]' : ''}">
-                    <div class="w-8 h-8 ${bgClass} rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fa-solid ${iconClass} ${bgClass === 'bg-muted' ? 'text-secondary' : 'text-white'} text-sm"></i>
+                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                    <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                        <i class="fa-solid fa-sterling-sign text-primary text-xl"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-sm text-primary font-medium">${act.title}</div>
-                        <div class="text-xs text-secondary mt-1">${act.userName} · ${timeAgo}</div>
-                    </div>
+                    <div class="text-sm font-medium text-primary mb-1">Commercial</div>
+                    <div class="text-xs text-secondary">5 files</div>
                 </div>
-            `;
-        }).join('');
-    } else {
-        activityDiv.innerHTML = '<div class="text-sm text-secondary">No recent activity</div>';
-    }
-    
-    // Tasks - Simple design
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const activeTasks = d.tasks.filter(t => t.status !== 'Completed').slice(0, 4);
-    const completedTasks = d.tasks.filter(t => t.status === 'Completed').slice(0, 1);
-    
-    const tasksList = document.getElementById('tasks-list');
-    if (tasksList) {
-        const allTasksToShow = [...activeTasks, ...completedTasks];
-        tasksList.innerHTML = allTasksToShow.map(task => {
-            const isCompleted = task.status === 'Completed';
-            const dueDate = task.dueDate ? new Date(task.dueDate) : null;
-            const isOverdue = dueDate && dueDate < today && !isCompleted;
-            const isDueToday = dueDate && dueDate.getTime() === today.getTime() && !isCompleted;
+                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                    <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                        <i class="fa-solid fa-map text-primary text-xl"></i>
+                    </div>
+                    <div class="text-sm font-medium text-primary mb-1">Plans</div>
+                    <div class="text-xs text-secondary">12 files</div>
+                </div>
+                <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                    <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                        <i class="fa-solid fa-bullhorn text-primary text-xl"></i>
+                    </div>
+                    <div class="text-sm font-medium text-primary mb-1">Marketing</div>
+                    <div class="text-xs text-secondary">18 files</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-6 mb-6">
             
-            let dueDateText = '';
-            if (isOverdue) {
-                dueDateText = `<div class="text-xs text-destructive mt-1">Due tomorrow</div>`;
-            } else if (isDueToday) {
-                dueDateText = `<div class="text-xs text-destructive mt-1">Due today</div>`;
-            } else if (dueDate) {
-                dueDateText = `<div class="text-xs text-secondary mt-1">Due ${formatDate(task.dueDate)}</div>`;
-            } else {
-                dueDateText = `<div class="text-xs text-secondary mt-1">No due date</div>`;
-            }
-            
-            return `
-                <div class="flex items-center p-3 ${isCompleted ? 'border border-[#E6E6E6] rounded-lg opacity-50' : 'bg-muted rounded-lg'}">
-                    <input type="checkbox" ${isCompleted ? 'checked disabled' : ''} class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
-                    <div class="ml-3 flex-1">
-                        <div class="text-sm text-primary font-medium ${isCompleted ? 'line-through' : ''}">${task.title}</div>
-                        ${dueDateText}
+            <div id="approvals-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <h3 class="text-lg font-semibold text-primary mb-6">Approvals</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-xs text-secondary mb-2">Current Status</div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
+                            <i class="fa-solid fa-check mr-1"></i>
+                            Approved
+                        </span>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-1">Last Decision</div>
+                        <div class="text-sm text-primary font-medium">Board approved 15 Nov 2024</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-1">Pending Actions</div>
+                        <div class="text-sm text-primary font-medium">None</div>
                     </div>
                 </div>
-            `;
-        }).join('');
-    }
+            </div>
+            
+            <div id="risk-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <h3 class="text-lg font-semibold text-primary mb-6">Risk</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-xs text-secondary mb-2">Risk Score</div>
+                        <div class="flex items-center space-x-3">
+                            <div class="text-2xl font-semibold text-primary">Low</div>
+                            <div class="flex-1 bg-muted rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 25%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-2">Key Drivers</div>
+                        <div class="space-y-1 text-xs text-primary">
+                            <div>• Strong tenant covenant</div>
+                            <div>• Proven sector performance</div>
+                            <div>• Low vacancy risk</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-secondary mb-1">Mitigation</div>
+                        <div class="text-sm text-primary">Deposit held, guarantor in place</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="grid grid-cols-2 gap-6">
+            
+            <div id="activity-stream-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-primary">Activity</h3>
+                    <button class="text-xs text-secondary hover:text-primary">View all</button>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-3 pb-4 border-b border-[#E6E6E6]">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-check text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm text-primary font-medium">HoTs agreed and signed</div>
+                            <div class="text-xs text-secondary mt-1">Tom Harrison · 2h ago</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 pb-4 border-b border-[#E6E6E6]">
+                        <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-file-contract text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm text-primary font-medium">UNION agreement sent to tenant</div>
+                            <div class="text-xs text-secondary mt-1">System · 4h ago</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 pb-4 border-b border-[#E6E6E6]">
+                        <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 border border-[#E6E6E6]">
+                            <i class="fa-solid fa-comments text-secondary text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm text-primary font-medium">Call with tenant CFO</div>
+                            <div class="text-xs text-secondary mt-1">Max Chen · 1d ago</div>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 border border-[#E6E6E6]">
+                            <i class="fa-solid fa-building text-secondary text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm text-primary font-medium">Final viewing completed</div>
+                            <div class="text-xs text-secondary mt-1">Tom Harrison · 3d ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="tasks-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-primary">Tasks</h3>
+                    <button class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add</span>
+                    </button>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center p-3 bg-muted rounded-lg">
+                        <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                        <div class="ml-3 flex-1">
+                            <div class="text-sm text-primary font-medium">Chase tenant signature on UNION agreement</div>
+                            <div class="text-xs text-destructive mt-1">Due tomorrow</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-muted rounded-lg">
+                        <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                        <div class="ml-3 flex-1">
+                            <div class="text-sm text-primary font-medium">Confirm move-in date with tenant</div>
+                            <div class="text-xs text-secondary mt-1">Due 25 Nov</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-muted rounded-lg">
+                        <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                        <div class="ml-3 flex-1">
+                            <div class="text-sm text-primary font-medium">Schedule internet survey</div>
+                            <div class="text-xs text-secondary mt-1">Due 28 Nov</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 border border-[#E6E6E6] rounded-lg opacity-50">
+                        <input type="checkbox" checked disabled class="w-4 h-4 text-primary border-[#E6E6E6] rounded">
+                        <div class="ml-3 flex-1">
+                            <div class="text-sm text-secondary line-through">Send HoTs to landlord solicitor</div>
+                            <div class="text-xs text-secondary mt-1">Completed 18 Nov</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
     
-}
-
-
-// Check if page is loaded in iframe and add embedded class
-if (window.self !== window.top) {
-    document.body.classList.add('embedded');
-}
-
-// Load on page load
-document.addEventListener('DOMContentLoaded', () => {
-    loadDeal();
-});
-</script>
+</div>
 
 </body>
 </html>
