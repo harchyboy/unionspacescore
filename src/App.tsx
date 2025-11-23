@@ -24,6 +24,7 @@ import { HandoffToOperations } from './pages/deals/HandoffToOperations';
 import { DealRoomSetupPage } from './pages/deals/DealRoomSetupPage';
 import { DealRoomHomePage } from './pages/deals/DealRoomHomePage';
 import { DealRoomGuard } from './pages/deals/DealRoomGuard';
+import { DealRoomDashboard } from './pages/deals/DealRoomDashboard';
 import { ContactsList } from './pages/contacts/List';
 import { ContactDetailsPage } from './pages/contacts/ContactDetailsPage';
 import { ContactNew } from './pages/contacts/New';
@@ -117,10 +118,7 @@ function App() {
                       </DealRoomGuard>
                     }
                   />
-                  <Route
-                    path="/deal-room"
-                    element={<PlaceholderPage title="Deal Room" description="Deal room management" />}
-                  />
+                  <Route path="/deal-room" element={<DealRoomDashboard />} />
                 </>
               )}
 

@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { propertyHandlers } from './handlers/properties';
 import { contactsHandlers } from './handlers/contacts';
 import { matchingHandlers } from './handlers/matching';
+import { dealsHandlers } from './handlers/deals';
 
 export const handlers = [
   http.get('/api/health', () => {
@@ -10,5 +11,6 @@ export const handlers = [
   ...propertyHandlers,
   ...contactsHandlers,
   ...matchingHandlers,
+  ...dealsHandlers,
 ];
 
