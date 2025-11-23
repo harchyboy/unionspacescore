@@ -445,6 +445,20 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       unionServices: 25000,
       deposit: { months: 3, amount: 36000 },
     },
+    allInclusivePackage: {
+      buildingCosts: {
+        rent: 144000,
+        rates: 22000,
+        serviceCharge: 28000,
+        insurance: 4000,
+        total: 198000,
+      },
+      managedServices: {
+        total: 25000,
+        label: 'Standard service package',
+      },
+      combinedMonthly: 18583,
+    },
     proposal: {
       label: 'Proposal v2',
       issuedDate: '2024-01-05',
@@ -471,6 +485,13 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       },
       landlordLease: { status: 'In legals' },
     },
+    operationalNotes: {
+      timelineSensitivities: [
+        'Legal review must be completed by end of January',
+        'Tenant requires early access for fit-out planning',
+      ],
+      redFlags: [],
+    },
     viewingsSummary: {
       totalViewings: 2,
       lastViewingDate: '2024-01-10',
@@ -480,6 +501,7 @@ const mockDealOverviews: Record<string, DealRoomOverview> = {
       termYears: 7,
       breakOption: 'Year 5',
       upliftPattern: 'RPI linked',
+      deposit: { months: 3, amount: 36000 },
       latestDocumentUrl: '/documents/hots-final.pdf',
     },
     documentsSummary: {
@@ -561,10 +583,47 @@ const defaultOverview: DealRoomOverview = {
     unionServices: 30000,
     deposit: { months: 3, amount: 30000 },
   },
-  proposal: { label: 'Proposal v1', issuedDate: '2024-01-01', version: 1 },
+  allInclusivePackage: {
+    buildingCosts: {
+      rent: 120000,
+      rates: 15000,
+      serviceCharge: 20000,
+      insurance: 2500,
+      total: 157500,
+    },
+    managedServices: {
+      total: 30000,
+      label: 'Full service package',
+    },
+    combinedMonthly: 15625,
+  },
+  proposal: {
+    label: 'Proposal v1',
+    issuedDate: '2024-01-01',
+    version: 1,
+    changes: 'Initial proposal version',
+  },
+  proposalVersions: [],
+  managedServices: {
+    basePackage: [
+      { name: 'Cleaning services', amount: 9000 },
+      { name: 'Maintenance', amount: 7500 },
+      { name: 'Security', amount: 6000 },
+      { name: 'Utilities management', amount: 4500 },
+      { name: 'Reception services', amount: 3000 },
+    ],
+    optionalExtras: [],
+  },
   contracts: {
-    unionServiceAgreement: { status: 'Draft' },
+    unionServiceAgreement: {
+      status: 'Draft',
+      draftUrl: '/documents/union-agreement-draft.pdf',
+    },
     landlordLease: { status: 'Not started' },
+  },
+  operationalNotes: {
+    timelineSensitivities: [],
+    redFlags: [],
   },
   viewingsSummary: { totalViewings: 0 },
   headsOfTerms: { status: 'Not started' },
