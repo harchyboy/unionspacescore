@@ -139,8 +139,8 @@
         <div id="page-header" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
             <div class="flex items-start justify-between">
                 <div>
-                    <h1 class="text-3xl font-semibold text-primary mb-2">Deals</h1>
-                    <p class="text-secondary text-sm">All live deals in the pipeline</p>
+                    <h1 class="text-3xl font-semibold text-primary mb-2">Deal Rooms</h1>
+                    <p class="text-secondary text-sm">Scan every live deal, spot issues, and jump into the right Deal Room</p>
                 </div>
                 <button id="create-deal-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
@@ -149,19 +149,45 @@
             </div>
         </div>
         
-        <div id="metrics-strip" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div id="metrics-strip" class="bg-white border-b border-[#E6E6E6] px-8 py-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-4">
                 <div>
                     <div class="text-sm text-secondary mb-1">Total Open Deals</div>
-                    <div class="text-2xl font-semibold text-primary" id="metric-open-deals">7</div>
+                    <div class="text-2xl font-semibold text-primary" id="metric-open-deals">0</div>
                 </div>
                 <div>
                     <div class="text-sm text-secondary mb-1">Total Monthly Value</div>
-                    <div class="text-2xl font-semibold text-primary" id="metric-monthly-value">£76,200</div>
+                    <div class="text-2xl font-semibold text-primary" id="metric-monthly-value">£0</div>
                 </div>
                 <div>
-                    <div class="text-sm text-secondary mb-1">Average Days in Stage</div>
-                    <div class="text-2xl font-semibold text-primary" id="metric-avg-days">9 days</div>
+                    <div class="text-sm text-secondary mb-1">Viewing</div>
+                    <div class="text-2xl font-semibold text-primary" id="metric-viewing">0</div>
+                </div>
+                <div>
+                    <div class="text-sm text-secondary mb-1">Heads of Terms</div>
+                    <div class="text-2xl font-semibold text-primary" id="metric-hots">0</div>
+                </div>
+                <div>
+                    <div class="text-sm text-secondary mb-1">Legals</div>
+                    <div class="text-2xl font-semibold text-primary" id="metric-legals">0</div>
+                </div>
+                <div>
+                    <div class="text-sm text-secondary mb-1">Signed</div>
+                    <div class="text-2xl font-semibold text-primary" id="metric-signed">0</div>
+                </div>
+                <div>
+                    <div class="text-sm text-secondary mb-1">Lost</div>
+                    <div class="text-2xl font-semibold text-primary" id="metric-lost">0</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <div class="text-sm text-secondary mb-1">High-Risk Deals</div>
+                    <div class="text-xl font-semibold text-destructive" id="metric-high-risk">0</div>
+                </div>
+                <div>
+                    <div class="text-sm text-secondary mb-1">Deals Blocked in Approvals</div>
+                    <div class="text-xl font-semibold text-destructive" id="metric-blocked-approvals">0</div>
                 </div>
             </div>
         </div>
@@ -170,13 +196,12 @@
             <div class="flex items-center space-x-3 flex-wrap gap-2">
                 <div class="relative flex-1 min-w-[200px]">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-secondary"></i>
-                    <input type="text" id="search-input" placeholder="Search deal name, tenant or requirement code..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <input type="text" id="search-input" placeholder="Search deal name, requirement code, tenant..." class="w-full pl-11 pr-4 py-2.5 bg-muted border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
                 
                 <div class="relative">
                     <select id="filter-stage" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary w-48">
                         <option value="all">All Stages</option>
-                        <option value="Inquiry">Inquiry</option>
                         <option value="Viewing">Viewing</option>
                         <option value="Heads of Terms">Heads of Terms</option>
                         <option value="Legals">Legals</option>
@@ -200,8 +225,8 @@
                 <div class="relative">
                     <select id="filter-deal-type" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary w-48">
                         <option value="all">All Types</option>
-                        <option value="All inclusive">All inclusive</option>
-                        <option value="Bolt on">Bolt on</option>
+                        <option value="All inclusive">All-inclusive</option>
+                        <option value="Bolt on">Bolt-on</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
@@ -221,6 +246,21 @@
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
+                <div class="relative">
+                    <select id="filter-tenant" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary w-48">
+                        <option value="all">All Tenants</option>
+                        <option value="tenant-1">TechCorp Ltd</option>
+                        <option value="tenant-2">FinanceHub</option>
+                        <option value="tenant-3">StartupCo</option>
+                        <option value="tenant-4">MediaWorks</option>
+                        <option value="tenant-5">LegalFirm</option>
+                        <option value="tenant-6">ConsultingGroup</option>
+                        <option value="tenant-7">DesignStudio</option>
+                        <option value="tenant-8">RetailBrand</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
                 <button id="clear-filters" class="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1">
                     <i class="fa-solid fa-rotate-left text-xs"></i>
                     <span>Clear all</span>
@@ -236,13 +276,7 @@
                             <tr>
                                 <th class="px-4 py-3 text-left">
                                     <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="name">
-                                        <span>Deal Name</span>
-                                        <i class="fa-solid fa-sort text-xs"></i>
-                                    </button>
-                                </th>
-                                <th class="px-4 py-3 text-left">
-                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="property">
-                                        <span>Property</span>
+                                        <span>Deal</span>
                                         <i class="fa-solid fa-sort text-xs"></i>
                                     </button>
                                 </th>
@@ -250,25 +284,28 @@
                                     <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Tenant</span>
                                 </th>
                                 <th class="px-4 py-3 text-left">
-                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="stage">
-                                        <span>Stage</span>
+                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="property">
+                                        <span>Asset</span>
                                         <i class="fa-solid fa-sort text-xs"></i>
                                     </button>
                                 </th>
                                 <th class="px-4 py-3 text-left">
-                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="owner">
-                                        <span>Owner</span>
-                                        <i class="fa-solid fa-sort text-xs"></i>
-                                    </button>
-                                </th>
-                                <th class="px-4 py-3 text-right">
-                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary ml-auto" data-sort="value">
+                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="value">
                                         <span>Commercial</span>
                                         <i class="fa-solid fa-sort text-xs"></i>
                                     </button>
                                 </th>
                                 <th class="px-4 py-3 text-left">
-                                    <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Status</span>
+                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="stage">
+                                        <span>Stage & Health</span>
+                                        <i class="fa-solid fa-sort text-xs"></i>
+                                    </button>
+                                </th>
+                                <th class="px-4 py-3 text-left">
+                                    <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="owner">
+                                        <span>Ownership & Timing</span>
+                                        <i class="fa-solid fa-sort text-xs"></i>
+                                    </button>
                                 </th>
                                 <th class="px-4 py-3 text-left">
                                     <button class="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary" data-sort="nextStep">
@@ -292,20 +329,42 @@
 </div>
 
 <script>
-// Mock deals data
+// Mock deals data with enhanced structure
 const mockDeals = [
     {
         id: '1',
         name: 'TechCorp Ltd - Principal Place',
         requirementCode: 'REQ-2024-001',
-        property: { id: 'prop-1', name: 'Principal Place', unit: 'Suite 3A', floor: '3rd Floor' },
-        tenant: { id: 'tenant-1', companyName: 'TechCorp Ltd', mainContact: { name: 'John Smith' } },
+        property: { 
+            id: 'prop-1', 
+            name: 'Principal Place', 
+            submarket: 'Shoreditch',
+            unit: 'Suite 3A', 
+            floor: '3rd Floor',
+            size: '2,500 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-1', 
+            companyName: 'TechCorp Ltd', 
+            mainContact: { name: 'John Smith' } 
+        },
         stage: 'Heads of Terms',
         owner: { id: '1', name: 'Sarah Chen', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg' },
-        commercial: { monthlyRent: 12500, totalAnnualValue: 150000 },
+        commercial: { 
+            monthlyRent: 12500, 
+            totalAnnualValue: 150000,
+            coreRent: null,
+            totalMonthlyCost: null
+        },
         status: { risk: 'Medium', approvals: 'Pending' },
-        nextStep: { type: 'approval', date: '2024-01-20', description: 'Chase legal comments' },
+        nextStep: { 
+            type: 'hots', 
+            date: '2024-01-20', 
+            description: 'HoTs due back date' 
+        },
         type: 'All inclusive',
+        moveInDate: '2024-03-15',
+        createdAt: '2024-01-03T10:00:00Z',
         updatedAt: '2024-01-15T10:30:00Z',
         daysInStage: 12
     },
@@ -313,14 +372,36 @@ const mockDeals = [
         id: '2',
         name: 'FinanceHub - The Leadenhall Building',
         requirementCode: 'REQ-2024-002',
-        property: { id: 'prop-2', name: 'The Leadenhall Building', unit: 'Level 15', floor: '15th Floor' },
-        tenant: { id: 'tenant-2', companyName: 'FinanceHub', mainContact: { name: 'Sarah Johnson' } },
+        property: { 
+            id: 'prop-2', 
+            name: 'The Leadenhall Building', 
+            submarket: 'City Core',
+            unit: 'Level 15', 
+            floor: '15th Floor',
+            size: '3,200 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-2', 
+            companyName: 'FinanceHub', 
+            mainContact: { name: 'Sarah Johnson' } 
+        },
         stage: 'Legals',
         owner: { id: '2', name: 'Michael Roberts', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg' },
-        commercial: { monthlyRent: 18500, totalAnnualValue: 222000 },
-        status: { risk: 'Low', approvals: 'Clear' },
-        nextStep: { type: 'task', description: 'Send updated HoTs' },
+        commercial: { 
+            monthlyRent: 12000,
+            coreRent: 12000,
+            totalMonthlyCost: 18500,
+            totalAnnualValue: 222000
+        },
+        status: { risk: 'Low', approvals: 'Approved' },
+        nextStep: { 
+            type: 'legal', 
+            date: '2024-01-25', 
+            description: 'Legal deadline' 
+        },
         type: 'Bolt on',
+        moveInDate: '2024-04-01',
+        createdAt: '2023-12-20T14:00:00Z',
         updatedAt: '2024-01-14T14:20:00Z',
         daysInStage: 8
     },
@@ -328,14 +409,36 @@ const mockDeals = [
         id: '3',
         name: 'StartupCo - 99 Bishopsgate',
         requirementCode: 'REQ-2024-003',
-        property: { id: 'prop-3', name: '99 Bishopsgate', unit: 'Unit 5B', floor: '5th Floor' },
-        tenant: { id: 'tenant-3', companyName: 'StartupCo', mainContact: { name: 'Alex Brown' } },
+        property: { 
+            id: 'prop-3', 
+            name: '99 Bishopsgate', 
+            submarket: 'City Core',
+            unit: 'Unit 5B', 
+            floor: '5th Floor',
+            size: '1,800 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-3', 
+            companyName: 'StartupCo', 
+            mainContact: { name: 'Alex Brown' } 
+        },
         stage: 'Viewing',
         owner: { id: '3', name: 'Emma Wilson', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg' },
-        commercial: { monthlyRent: 8500, totalAnnualValue: 102000 },
+        commercial: { 
+            monthlyRent: 8500, 
+            totalAnnualValue: 102000,
+            coreRent: null,
+            totalMonthlyCost: null
+        },
         status: { risk: 'High', approvals: 'Pending' },
-        nextStep: { type: 'viewing', date: '2024-01-18', description: 'Scheduled viewing' },
+        nextStep: { 
+            type: 'viewing', 
+            date: '2024-01-18', 
+            description: 'Next viewing date' 
+        },
         type: 'All inclusive',
+        moveInDate: '2024-02-20',
+        createdAt: '2024-01-11T09:00:00Z',
         updatedAt: '2024-01-16T09:15:00Z',
         daysInStage: 5
     },
@@ -343,14 +446,36 @@ const mockDeals = [
         id: '4',
         name: 'MediaWorks - Shoreditch Workspace',
         requirementCode: 'REQ-2024-004',
-        property: { id: 'prop-4', name: 'Shoreditch Workspace', unit: 'Studio 2', floor: 'Ground Floor' },
-        tenant: { id: 'tenant-4', companyName: 'MediaWorks', mainContact: { name: 'Lisa Anderson' } },
-        stage: 'Inquiry',
+        property: { 
+            id: 'prop-4', 
+            name: 'Shoreditch Workspace', 
+            submarket: 'Shoreditch',
+            unit: 'Studio 2', 
+            floor: 'Ground Floor',
+            size: '1,200 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-4', 
+            companyName: 'MediaWorks', 
+            mainContact: { name: 'Lisa Anderson' } 
+        },
+        stage: 'Viewing',
         owner: { id: '4', name: 'David Thompson', avatar: undefined },
-        commercial: { monthlyRent: 6200, totalAnnualValue: 74400 },
-        status: { risk: 'Medium', approvals: 'Clear' },
-        nextStep: { type: 'task', description: 'Send initial proposal' },
+        commercial: { 
+            monthlyRent: 5000,
+            coreRent: 5000,
+            totalMonthlyCost: 6200,
+            totalAnnualValue: 74400
+        },
+        status: { risk: 'Medium', approvals: 'Approved' },
+        nextStep: { 
+            type: 'viewing', 
+            date: '2024-01-19', 
+            description: 'Next viewing date' 
+        },
         type: 'Bolt on',
+        moveInDate: '2024-03-01',
+        createdAt: '2024-01-15T11:00:00Z',
         updatedAt: '2024-01-17T11:45:00Z',
         daysInStage: 2
     },
@@ -358,14 +483,35 @@ const mockDeals = [
         id: '5',
         name: 'LegalFirm - One Canada Square',
         requirementCode: 'REQ-2024-005',
-        property: { id: 'prop-5', name: 'One Canada Square', unit: 'Suite 200', floor: '20th Floor' },
-        tenant: { id: 'tenant-5', companyName: 'LegalFirm', mainContact: { name: 'Robert Taylor' } },
+        property: { 
+            id: 'prop-5', 
+            name: 'One Canada Square', 
+            submarket: 'Canary Wharf',
+            unit: 'Suite 200', 
+            floor: '20th Floor',
+            size: '4,500 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-5', 
+            companyName: 'LegalFirm', 
+            mainContact: { name: 'Robert Taylor' } 
+        },
         stage: 'Signed',
         owner: { id: '1', name: 'Sarah Chen', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg' },
-        commercial: { monthlyRent: 22000, totalAnnualValue: 264000 },
-        status: { risk: 'Low', approvals: 'Clear' },
-        nextStep: { type: 'task', description: 'Up to date' },
+        commercial: { 
+            monthlyRent: 22000, 
+            totalAnnualValue: 264000,
+            coreRent: null,
+            totalMonthlyCost: null
+        },
+        status: { risk: 'Low', approvals: 'Approved' },
+        nextStep: { 
+            type: 'task', 
+            description: 'Up to date' 
+        },
         type: 'All inclusive',
+        moveInDate: '2024-02-01',
+        createdAt: '2023-11-25T16:00:00Z',
         updatedAt: '2024-01-10T16:00:00Z',
         daysInStage: 45
     },
@@ -373,14 +519,36 @@ const mockDeals = [
         id: '6',
         name: 'ConsultingGroup - Broadgate Circle',
         requirementCode: 'REQ-2024-006',
-        property: { id: 'prop-6', name: 'Broadgate Circle', unit: 'Office 12', floor: '2nd Floor' },
-        tenant: { id: 'tenant-6', companyName: 'ConsultingGroup', mainContact: { name: 'Jennifer White' } },
+        property: { 
+            id: 'prop-6', 
+            name: 'Broadgate Circle', 
+            submarket: 'City Core',
+            unit: 'Office 12', 
+            floor: '2nd Floor',
+            size: '2,800 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-6', 
+            companyName: 'ConsultingGroup', 
+            mainContact: { name: 'Jennifer White' } 
+        },
         stage: 'Heads of Terms',
         owner: { id: '2', name: 'Michael Roberts', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg' },
-        commercial: { monthlyRent: 15000, totalAnnualValue: 180000 },
+        commercial: { 
+            monthlyRent: 11000,
+            coreRent: 11000,
+            totalMonthlyCost: 15000,
+            totalAnnualValue: 180000
+        },
         status: { risk: 'Medium', approvals: 'Pending' },
-        nextStep: { type: 'approval', date: '2024-01-22', description: 'Next approval due' },
+        nextStep: { 
+            type: 'hots', 
+            date: '2024-01-22', 
+            description: 'HoTs due back date' 
+        },
         type: 'Bolt on',
+        moveInDate: '2024-03-20',
+        createdAt: '2024-01-05T13:00:00Z',
         updatedAt: '2024-01-15T13:30:00Z',
         daysInStage: 10
     },
@@ -388,14 +556,36 @@ const mockDeals = [
         id: '7',
         name: 'DesignStudio - Clerkenwell Green',
         requirementCode: 'REQ-2024-007',
-        property: { id: 'prop-7', name: 'Clerkenwell Green', unit: 'Unit 8', floor: '1st Floor' },
-        tenant: { id: 'tenant-7', companyName: 'DesignStudio', mainContact: { name: 'Tom Davis' } },
+        property: { 
+            id: 'prop-7', 
+            name: 'Clerkenwell Green', 
+            submarket: 'Clerkenwell',
+            unit: 'Unit 8', 
+            floor: '1st Floor',
+            size: '1,500 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-7', 
+            companyName: 'DesignStudio', 
+            mainContact: { name: 'Tom Davis' } 
+        },
         stage: 'Viewing',
         owner: { id: '3', name: 'Emma Wilson', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg' },
-        commercial: { monthlyRent: 9200, totalAnnualValue: 110400 },
-        status: { risk: 'Low', approvals: 'Clear' },
-        nextStep: { type: 'viewing', date: '2024-01-19', description: 'Scheduled viewing' },
+        commercial: { 
+            monthlyRent: 9200, 
+            totalAnnualValue: 110400,
+            coreRent: null,
+            totalMonthlyCost: null
+        },
+        status: { risk: 'Low', approvals: 'Approved' },
+        nextStep: { 
+            type: 'viewing', 
+            date: '2024-01-19', 
+            description: 'Next viewing date' 
+        },
         type: 'All inclusive',
+        moveInDate: '2024-02-15',
+        createdAt: '2024-01-12T10:00:00Z',
         updatedAt: '2024-01-16T10:00:00Z',
         daysInStage: 4
     },
@@ -403,14 +593,36 @@ const mockDeals = [
         id: '8',
         name: 'RetailBrand - Oxford Street',
         requirementCode: 'REQ-2024-008',
-        property: { id: 'prop-8', name: 'Oxford Street', unit: 'Shop 5', floor: 'Ground Floor' },
-        tenant: { id: 'tenant-8', companyName: 'RetailBrand', mainContact: { name: 'Maria Garcia' } },
+        property: { 
+            id: 'prop-8', 
+            name: 'Oxford Street', 
+            submarket: 'West End',
+            unit: 'Shop 5', 
+            floor: 'Ground Floor',
+            size: '800 sq ft'
+        },
+        tenant: { 
+            id: 'tenant-8', 
+            companyName: 'RetailBrand', 
+            mainContact: { name: 'Maria Garcia' } 
+        },
         stage: 'Legals',
         owner: { id: '4', name: 'David Thompson', avatar: undefined },
-        commercial: { monthlyRent: 11000, totalAnnualValue: 132000 },
-        status: { risk: 'High', approvals: 'Pending' },
-        nextStep: { type: 'task', description: 'Review contract amendments' },
+        commercial: { 
+            monthlyRent: 8000,
+            coreRent: 8000,
+            totalMonthlyCost: 11000,
+            totalAnnualValue: 132000
+        },
+        status: { risk: 'High', approvals: 'Rejected' },
+        nextStep: { 
+            type: 'legal', 
+            date: '2024-01-28', 
+            description: 'Legal deadline' 
+        },
         type: 'Bolt on',
+        moveInDate: '2024-04-15',
+        createdAt: '2023-12-30T15:00:00Z',
         updatedAt: '2024-01-14T15:20:00Z',
         daysInStage: 15
     }
@@ -429,13 +641,31 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    }).format(date);
+}
+
 function getInitials(name) {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
+function getDaysAgo(dateString) {
+    if (!dateString) return 0;
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+}
+
 function getStageColor(stage) {
     const colors = {
-        'Inquiry': 'default',
         'Viewing': 'primary',
         'Heads of Terms': 'warning',
         'Legals': 'warning',
@@ -450,7 +680,15 @@ function getRiskColor(risk) {
 }
 
 function getApprovalColor(approval) {
-    return approval === 'Pending' ? 'warning' : 'success';
+    if (approval === 'Pending') return 'warning';
+    if (approval === 'Rejected') return 'destructive';
+    return 'success';
+}
+
+function getApprovalText(approval) {
+    if (approval === 'Approved') return 'Approved';
+    if (approval === 'Rejected') return 'Rejected';
+    return 'Pending';
 }
 
 function renderDealRow(deal, index) {
@@ -459,65 +697,83 @@ function renderDealRow(deal, index) {
     const approvalColor = getApprovalColor(deal.status.approvals);
     const bgClass = index % 2 === 1 ? 'bg-[#fafafa]' : '';
     
+    // Calculate age of deal
+    const ageOfDeal = getDaysAgo(deal.createdAt);
+    
+    // Format commercial value
+    let commercialValue = '';
+    if (deal.type === 'All inclusive') {
+        commercialValue = formatCurrency(deal.commercial.monthlyRent) + '/mo';
+    } else {
+        commercialValue = formatCurrency(deal.commercial.coreRent) + ' + ' + formatCurrency(deal.commercial.totalMonthlyCost - deal.commercial.coreRent) + ' = ' + formatCurrency(deal.commercial.totalMonthlyCost) + '/mo';
+    }
+    
+    // Format unit/floor/size
+    const unitInfo = deal.property.unit || deal.property.floor || '';
+    const sizeInfo = deal.property.size || '';
+    const assetDetails = [unitInfo, sizeInfo].filter(Boolean).join(' • ');
+    
     return `
-        <tr class="${bgClass} hover:bg-[#fafafa] transition-all">
+        <tr class="${bgClass} hover:bg-[#fafafa] transition-all cursor-pointer" onclick="window.location.href='Deal Room Setup.html?deal=${deal.id}'">
             <td class="px-4 py-4">
-                <a href="Deal Room Setup.html" class="text-primary hover:text-primary/80 font-medium hover:underline">
-                    ${deal.name}
-                </a>
+                <div class="font-medium text-primary hover:text-primary/80">${deal.name}</div>
                 ${deal.requirementCode ? `<div class="text-xs text-secondary mt-0.5">${deal.requirementCode}</div>` : ''}
-            </td>
-            <td class="px-4 py-4">
-                <div class="text-sm text-primary">${deal.property.name}</div>
-                ${(deal.property.unit || deal.property.floor) ? `<div class="text-xs text-secondary">${deal.property.unit || deal.property.floor}</div>` : ''}
             </td>
             <td class="px-4 py-4">
                 <div class="text-sm text-primary">${deal.tenant.companyName}</div>
                 ${deal.tenant.mainContact ? `<div class="text-xs text-secondary">${deal.tenant.mainContact.name}</div>` : ''}
             </td>
             <td class="px-4 py-4">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                    stageColor === 'primary' ? 'bg-primary text-white' :
-                    stageColor === 'warning' ? 'bg-yellow-500 text-white' :
-                    stageColor === 'success' ? 'bg-green-600 text-white' :
-                    stageColor === 'destructive' ? 'bg-destructive text-white' :
-                    'bg-muted text-primary'
-                }">${deal.stage}</span>
+                <div class="text-sm text-primary">${deal.property.name}</div>
+                <div class="text-xs text-secondary">${deal.property.submarket || ''}</div>
+                ${assetDetails ? `<div class="text-xs text-secondary mt-0.5">${assetDetails}</div>` : ''}
             </td>
             <td class="px-4 py-4">
-                <div class="flex items-center space-x-2">
+                <div class="text-sm font-medium text-primary">${commercialValue}</div>
+                <div class="text-xs text-secondary mt-0.5">${deal.type}</div>
+                ${deal.moveInDate ? `<div class="text-xs text-secondary mt-0.5">Move-in: ${formatDate(deal.moveInDate)}</div>` : ''}
+            </td>
+            <td class="px-4 py-4">
+                <div class="flex flex-col gap-1.5">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium w-fit ${
+                        stageColor === 'primary' ? 'bg-primary text-white' :
+                        stageColor === 'warning' ? 'bg-yellow-500 text-white' :
+                        stageColor === 'success' ? 'bg-green-600 text-white' :
+                        stageColor === 'destructive' ? 'bg-destructive text-white' :
+                        'bg-muted text-primary'
+                    }">${deal.stage}</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                            riskColor === 'destructive' ? 'bg-destructive text-white' :
+                            riskColor === 'warning' ? 'bg-yellow-500 text-white' :
+                            'bg-green-600 text-white'
+                        }">${deal.status.risk}</span>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                            approvalColor === 'destructive' ? 'bg-destructive text-white' :
+                            approvalColor === 'warning' ? 'bg-yellow-500 text-white' :
+                            'bg-green-600 text-white'
+                        }">${getApprovalText(deal.status.approvals)}</span>
+                    </div>
+                </div>
+            </td>
+            <td class="px-4 py-4">
+                <div class="flex items-center space-x-2 mb-1">
                     ${deal.owner.avatar ? 
                         `<img src="${deal.owner.avatar}" alt="${deal.owner.name}" class="w-8 h-8 rounded-full object-cover">` :
                         `<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-semibold">${getInitials(deal.owner.name)}</div>`
                     }
                     <span class="text-sm text-primary">${deal.owner.name}</span>
                 </div>
-            </td>
-            <td class="px-4 py-4 text-right">
-                ${deal.commercial.monthlyRent ? `<div class="text-sm font-medium text-primary">${formatCurrency(deal.commercial.monthlyRent)}/mo</div>` : ''}
-                ${deal.commercial.totalAnnualValue ? `<div class="text-xs text-secondary">${formatCurrency(deal.commercial.totalAnnualValue)}/yr</div>` : ''}
-            </td>
-            <td class="px-4 py-4">
-                <div class="flex items-center space-x-2">
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        riskColor === 'destructive' ? 'bg-destructive text-white' :
-                        riskColor === 'warning' ? 'bg-yellow-500 text-white' :
-                        'bg-green-600 text-white'
-                    }">${deal.status.risk}</span>
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        approvalColor === 'warning' ? 'bg-yellow-500 text-white' :
-                        'bg-green-600 text-white'
-                    }">${deal.status.approvals}</span>
-                </div>
+                <div class="text-xs text-secondary">${ageOfDeal} days old • ${deal.daysInStage} days in stage</div>
             </td>
             <td class="px-4 py-4">
                 ${deal.nextStep ? `
-                    ${deal.nextStep.date ? `<div class="text-xs text-secondary mb-0.5">${deal.nextStep.date}</div>` : ''}
+                    ${deal.nextStep.date ? `<div class="text-xs text-secondary mb-0.5">${formatDate(deal.nextStep.date)}</div>` : ''}
                     <div class="text-sm text-primary">${deal.nextStep.description}</div>
-                ` : '<span class="text-sm text-secondary">None</span>'}
+                ` : '<span class="text-sm text-secondary">Up to date</span>'}
             </td>
             <td class="px-4 py-4 text-right">
-                <a href="Deal Room Setup.html" class="text-primary hover:text-primary/80 text-sm font-medium">View</a>
+                <a href="Deal Room Setup.html?deal=${deal.id}" class="text-primary hover:text-primary/80 text-sm font-medium" onclick="event.stopPropagation()">View Deal Room</a>
             </td>
         </tr>
     `;
@@ -525,13 +781,32 @@ function renderDealRow(deal, index) {
 
 function updateMetrics() {
     const openDeals = filteredDeals.filter(d => d.stage !== 'Signed' && d.stage !== 'Lost');
-    const totalMonthlyValue = openDeals.reduce((sum, deal) => sum + (deal.commercial.monthlyRent || 0), 0);
-    const totalDaysInStage = openDeals.reduce((sum, deal) => sum + (deal.daysInStage || 0), 0);
-    const averageDaysInStage = openDeals.length > 0 ? Math.round(totalDaysInStage / openDeals.length) : 0;
+    const totalMonthlyValue = openDeals.reduce((sum, deal) => {
+        if (deal.type === 'All inclusive') {
+            return sum + (deal.commercial.monthlyRent || 0);
+        } else {
+            return sum + (deal.commercial.totalMonthlyCost || 0);
+        }
+    }, 0);
+    
+    const viewing = filteredDeals.filter(d => d.stage === 'Viewing').length;
+    const hots = filteredDeals.filter(d => d.stage === 'Heads of Terms').length;
+    const legals = filteredDeals.filter(d => d.stage === 'Legals').length;
+    const signed = filteredDeals.filter(d => d.stage === 'Signed').length;
+    const lost = filteredDeals.filter(d => d.stage === 'Lost').length;
+    
+    const highRisk = filteredDeals.filter(d => d.status.risk === 'High').length;
+    const blockedApprovals = filteredDeals.filter(d => d.status.approvals === 'Pending' || d.status.approvals === 'Rejected').length;
     
     document.getElementById('metric-open-deals').textContent = openDeals.length;
     document.getElementById('metric-monthly-value').textContent = formatCurrency(totalMonthlyValue);
-    document.getElementById('metric-avg-days').textContent = `${averageDaysInStage} days`;
+    document.getElementById('metric-viewing').textContent = viewing;
+    document.getElementById('metric-hots').textContent = hots;
+    document.getElementById('metric-legals').textContent = legals;
+    document.getElementById('metric-signed').textContent = signed;
+    document.getElementById('metric-lost').textContent = lost;
+    document.getElementById('metric-high-risk').textContent = highRisk;
+    document.getElementById('metric-blocked-approvals').textContent = blockedApprovals;
 }
 
 function filterDeals() {
@@ -540,6 +815,7 @@ function filterDeals() {
     const owner = document.getElementById('filter-owner').value;
     const dealType = document.getElementById('filter-deal-type').value;
     const property = document.getElementById('filter-property').value;
+    const tenant = document.getElementById('filter-tenant').value;
     
     filteredDeals = mockDeals.filter(deal => {
         if (search && !deal.name.toLowerCase().includes(search) && 
@@ -551,6 +827,7 @@ function filterDeals() {
         if (owner !== 'all' && deal.owner.id !== owner) return false;
         if (dealType !== 'all' && deal.type !== dealType) return false;
         if (property !== 'all' && deal.property.id !== property) return false;
+        if (tenant !== 'all' && deal.tenant.id !== tenant) return false;
         return true;
     });
     
@@ -581,8 +858,16 @@ function sortDeals() {
                 bVal = b.owner.name;
                 break;
             case 'value':
-                aVal = a.commercial.monthlyRent || a.commercial.totalAnnualValue || 0;
-                bVal = b.commercial.monthlyRent || b.commercial.totalAnnualValue || 0;
+                if (a.type === 'All inclusive') {
+                    aVal = a.commercial.monthlyRent || 0;
+                } else {
+                    aVal = a.commercial.totalMonthlyCost || 0;
+                }
+                if (b.type === 'All inclusive') {
+                    bVal = b.commercial.monthlyRent || 0;
+                } else {
+                    bVal = b.commercial.totalMonthlyCost || 0;
+                }
                 break;
             case 'nextStep':
                 if (a.nextStep?.date && b.nextStep?.date) {
@@ -608,7 +893,11 @@ function sortDeals() {
 
 function renderDeals() {
     const tbody = document.getElementById('deals-tbody');
-    tbody.innerHTML = filteredDeals.map((deal, index) => renderDealRow(deal, index)).join('');
+    if (filteredDeals.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-secondary">No deals found matching your filters</td></tr>';
+    } else {
+        tbody.innerHTML = filteredDeals.map((deal, index) => renderDealRow(deal, index)).join('');
+    }
 }
 
 // Event listeners
@@ -617,6 +906,7 @@ document.getElementById('filter-stage').addEventListener('change', filterDeals);
 document.getElementById('filter-owner').addEventListener('change', filterDeals);
 document.getElementById('filter-deal-type').addEventListener('change', filterDeals);
 document.getElementById('filter-property').addEventListener('change', filterDeals);
+document.getElementById('filter-tenant').addEventListener('change', filterDeals);
 
 document.getElementById('clear-filters').addEventListener('click', () => {
     document.getElementById('search-input').value = '';
@@ -624,6 +914,7 @@ document.getElementById('clear-filters').addEventListener('click', () => {
     document.getElementById('filter-owner').value = 'all';
     document.getElementById('filter-deal-type').value = 'all';
     document.getElementById('filter-property').value = 'all';
+    document.getElementById('filter-tenant').value = 'all';
     filterDeals();
 });
 
@@ -649,4 +940,3 @@ updateMetrics();
 
 </body>
 </html>
-
