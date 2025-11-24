@@ -1,5 +1,43 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Property } from '../../types/property.ts';
+
+interface Property {
+  id: string;
+  name: string;
+  addressLine?: string;
+  postcode?: string;
+  city?: string;
+  country?: string;
+  geo?: { lat: number; lng: number };
+  submarket?: string;
+  totalSizeSqFt?: number;
+  floorCount?: number;
+  lifts?: string;
+  builtYear?: number;
+  refurbishedYear?: number;
+  parking?: string;
+  amenities?: string[];
+  marketing?: {
+    visibility?: string;
+    status?: string;
+    fitOut?: string;
+  };
+  compliance?: {
+    epc?: { rating?: string; ref?: string; issued?: string; expires?: string };
+    hsCertified?: boolean;
+    breeam?: string;
+  };
+  contacts?: Record<string, unknown>;
+  units?: Array<Record<string, unknown>>;
+  stats?: {
+    occupancyPct?: number;
+    totalUnits?: number;
+    available?: number;
+    underOffer?: number;
+    let?: number;
+  };
+  updatedAt?: string;
+  [key: string]: unknown;
+}
 
 // Import the same seed data
 const seedProperties: Property[] = [
