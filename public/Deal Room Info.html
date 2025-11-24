@@ -98,6 +98,56 @@
             background-color: #F0F0F0;
             color: #252525;
         }
+
+        .deal-tab-switcher {
+            background-color: #ffffff;
+        }
+
+        .deal-tab-button {
+            padding: 0.65rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            color: #8E8E8E;
+            background-color: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .deal-tab-button.active {
+            background-color: #252525;
+            color: #ffffff;
+            border-color: #252525;
+        }
+
+        .deal-tab-panel.hidden {
+            display: none;
+        }
+
+        .negotiation-tab {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F0F0;
+            color: #252525;
+        }
+
+        .negotiation-tab ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .negotiation-tab .text-stone { color: #F0F0F0; }
+        .negotiation-tab .text-slate { color: #252525; }
+        .negotiation-tab .text-concrete { color: #8E8E8E; }
+        .negotiation-tab .bg-stone { background-color: #F0F0F0; }
+        .negotiation-tab .bg-slate { background-color: #252525; }
+        .negotiation-tab .bg-concrete { background-color: #8E8E8E; }
+        .negotiation-tab .border-stone { border-color: #F0F0F0; }
+        .negotiation-tab .border-concrete { border-color: #8E8E8E; }
+        .negotiation-tab .shadow-soft { box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .negotiation-tab .shadow-soft-lg { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+        .negotiation-tab .diff-added { background-color: #dcfce7; border-left: 4px solid #22c55e; }
+        .negotiation-tab .diff-removed { background-color: #fef2f2; border-left: 4px solid #ef4444; }
+        .negotiation-tab .diff-modified { background-color: #fef3c7; border-left: 4px solid #f59e0b; }
         
         .transition-all-smooth {
             transition: all 0.2s ease-in-out;
@@ -164,9 +214,17 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Summary Cards Row -->
-        <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+
+        <div class="deal-tab-switcher border-b border-[#E6E6E6] px-8 py-4">
+            <div class="flex items-center space-x-3">
+                <button class="deal-tab-button active" data-tab="overview">Overview</button>
+                <button class="deal-tab-button" data-tab="negotiation">Negotiation</button>
+            </div>
+        </div>
+
+        <section id="overview-tab" class="deal-tab-panel">
+            <!-- Summary Cards Row -->
+            <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
             <div class="grid grid-cols-3 gap-6">
                 <!-- Deal Value Card -->
                 <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
@@ -197,10 +255,10 @@
                     <div class="text-xs text-secondary">Next: Contract Review</div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Deal Pipeline Progress -->
-        <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+            </div>
+            
+            <!-- Deal Pipeline Progress -->
+            <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
             <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-6">
                     <div>
@@ -302,10 +360,10 @@
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Property Details and Stakeholders Section -->
-        <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+            </div>
+            
+            <!-- Property Details and Stakeholders Section -->
+            <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
             <div class="grid grid-cols-3 gap-6">
                 <!-- Left Column - Commercial Snapshot -->
                 <div class="col-span-2">
@@ -527,9 +585,9 @@
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="px-8 py-6">
+            </div>
+            
+            <div class="px-8 py-6">
             
             
             <div id="heads-of-terms-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
@@ -787,12 +845,1307 @@
                 </div>
                 
             </div>
-            
-        </div>
-        
+        </section>
+
+        <section id="negotiation-tab" class="deal-tab-panel hidden negotiation-tab">
+            <div class="bg-gray-50 min-h-full">
+                <!-- Header -->
+                <header id="negotiation-hot-header" class="bg-white border-b border-stone sticky top-0 z-10 shadow-soft">
+                    <div class="flex items-center justify-between px-6 py-4">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-slate rounded-md flex items-center justify-center">
+                                    <i class="fa-solid fa-cube text-white text-sm"></i>
+                                </div>
+                                <h1 class="text-xl font-semibold text-slate">UNION Core</h1>
+                            </div>
+                            <div class="hidden md:flex items-center space-x-1 text-sm text-concrete">
+                                <span>Negotiation</span>
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                                <span>Deal Room</span>
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                                <span class="text-slate font-medium">HoT Comparison</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <input type="text" placeholder="Search deals, properties, tasks..." class="w-80 pl-10 pr-4 py-2 bg-gray-50 border border-concrete rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-concrete text-sm"></i>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <button class="relative p-2 text-concrete hover:text-slate transition-colors negotiation-bell">
+                                    <i class="fa-regular fa-bell text-lg"></i>
+                                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                                </button>
+                                
+                                <div class="flex items-center space-x-3 pl-3 border-l border-concrete">
+                                    <div class="text-right">
+                                        <div class="text-sm font-medium text-slate">Max Chen</div>
+                                        <div class="text-xs text-concrete">Deal Architect</div>
+                                    </div>
+                                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full object-cover" alt="Max Chen">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="flex">
+                    <!-- Left Sidebar -->
+                    <nav id="negotiation-hot-sidebar" class="w-64 bg-white border-r border-stone shadow-soft hidden lg:block">
+                        <div class="p-6">
+                            <div class="mb-8">
+                                <h2 class="text-xs font-semibold text-concrete uppercase tracking-wider mb-4">Navigation</h2>
+                                <div class="space-y-1">
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-chart-line mr-3 text-sm"></i>
+                                        Executive Dashboard
+                                    </span>
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-funnel-dollar mr-3 text-sm"></i>
+                                        Pipeline Overview
+                                    </span>
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-exclamation-triangle mr-3 text-sm"></i>
+                                        Bottlenecks
+                                    </span>
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-target mr-3 text-sm"></i>
+                                        Interventions
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h2 class="text-xs font-semibold text-concrete uppercase tracking-wider mb-4">Operations</h2>
+                                <div class="space-y-1">
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-building mr-3 text-sm"></i>
+                                        Origination
+                                    </span>
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-white bg-slate rounded-lg cursor-pointer">
+                                        <i class="fa-solid fa-handshake mr-3 text-sm"></i>
+                                        Negotiation
+                                    </span>
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-truck mr-3 text-sm"></i>
+                                        Delivery
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-8">
+                                <h2 class="text-xs font-semibold text-concrete uppercase tracking-wider mb-4">Resources</h2>
+                                <div class="space-y-1">
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-users mr-3 text-sm"></i>
+                                        Team Directory
+                                    </span>
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-truck-field mr-3 text-sm"></i>
+                                        Vendor Hub
+                                    </span>
+                                    <span class="flex items-center px-3 py-2 text-sm font-medium text-concrete hover:text-slate hover:bg-gray-50 rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-file-contract mr-3 text-sm"></i>
+                                        Document Library
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-stone">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <span class="text-xs text-concrete">All systems operational</span>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <!-- Main Content -->
+                    <main id="negotiation-hot-main-content" class="flex-1 p-6 space-y-6">
+                        <!-- Deal Context Header -->
+                        <section id="neg-deal-context" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft p-6 border border-stone">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                            <i class="fa-solid fa-arrow-left text-lg"></i>
+                                        </button>
+                                        <div>
+                                            <h1 class="text-2xl font-semibold text-slate">Canary Wharf Tower - Deal #CW-2024-007</h1>
+                                            <p class="text-concrete">Heads of Terms Comparison & Review</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                            <i class="fa-solid fa-clock mr-1"></i>
+                                            Awaiting Approval
+                                        </span>
+                                        <div class="text-right">
+                                            <div class="text-sm font-medium text-slate">£12.5M Value</div>
+                                            <div class="text-xs text-concrete">5-year lease term</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="text-xs font-medium text-concrete uppercase tracking-wider mb-1">Property</div>
+                                        <div class="text-sm font-medium text-slate">Canary Wharf Tower, Level 15-17</div>
+                                        <div class="text-xs text-concrete">45,000 sq ft • Premium Grade A</div>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="text-xs font-medium text-concrete uppercase tracking-wider mb-1">Tenant</div>
+                                        <div class="text-sm font-medium text-slate">FinTech Solutions Ltd</div>
+                                        <div class="text-xs text-concrete">Expansion • 450 employees</div>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="text-xs font-medium text-concrete uppercase tracking-wider mb-1">Timeline</div>
+                                        <div class="text-sm font-medium text-slate">Move-in: Q2 2025</div>
+                                        <div class="text-xs text-concrete">Fit-out: 12 weeks</div>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="text-xs font-medium text-concrete uppercase tracking-wider mb-1">Next Action</div>
+                                        <div class="text-sm font-medium text-slate">Legal Review</div>
+                                        <div class="text-xs text-concrete">Due: Tomorrow 5pm</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Version Selection & Controls -->
+                        <section id="neg-version-controls" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <div class="flex items-center justify-between">
+                                        <h2 class="text-lg font-semibold text-slate">Document Version Comparison</h2>
+                                        <div class="flex items-center space-x-3">
+                                            <button class="px-4 py-2 bg-gray-100 text-slate rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+                                                <i class="fa-solid fa-download mr-2"></i>
+                                                Export Comparison
+                                            </button>
+                                            <button class="px-4 py-2 bg-slate text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+                                                <i class="fa-solid fa-eye mr-2"></i>
+                                                Full Screen View
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- Version A Selector -->
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate mb-2">Previous Version</label>
+                                                <select class="w-full border border-concrete rounded-lg px-4 py-3 bg-white text-slate focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent">
+                                                    <option>v2.1 - Initial HoT (Oct 15, 2024)</option>
+                                                    <option>v2.0 - Draft Terms (Oct 12, 2024)</option>
+                                                    <option>v1.5 - Preliminary (Oct 8, 2024)</option>
+                                                </select>
+                                            </div>
+                                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <h3 class="font-medium text-blue-800">Version 2.1</h3>
+                                                    <span class="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full">Current</span>
+                                                </div>
+                                                <div class="text-xs text-blue-700 space-y-1">
+                                                    <div>Created: Oct 15, 2024 at 2:30 PM</div>
+                                                    <div>Author: Max Chen</div>
+                                                    <div>Status: Under Review</div>
+                                                    <div>File: CW-2024-007-HoT-v2.1.pdf</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Version B Selector -->
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate mb-2">Latest Version</label>
+                                                <select class="w-full border border-concrete rounded-lg px-4 py-3 bg-white text-slate focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent">
+                                                    <option>v2.2 - Revised Terms (Oct 18, 2024)</option>
+                                                    <option>v2.1 - Initial HoT (Oct 15, 2024)</option>
+                                                </select>
+                                            </div>
+                                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <h3 class="font-medium text-green-800">Version 2.2</h3>
+                                                    <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">Latest</span>
+                                                </div>
+                                                <div class="text-xs text-green-700 space-y-1">
+                                                    <div>Created: Oct 18, 2024 at 11:15 AM</div>
+                                                    <div>Author: Legal Team</div>
+                                                    <div>Status: Pending Approval</div>
+                                                    <div>File: CW-2024-007-HoT-v2.2.pdf</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Change Summary Dashboard -->
+                        <section id="neg-change-summary" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <h2 class="text-lg font-semibold text-slate">Change Summary Overview</h2>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <i class="fa-solid fa-plus text-green-600 text-xl"></i>
+                                            </div>
+                                            <div class="text-2xl font-semibold text-green-600 mb-1">7</div>
+                                            <div class="text-sm text-concrete">Items Added</div>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <i class="fa-solid fa-edit text-yellow-600 text-xl"></i>
+                                            </div>
+                                            <div class="text-2xl font-semibold text-yellow-600 mb-1">12</div>
+                                            <div class="text-sm text-concrete">Items Modified</div>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <i class="fa-solid fa-minus text-red-600 text-xl"></i>
+                                            </div>
+                                            <div class="text-2xl font-semibold text-red-600 mb-1">3</div>
+                                            <div class="text-sm text-concrete">Items Removed</div>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <i class="fa-solid fa-percentage text-blue-600 text-xl"></i>
+                                            </div>
+                                            <div class="text-2xl font-semibold text-blue-600 mb-1">18%</div>
+                                            <div class="text-sm text-concrete">Overall Change</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                            <h3 class="font-medium text-red-800 mb-2">Critical Changes</h3>
+                                            <ul class="text-sm text-red-700 space-y-1">
+                                                <li>• Rent escalation clause modified</li>
+                                                <li>• Break clause terms updated</li>
+                                                <li>• Service charge cap removed</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                            <h3 class="font-medium text-yellow-800 mb-2">Important Updates</h3>
+                                            <ul class="text-sm text-yellow-700 space-y-1">
+                                                <li>• Fit-out contribution increased</li>
+                                                <li>• Parking allocation adjusted</li>
+                                                <li>• Maintenance responsibilities clarified</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                            <h3 class="font-medium text-green-800 mb-2">Minor Adjustments</h3>
+                                            <ul class="text-sm text-green-700 space-y-1">
+                                                <li>• Contact details updated</li>
+                                                <li>• Formatting improvements</li>
+                                                <li>• Legal references corrected</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Side-by-Side Comparison -->
+                        <section id="neg-document-comparison" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <div class="flex items-center justify-between">
+                                        <h2 class="text-lg font-semibold text-slate">Document Comparison</h2>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="flex items-center space-x-2 text-sm">
+                                                <div class="flex items-center space-x-1">
+                                                    <div class="w-3 h-3 bg-green-500 rounded"></div>
+                                                    <span class="text-concrete">Added</span>
+                                                </div>
+                                                <div class="flex items-center space-x-1">
+                                                    <div class="w-3 h-3 bg-yellow-500 rounded"></div>
+                                                    <span class="text-concrete">Modified</span>
+                                                </div>
+                                                <div class="flex items-center space-x-1">
+                                                    <div class="w-3 h-3 bg-red-500 rounded"></div>
+                                                    <span class="text-concrete">Removed</span>
+                                                </div>
+                                            </div>
+                                            <button class="px-3 py-1 bg-gray-100 text-slate rounded text-sm hover:bg-gray-200 transition-colors">
+                                                <i class="fa-solid fa-search-plus mr-1"></i>
+                                                Zoom
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 lg:grid-cols-2 divide-x divide-stone">
+                                    <!-- Left Panel - Version 2.1 -->
+                                    <div class="p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <h3 class="font-medium text-slate">Version 2.1 (Previous)</h3>
+                                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Current</span>
+                                        </div>
+                                        
+                                        <div class="space-y-4 text-sm">
+                                            <!-- Section 1: Property Details -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">1. Property Details</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div>
+                                                        <strong>Address:</strong> Canary Wharf Tower, 42 Bank Street, London E14 5DA
+                                                    </div>
+                                                    <div>
+                                                        <strong>Floor Area:</strong> 45,000 sq ft (Levels 15-17)
+                                                    </div>
+                                                    <div>
+                                                        <strong>Parking:</strong> 25 spaces allocated
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Section 2: Financial Terms -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">2. Financial Terms</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div>
+                                                        <strong>Annual Rent:</strong> £2,250,000 per annum
+                                                    </div>
+                                                    <div class="diff-modified pl-4">
+                                                        <strong>Rent Reviews:</strong> Annual increases of 3% or RPI, whichever is higher
+                                                    </div>
+                                                    <div>
+                                                        <strong>Service Charge:</strong> £450,000 per annum (estimated)
+                                                    </div>
+                                                    <div class="diff-removed pl-4">
+                                                        <strong>Service Charge Cap:</strong> Maximum 5% annual increase
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Section 3: Lease Terms -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">3. Lease Terms</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div>
+                                                        <strong>Lease Term:</strong> 5 years
+                                                    </div>
+                                                    <div>
+                                                        <strong>Commencement:</strong> 1st April 2025
+                                                    </div>
+                                                    <div class="diff-modified pl-4">
+                                                        <strong>Break Clause:</strong> Tenant option at end of year 3 with 12 months notice
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Section 4: Tenant Improvements -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">4. Tenant Improvements</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div class="diff-modified pl-4">
+                                                        <strong>Fit-out Contribution:</strong> £750,000 towards tenant improvements
+                                                    </div>
+                                                    <div>
+                                                        <strong>Work Schedule:</strong> 12 weeks maximum for completion
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right Panel - Version 2.2 -->
+                                    <div class="p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <h3 class="font-medium text-slate">Version 2.2 (Latest)</h3>
+                                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Latest</span>
+                                        </div>
+                                        
+                                        <div class="space-y-4 text-sm">
+                                            <!-- Section 1: Property Details -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">1. Property Details</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div>
+                                                        <strong>Address:</strong> Canary Wharf Tower, 42 Bank Street, London E14 5DA
+                                                    </div>
+                                                    <div>
+                                                        <strong>Floor Area:</strong> 45,000 sq ft (Levels 15-17)
+                                                    </div>
+                                                    <div class="diff-modified pl-4">
+                                                        <strong>Parking:</strong> 30 spaces allocated (5 additional executive spaces)
+                                                    </div>
+                                                    <div class="diff-added pl-4">
+                                                        <strong>Storage:</strong> 2,000 sq ft basement storage included
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Section 2: Financial Terms -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">2. Financial Terms</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div>
+                                                        <strong>Annual Rent:</strong> £2,250,000 per annum
+                                                    </div>
+                                                    <div class="diff-modified pl-4">
+                                                        <strong>Rent Reviews:</strong> Annual increases of 2.5% fixed for first 3 years, then RPI
+                                                    </div>
+                                                    <div>
+                                                        <strong>Service Charge:</strong> £450,000 per annum (estimated)
+                                                    </div>
+                                                    <div class="diff-added pl-4">
+                                                        <strong>Utilities:</strong> Tenant responsible for direct utility contracts
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Section 3: Lease Terms -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">3. Lease Terms</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div>
+                                                        <strong>Lease Term:</strong> 5 years
+                                                    </div>
+                                                    <div>
+                                                        <strong>Commencement:</strong> 1st April 2025
+                                                    </div>
+                                                    <div class="diff-modified pl-4">
+                                                        <strong>Break Clause:</strong> Tenant option at end of year 3 with 6 months notice
+                                                    </div>
+                                                    <div class="diff-added pl-4">
+                                                        <strong>Renewal Option:</strong> 5-year renewal option at market rent
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Section 4: Tenant Improvements -->
+                                            <div class="border border-gray-200 rounded-lg">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">4. Tenant Improvements</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div class="diff-modified pl-4">
+                                                        <strong>Fit-out Contribution:</strong> £900,000 towards tenant improvements (increased)
+                                                    </div>
+                                                    <div>
+                                                        <strong>Work Schedule:</strong> 12 weeks maximum for completion
+                                                    </div>
+                                                    <div class="diff-added pl-4">
+                                                        <strong>Design Approval:</strong> Landlord approval required for major alterations
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Section 5: Additional Terms -->
+                                            <div class="border border-gray-200 rounded-lg diff-added pl-4">
+                                                <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                                    <h4 class="font-medium text-slate">5. Additional Terms</h4>
+                                                </div>
+                                                <div class="p-4 space-y-3">
+                                                    <div>
+                                                        <strong>Maintenance:</strong> Landlord responsible for structure and common areas
+                                                    </div>
+                                                    <div>
+                                                        <strong>Insurance:</strong> Landlord to maintain building insurance, tenant for contents
+                                                    </div>
+                                                    <div>
+                                                        <strong>Assignment:</strong> Permitted with landlord consent (not unreasonably withheld)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Detailed Change Analysis -->
+                        <section id="neg-change-analysis" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <h2 class="text-lg font-semibold text-slate">Detailed Change Analysis</h2>
+                                </div>
+                                
+                                <div class="divide-y divide-stone">
+                                    <!-- Critical Changes -->
+                                    <div class="p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <h3 class="font-medium text-slate flex items-center">
+                                                <i class="fa-solid fa-exclamation-triangle text-red-600 mr-2"></i>
+                                                Critical Changes Requiring Attention
+                                            </h3>
+                                            <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">3 items</span>
+                                        </div>
+                                        
+                                        <div class="space-y-4">
+                                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-1">
+                                                        <i class="fa-solid fa-minus text-red-600 text-xs"></i>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-red-800 mb-2">Service Charge Cap Removed</h4>
+                                                        <div class="text-sm text-red-700 mb-3">
+                                                            <div class="line-through">Previous: Maximum 5% annual increase</div>
+                                                            <div>New: No cap specified</div>
+                                                        </div>
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">High Financial Impact</span>
+                                                            <button class="text-xs text-red-800 hover:text-red-900 font-medium">Flag for Review</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-1">
+                                                        <i class="fa-solid fa-edit text-red-600 text-xs"></i>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-red-800 mb-2">Rent Escalation Modified</h4>
+                                                        <div class="text-sm text-red-700 mb-3">
+                                                            <div class="line-through">Previous: 3% or RPI, whichever is higher</div>
+                                                            <div>New: 2.5% fixed for 3 years, then RPI</div>
+                                                        </div>
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">Medium Impact</span>
+                                                            <button class="text-xs text-red-800 hover:text-red-900 font-medium">Calculate Impact</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mt-1">
+                                                        <i class="fa-solid fa-edit text-red-600 text-xs"></i>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-red-800 mb-2">Break Clause Notice Period Reduced</h4>
+                                                        <div class="text-sm text-red-700 mb-3">
+                                                            <div class="line-through">Previous: 12 months notice required</div>
+                                                            <div>New: 6 months notice required</div>
+                                                        </div>
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">Favourable to Tenant</span>
+                                                            <button class="text-xs text-red-800 hover:text-red-900 font-medium">Approve Change</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Beneficial Changes -->
+                                    <div class="p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <h3 class="font-medium text-slate flex items-center">
+                                                <i class="fa-solid fa-check-circle text-green-600 mr-2"></i>
+                                                Beneficial Changes
+                                            </h3>
+                                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">4 items</span>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                                                        <i class="fa-solid fa-plus text-green-600 text-xs"></i>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-green-800 mb-1">Increased Fit-out Contribution</h4>
+                                                        <div class="text-sm text-green-700">£750k → £900k (+£150k)</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                                                        <i class="fa-solid fa-plus text-green-600 text-xs"></i>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-green-800 mb-1">Additional Parking</h4>
+                                                        <div class="text-sm text-green-700">25 → 30 spaces (+5 executive)</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                                                        <i class="fa-solid fa-plus text-green-600 text-xs"></i>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-green-800 mb-1">Storage Space Included</h4>
+                                                        <div class="text-sm text-green-700">2,000 sq ft basement storage</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                                <div class="flex items-start space-x-3">
+                                                    <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                                                        <i class="fa-solid fa-plus text-green-600 text-xs"></i>
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <h4 class="font-medium text-green-800 mb-1">Renewal Option Added</h4>
+                                                        <div class="text-sm text-green-700">5-year renewal at market rate</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Financial Impact Analysis -->
+                        <section id="neg-financial-impact" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <h2 class="text-lg font-semibold text-slate">Financial Impact Analysis</h2>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <i class="fa-solid fa-arrow-up text-green-600 text-xl"></i>
+                                            </div>
+                                            <div class="text-2xl font-semibold text-green-600 mb-1">+£150k</div>
+                                            <div class="text-sm text-concrete">Improved Fit-out</div>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <i class="fa-solid fa-exclamation-triangle text-red-600 text-xl"></i>
+                                            </div>
+                                            <div class="text-2xl font-semibold text-red-600 mb-1">TBD</div>
+                                            <div class="text-sm text-concrete">Service Charge Risk</div>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                <i class="fa-solid fa-calculator text-blue-600 text-xl"></i>
+                                            </div>
+                                            <div class="text-2xl font-semibold text-blue-600 mb-1">-£45k</div>
+                                            <div class="text-sm text-concrete">5-Year Rent Savings</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-lg p-6">
+                                        <h3 class="font-medium text-slate mb-4">5-Year Financial Projection</h3>
+                                        <div class="overflow-x-auto">
+                                            <table class="w-full text-sm">
+                                                <thead>
+                                                    <tr class="border-b border-gray-200">
+                                                        <th class="text-left py-2 text-concrete">Year</th>
+                                                        <th class="text-right py-2 text-concrete">Previous Terms</th>
+                                                        <th class="text-right py-2 text-concrete">New Terms</th>
+                                                        <th class="text-right py-2 text-concrete">Difference</th>
+                                                        <th class="text-right py-2 text-concrete">Cumulative</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-gray-200">
+                                                    <tr>
+                                                        <td class="py-2 font-medium">Year 1</td>
+                                                        <td class="py-2 text-right">£2,317,500</td>
+                                                        <td class="py-2 text-right">£2,306,250</td>
+                                                        <td class="py-2 text-right text-green-600">-£11,250</td>
+                                                        <td class="py-2 text-right text-green-600">-£11,250</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-2 font-medium">Year 2</td>
+                                                        <td class="py-2 text-right">£2,387,025</td>
+                                                        <td class="py-2 text-right">£2,363,906</td>
+                                                        <td class="py-2 text-right text-green-600">-£23,119</td>
+                                                        <td class="py-2 text-right text-green-600">-£34,369</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-2 font-medium">Year 3</td>
+                                                        <td class="py-2 text-right">£2,458,636</td>
+                                                        <td class="py-2 text-right">£2,423,003</td>
+                                                        <td class="py-2 text-right text-green-600">-£35,633</td>
+                                                        <td class="py-2 text-right text-green-600">-£70,002</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-2 font-medium">Year 4</td>
+                                                        <td class="py-2 text-right">£2,532,395</td>
+                                                        <td class="py-2 text-right">£2,520,563</td>
+                                                        <td class="py-2 text-right text-green-600">-£11,832</td>
+                                                        <td class="py-2 text-right text-green-600">-£81,834</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-2 font-medium">Year 5</td>
+                                                        <td class="py-2 text-right">£2,608,367</td>
+                                                        <td class="py-2 text-right">£2,625,385</td>
+                                                        <td class="py-2 text-right text-red-600">+£17,018</td>
+                                                        <td class="py-2 text-right text-green-600">-£64,816</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <div class="flex items-center justify-between">
+                                                <span class="font-medium text-blue-800">Net 5-Year Savings:</span>
+                                                <span class="text-lg font-semibold text-blue-800">£64,816</span>
+                                            </div>
+                                            <p class="text-xs text-blue-700 mt-1">Excludes potential service charge increases due to removed cap</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Action Options -->
+                        <section id="neg-action-options" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <h2 class="text-lg font-semibold text-slate">Action Options</h2>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <!-- Request Redline -->
+                                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-soft-lg transition-all cursor-pointer">
+                                            <div class="text-center">
+                                                <div class="w-16 h-16 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                    <i class="fa-solid fa-pen text-yellow-600 text-xl"></i>
+                                                </div>
+                                                <h3 class="font-medium text-slate mb-2">Request Redline</h3>
+                                                <p class="text-sm text-concrete mb-4">Request specific changes to problematic clauses</p>
+                                                <button class="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
+                                                    Create Redline Request
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Send for Approval -->
+                                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-soft-lg transition-all cursor-pointer">
+                                            <div class="text-center">
+                                                <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                    <i class="fa-solid fa-check-circle text-blue-600 text-xl"></i>
+                                                </div>
+                                                <h3 class="font-medium text-slate mb-2">Send for Approval</h3>
+                                                <p class="text-sm text-concrete mb-4">Route to legal and executive teams for review</p>
+                                                <button class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                                                    Submit for Approval
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Lock for Signature -->
+                                        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-soft-lg transition-all cursor-pointer">
+                                            <div class="text-center">
+                                                <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                    <i class="fa-solid fa-lock text-green-600 text-xl"></i>
+                                                </div>
+                                                <h3 class="font-medium text-slate mb-2">Lock for Signature</h3>
+                                                <p class="text-sm text-concrete mb-4">Finalize terms and prepare for e-signature</p>
+                                                <button class="w-full px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
+                                                    Lock & Prepare
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Additional Actions -->
+                                    <div class="mt-6 pt-6 border-t border-stone">
+                                        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                                            <div class="flex flex-wrap items-center gap-3">
+                                                <button class="flex items-center px-4 py-2 text-slate border border-concrete rounded-lg hover:bg-gray-50 transition-colors">
+                                                    <i class="fa-solid fa-download mr-2"></i>
+                                                    Export PDF
+                                                </button>
+                                                <button class="flex items-center px-4 py-2 text-slate border border-concrete rounded-lg hover:bg-gray-50 transition-colors">
+                                                    <i class="fa-solid fa-share mr-2"></i>
+                                                    Share Link
+                                                </button>
+                                                <button class="flex items-center px-4 py-2 text-slate border border-concrete rounded-lg hover:bg-gray-50 transition-colors">
+                                                    <i class="fa-solid fa-comment mr-2"></i>
+                                                    Add Comment
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="flex items-center space-x-3">
+                                                <button class="px-4 py-2 text-concrete hover:text-slate transition-colors">
+                                                    Save as Draft
+                                                </button>
+                                                <button class="px-6 py-2 bg-slate text-white rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                                                    Continue to Next Step
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Approval Workflow Status -->
+                        <section id="neg-approval-workflow" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <h2 class="text-lg font-semibold text-slate">Approval Workflow Status</h2>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="space-y-4">
+                                        <!-- Max Chen (Current User) -->
+                                        <div class="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <div class="flex items-center space-x-4">
+                                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-10 h-10 rounded-full object-cover" alt="Max Chen">
+                                                <div>
+                                                    <div class="font-medium text-slate">Max Chen</div>
+                                                    <div class="text-sm text-concrete">Deal Architect</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    <i class="fa-solid fa-clock mr-1"></i>
+                                                    In Progress
+                                                </span>
+                                                <div class="text-right">
+                                                    <div class="text-sm font-medium text-slate">Review & Compare</div>
+                                                    <div class="text-xs text-concrete">Current step</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Legal Team -->
+                                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                                    <i class="fa-solid fa-scale-balanced text-purple-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate">Legal Team</div>
+                                                    <div class="text-sm text-concrete">Contract Review</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                                    <i class="fa-solid fa-pause mr-1"></i>
+                                                    Pending
+                                                </span>
+                                                <div class="text-right">
+                                                    <div class="text-sm font-medium text-concrete">Legal Review</div>
+                                                    <div class="text-xs text-concrete">Next step</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Executive Approval -->
+                                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                            <div class="flex items-center space-x-4">
+                                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" class="w-10 h-10 rounded-full object-cover" alt="Executive Team">
+                                                <div>
+                                                    <div class="font-medium text-slate">Executive Team</div>
+                                                    <div class="text-sm text-concrete">Final Approval</div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-3">
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                                    <i class="fa-solid fa-pause mr-1"></i>
+                                                    Pending
+                                                </span>
+                                                <div class="text-right">
+                                                    <div class="text-sm font-medium text-concrete">Executive Sign-off</div>
+                                                    <div class="text-xs text-concrete">Final step</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Timeline -->
+                                    <div class="mt-6 pt-6 border-t border-stone">
+                                        <h3 class="font-medium text-slate mb-4">Expected Timeline</h3>
+                                        <div class="flex items-center justify-between text-sm">
+                                            <div class="text-center">
+                                                <div class="text-concrete">Today</div>
+                                                <div class="font-medium text-slate">Comparison Complete</div>
+                                            </div>
+                                            <div class="flex-1 h-px bg-gray-200 mx-4"></div>
+                                            <div class="text-center">
+                                                <div class="text-concrete">Tomorrow</div>
+                                                <div class="font-medium text-slate">Legal Review</div>
+                                            </div>
+                                            <div class="flex-1 h-px bg-gray-200 mx-4"></div>
+                                            <div class="text-center">
+                                                <div class="text-concrete">Oct 22</div>
+                                                <div class="font-medium text-slate">Executive Approval</div>
+                                            </div>
+                                            <div class="flex-1 h-px bg-gray-200 mx-4"></div>
+                                            <div class="text-center">
+                                                <div class="text-concrete">Oct 25</div>
+                                                <div class="font-medium text-slate">Ready for Signature</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Comments & Collaboration -->
+                        <section id="neg-comments-collaboration" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <div class="flex items-center justify-between">
+                                        <h2 class="text-lg font-semibold text-slate">Comments & Collaboration</h2>
+                                        <button class="px-4 py-2 bg-slate text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+                                            <i class="fa-solid fa-comment mr-2"></i>
+                                            Add Comment
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="divide-y divide-stone max-h-96 overflow-y-auto">
+                                    <!-- Comment Thread 1 -->
+                                    <div class="p-6">
+                                        <div class="flex items-start space-x-4">
+                                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-7.jpg" class="w-10 h-10 rounded-full object-cover" alt="Sarah Johnson">
+                                            <div class="flex-1">
+                                                <div class="flex items-center space-x-2 mb-2">
+                                                    <span class="font-medium text-slate">Sarah Johnson</span>
+                                                    <span class="text-xs text-concrete">Legal Team</span>
+                                                    <span class="text-xs text-concrete">•</span>
+                                                    <span class="text-xs text-concrete">2 hours ago</span>
+                                                </div>
+                                                <div class="bg-gray-50 rounded-lg p-4 mb-3">
+                                                    <p class="text-sm text-slate">
+                                                        The removal of the service charge cap is concerning. This could expose the tenant to significant cost increases. 
+                                                        <span class="text-blue-600">@max-chen</span> can we negotiate to reinstate a reasonable cap, perhaps 7% annually?
+                                                    </p>
+                                                </div>
+                                                <div class="flex items-center space-x-4 text-xs text-concrete">
+                                                    <button class="hover:text-slate">Reply</button>
+                                                    <button class="hover:text-slate">
+                                                        <i class="fa-regular fa-heart mr-1"></i>
+                                                        3
+                                                    </button>
+                                                    <button class="hover:text-slate">Flag</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Comment Thread 2 -->
+                                    <div class="p-6">
+                                        <div class="flex items-start space-x-4">
+                                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-10 h-10 rounded-full object-cover" alt="Max Chen">
+                                            <div class="flex-1">
+                                                <div class="flex items-center space-x-2 mb-2">
+                                                    <span class="font-medium text-slate">Max Chen</span>
+                                                    <span class="text-xs text-concrete">Deal Architect</span>
+                                                    <span class="text-xs text-concrete">•</span>
+                                                    <span class="text-xs text-concrete">1 hour ago</span>
+                                                </div>
+                                                <div class="bg-blue-50 rounded-lg p-4 mb-3">
+                                                    <p class="text-sm text-slate">
+                                                        <span class="text-blue-600">@sarah-johnson</span> Good point. I'll add this to the redline requests. 
+                                                        The increased fit-out contribution might give us leverage to negotiate the cap back in.
+                                                    </p>
+                                                </div>
+                                                <div class="flex items-center space-x-4 text-xs text-concrete">
+                                                    <button class="hover:text-slate">Reply</button>
+                                                    <button class="hover:text-slate">
+                                                        <i class="fa-regular fa-heart mr-1"></i>
+                                                        1
+                                                    </button>
+                                                    <button class="hover:text-slate">Flag</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Comment Thread 3 -->
+                                    <div class="p-6">
+                                        <div class="flex items-start space-x-4">
+                                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" class="w-10 h-10 rounded-full object-cover" alt="Executive Team">
+                                            <div class="flex-1">
+                                                <div class="flex items-center space-x-2 mb-2">
+                                                    <span class="font-medium text-slate">Executive Team</span>
+                                                    <span class="text-xs text-concrete">Portfolio Navigator</span>
+                                                    <span class="text-xs text-concrete">•</span>
+                                                    <span class="text-xs text-concrete">30 minutes ago</span>
+                                                </div>
+                                                <div class="bg-purple-50 rounded-lg p-4 mb-3">
+                                                    <p class="text-sm text-slate">
+                                                        The overall terms look favourable. The additional storage and parking are valuable additions. 
+                                                        Please proceed with addressing the service charge cap before final approval.
+                                                    </p>
+                                                </div>
+                                                <div class="flex items-center space-x-4 text-xs text-concrete">
+                                                    <button class="hover:text-slate">Reply</button>
+                                                    <button class="hover:text-slate">
+                                                        <i class="fa-regular fa-heart mr-1"></i>
+                                                        2
+                                                    </button>
+                                                    <button class="hover:text-slate">Flag</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Add Comment Form -->
+                                <div class="p-6 border-t border-stone">
+                                    <div class="flex items-start space-x-4">
+                                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-10 h-10 rounded-full object-cover" alt="Comment author">
+                                        <div class="flex-1">
+                                            <textarea class="w-full border border-concrete rounded-lg px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent" rows="3" placeholder="Add your comment or @mention a team member..."></textarea>
+                                            <div class="flex items-center justify-between mt-3">
+                                                <div class="flex items-center space-x-3 text-sm text-concrete">
+                                                    <button class="hover:text-slate">
+                                                        <i class="fa-solid fa-paperclip mr-1"></i>
+                                                        Attach file
+                                                    </button>
+                                                    <button class="hover:text-slate">
+                                                        <i class="fa-solid fa-at mr-1"></i>
+                                                        Mention
+                                                    </button>
+                                                </div>
+                                                <div class="flex items-center space-x-2">
+                                                    <button class="px-4 py-2 text-concrete hover:text-slate transition-colors">Cancel</button>
+                                                    <button class="px-4 py-2 bg-slate text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">
+                                                        Post Comment
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Related Documents -->
+                        <section id="neg-related-documents" class="mb-6">
+                            <div class="bg-white rounded-lg shadow-soft border border-stone">
+                                <div class="p-6 border-b border-stone">
+                                    <h2 class="text-lg font-semibold text-slate">Related Documents</h2>
+                                </div>
+                                
+                                <div class="p-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-soft transition-all cursor-pointer">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-file-pdf text-red-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate">Original HoT v2.1</div>
+                                                    <div class="text-xs text-concrete">PDF • 2.4 MB</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-concrete">
+                                                <div>Created: Oct 15, 2024</div>
+                                                <div>Status: Under Review</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-soft transition-all cursor-pointer">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-file-pdf text-green-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate">Revised HoT v2.2</div>
+                                                    <div class="text-xs text-concrete">PDF • 2.6 MB</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-concrete">
+                                                <div>Created: Oct 18, 2024</div>
+                                                <div>Status: Latest Version</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-soft transition-all cursor-pointer">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-file-excel text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate">Financial Analysis</div>
+                                                    <div class="text-xs text-concrete">XLSX • 1.2 MB</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-concrete">
+                                                <div>Created: Oct 18, 2024</div>
+                                                <div>Status: Supporting Doc</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-soft transition-all cursor-pointer">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-file-word text-purple-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate">Legal Comments</div>
+                                                    <div class="text-xs text-concrete">DOCX • 0.8 MB</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-concrete">
+                                                <div>Created: Oct 17, 2024</div>
+                                                <div>Status: Review Notes</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-soft transition-all cursor-pointer">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-file-image text-orange-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate">Floor Plans</div>
+                                                    <div class="text-xs text-concrete">PDF • 5.2 MB</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-concrete">
+                                                <div>Created: Oct 10, 2024</div>
+                                                <div>Status: Reference</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-soft transition-all cursor-pointer">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <div class="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">
+                                                    <i class="fa-solid fa-file-lines text-gray-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-slate">Tenant Profile</div>
+                                                    <div class="text-xs text-concrete">PDF • 1.5 MB</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-concrete">
+                                                <div>Created: Oct 8, 2024</div>
+                                                <div>Status: Background</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            </div>
+
+            <!-- Notification Panel -->
+            <div id="negotiation-notification-panel" class="fixed top-16 right-6 w-96 bg-white rounded-lg shadow-soft-lg border border-stone z-10 hidden">
+                <div class="p-4 border-b border-stone">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-medium text-slate">Notifications</h3>
+                        <button class="text-concrete hover:text-slate" data-notification-close>
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="max-h-96 overflow-y-auto divide-y divide-stone">
+                    <div class="p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                            <div class="flex-1">
+                                <p class="text-sm text-slate font-medium">Legal Review Required</p>
+                                <p class="text-xs text-concrete mt-1">New HoT version needs legal approval</p>
+                                <span class="text-xs text-concrete">5 minutes ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                            <div class="flex-1">
+                                <p class="text-sm text-slate font-medium">Comment Added</p>
+                                <p class="text-xs text-concrete mt-1">Sarah Johnson commented on service charge cap</p>
+                                <span class="text-xs text-concrete">2 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
     
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabButtons = document.querySelectorAll('.deal-tab-button');
+        const tabPanels = {
+            overview: document.getElementById('overview-tab'),
+            negotiation: document.getElementById('negotiation-tab')
+        };
+
+        tabButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const target = button.dataset.tab;
+                tabButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+
+                Object.entries(tabPanels).forEach(([key, panel]) => {
+                    if (!panel) return;
+                    if (key === target) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        const bellButton = document.querySelector('.negotiation-bell');
+        const notificationPanel = document.getElementById('negotiation-notification-panel');
+        const notificationClose = document.querySelector('[data-notification-close]');
+
+        if (bellButton && notificationPanel) {
+            bellButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                notificationPanel.classList.toggle('hidden');
+            });
+
+            if (notificationClose) {
+                notificationClose.addEventListener('click', () => notificationPanel.classList.add('hidden'));
+            }
+
+            document.addEventListener('click', (event) => {
+                const clickedInsidePanel = notificationPanel.contains(event.target);
+                const clickedBell = bellButton.contains(event.target);
+
+                if (!clickedInsidePanel && !clickedBell) {
+                    notificationPanel.classList.add('hidden');
+                }
+            });
+        }
+    });
+</script>
 
 </body>
 </html>
