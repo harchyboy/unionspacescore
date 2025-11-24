@@ -190,11 +190,15 @@
             <div class="flex items-center space-x-3">
                 <button class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
-                    <span>New Work Order</span>
+                    <span>Create Work Order</span>
+                </button>
+                <button id="request-quote-btn" class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Request Quote</span>
                 </button>
                 <button class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
-                    <i class="fa-solid fa-share-nodes"></i>
-                    <span>Share Scope</span>
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>Contact</span>
                 </button>
                 <button class="border border-[#E6E6E6] text-secondary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-pause"></i>
@@ -207,9 +211,11 @@
             </div>
             
             <div class="flex items-center space-x-4 mt-6 border-t border-[#E6E6E6] pt-4">
+                <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">Overview</button>
                 <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">Work Orders</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Performance</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Contracts & Docs</button>
+                <button id="pending-onboarding-tab" class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth" style="display: none;">Pending Onboarding</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">People</button>
                 <button class="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth">Communications</button>
             </div>
@@ -252,6 +258,51 @@
                     </div>
                     <div class="text-3xl font-semibold text-primary">£48k</div>
                     <div class="text-xs text-secondary mt-2">Annual commitment</div>
+                </div>
+            </div>
+            
+            <div id="overview-details-section" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
+                <h2 class="text-lg font-semibold text-primary mb-6">Overview</h2>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-medium text-secondary mb-1">Category</label>
+                        <div class="text-sm text-primary">AV & IT</div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-secondary mb-1">Preferred Supplier</label>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                            <span class="text-sm text-primary">Yes</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-secondary mb-1">Rank</label>
+                        <div class="text-sm text-primary">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">1</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-secondary mb-1">Landlord or Owner</label>
+                        <div class="text-sm text-primary">UNION Properties</div>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-medium text-secondary mb-2">Linked Properties</label>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">99 Bishopsgate</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">One Canada Square</span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">Principal Place</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-secondary mb-1">Coverage Areas</label>
+                        <div class="text-sm text-primary">City Core, Shoreditch, Canary Wharf</div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-secondary mb-1">Onboarding Status</label>
+                        <div class="text-sm text-primary">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Complete</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -1104,6 +1155,70 @@
     </main>
 </div>
 
+<!-- Request Quote Modal -->
+<div id="request-quote-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-primary">Request Quote</h2>
+            <button id="close-quote-modal" class="text-secondary hover:text-primary">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <div class="mb-6">
+                <p class="text-sm text-secondary">Request a quote from Thirdway Technologies. This will be sent to the supplier for review.</p>
+            </div>
+            
+            <form id="request-quote-form" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Property <span class="text-destructive">*</span></label>
+                    <div class="relative">
+                        <select required class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select property</option>
+                            <option>99 Bishopsgate</option>
+                            <option>One Canada Square</option>
+                            <option>Principal Place</option>
+                            <option>Canary Wharf Tower</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Service Required <span class="text-destructive">*</span></label>
+                    <textarea rows="4" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Describe the service or work required..."></textarea>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Requested Date</label>
+                        <input type="date" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-2">Budget Range</label>
+                        <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., £5,000 - £10,000">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-primary mb-2">Additional Notes</label>
+                    <textarea rows="3" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Any additional information or requirements..."></textarea>
+                </div>
+                
+                <div class="flex items-center space-x-3 pt-4 border-t border-[#E6E6E6]">
+                    <button type="submit" class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth">
+                        Send Request
+                    </button>
+                    <button type="button" id="cancel-quote-modal" class="flex-1 border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
 <script>
 window.addEventListener('load', function() {
@@ -1146,6 +1261,54 @@ window.addEventListener('load', function() {
         Plotly.newPlot('cost-trends-chart', data, layout, config);
     } catch(e) {
         document.getElementById('cost-trends-chart').innerHTML = '<div class="flex items-center justify-center h-full text-secondary">Chart unavailable</div>';
+    }
+    
+    // Request Quote Modal handlers
+    const requestQuoteBtn = document.getElementById('request-quote-btn');
+    const requestQuoteModal = document.getElementById('request-quote-modal');
+    const closeQuoteModal = document.getElementById('close-quote-modal');
+    const cancelQuoteModal = document.getElementById('cancel-quote-modal');
+    
+    if (requestQuoteBtn) {
+        requestQuoteBtn.addEventListener('click', function() {
+            requestQuoteModal.classList.remove('hidden');
+        });
+    }
+    
+    if (closeQuoteModal) {
+        closeQuoteModal.addEventListener('click', function() {
+            requestQuoteModal.classList.add('hidden');
+        });
+    }
+    
+    if (cancelQuoteModal) {
+        cancelQuoteModal.addEventListener('click', function() {
+            requestQuoteModal.classList.add('hidden');
+        });
+    }
+    
+    // Handle onboarding status and tab visibility
+    // This would typically come from the supplier data
+    const onboardingStatus = 'complete'; // Change to 'not-started' or 'in-progress' to show tab
+    const pendingOnboardingTab = document.getElementById('pending-onboarding-tab');
+    
+    if (pendingOnboardingTab) {
+        if (onboardingStatus === 'not-started' || onboardingStatus === 'in-progress') {
+            pendingOnboardingTab.style.display = 'block';
+        } else {
+            pendingOnboardingTab.style.display = 'none';
+        }
+    }
+    
+    // Form submission handler
+    const quoteForm = document.getElementById('request-quote-form');
+    if (quoteForm) {
+        quoteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Handle form submission (template for now, no automation)
+            alert('Quote request submitted (template - no automation in MVP)');
+            requestQuoteModal.classList.add('hidden');
+        });
     }
 });
 </script>

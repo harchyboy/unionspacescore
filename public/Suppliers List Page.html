@@ -385,6 +385,28 @@
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
+                <div class="relative">
+                    <select id="filter-landlord" onchange="applyFilters()" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Landlords/Owners</option>
+                        <option value="UNION Properties">UNION Properties</option>
+                        <option value="City Estates Ltd">City Estates Ltd</option>
+                        <option value="Metro Holdings">Metro Holdings</option>
+                        <option value="Independent Owner">Independent Owner</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
+                <div class="relative">
+                    <select id="filter-property" onchange="applyFilters()" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Properties</option>
+                        <option value="99 Bishopsgate">99 Bishopsgate</option>
+                        <option value="One Canada Square">One Canada Square</option>
+                        <option value="Principal Place">Principal Place</option>
+                        <option value="Canary Wharf Tower">Canary Wharf Tower</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+                
                 <button onclick="clearAllFilters()" class="text-secondary hover:text-primary text-sm ml-2">
                     Clear all
                 </button>
@@ -402,6 +424,18 @@
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Supplier</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Category</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider cursor-pointer hover:text-primary" onclick="sortByRank()">
+                                    <div class="flex items-center space-x-1">
+                                        <span>Preferred</span>
+                                        <i class="fa-solid fa-sort text-xs"></i>
+                                    </div>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider cursor-pointer hover:text-primary" onclick="sortByRank()">
+                                    <div class="flex items-center space-x-1">
+                                        <span>Rank</span>
+                                        <i class="fa-solid fa-sort text-xs"></i>
+                                    </div>
+                                </th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Contract Status</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Coverage</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Primary Contact</th>
@@ -427,6 +461,15 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">AV & Tech</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                        <span class="text-xs text-primary">Preferred</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">1</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Active</span>
@@ -463,6 +506,12 @@
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">Cleaning</span>
                                 </td>
                                 <td class="px-6 py-4">
+                                    <span class="text-xs text-secondary">—</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-xs text-secondary">—</span>
+                                </td>
+                                <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Active</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">All London</td>
@@ -495,6 +544,15 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">R&M</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                        <span class="text-xs text-primary">Preferred</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">2</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Active</span>
@@ -531,6 +589,12 @@
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">IT Support</span>
                                 </td>
                                 <td class="px-6 py-4">
+                                    <span class="text-xs text-secondary">—</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-xs text-secondary">—</span>
+                                </td>
+                                <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">Trial</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-primary">Central, West</td>
@@ -563,6 +627,15 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">Plants</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-1">
+                                        <i class="fa-solid fa-star text-yellow-500 text-sm"></i>
+                                        <span class="text-xs text-primary">Preferred</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">3</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Active</span>
