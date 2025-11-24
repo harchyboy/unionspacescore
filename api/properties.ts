@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { Property } from './types/property';
+
 // Seed data - same as MSW mocks
-const seedProperties = [
+const seedProperties: Property[] = [
   {
     id: '99-bishopsgate',
     name: '99 Bishopsgate',
@@ -146,8 +148,6 @@ const seedProperties = [
     updatedAt: '2024-12-12T14:20:00Z',
   },
 ];
-
-type Property = (typeof seedProperties)[number];
 
 const properties: Property[] = [...seedProperties];
 
