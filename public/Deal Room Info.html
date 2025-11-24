@@ -219,6 +219,7 @@
             <div class="flex items-center space-x-3">
                 <button class="deal-tab-button active" data-tab="overview">Overview</button>
                 <button class="deal-tab-button" data-tab="negotiation">Negotiation</button>
+                <button class="deal-tab-button" data-tab="documents">Documents</button>
             </div>
         </div>
 
@@ -665,81 +666,7 @@
                 </div>
             </div>
             
-            <div id="documents-card" class="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6 shadow-sm">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-semibold text-primary">Documents</h3>
-                    <button id="document-upload-trigger" class="text-xs text-secondary hover:text-primary flex items-center space-x-1">
-                        <i class="fa-solid fa-upload"></i>
-                        <span>Upload</span>
-                    </button>
-                </div>
-                <div class="grid grid-cols-4 gap-4">
-                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
-                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
-                            <i class="fa-solid fa-gavel text-primary text-xl"></i>
-                        </div>
-                        <div class="text-sm font-medium text-primary mb-1">Legal</div>
-                        <div class="text-xs text-secondary">8 files</div>
-                    </div>
-                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
-                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
-                            <i class="fa-solid fa-sterling-sign text-primary text-xl"></i>
-                        </div>
-                        <div class="text-sm font-medium text-primary mb-1">Commercial</div>
-                        <div class="text-xs text-secondary">5 files</div>
-                    </div>
-                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
-                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
-                            <i class="fa-solid fa-map text-primary text-xl"></i>
-                        </div>
-                        <div class="text-sm font-medium text-primary mb-1">Plans</div>
-                        <div class="text-xs text-secondary">12 files</div>
-                    </div>
-                    <div class="text-center p-4 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
-                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
-                            <i class="fa-solid fa-bullhorn text-primary text-xl"></i>
-                        </div>
-                        <div class="text-sm font-medium text-primary mb-1">Marketing</div>
-                        <div class="text-xs text-secondary">18 files</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Document Upload Modal -->
-            <div id="document-upload-modal" class="fixed inset-0 z-50 hidden">
-                <div class="absolute inset-0 bg-black/50" data-upload-close></div>
-                <div class="relative max-w-lg w-full bg-white rounded-xl shadow-soft-lg border border-stone mx-auto mt-24 p-6 z-10">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-slate">Upload Document</h3>
-                        <button class="text-secondary hover:text-primary" data-upload-close>
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-                    <form class="space-y-4" id="document-upload-form">
-                        <div>
-                            <label class="text-sm font-medium text-primary mb-2 block">File</label>
-                            <input type="file" class="w-full border border-concrete rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent" required>
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium text-primary mb-2 block">Type</label>
-                            <select class="w-full border border-concrete rounded-lg px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent" required>
-                                <option value="Legal">Legal</option>
-                                <option value="Commercial">Commercial</option>
-                                <option value="Plans">Plans</option>
-                                <option value="Marketing">Marketing</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium text-primary mb-2 block">Notes</label>
-                            <textarea rows="4" class="w-full border border-concrete rounded-lg px-4 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent" placeholder="Add any context for the legal team..."></textarea>
-                        </div>
-                        <div class="flex items-center justify-end space-x-3 pt-2">
-                            <button type="button" class="px-4 py-2 text-secondary hover:text-primary text-sm font-medium" data-upload-close>Cancel</button>
-                            <button type="submit" class="px-4 py-2 bg-slate text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Upload</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <!-- Documents moved to dedicated tab -->
             
             <div class="grid grid-cols-2 gap-6 mb-6">
                 
@@ -880,6 +807,143 @@
                     </div>
                 </div>
                 
+            </div>
+        </section>
+
+        <section id="documents-tab" class="deal-tab-panel hidden">
+            <div class="px-8 py-6 space-y-6">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-primary">Deal Documents</h3>
+                            <p class="text-xs text-secondary mt-1">Centralized record of every file shared in this room</p>
+                        </div>
+                        <button id="document-upload-trigger" class="px-4 py-2 text-sm font-medium text-primary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-colors flex items-center space-x-2">
+                            <i class="fa-solid fa-upload text-xs"></i>
+                            <span>Upload</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="text-center p-5 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                                <i class="fa-solid fa-gavel text-primary text-xl"></i>
+                            </div>
+                            <div class="text-sm font-medium text-primary mb-1">Legal</div>
+                            <div class="text-xs text-secondary">8 files • Last update 1h ago</div>
+                        </div>
+                        <div class="text-center p-5 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                                <i class="fa-solid fa-sterling-sign text-primary text-xl"></i>
+                            </div>
+                            <div class="text-sm font-medium text-primary mb-1">Commercial</div>
+                            <div class="text-xs text-secondary">5 files • Last update yesterday</div>
+                        </div>
+                        <div class="text-center p-5 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                                <i class="fa-solid fa-map text-primary text-xl"></i>
+                            </div>
+                            <div class="text-sm font-medium text-primary mb-1">Plans</div>
+                            <div class="text-xs text-secondary">12 files • Updated 2 days ago</div>
+                        </div>
+                        <div class="text-center p-5 bg-muted rounded-lg hover:bg-[#E6E6E6] cursor-pointer transition-all-smooth">
+                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center mx-auto mb-3 border border-[#E6E6E6]">
+                                <i class="fa-solid fa-bullhorn text-primary text-xl"></i>
+                            </div>
+                            <div class="text-sm font-medium text-primary mb-1">Marketing</div>
+                            <div class="text-xs text-secondary">18 files • Updated 4 days ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-primary">Recent Uploads</h3>
+                        <button class="text-xs text-secondary hover:text-primary">View archive</button>
+                    </div>
+                    <div class="divide-y divide-[#E6E6E6]">
+                        <div class="py-4 flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                                    <i class="fa-solid fa-file-pdf text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Lease_Redline_v3.pdf</div>
+                                    <div class="text-xs text-secondary">Legal • Uploaded by Sarah Chen</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-secondary">Today • 10:24</div>
+                                <button class="text-sm text-primary hover:underline">Download</button>
+                            </div>
+                        </div>
+                        <div class="py-4 flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                                    <i class="fa-solid fa-file-word text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Fitout_Schedule.docx</div>
+                                    <div class="text-xs text-secondary">Commercial • Uploaded by Max Chen</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-secondary">Yesterday • 17:11</div>
+                                <button class="text-sm text-primary hover:underline">Download</button>
+                            </div>
+                        </div>
+                        <div class="py-4 flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+                                    <i class="fa-solid fa-images text-primary"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-primary">Level17_Floorplan.png</div>
+                                    <div class="text-xs text-secondary">Plans • Uploaded by Design Studio</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-secondary">Oct 20 • 08:45</div>
+                                <button class="text-sm text-primary hover:underline">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Upload Modal -->
+            <div id="document-upload-modal" class="fixed inset-0 z-50 hidden">
+                <div class="absolute inset-0 bg-black/50" data-upload-close></div>
+                <div class="relative max-w-lg w-full bg-white rounded-xl shadow-soft-lg border border-stone mx-auto mt-24 p-6 z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-slate">Upload Document</h3>
+                        <button class="text-secondary hover:text-primary" data-upload-close>
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                    <form class="space-y-4" id="document-upload-form">
+                        <div>
+                            <label class="text-sm font-medium text-primary mb-2 block">File</label>
+                            <input type="file" class="w-full border border-concrete rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-primary mb-2 block">Type</label>
+                            <select class="w-full border border-concrete rounded-lg px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent" required>
+                                <option value="Legal">Legal</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Plans">Plans</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-primary mb-2 block">Notes</label>
+                            <textarea rows="4" class="w-full border border-concrete rounded-lg px-4 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-slate focus:border-transparent" placeholder="Add any context for the legal team..."></textarea>
+                        </div>
+                        <div class="flex items-center justify-end space-x-3 pt-2">
+                            <button type="button" class="px-4 py-2 text-secondary hover:text-primary text-sm font-medium" data-upload-close>Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-slate text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Upload</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </section>
 
@@ -2138,7 +2202,8 @@
         const tabButtons = document.querySelectorAll('.deal-tab-button');
         const tabPanels = {
             overview: document.getElementById('overview-tab'),
-            negotiation: document.getElementById('negotiation-tab')
+            negotiation: document.getElementById('negotiation-tab'),
+            documents: document.getElementById('documents-tab')
         };
 
         tabButtons.forEach((button) => {
