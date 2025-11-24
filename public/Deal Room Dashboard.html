@@ -1101,8 +1101,8 @@ window.openDealDetails = function(event, dealId) {
     content.style.display = 'none';
     iframe.style.display = 'block';
     
-    // Load the Deal Room Detail page in the iframe
-    iframe.src = `Deal Room Detail.html?dealId=${dealId}`;
+    // Load the Deal Room Info page (tabbed view) in the iframe
+    iframe.src = `Deal Room Info.html?dealId=${dealId}`;
     
     // Show overlay and panel
     overlay.classList.remove('hidden');
