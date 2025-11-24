@@ -2279,12 +2279,49 @@
         );
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function mountCalculator() {
         const root = document.getElementById('managed-services-calculator-root');
-        if (root && window.React && window.ReactDOM) {
-            ReactDOM.createRoot(root).render(<ManagedServicesCalculator />);
+        if (!root) {
+            console.warn('Calculator root element not found');
+            return false;
         }
-    });
+        if (!window.React || !window.ReactDOM) {
+            console.warn('React not loaded yet, retrying...');
+            return false;
+        }
+        try {
+            ReactDOM.createRoot(root).render(<ManagedServicesCalculator />);
+            console.log('Calculator mounted successfully');
+            return true;
+        } catch (error) {
+            console.error('Error mounting calculator:', error);
+            return false;
+        }
+    }
+
+    // Try to mount immediately if DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!mountCalculator()) {
+                // Retry after a short delay if React scripts are still loading
+                setTimeout(() => {
+                    if (!mountCalculator()) {
+                        // Final retry after React scripts should have loaded
+                        setTimeout(mountCalculator, 1000);
+                    }
+                }, 500);
+            }
+        });
+    } else {
+        // DOM already loaded, try mounting
+        if (!mountCalculator()) {
+            setTimeout(() => {
+                if (!mountCalculator()) {
+                    setTimeout(mountCalculator, 1000);
+                }
+            }, 500);
+        }
+    }
 })();
 </script>
 <script>
