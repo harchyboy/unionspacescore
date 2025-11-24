@@ -1,6 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { DealRoomResponse, DealRoomDeal, DealRoomSummary } from '../src/types/dealRoomDashboard.js';
-
 // Mock deal owners
 const mockOwners = [
   { id: '1', name: 'Sarah Chen', avatar: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg' },
@@ -10,7 +8,7 @@ const mockOwners = [
 ];
 
 // Mock deals data - same as MSW mocks
-const mockDeals: DealRoomDeal[] = [
+const mockDeals = [
   {
     id: '1',
     name: 'TechCorp Ltd - Principal Place',
@@ -314,6 +312,19 @@ const mockDeals: DealRoomDeal[] = [
     daysInStage: 15,
   },
 ];
+
+type DealRoomDeal = (typeof mockDeals)[number];
+
+type DealRoomSummary = {
+  totalOpenDeals: number;
+  totalMonthlyValue: number;
+  averageDaysInStage: number;
+};
+
+type DealRoomResponse = {
+  deals: DealRoomDeal[];
+  summary: DealRoomSummary;
+};
 
 function calculateSummary(deals: DealRoomDeal[]): DealRoomSummary {
   const openDeals = deals.filter((d) => d.stage !== 'Signed' && d.stage !== 'Lost');

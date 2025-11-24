@@ -1,8 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Property } from '../src/types/property.js';
-
 // Seed data - same as MSW mocks
-const seedProperties: Property[] = [
+const seedProperties = [
   {
     id: '99-bishopsgate',
     name: '99 Bishopsgate',
@@ -149,7 +147,9 @@ const seedProperties: Property[] = [
   },
 ];
 
-const properties = [...seedProperties];
+type Property = (typeof seedProperties)[number];
+
+const properties: Property[] = [...seedProperties];
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   const { method, query } = req;
