@@ -1640,6 +1640,10 @@ function showSupplierDetails(row) {
                         <i class="fa-solid fa-file-circle-plus"></i>
                         <span>Create Work Order</span>
                     </button>
+                    <button id="request-quote-btn-\${supplier.id || 'supplier-123'}" class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span>Request Quote</span>
+                    </button>
                     <button class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-envelope"></i>
                         <span>Contact</span>
@@ -2264,6 +2268,106 @@ function closeSupplierDetails() {
                 supplierForm.reset();
             }, 2000);
         });
+    }
+    
+    // Request Quote Modal handlers for detail view
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[id^="request-quote-btn-"]');
+        if (btn) {
+            const supplierId = btn.id.replace('request-quote-btn-', '');
+            showRequestQuoteModal(supplierId);
+        }
+    });
+    
+    function showRequestQuoteModal(supplierId) {
+        // Create or show the request quote modal
+        let modal = document.getElementById('request-quote-modal-list');
+        if (!modal) {
+            modal = createRequestQuoteModal();
+            document.body.appendChild(modal);
+        }
+        modal.classList.remove('hidden');
+    }
+    
+    function createRequestQuoteModal() {
+        const modal = document.createElement('div');
+        modal.id = 'request-quote-modal-list';
+        modal.className = 'hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 bg-white border-b border-[#E6E6E6] px-6 py-4 flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-primary">Request Quote</h2>
+                    <button id="close-quote-modal-list" class="text-secondary hover:text-primary">
+                        <i class="fa-solid fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div class="mb-6">
+                        <p class="text-sm text-secondary">Request a quote from the supplier. This will be sent for review.</p>
+                    </div>
+                    <form id="request-quote-form-list" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">Property <span class="text-destructive">*</span></label>
+                            <div class="relative">
+                                <select required class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option value="">Select property</option>
+                                    <option>99 Bishopsgate</option>
+                                    <option>One Canada Square</option>
+                                    <option>Principal Place</option>
+                                    <option>Canary Wharf Tower</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">Service Required <span class="text-destructive">*</span></label>
+                            <textarea rows="4" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Describe the service or work required..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2">Requested Date</label>
+                                <input type="date" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-primary mb-2">Budget Range</label>
+                                <input type="text" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., £5,000 - £10,000">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">Additional Notes</label>
+                            <textarea rows="3" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Any additional information..."></textarea>
+                        </div>
+                        <div class="flex items-center space-x-3 pt-4 border-t border-[#E6E6E6]">
+                            <button type="submit" class="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth">Send Request</button>
+                            <button type="button" id="cancel-quote-modal-list" class="flex-1 border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        // Add event listeners
+        setTimeout(() => {
+            const closeBtn = modal.querySelector('#close-quote-modal-list');
+            const cancelBtn = modal.querySelector('#cancel-quote-modal-list');
+            const form = modal.querySelector('#request-quote-form-list');
+            
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+            }
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    alert('Quote request submitted (template - no automation in MVP)');
+                    modal.classList.add('hidden');
+                });
+            }
+        }, 100);
+        
+        return modal;
     }
 </script>
 
