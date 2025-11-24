@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { DealRoomResponse, DealRoomDeal, DealRoomSummary } from '../src/types/dealRoomDashboard.ts';
+import type { DealRoomResponse, DealRoomDeal, DealRoomSummary } from '../src/types/dealRoomDashboard.js';
 
 // Mock deal owners
 const mockOwners = [

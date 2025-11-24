@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Property } from '../src/types/property.ts';
+import type { Property } from '../src/types/property.js';
 
 // Seed data - same as MSW mocks
 const seedProperties: Property[] = [
