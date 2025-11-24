@@ -215,18 +215,18 @@
                         <i class="fa-solid fa-chevron-right text-xs"></i>
                         <a href="Suppliers List Page.html" class="hover:text-primary transition-all-smooth">Suppliers</a>
                         <i class="fa-solid fa-chevron-right text-xs"></i>
-                        <span class="text-primary">Add Supplier</span>
+                        <span class="text-primary" id="page-title-nav">Add Supplier</span>
                     </nav>
-                    <h1 class="text-3xl font-semibold text-primary mb-2">Add Supplier</h1>
-                    <p class="text-secondary text-sm">Create a new supplier, contract details, and basic SLA targets</p>
+                    <h1 class="text-3xl font-semibold text-primary mb-2" id="page-title">Add Supplier</h1>
+                    <p class="text-secondary text-sm" id="page-description">Create a new supplier, contract details, and basic SLA targets</p>
                 </div>
                 <div class="flex items-center space-x-3">
                     <button class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
                         <span>Cancel</span>
                     </button>
-                    <button class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <button id="save-supplier-btn" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-check"></i>
-                        <span>Save Supplier</span>
+                        <span id="save-btn-text">Save Supplier</span>
                     </button>
                 </div>
             </div>
@@ -246,7 +246,7 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Supplier Name (Company) <span class="text-destructive">*</span>
                                 </label>
-                                <input type="text" placeholder="e.g., Thirdway AV" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="supplier-name" name="supplier-name" placeholder="e.g., Thirdway AV" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <p class="text-xs text-destructive mt-1">Supplier name is required.</p>
                             </div>
                             
@@ -254,7 +254,7 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Trading Name
                                 </label>
-                                <input type="text" placeholder="e.g., Thirdway Technologies" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="trading-name" name="trading-name" placeholder="e.g., Thirdway Technologies" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                             
                             <div>
@@ -304,7 +304,7 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Description
                                 </label>
-                                <textarea rows="3" placeholder="Brief description of services provided" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"></textarea>
+                                <textarea rows="3" id="supplier-description" name="supplier-description" placeholder="Brief description of services provided" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"></textarea>
                             </div>
                             
                             <div>
@@ -447,21 +447,21 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Contact Name <span class="text-destructive">*</span>
                                 </label>
-                                <input type="text" placeholder="e.g., John Smith" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="contact-name" name="contact-name" placeholder="e.g., John Smith" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Role or Title
                                 </label>
-                                <input type="text" placeholder="e.g., Account Manager" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="contact-role" name="contact-role" placeholder="e.g., Account Manager" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Email <span class="text-destructive">*</span>
                                 </label>
-                                <input type="email" placeholder="john.smith@example.com" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="email" id="contact-email" name="contact-email" placeholder="john.smith@example.com" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <p class="text-xs text-destructive mt-1">Email is required.</p>
                             </div>
                             
@@ -469,7 +469,7 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Phone <span class="text-destructive">*</span>
                                 </label>
-                                <input type="tel" placeholder="+44 20 7123 4567" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="tel" id="contact-phone" name="contact-phone" placeholder="+44 20 7123 4567" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                         </div>
                         
@@ -516,7 +516,7 @@
                                     Contract Status <span class="text-destructive">*</span>
                                 </label>
                                 <div class="relative">
-                                    <select class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <select id="contract-status" name="contract-status" class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                         <option value="">Select status</option>
                                         <option value="none">No contract</option>
                                         <option value="review">Under review</option>
@@ -972,6 +972,153 @@ function toggleSecondaryContact() {
     content.classList.toggle('open');
     icon.classList.toggle('rotate-180');
 }
+
+// Check if we're in edit mode
+window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const supplierId = urlParams.get('id');
+    
+    if (mode === 'edit' && supplierId) {
+        // Update page title and description
+        document.getElementById('page-title').textContent = 'Edit Supplier';
+        document.getElementById('page-title-nav').textContent = 'Edit Supplier';
+        document.getElementById('page-description').textContent = 'Update supplier details, contract information, and compliance documents';
+        document.getElementById('save-btn-text').textContent = 'Update Supplier';
+        
+        // Load supplier data (in a real app, this would fetch from an API)
+        loadSupplierData(supplierId);
+    }
+});
+
+// Function to load supplier data into the form
+function loadSupplierData(supplierId) {
+    // Sample supplier data - in a real app, this would come from an API
+    const supplierData = {
+        'supplier-123': {
+            name: 'Thirdway Technologies',
+            tradingName: 'Thirdway AV',
+            category: 'cleaning',
+            description: 'Premium AV and IT solutions provider covering Central London',
+            companyReg: '12345678',
+            vatNumber: 'GB123456789',
+            website: 'https://www.thirdway.co.uk',
+            preferred: true,
+            rank: '1',
+            landlord: 'UNION Properties',
+            properties: ['99-bishopsgate', 'one-canada-square', 'principal-place'],
+            coverageType: 'Building',
+            coverageAreas: ['city-core'],
+            assetTypes: ['offices'],
+            operatingHours: 'Mon-Fri 9am-6pm, 24/7 emergency',
+            contactName: 'Ben Clarke',
+            contactRole: 'Account Manager',
+            contactEmail: 'ben.clarke@thirdway.co.uk',
+            contactPhone: '+44 20 7123 4567',
+            contractStatus: 'active',
+            contractRef: 'CON-2024-001',
+            contractStart: '2024-01-01',
+            contractEnd: '2024-12-31',
+            renewalDate: '2024-12-31',
+            renewalType: 'fixed',
+            noticePeriod: '90',
+            noticePeriodUnit: 'days',
+            currency: 'GBP',
+            baseRate: '45.00',
+            callOutFee: '75.00',
+            minCharge: '100.00',
+            outOfHoursUplift: '25',
+            responseTime: '2',
+            responseTimeUnit: 'hours',
+            resolutionTime: '24',
+            resolutionTimeUnit: 'hours',
+            emergencyResponseTime: '1',
+            emergencyResponseTimeUnit: 'hours',
+            onboardingStatus: 'complete'
+        }
+    };
+    
+    const data = supplierData[supplierId];
+    if (!data) return;
+    
+    // Populate form fields
+    // Basic details
+    const supplierNameInput = document.getElementById('supplier-name');
+    if (supplierNameInput) supplierNameInput.value = data.name;
+    
+    const tradingNameInput = document.getElementById('trading-name');
+    if (tradingNameInput) tradingNameInput.value = data.tradingName;
+    
+    const categorySelect = document.getElementById('supplier-category');
+    if (categorySelect) categorySelect.value = data.category;
+    
+    const descriptionTextarea = document.getElementById('supplier-description');
+    if (descriptionTextarea) descriptionTextarea.value = data.description;
+    
+    // Preferred and Rank
+    if (document.getElementById('supplier-preferred')) {
+        document.getElementById('supplier-preferred').checked = data.preferred;
+    }
+    if (document.getElementById('supplier-rank')) {
+        document.getElementById('supplier-rank').value = data.rank;
+    }
+    
+    // Landlord and Properties
+    if (document.getElementById('supplier-landlord')) {
+        document.getElementById('supplier-landlord').value = data.landlord;
+    }
+    if (document.getElementById('supplier-properties')) {
+        const propertiesSelect = document.getElementById('supplier-properties');
+        data.properties.forEach(prop => {
+            const option = Array.from(propertiesSelect.options).find(opt => opt.value === prop);
+            if (option) option.selected = true;
+        });
+    }
+    
+    // Onboarding Status
+    if (document.getElementById('supplier-onboarding-status')) {
+        document.getElementById('supplier-onboarding-status').value = data.onboardingStatus;
+    }
+    
+    // Contract details
+    const contractStatusSelect = document.getElementById('contract-status');
+    if (contractStatusSelect) contractStatusSelect.value = data.contractStatus;
+    
+    // Primary contact
+    const contactNameInput = document.getElementById('contact-name');
+    if (contactNameInput) contactNameInput.value = data.contactName;
+    
+    const contactRoleInput = document.getElementById('contact-role');
+    if (contactRoleInput) contactRoleInput.value = data.contactRole;
+    
+    const contactEmailInput = document.getElementById('contact-email');
+    if (contactEmailInput) contactEmailInput.value = data.contactEmail;
+    
+    const contactPhoneInput = document.getElementById('contact-phone');
+    if (contactPhoneInput) contactPhoneInput.value = data.contactPhone;
+}
+
+// Handle form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const saveBtn = document.getElementById('save-supplier-btn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            if (mode === 'edit') {
+                // Handle update
+                alert('Supplier updated successfully!');
+                window.location.href = 'Suppliers Adding Card.html';
+            } else {
+                // Handle create
+                alert('Supplier created successfully!');
+                window.location.href = 'Suppliers List Page.html';
+            }
+        });
+    }
+});
 </script>
 
 </body>
