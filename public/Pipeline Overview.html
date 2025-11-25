@@ -155,6 +155,85 @@
             opacity: 0.5;
             transform: rotate(2deg);
         }
+        /* Action menu styles */
+        .action-menu {
+            position: relative;
+        }
+        .action-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border: 1px solid rgba(142, 142, 142, 0.3);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            min-width: 200px;
+            z-index: 50;
+            display: none;
+        }
+        .action-menu-dropdown.open {
+            display: block;
+        }
+        .action-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: #252525;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .action-menu-item:hover {
+            background-color: #F0F0F0;
+        }
+        .action-menu-item i {
+            width: 1rem;
+            margin-right: 0.5rem;
+        }
+        .action-menu-item:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .action-menu-item:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+        /* Date picker modal */
+        .date-picker-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .date-picker-modal.open {
+            display: flex;
+        }
+        .date-picker-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .date-picker-content {
+            position: relative;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid rgba(142, 142, 142, 0.3);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -351,15 +430,40 @@
                     </div>
                     
                     <div class="flex-1 overflow-y-auto p-3 space-y-3">
-                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200 hover:border-blue-400 transition-colors cursor-pointer">
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200 hover:border-blue-400 transition-colors cursor-pointer relative" data-stage="qualified">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">DataVault Systems</h4>
                                     <p class="text-xs text-concrete">Via: CBRE • Compton</p>
                                 </div>
-                                <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
-                                    Viewing Soon
-                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
+                                        Viewing Soon
+                                    </span>
+                                    <div class="action-menu">
+                                        <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                            <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                        </button>
+                                        <div class="action-menu-dropdown" data-stage="qualified">
+                                            <div class="action-menu-item" onclick="scheduleViewing('DataVault Systems')">
+                                                <i class="fa-solid fa-calendar"></i>
+                                                <span>Schedule Viewing</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="shareProperties('DataVault Systems')">
+                                                <i class="fa-solid fa-share"></i>
+                                                <span>Share Properties</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="openCommunicationLog('DataVault Systems')">
+                                                <i class="fa-solid fa-comments"></i>
+                                                <span>Communication Log</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="viewKeyMetrics('DataVault Systems')">
+                                                <i class="fa-solid fa-chart-line"></i>
+                                                <span>Key Metrics</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
                                 <div class="flex items-center">
@@ -384,11 +488,34 @@
                             </div>
                         </div>
 
-                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer relative" data-stage="qualified">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">Nexus Capital Partners</h4>
                                     <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                                <div class="action-menu">
+                                    <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                        <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                    </button>
+                                    <div class="action-menu-dropdown" data-stage="qualified">
+                                        <div class="action-menu-item" onclick="scheduleViewing('Nexus Capital Partners')">
+                                            <i class="fa-solid fa-calendar"></i>
+                                            <span>Schedule Viewing</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="shareProperties('Nexus Capital Partners')">
+                                            <i class="fa-solid fa-share"></i>
+                                            <span>Share Properties</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="openCommunicationLog('Nexus Capital Partners')">
+                                            <i class="fa-solid fa-comments"></i>
+                                            <span>Communication Log</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="viewKeyMetrics('Nexus Capital Partners')">
+                                            <i class="fa-solid fa-chart-line"></i>
+                                            <span>Key Metrics</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
@@ -414,11 +541,34 @@
                             </div>
                         </div>
 
-                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer relative" data-stage="qualified">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">Horizon Ventures</h4>
                                     <p class="text-xs text-concrete">Via: Knight Frank</p>
+                                </div>
+                                <div class="action-menu">
+                                    <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                        <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                    </button>
+                                    <div class="action-menu-dropdown" data-stage="qualified">
+                                        <div class="action-menu-item" onclick="scheduleViewing('Horizon Ventures')">
+                                            <i class="fa-solid fa-calendar"></i>
+                                            <span>Schedule Viewing</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="shareProperties('Horizon Ventures')">
+                                            <i class="fa-solid fa-share"></i>
+                                            <span>Share Properties</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="openCommunicationLog('Horizon Ventures')">
+                                            <i class="fa-solid fa-comments"></i>
+                                            <span>Communication Log</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="viewKeyMetrics('Horizon Ventures')">
+                                            <i class="fa-solid fa-chart-line"></i>
+                                            <span>Key Metrics</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
@@ -473,15 +623,36 @@
                     </div>
                     
                     <div class="flex-1 overflow-y-auto p-3 space-y-3">
-                        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200 hover:border-purple-400 transition-colors cursor-pointer">
+                        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200 hover:border-purple-400 transition-colors cursor-pointer relative" data-stage="first-viewing">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">Apex Technologies</h4>
                                     <p class="text-xs text-concrete">Via: JLL • Disposal: Compton</p>
                                 </div>
-                                <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
-                                    Today
-                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                        Today
+                                    </span>
+                                    <div class="action-menu">
+                                        <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                            <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                        </button>
+                                        <div class="action-menu-dropdown" data-stage="viewing">
+                                            <div class="action-menu-item" onclick="bookAnotherViewing('Apex Technologies', 'first-viewing')">
+                                                <i class="fa-solid fa-calendar-plus"></i>
+                                                <span>Book Another Viewing</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="issueProposal('Apex Technologies')">
+                                                <i class="fa-solid fa-file-invoice"></i>
+                                                <span>Issue Proposal</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="issueUpdatedOptions('Apex Technologies')">
+                                                <i class="fa-solid fa-file-circle-plus"></i>
+                                                <span>Issue Updated Options</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
                                 <div class="flex items-center">
@@ -506,11 +677,30 @@
                             </div>
                         </div>
 
-                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer relative" data-stage="first-viewing">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">Meridian Group</h4>
                                     <p class="text-xs text-concrete">Via: CBRE</p>
+                                </div>
+                                <div class="action-menu">
+                                    <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                        <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                    </button>
+                                    <div class="action-menu-dropdown" data-stage="viewing">
+                                        <div class="action-menu-item" onclick="bookAnotherViewing('Meridian Group', 'first-viewing')">
+                                            <i class="fa-solid fa-calendar-plus"></i>
+                                            <span>Book Another Viewing</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="issueProposal('Meridian Group')">
+                                            <i class="fa-solid fa-file-invoice"></i>
+                                            <span>Issue Proposal</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="issueUpdatedOptions('Meridian Group')">
+                                            <i class="fa-solid fa-file-circle-plus"></i>
+                                            <span>Issue Updated Options</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
@@ -536,11 +726,30 @@
                             </div>
                         </div>
 
-                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer">
+                        <div class="bg-stone rounded-lg p-4 border border-concrete/20 hover:border-slate/50 transition-colors cursor-pointer relative" data-stage="first-viewing">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">Sterling Advisors</h4>
                                     <p class="text-xs text-concrete">Via: Savills</p>
+                                </div>
+                                <div class="action-menu">
+                                    <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                        <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                    </button>
+                                    <div class="action-menu-dropdown" data-stage="viewing">
+                                        <div class="action-menu-item" onclick="bookAnotherViewing('Sterling Advisors', 'first-viewing')">
+                                            <i class="fa-solid fa-calendar-plus"></i>
+                                            <span>Book Another Viewing</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="issueProposal('Sterling Advisors')">
+                                            <i class="fa-solid fa-file-invoice"></i>
+                                            <span>Issue Proposal</span>
+                                        </div>
+                                        <div class="action-menu-item" onclick="issueUpdatedOptions('Sterling Advisors')">
+                                            <i class="fa-solid fa-file-circle-plus"></i>
+                                            <span>Issue Updated Options</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
@@ -568,10 +777,10 @@
                     </div>
                     
                     <div class="p-3 border-t border-concrete/30">
-                        <a href="Viewings.html" class="block w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors text-center">
+                        <button onclick="scheduleViewing('New Viewing')" class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
                             <i class="fa-solid fa-calendar mr-2"></i>
                             Schedule Viewing
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -595,19 +804,40 @@
                     </div>
                     
                     <div class="flex-1 overflow-y-auto p-3 space-y-3">
-                        <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200 hover:border-indigo-400 transition-colors cursor-pointer">
+                        <div class="bg-indigo-50 rounded-lg p-4 border border-indigo-200 hover:border-indigo-400 transition-colors cursor-pointer relative" data-stage="second-viewing">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">Catalyst Ventures</h4>
                                     <p class="text-xs text-concrete">Via: Knight Frank</p>
                                 </div>
-                                <div class="flex flex-col items-end space-y-1">
-                                    <span class="inline-flex items-center px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
-                                        Proposal Issued
-                                    </span>
-                                    <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
-                                        Decision Soon
-                                    </span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex flex-col items-end space-y-1">
+                                        <span class="inline-flex items-center px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                                            Proposal Issued
+                                        </span>
+                                        <span class="inline-flex items-center px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
+                                            Decision Soon
+                                        </span>
+                                    </div>
+                                    <div class="action-menu">
+                                        <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                            <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                        </button>
+                                        <div class="action-menu-dropdown" data-stage="viewing">
+                                            <div class="action-menu-item" onclick="bookAnotherViewing('Catalyst Ventures', 'second-viewing')">
+                                                <i class="fa-solid fa-calendar-plus"></i>
+                                                <span>Book Another Viewing</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="issueProposal('Catalyst Ventures')">
+                                                <i class="fa-solid fa-file-invoice"></i>
+                                                <span>Issue Proposal</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="issueUpdatedOptions('Catalyst Ventures')">
+                                                <i class="fa-solid fa-file-circle-plus"></i>
+                                                <span>Issue Updated Options</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
@@ -669,7 +899,7 @@
                     </div>
                     
                     <div class="p-3 border-t border-concrete/30">
-                        <button class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
+                        <button onclick="bookAnotherViewing('New 2nd Viewing', 'second-viewing')" class="w-full py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors">
                             <i class="fa-solid fa-calendar mr-2"></i>
                             Schedule 2nd Tour
                         </button>
@@ -696,19 +926,40 @@
                     </div>
                     
                     <div class="flex-1 overflow-y-auto p-3 space-y-3">
-                        <div class="bg-teal-50 rounded-lg p-4 border border-teal-200 hover:border-teal-400 transition-colors cursor-pointer">
+                        <div class="bg-teal-50 rounded-lg p-4 border border-teal-200 hover:border-teal-400 transition-colors cursor-pointer relative" data-stage="final-viewing">
                             <div class="flex items-start justify-between mb-3">
                                 <div>
                                     <h4 class="text-sm font-semibold text-slate mb-1">Vertex Solutions</h4>
                                     <p class="text-xs text-concrete">Via: CBRE • Compton</p>
                                 </div>
-                                <div class="flex flex-col items-end space-y-1">
-                                    <span class="inline-flex items-center px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
-                                        Proposal Issued
-                                    </span>
-                                    <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
-                                        Strong Interest
-                                    </span>
+                                <div class="flex items-center space-x-2">
+                                    <div class="flex flex-col items-end space-y-1">
+                                        <span class="inline-flex items-center px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                                            Proposal Issued
+                                        </span>
+                                        <span class="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                            Strong Interest
+                                        </span>
+                                    </div>
+                                    <div class="action-menu">
+                                        <button class="p-1 text-concrete hover:text-slate transition-colors" onclick="event.stopPropagation(); toggleActionMenu(this)">
+                                            <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                        </button>
+                                        <div class="action-menu-dropdown" data-stage="viewing">
+                                            <div class="action-menu-item" onclick="bookAnotherViewing('Vertex Solutions', 'final-viewing')">
+                                                <i class="fa-solid fa-calendar-plus"></i>
+                                                <span>Book Another Viewing</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="issueProposal('Vertex Solutions')">
+                                                <i class="fa-solid fa-file-invoice"></i>
+                                                <span>Issue Proposal</span>
+                                            </div>
+                                            <div class="action-menu-item" onclick="issueUpdatedOptions('Vertex Solutions')">
+                                                <i class="fa-solid fa-file-circle-plus"></i>
+                                                <span>Issue Updated Options</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="space-y-2 text-xs text-concrete mb-3">
@@ -1413,6 +1664,75 @@
     </div>
 </div>
 
+<!-- Date Picker Modal for Scheduling Viewings -->
+<div id="schedule-viewing-modal" class="date-picker-modal">
+    <div class="date-picker-backdrop" onclick="closeScheduleViewingModal()"></div>
+    <div class="date-picker-content">
+        <div class="px-6 py-4 border-b border-concrete/30">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate">Schedule Viewing</h2>
+                    <p class="text-xs text-concrete" id="schedule-viewing-company"></p>
+                </div>
+                <button class="text-concrete hover:text-slate transition-colors" onclick="closeScheduleViewingModal()">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Date</label>
+                <input type="date" id="viewing-date" class="w-full" min="">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Time</label>
+                <input type="time" id="viewing-time" class="w-full">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Property</label>
+                <select id="viewing-property" class="w-full px-4 py-2 border border-concrete/30 rounded-lg text-sm">
+                    <option value="">Select property...</option>
+                    <option value="42-moorgate">42 Moorgate</option>
+                    <option value="15-bishopsgate">15 Bishopsgate</option>
+                    <option value="20-fenchurch">20 Fenchurch</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Floor/Unit</label>
+                <input type="text" id="viewing-floor" class="w-full px-4 py-2 border border-concrete/30 rounded-lg text-sm" placeholder="e.g., Floor 6">
+            </div>
+            <div class="pt-4 border-t border-concrete/30">
+                <h3 class="text-sm font-semibold text-slate mb-3">Send Calendar Invites</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-stone rounded-lg">
+                        <div>
+                            <p class="text-sm font-semibold text-slate">Disposal Agent</p>
+                            <p class="text-xs text-concrete">Separate invite to avoid sharing contacts</p>
+                        </div>
+                        <input type="email" id="disposal-agent-email" class="flex-1 ml-4 px-3 py-1.5 text-sm border border-concrete/30 rounded" placeholder="agent@example.com">
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-stone rounded-lg">
+                        <div>
+                            <p class="text-sm font-semibold text-slate">Broker</p>
+                            <p class="text-xs text-concrete">Separate invite to avoid sharing contacts</p>
+                        </div>
+                        <input type="email" id="broker-email" class="flex-1 ml-4 px-3 py-1.5 text-sm border border-concrete/30 rounded" placeholder="broker@example.com">
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 pt-4">
+                <button onclick="closeScheduleViewingModal()" class="flex-1 px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    Cancel
+                </button>
+                <button onclick="confirmScheduleViewing()" class="flex-1 px-4 py-2 text-sm bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold">
+                    <i class="fa-solid fa-calendar-plus mr-2"></i>
+                    Schedule & Send Invites
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 window.addEventListener('load', function() {
     // Initialize opportunities data if it doesn't exist
@@ -1770,6 +2090,170 @@ window.addEventListener('load', function() {
             e.stopPropagation();
             console.log('Action:', this.textContent.trim());
         });
+    });
+
+    // Close action menus when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.action-menu')) {
+            document.querySelectorAll('.action-menu-dropdown').forEach(menu => {
+                menu.classList.remove('open');
+            });
+        }
+    });
+
+    // Toggle action menu
+    window.toggleActionMenu = function(button) {
+        const menu = button.nextElementSibling;
+        const isOpen = menu.classList.contains('open');
+        
+        // Close all other menus
+        document.querySelectorAll('.action-menu-dropdown').forEach(m => {
+            m.classList.remove('open');
+        });
+        
+        // Toggle this menu
+        if (!isOpen) {
+            menu.classList.add('open');
+        }
+    };
+
+    // Qualified stage actions
+    window.scheduleViewing = function(companyName) {
+        document.getElementById('schedule-viewing-company').textContent = companyName;
+        const modal = document.getElementById('schedule-viewing-modal');
+        const dateInput = document.getElementById('viewing-date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.shareProperties = function(companyName) {
+        console.log('Share properties for:', companyName);
+        showToast('Share properties functionality coming soon');
+    };
+
+    window.openCommunicationLog = function(companyName) {
+        console.log('Open communication log for:', companyName);
+        showToast('Communication log functionality coming soon');
+    };
+
+    window.viewKeyMetrics = function(companyName) {
+        console.log('View key metrics for:', companyName);
+        showToast('Key metrics functionality coming soon');
+    };
+
+    // Viewing stage actions
+    window.bookAnotherViewing = function(companyName, stage) {
+        document.getElementById('schedule-viewing-company').textContent = companyName + ' - Additional Viewing';
+        const modal = document.getElementById('schedule-viewing-modal');
+        const dateInput = document.getElementById('viewing-date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.issueProposal = function(companyName) {
+        console.log('Issue proposal for:', companyName);
+        // Redirect to proposal builder or open in modal
+        window.location.href = 'Proposal Builder.html';
+    };
+
+    window.issueUpdatedOptions = function(companyName) {
+        console.log('Issue updated options for:', companyName);
+        showToast('Issue updated options functionality coming soon');
+    };
+
+    // Date picker modal functions
+    window.closeScheduleViewingModal = function() {
+        const modal = document.getElementById('schedule-viewing-modal');
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+        // Reset form
+        document.getElementById('viewing-date').value = '';
+        document.getElementById('viewing-time').value = '';
+        document.getElementById('viewing-property').value = '';
+        document.getElementById('viewing-floor').value = '';
+        document.getElementById('disposal-agent-email').value = '';
+        document.getElementById('broker-email').value = '';
+    };
+
+    window.confirmScheduleViewing = function() {
+        const date = document.getElementById('viewing-date').value;
+        const time = document.getElementById('viewing-time').value;
+        const property = document.getElementById('viewing-property').value;
+        const floor = document.getElementById('viewing-floor').value;
+        const disposalEmail = document.getElementById('disposal-agent-email').value;
+        const brokerEmail = document.getElementById('broker-email').value;
+
+        if (!date || !time || !property) {
+            showToast('Please fill in date, time, and property', 'error');
+            return;
+        }
+
+        // Create calendar invites (separate for disposal agent and broker)
+        const viewingDateTime = new Date(`${date}T${time}`);
+        const formattedDate = viewingDateTime.toLocaleDateString('en-GB', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        const formattedTime = viewingDateTime.toLocaleTimeString('en-GB', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+
+        // Send separate calendar invites
+        if (disposalEmail) {
+            sendCalendarInvite(disposalEmail, 'disposal-agent', formattedDate, formattedTime, property, floor);
+        }
+        if (brokerEmail) {
+            sendCalendarInvite(brokerEmail, 'broker', formattedDate, formattedTime, property, floor);
+        }
+
+        showToast('Viewing scheduled and calendar invites sent');
+        closeScheduleViewingModal();
+    };
+
+    function sendCalendarInvite(email, recipientType, date, time, property, floor) {
+        // In a real implementation, this would send actual calendar invites
+        // For now, we'll just log it
+        console.log(`Sending calendar invite to ${recipientType} (${email}):`, {
+            date,
+            time,
+            property,
+            floor
+        });
+        
+        // In production, you would:
+        // 1. Generate .ics file or use calendar API (Google Calendar, Outlook, etc.)
+        // 2. Send separate emails with calendar attachments
+        // 3. Ensure disposal agent and broker don't see each other's contact info
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-600' : 'bg-slate';
+        toast.className = `fixed bottom-8 right-8 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 z-50 transition-all`;
+        toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Close modal on Escape key
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('schedule-viewing-modal');
+            if (modal && modal.classList.contains('open')) {
+                closeScheduleViewingModal();
+            }
+        }
     });
 });
 </script>
