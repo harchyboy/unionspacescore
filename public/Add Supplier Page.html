@@ -311,21 +311,21 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Company Registration Number
                                 </label>
-                                <input type="text" placeholder="e.g., 12345678" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="company-reg" placeholder="e.g., 12345678" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     VAT Number
                                 </label>
-                                <input type="text" placeholder="e.g., GB123456789" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="vat-number" placeholder="e.g., GB123456789" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                             
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Website URL
                                 </label>
-                                <input type="url" placeholder="https://www.example.com" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="url" id="website-url" placeholder="https://www.example.com" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                         </div>
                     </div>
@@ -338,18 +338,18 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Coverage Type <span class="text-destructive">*</span>
                                 </label>
-                                <div class="flex flex-wrap gap-2">
-                                    <button class="tag-pill selected">
+                                <div class="flex flex-wrap gap-2" id="coverage-type-buttons">
+                                    <button type="button" class="tag-pill coverage-type-btn" data-type="Building">
                                         <span>Building</span>
                                         <span class="remove"><i class="fa-solid fa-times"></i></span>
                                     </button>
-                                    <button class="tag-pill">
+                                    <button type="button" class="tag-pill coverage-type-btn" data-type="Estate">
                                         <span>Estate</span>
                                     </button>
-                                    <button class="tag-pill">
+                                    <button type="button" class="tag-pill coverage-type-btn" data-type="Region">
                                         <span>Region</span>
                                     </button>
-                                    <button class="tag-pill">
+                                    <button type="button" class="tag-pill coverage-type-btn" data-type="National">
                                         <span>National</span>
                                     </button>
                                 </div>
@@ -360,8 +360,8 @@
                                     Coverage Areas <span class="text-destructive">*</span>
                                 </label>
                                 <div class="relative">
-                                    <select multiple class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[100px]">
-                                        <option value="city-core" selected>City Core</option>
+                                    <select id="coverage-areas" multiple class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[100px]">
+                                        <option value="city-core">City Core</option>
                                         <option value="west-business">West Business Park</option>
                                         <option value="north-industrial">North Industrial</option>
                                         <option value="south-docks">South Docks</option>
@@ -377,8 +377,8 @@
                                     Supported Asset Types
                                 </label>
                                 <div class="relative">
-                                    <select multiple class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[100px]">
-                                        <option value="offices" selected>Offices</option>
+                                    <select id="asset-types" multiple class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[100px]">
+                                        <option value="offices">Offices</option>
                                         <option value="industrial">Industrial</option>
                                         <option value="retail">Retail</option>
                                         <option value="mixed-use">Mixed use</option>
@@ -427,7 +427,7 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Operating Hours
                                 </label>
-                                <input type="text" placeholder="e.g., Mon-Fri 9am-6pm, 24/7 emergency" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="operating-hours" placeholder="e.g., Mon-Fri 9am-6pm, 24/7 emergency" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                             
                             <div>
@@ -533,7 +533,7 @@
                                 <label class="block text-sm font-medium text-primary mb-2">
                                     Contract Reference or ID
                                 </label>
-                                <input type="text" placeholder="e.g., CON-2024-001" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <input type="text" id="contract-ref" placeholder="e.g., CON-2024-001" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                             </div>
                             
                             <div>
@@ -541,7 +541,7 @@
                                     Contract Start Date
                                 </label>
                                 <div class="relative">
-                                    <input type="date" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <input type="date" id="contract-start" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                     <i class="fa-solid fa-calendar absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                                 </div>
                             </div>
@@ -551,7 +551,7 @@
                                     Contract End Date
                                 </label>
                                 <div class="relative">
-                                    <input type="date" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <input type="date" id="contract-end" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                     <i class="fa-solid fa-calendar absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                                 </div>
                             </div>
@@ -561,7 +561,7 @@
                                     Renewal Date <span class="text-destructive">*</span>
                                 </label>
                                 <div class="relative">
-                                    <input type="date" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <input type="date" id="renewal-date" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                     <i class="fa-solid fa-calendar absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                                 </div>
                                 <p class="text-xs text-secondary mt-1">Required when contract status is Active.</p>
@@ -572,7 +572,7 @@
                                     Renewal Type
                                 </label>
                                 <div class="relative">
-                                    <select class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <select id="renewal-type" class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                         <option value="">Select type</option>
                                         <option value="fixed">Fixed term</option>
                                         <option value="rolling">Rolling</option>
@@ -588,10 +588,10 @@
                                 </label>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <input type="number" placeholder="90" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <input type="number" id="notice-period" placeholder="90" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                     </div>
                                     <div class="relative">
-                                        <select class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <select id="notice-period-unit" class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                             <option value="days">Days</option>
                                             <option value="weeks">Weeks</option>
                                             <option value="months">Months</option>
@@ -993,12 +993,13 @@ window.addEventListener('load', function() {
 
 // Function to load supplier data into the form
 function loadSupplierData(supplierId) {
-    // Sample supplier data - in a real app, this would come from an API
+    // Comprehensive supplier data store - maps supplier IDs/names to their full data
+    // In a real app, this would come from an API
     const supplierData = {
         'supplier-123': {
-            name: 'Thirdway Technologies',
-            tradingName: 'Thirdway AV',
-            category: 'cleaning',
+            name: 'Thirdway AV',
+            tradingName: 'Thirdway Technologies',
+            category: 'cleaning', // Note: category values may need mapping
             description: 'Premium AV and IT solutions provider covering Central London',
             companyReg: '12345678',
             vatNumber: 'GB123456789',
@@ -1035,71 +1036,212 @@ function loadSupplierData(supplierId) {
             emergencyResponseTime: '1',
             emergencyResponseTimeUnit: 'hours',
             onboardingStatus: 'complete'
+        },
+        // Add more suppliers based on the list page data
+        'Thirdway AV': {
+            name: 'Thirdway AV',
+            tradingName: 'Thirdway Technologies',
+            category: 'cleaning',
+            description: 'Audio-visual & tech solutions',
+            companyReg: '12345678',
+            vatNumber: 'GB123456789',
+            website: 'https://www.thirdway.co.uk',
+            preferred: true,
+            rank: '1',
+            landlord: 'UNION Properties',
+            properties: ['99-bishopsgate', 'one-canada-square'],
+            coverageType: 'Building',
+            coverageAreas: ['city-core'],
+            assetTypes: ['offices'],
+            operatingHours: 'Mon-Fri 9am-6pm, 24/7 emergency',
+            contactName: 'Ben Taylor',
+            contactRole: 'Account Manager',
+            contactEmail: 'ben@thirdway.co.uk',
+            contactPhone: '020 7946 0958',
+            contractStatus: 'active',
+            contractRef: 'CON-2024-001',
+            contractStart: '2024-01-01',
+            contractEnd: '2024-12-31',
+            renewalDate: '2025-12-15',
+            renewalType: 'fixed',
+            noticePeriod: '90',
+            noticePeriodUnit: 'days',
+            onboardingStatus: 'in-progress'
         }
     };
     
-    const data = supplierData[supplierId];
-    if (!data) return;
+    // Try to find supplier by ID first, then by name
+    let data = supplierData[supplierId];
+    if (!data && supplierId) {
+        // Try to find by matching name in the data keys
+        const matchingKey = Object.keys(supplierData).find(key => 
+            supplierData[key].name && supplierData[key].name.toLowerCase() === supplierId.toLowerCase()
+        );
+        if (matchingKey) {
+            data = supplierData[matchingKey];
+        }
+    }
+    
+    if (!data) {
+        console.warn('Supplier data not found for:', supplierId);
+        return;
+    }
     
     // Populate form fields
     // Basic details
     const supplierNameInput = document.getElementById('supplier-name');
-    if (supplierNameInput) supplierNameInput.value = data.name;
+    if (supplierNameInput) supplierNameInput.value = data.name || '';
     
     const tradingNameInput = document.getElementById('trading-name');
-    if (tradingNameInput) tradingNameInput.value = data.tradingName;
+    if (tradingNameInput) tradingNameInput.value = data.tradingName || '';
     
     const categorySelect = document.getElementById('supplier-category');
-    if (categorySelect) categorySelect.value = data.category;
+    if (categorySelect && data.category) categorySelect.value = data.category;
     
     const descriptionTextarea = document.getElementById('supplier-description');
-    if (descriptionTextarea) descriptionTextarea.value = data.description;
+    if (descriptionTextarea) descriptionTextarea.value = data.description || '';
+    
+    // Company details
+    const companyRegInput = document.getElementById('company-reg');
+    if (companyRegInput) companyRegInput.value = data.companyReg || '';
+    
+    const vatNumberInput = document.getElementById('vat-number');
+    if (vatNumberInput) vatNumberInput.value = data.vatNumber || '';
+    
+    const websiteInput = document.getElementById('website-url');
+    if (websiteInput) websiteInput.value = data.website || '';
     
     // Preferred and Rank
-    if (document.getElementById('supplier-preferred')) {
-        document.getElementById('supplier-preferred').checked = data.preferred;
-    }
-    if (document.getElementById('supplier-rank')) {
-        document.getElementById('supplier-rank').value = data.rank;
-    }
+    const preferredCheckbox = document.getElementById('supplier-preferred');
+    if (preferredCheckbox) preferredCheckbox.checked = data.preferred || false;
+    
+    const rankSelect = document.getElementById('supplier-rank');
+    if (rankSelect && data.rank) rankSelect.value = data.rank;
     
     // Landlord and Properties
-    if (document.getElementById('supplier-landlord')) {
-        document.getElementById('supplier-landlord').value = data.landlord;
-    }
-    if (document.getElementById('supplier-properties')) {
-        const propertiesSelect = document.getElementById('supplier-properties');
+    const landlordSelect = document.getElementById('supplier-landlord');
+    if (landlordSelect && data.landlord) landlordSelect.value = data.landlord;
+    
+    const propertiesSelect = document.getElementById('supplier-properties');
+    if (propertiesSelect && data.properties && Array.isArray(data.properties)) {
+        // Clear previous selections
+        Array.from(propertiesSelect.options).forEach(opt => opt.selected = false);
+        // Select matching properties
         data.properties.forEach(prop => {
             const option = Array.from(propertiesSelect.options).find(opt => opt.value === prop);
             if (option) option.selected = true;
         });
     }
     
+    // Coverage Type buttons
+    if (data.coverageType) {
+        const coverageButtons = document.querySelectorAll('.coverage-type-btn');
+        coverageButtons.forEach(btn => {
+            const btnType = btn.dataset.type;
+            if (btnType === data.coverageType) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+    
+    // Coverage Areas multi-select
+    const coverageAreasSelect = document.getElementById('coverage-areas');
+    if (coverageAreasSelect && data.coverageAreas && Array.isArray(data.coverageAreas)) {
+        Array.from(coverageAreasSelect.options).forEach(opt => opt.selected = false);
+        data.coverageAreas.forEach(area => {
+            const option = Array.from(coverageAreasSelect.options).find(opt => opt.value === area);
+            if (option) option.selected = true;
+        });
+    }
+    
+    // Asset Types multi-select
+    const assetTypesSelect = document.getElementById('asset-types');
+    if (assetTypesSelect && data.assetTypes && Array.isArray(data.assetTypes)) {
+        Array.from(assetTypesSelect.options).forEach(opt => opt.selected = false);
+        data.assetTypes.forEach(type => {
+            const option = Array.from(assetTypesSelect.options).find(opt => opt.value === type);
+            if (option) option.selected = true;
+        });
+    }
+    
+    // Operating Hours
+    const operatingHoursInput = document.getElementById('operating-hours');
+    if (operatingHoursInput) operatingHoursInput.value = data.operatingHours || '';
+    
     // Onboarding Status
-    if (document.getElementById('supplier-onboarding-status')) {
-        document.getElementById('supplier-onboarding-status').value = data.onboardingStatus;
+    const onboardingStatusSelect = document.getElementById('supplier-onboarding-status');
+    if (onboardingStatusSelect && data.onboardingStatus) {
+        onboardingStatusSelect.value = data.onboardingStatus;
     }
     
     // Contract details
     const contractStatusSelect = document.getElementById('contract-status');
-    if (contractStatusSelect) contractStatusSelect.value = data.contractStatus;
+    if (contractStatusSelect && data.contractStatus) {
+        contractStatusSelect.value = data.contractStatus;
+    }
+    
+    const contractRefInput = document.getElementById('contract-ref');
+    if (contractRefInput) contractRefInput.value = data.contractRef || '';
+    
+    const contractStartInput = document.getElementById('contract-start');
+    if (contractStartInput && data.contractStart) contractStartInput.value = data.contractStart;
+    
+    const contractEndInput = document.getElementById('contract-end');
+    if (contractEndInput && data.contractEnd) contractEndInput.value = data.contractEnd;
+    
+    const renewalDateInput = document.getElementById('renewal-date');
+    if (renewalDateInput && data.renewalDate) {
+        // Convert date format if needed (e.g., "Dec 15, 2025" to "2025-12-15")
+        let renewalDate = data.renewalDate;
+        if (renewalDate && renewalDate.includes(',')) {
+            // Parse date like "Dec 15, 2025"
+            const date = new Date(renewalDate);
+            if (!isNaN(date.getTime())) {
+                renewalDate = date.toISOString().split('T')[0];
+            }
+        }
+        renewalDateInput.value = renewalDate;
+    }
+    
+    const renewalTypeSelect = document.getElementById('renewal-type');
+    if (renewalTypeSelect && data.renewalType) renewalTypeSelect.value = data.renewalType;
+    
+    const noticePeriodInput = document.getElementById('notice-period');
+    if (noticePeriodInput && data.noticePeriod) noticePeriodInput.value = data.noticePeriod;
+    
+    const noticePeriodUnitSelect = document.getElementById('notice-period-unit');
+    if (noticePeriodUnitSelect && data.noticePeriodUnit) noticePeriodUnitSelect.value = data.noticePeriodUnit;
     
     // Primary contact
     const contactNameInput = document.getElementById('contact-name');
-    if (contactNameInput) contactNameInput.value = data.contactName;
+    if (contactNameInput) contactNameInput.value = data.contactName || '';
     
     const contactRoleInput = document.getElementById('contact-role');
-    if (contactRoleInput) contactRoleInput.value = data.contactRole;
+    if (contactRoleInput) contactRoleInput.value = data.contactRole || '';
     
     const contactEmailInput = document.getElementById('contact-email');
-    if (contactEmailInput) contactEmailInput.value = data.contactEmail;
+    if (contactEmailInput) contactEmailInput.value = data.contactEmail || '';
     
     const contactPhoneInput = document.getElementById('contact-phone');
-    if (contactPhoneInput) contactPhoneInput.value = data.contactPhone;
+    if (contactPhoneInput) contactPhoneInput.value = data.contactPhone || '';
 }
 
-// Handle form submission
+// Handle coverage type button clicks
 document.addEventListener('DOMContentLoaded', function() {
+    // Coverage type button handlers
+    const coverageTypeButtons = document.querySelectorAll('.coverage-type-btn');
+    coverageTypeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove selected class from all buttons
+            coverageTypeButtons.forEach(btn => btn.classList.remove('selected'));
+            // Add selected class to clicked button
+            this.classList.add('selected');
+        });
+    });
+    
+    // Handle form submission
     const saveBtn = document.getElementById('save-supplier-btn');
     if (saveBtn) {
         saveBtn.addEventListener('click', function(e) {

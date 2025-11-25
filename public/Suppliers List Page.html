@@ -1648,7 +1648,7 @@ function showSupplierDetails(row) {
                         <i class="fa-solid fa-envelope"></i>
                         <span>Contact</span>
                     </button>
-                    <a href="Add Supplier Page.html?mode=edit&id=\${supplier.id || 'supplier-123'}" class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                    <a href="Add Supplier Page.html?mode=edit&id=${encodeURIComponent(displayName)}" class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-pencil"></i>
                         <span>Edit Supplier</span>
                     </a>
