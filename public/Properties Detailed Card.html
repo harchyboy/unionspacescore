@@ -171,6 +171,10 @@
               <i class="fa-solid fa-share-nodes"></i>
               <span>Publish to Brokers</span>
             </button>
+            <button id="btn-add-to-lead" class="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2">
+              <i class="fa-solid fa-user-plus"></i>
+              <span>Add to Existing Lead</span>
+            </button>
             <a href="Add Unit To Property Page.html" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
               <i class="fa-solid fa-plus"></i>
               <span>Add Unit</span>
@@ -609,7 +613,31 @@
     </div>
   </div>
 
+  <!-- Add to Lead Modal -->
+  <div id="modal-add-to-lead" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-lg w-full max-w-2xl p-6 max-h-[80vh] flex flex-col">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-primary">Add Property to Lead</h3>
+        <button id="close-add-to-lead" aria-label="Close" class="text-secondary hover:text-primary">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto mb-4">
+        <p class="text-sm text-secondary mb-4">Select a lead to add this property to:</p>
+        <div id="leads-list" class="space-y-2">
+          <!-- Leads will be populated here -->
+        </div>
+      </div>
+      <div class="flex items-center justify-end space-x-3 pt-4 border-t border-[#E6E6E6]">
+        <button id="cancel-add-to-lead" class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+  <script src="leads-data.js"></script>
   <script>
     // Simple tab router
     const tabs = Array.from(document.querySelectorAll('#tabbar [role="tab"]'));
@@ -665,6 +693,157 @@
 
     // Mock buttons
     document.getElementById('btn-publish')?.addEventListener('click', () => alert('Preflight checks passed. Ready to publish.'));
+
+    // Add to Lead functionality
+    function getCurrentPropertyId() {
+      // Try to get property ID from URL params
+      const params = new URLSearchParams(window.location.search);
+      const propId = params.get('id');
+      if (propId) return propId;
+
+      // Try to extract from property ID element
+      const propIdEl = document.getElementById('property-id');
+      if (propIdEl) {
+        const idText = propIdEl.textContent.trim();
+        // Extract property key from ID (e.g., "PROP-99BISH-0001" -> "99-bishopsgate")
+        // This is a simplified mapping - you may need to adjust based on your actual ID format
+        const idMap = {
+          'PROP-99BISH-0001': '99-bishopsgate',
+          'PROP-ONECAN-0001': 'one-canada',
+          'PROP-LEADEN-0001': 'leadenhall',
+          'PROP-PRINCI-0001': 'principal-place',
+          'PROP-SHARD-0001': 'shard',
+          'PROP-TIDES-0001': 'tides-arverne',
+          'PROP-SHOREX-0001': 'shoreditch-exchange',
+          'PROP-KINGSC-0001': 'kings-cross-hub'
+        };
+        return idMap[idText] || '99-bishopsgate'; // Default fallback
+      }
+
+      // Default fallback
+      return '99-bishopsgate';
+    }
+
+    function getCurrentProperty() {
+      const propertyId = getCurrentPropertyId();
+      const propertyLibrary = window.LEAD_UTILS?.propertyLibrary || {};
+      return propertyLibrary[propertyId] || null;
+    }
+
+    function populateLeadsList() {
+      const leadsList = document.getElementById('leads-list');
+      if (!leadsList) return;
+
+      const leads = window.LEADS_DATA || [];
+      const activeLeads = leads.filter(lead => !lead.archived && !lead.convertedToOpportunity);
+
+      if (!activeLeads.length) {
+        leadsList.innerHTML = '<p class="text-sm text-secondary text-center py-4">No active leads available.</p>';
+        return;
+      }
+
+      leadsList.innerHTML = activeLeads.map(lead => {
+        const gradeInfo = window.LEAD_UTILS?.gradeScale.find(scale => scale.grade === lead.grade) || 
+                         { grade: 'U', color: 'bg-slate-100 text-slate-700' };
+        return `
+          <button 
+            type="button"
+            data-lead-id="${lead.id}"
+            class="w-full text-left p-4 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all-smooth flex items-center justify-between"
+          >
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-semibold text-primary">${lead.contact.name}</span>
+                <span class="text-xs px-2 py-0.5 rounded-full ${gradeInfo.color} font-semibold">${lead.grade}</span>
+              </div>
+              <div class="text-sm text-secondary">${lead.company} · ${lead.reference}</div>
+              <div class="text-xs text-secondary mt-1">${lead.source} · ${lead.status}</div>
+            </div>
+            <i class="fa-solid fa-chevron-right text-secondary ml-4"></i>
+          </button>
+        `;
+      }).join('');
+
+      // Add click handlers
+      leadsList.querySelectorAll('[data-lead-id]').forEach(button => {
+        button.addEventListener('click', () => {
+          const leadId = button.dataset.leadId;
+          addPropertyToLead(leadId);
+        });
+      });
+    }
+
+    function addPropertyToLead(leadId) {
+      const property = getCurrentProperty();
+      if (!property) {
+        alert('Could not identify current property. Please try again.');
+        return;
+      }
+
+      const leads = window.LEADS_DATA || [];
+      const lead = leads.find(l => l.id === leadId);
+      if (!lead) {
+        alert('Lead not found.');
+        return;
+      }
+
+      // Initialize propertyMatches if it doesn't exist
+      if (!lead.propertyMatches) {
+        lead.propertyMatches = [];
+      }
+
+      // Check if property is already in the list
+      const existingIndex = lead.propertyMatches.findIndex(p => p.id === property.id);
+      if (existingIndex >= 0) {
+        alert(`This property is already in ${lead.contact.name}'s recommended units.`);
+        closeAddToLeadModal();
+        return;
+      }
+
+      // Add property with default fit score
+      const propertyWithFit = {
+        ...property,
+        fit: 80, // Default fit score
+        actions: {
+          view: 'Properties Detailed Card.html',
+          proposal: 'Proposal Builder.html'
+        }
+      };
+
+      lead.propertyMatches.push(propertyWithFit);
+
+      // Show success message
+      alert(`Property "${property.name}" has been added to ${lead.contact.name}'s lead (${lead.reference}).`);
+      closeAddToLeadModal();
+
+      // Optionally redirect to lead qualification page
+      if (confirm('Would you like to view the lead qualification page?')) {
+        window.location.href = `Lead Qualification.html?id=${leadId}`;
+      }
+    }
+
+    function openAddToLeadModal() {
+      const modal = document.getElementById('modal-add-to-lead');
+      if (!modal) return;
+      populateLeadsList();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeAddToLeadModal() {
+      const modal = document.getElementById('modal-add-to-lead');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // Set up event listeners
+    document.getElementById('btn-add-to-lead')?.addEventListener('click', openAddToLeadModal);
+    document.getElementById('close-add-to-lead')?.addEventListener('click', closeAddToLeadModal);
+    document.getElementById('cancel-add-to-lead')?.addEventListener('click', closeAddToLeadModal);
+    document.getElementById('modal-add-to-lead')?.addEventListener('click', (e) => {
+      if (e.target.id === 'modal-add-to-lead') closeAddToLeadModal();
+    });
     
     // Detect if page is loaded in iframe and add embedded class
     (function() {
