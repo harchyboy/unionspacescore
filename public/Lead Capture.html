@@ -212,6 +212,17 @@
                       placeholder="+44 20 7000 0000"
                     />
                   </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Contact Type</label>
+                    <select
+                      name="contactType"
+                      required
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                    >
+                      <option value="tenant">Direct tenant</option>
+                      <option value="broker">Broker / advisor</option>
+                    </select>
+                  </div>
                   <div class="md:col-span-2">
                     <label class="text-xs font-semibold text-secondary uppercase">Authority</label>
                     <select
@@ -370,6 +381,7 @@
         const contactLoadButton = document.getElementById('contact-load');
         const contactLookupStatus = document.getElementById('contact-lookup-status');
         const contactSuggestions = document.getElementById('contact-suggestions');
+        const contactTypeSelect = form.elements['contactType'];
 
         const leadScoreText = document.getElementById('lead-score-text');
         const pillBudget = document.getElementById('pill-budget');
@@ -442,7 +454,7 @@
           email: emailInput.placeholder,
           phone: phoneInput.placeholder || ''
         };
-        const requiredContactInputs = [nameInput, companyInput, emailInput];
+        const requiredContactInputs = [nameInput, companyInput, emailInput, contactTypeSelect];
 
         confidentialToggle.addEventListener('change', () => {
           if (confidentialToggle.checked) {
@@ -633,15 +645,23 @@
             const contact = lead.contact || {};
             const email = (contact.email || '').toLowerCase();
             if (!email || byEmail.has(email)) return;
+            const contactType = deriveContactType(lead);
             byEmail.set(email, {
               label: `${contact.name || 'Unknown'} — ${lead.company || 'Unknown Company'} (${contact.email || 'no email'})`,
               name: contact.name || '',
               company: lead.company || '',
               email: contact.email || '',
-              phone: contact.phone || ''
+              phone: contact.phone || '',
+              contactType
             });
           });
           return Array.from(byEmail.values());
+        }
+
+        function deriveContactType(lead = {}) {
+          if (lead.contactType) return lead.contactType === 'broker' ? 'broker' : 'tenant';
+          const source = (lead.source || '').toLowerCase();
+          return source.includes('broker') ? 'broker' : 'tenant';
         }
 
         function hydrateContactSuggestions(contacts) {
@@ -676,7 +696,8 @@
 
         function updateContactLookupState(contact) {
           if (contact) {
-            contactLookupStatus.textContent = `Match found: ${contact.name}`;
+            const typeLabel = contact.contactType === 'broker' ? 'Broker' : 'Direct tenant';
+            contactLookupStatus.textContent = `Match found: ${contact.name} (${typeLabel})`;
             contactLoadButton.disabled = false;
           } else {
             contactLookupStatus.textContent = 'No contact selected';
@@ -691,6 +712,7 @@
           companyInput.value = contact.company || '';
           emailInput.value = contact.email || '';
           phoneInput.value = contact.phone || '';
+          contactTypeSelect.value = contact.contactType || 'tenant';
           updateContactLookupState(contact);
         }
 
