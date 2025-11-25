@@ -6,7 +6,12 @@
       location: 'City Core',
       size: '28,500 sq ft',
       type: 'Prime Grade A floors',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/2a04833416-c73dfcb3955e8c8d5f62.png'
+      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/2a04833416-c73dfcb3955e8c8d5f62.png',
+      minTermMonths: 12,
+      monthlyPrice: 92000,
+      pricePerSqFt: 80,
+      floorNumber: 'Level 23',
+      brokerName: 'Knight Frank'
     },
     'one-canada': {
       id: 'one-canada',
@@ -14,7 +19,12 @@
       location: 'Canary Wharf',
       size: '24,000 sq ft',
       type: 'Iconic tower floors',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/71ec98b403-4d78e412d1a56ddf8015.png'
+      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/71ec98b403-4d78e412d1a56ddf8015.png',
+      minTermMonths: 18,
+      monthlyPrice: 87000,
+      pricePerSqFt: 76,
+      floorNumber: 'Level 32',
+      brokerName: 'CBRE'
     },
     leadenhall: {
       id: 'leadenhall',
@@ -22,7 +32,12 @@
       location: 'City Core',
       size: '22,000 sq ft',
       type: 'Premium sky floors',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/8a2df2cabf-6e968c9424109620c5f5.png'
+      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/8a2df2cabf-6e968c9424109620c5f5.png',
+      minTermMonths: 24,
+      monthlyPrice: 81000,
+      pricePerSqFt: 73,
+      floorNumber: 'Level 28',
+      brokerName: 'JLL'
     },
     'principal-place': {
       id: 'principal-place',
@@ -30,7 +45,12 @@
       location: 'Shoreditch',
       size: '18,000 sq ft',
       type: 'Creative campus',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/c4d01238b7-5dffcd72a27d96967a5e.png'
+      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/c4d01238b7-5dffcd72a27d96967a5e.png',
+      minTermMonths: 9,
+      monthlyPrice: 64000,
+      pricePerSqFt: 65,
+      floorNumber: 'Level 11',
+      brokerName: 'Cushman & Wakefield'
     },
     shard: {
       id: 'shard',
@@ -38,7 +58,12 @@
       location: 'Southwark',
       size: '32,000 sq ft',
       type: 'Skyline statement floors',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/67fd6c1e72-86ec3a1c33a0cad7a78d.png'
+      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/67fd6c1e72-86ec3a1c33a0cad7a78d.png',
+      minTermMonths: 36,
+      monthlyPrice: 112000,
+      pricePerSqFt: 92,
+      floorNumber: 'Level 40',
+      brokerName: 'Savills'
     },
     'tides-arverne': {
       id: 'tides-arverne',
@@ -46,7 +71,12 @@
       location: 'Shoreditch',
       size: '19,500 sq ft',
       type: 'Waterfront-inspired space',
-      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/4a1fa12ae2-0df310617941ad5e1e43.png'
+      image: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/4a1fa12ae2-0df310617941ad5e1e43.png',
+      minTermMonths: 12,
+      monthlyPrice: 58000,
+      pricePerSqFt: 62,
+      floorNumber: 'Level 08',
+      brokerName: 'BNP Paribas Real Estate'
     },
     'shoreditch-exchange': {
       id: 'shoreditch-exchange',
@@ -54,7 +84,12 @@
       location: 'Shoreditch',
       size: '17,000 sq ft',
       type: 'Flexible innovation suites',
-      image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80'
+      image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=80',
+      minTermMonths: 6,
+      monthlyPrice: 52000,
+      pricePerSqFt: 58,
+      floorNumber: 'Level 05',
+      brokerName: 'Colliers'
     },
     'kings-cross-hub': {
       id: 'kings-cross-hub',
@@ -62,7 +97,12 @@
       location: "King's Cross",
       size: '16,200 sq ft',
       type: 'Hybrid campus floor',
-      image: 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=800&q=80'
+      image: 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=800&q=80',
+      minTermMonths: 12,
+      monthlyPrice: 56000,
+      pricePerSqFt: 60,
+      floorNumber: 'Level 07',
+      brokerName: 'Knight Frank'
     }
   };
 
