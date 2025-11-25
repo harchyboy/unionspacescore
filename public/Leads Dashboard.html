@@ -104,33 +104,57 @@
         </header>
 
         <section class="px-8 py-6 space-y-6 overflow-y-auto">
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
+              <p class="text-xs uppercase tracking-wide text-secondary">Grade A Leads</p>
+              <div class="flex items-end justify-between mt-3">
+                <p class="text-3xl font-semibold text-primary" data-kpi="grade-a">0</p>
+                <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Priority-ready</span>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
+              <p class="text-xs uppercase tracking-wide text-secondary">New Leads (This Month)</p>
+              <div class="flex items-end justify-between mt-3">
+                <p class="text-3xl font-semibold text-primary" data-kpi="new-leads-month">0</p>
+                <span class="text-xs text-secondary" data-kpi="new-leads-delta">No prior data</span>
+              </div>
+            </div>
+            <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
+              <p class="text-xs uppercase tracking-wide text-secondary">Year-on-Year</p>
+              <div class="flex items-end justify-between mt-3">
+                <p class="text-3xl font-semibold text-primary" data-kpi="yoy">—</p>
+                <span class="text-xs text-secondary">vs previous year</span>
+              </div>
+            </div>
             <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
               <p class="text-xs uppercase tracking-wide text-secondary">Total Leads</p>
               <div class="flex items-end justify-between mt-3">
-                <p class="text-3xl font-semibold text-primary" data-kpi="total-leads">18</p>
-                <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+12% MoM</span>
+                <p class="text-3xl font-semibold text-primary" data-kpi="total-leads">0</p>
+                <span class="text-xs text-secondary">All active enquiries</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
+              <p class="text-xs uppercase tracking-wide text-secondary">Lead → Viewing Conversion</p>
+              <div class="flex items-end justify-between mt-3">
+                <p class="text-3xl font-semibold text-primary" data-kpi="lead-to-viewing">0%</p>
+                <span class="text-xs text-secondary">Statuses in qualification/assigned</span>
               </div>
             </div>
             <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-              <p class="text-xs uppercase tracking-wide text-secondary">Hot Leads (Grade A)</p>
+              <p class="text-xs uppercase tracking-wide text-secondary">Viewing → Deal Conversion</p>
               <div class="flex items-end justify-between mt-3">
-                <p class="text-3xl font-semibold text-primary" data-kpi="hot-leads">4</p>
-                <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Live</span>
-              </div>
-            </div>
-            <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
-              <p class="text-xs uppercase tracking-wide text-secondary">Conversion Rate</p>
-              <div class="flex items-end justify-between mt-3">
-                <p class="text-3xl font-semibold text-primary" data-kpi="conversion-rate">42%</p>
-                <span class="text-xs text-secondary">A+B ÷ total</span>
+                <p class="text-3xl font-semibold text-primary" data-kpi="viewing-to-deal">0%</p>
+                <span class="text-xs text-secondary">Qualified vs viewings</span>
               </div>
             </div>
             <div class="bg-white rounded-xl border border-[#E6E6E6] p-5 shadow-sm">
               <p class="text-xs uppercase tracking-wide text-secondary">Avg Response Time</p>
               <div class="flex items-end justify-between mt-3">
-                <p class="text-3xl font-semibold text-primary" data-kpi="response-time">2.5h</p>
-                <span class="text-xs text-secondary">vs 4h target</span>
+                <p class="text-3xl font-semibold text-primary" data-kpi="response-time">0h</p>
+                <span class="text-xs text-secondary">Lead receipt → triage</span>
               </div>
             </div>
           </div>
@@ -690,18 +714,77 @@
         }
 
         function renderKpis() {
-          // Only count non-archived leads
           const activeLeads = leads.filter((lead) => !lead.archived);
           const total = activeLeads.length;
-          const hot = activeLeads.filter((lead) => lead.grade === 'A').length;
-          const conversion = window.LEAD_UTILS?.getConversionRate() || 0;
+          const gradeA = activeLeads.filter((lead) => lead.grade === 'A').length;
+
+          const now = new Date();
+          const currentMonth = now.getMonth();
+          const currentYear = now.getFullYear();
+          const lastMonthDate = new Date(currentYear, currentMonth - 1, 1);
+          const lastMonth = lastMonthDate.getMonth();
+          const lastMonthYear = lastMonthDate.getFullYear();
+
+          const leadsThisMonth = activeLeads.filter((lead) => {
+            const date = lead.date ? new Date(lead.date) : null;
+            if (!date || isNaN(date)) return false;
+            return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+          }).length;
+
+          const leadsLastMonth = activeLeads.filter((lead) => {
+            const date = lead.date ? new Date(lead.date) : null;
+            if (!date || isNaN(date)) return false;
+            return date.getMonth() === lastMonth && date.getFullYear() === lastMonthYear;
+          }).length;
+
+          const leadsThisYear = activeLeads.filter((lead) => {
+            const date = lead.date ? new Date(lead.date) : null;
+            if (!date || isNaN(date)) return false;
+            return date.getFullYear() === currentYear;
+          }).length;
+
+          const leadsLastYear = activeLeads.filter((lead) => {
+            const date = lead.date ? new Date(lead.date) : null;
+            if (!date || isNaN(date)) return false;
+            return date.getFullYear() === currentYear - 1;
+          }).length;
+
+          const monthDelta =
+            leadsLastMonth > 0 ? ((leadsThisMonth - leadsLastMonth) / leadsLastMonth) * 100 : null;
+          const yoyDelta =
+            leadsLastYear > 0 ? ((leadsThisYear - leadsLastYear) / leadsLastYear) * 100 : null;
+
+          const viewingsStatuses = ['In Qualification', 'Assigned', 'Qualified'];
+          const viewingsCount = activeLeads.filter((lead) => viewingsStatuses.includes(lead.status)).length;
+          const dealsCount = activeLeads.filter(
+            (lead) => lead.status === 'Qualified' || lead.convertedToOpportunity
+          ).length;
+
+          const leadToViewingRate = total > 0 ? (viewingsCount / total) * 100 : 0;
+          const viewingToDealRate = viewingsCount > 0 ? (dealsCount / viewingsCount) * 100 : 0;
+
           const avgResponse =
             activeLeads.reduce((sum, lead) => sum + (lead.responseTimeHours || 0), 0) / Math.max(total, 1);
 
-          document.querySelector('[data-kpi="total-leads"]').textContent = total;
-          document.querySelector('[data-kpi="hot-leads"]').textContent = hot;
-          document.querySelector('[data-kpi="conversion-rate"]').textContent = `${conversion}%`;
-          document.querySelector('[data-kpi="response-time"]').textContent = `${avgResponse.toFixed(1)}h`;
+          const setKpi = (key, value) => {
+            const el = document.querySelector(`[data-kpi="${key}"]`);
+            if (el) el.textContent = value;
+          };
+
+          setKpi('grade-a', gradeA);
+          setKpi('new-leads-month', leadsThisMonth);
+          setKpi(
+            'new-leads-delta',
+            monthDelta === null ? 'No prior data' : `${monthDelta >= 0 ? '+' : ''}${monthDelta.toFixed(1)}% vs last month`
+          );
+          setKpi(
+            'yoy',
+            yoyDelta === null ? 'N/A' : `${yoyDelta >= 0 ? '+' : ''}${yoyDelta.toFixed(1)}%`
+          );
+          setKpi('total-leads', total);
+          setKpi('lead-to-viewing', `${leadToViewingRate.toFixed(1)}%`);
+          setKpi('viewing-to-deal', `${viewingToDealRate.toFixed(1)}%`);
+          setKpi('response-time', `${avgResponse.toFixed(1)}h`);
         }
 
         function pushToast(message) {
