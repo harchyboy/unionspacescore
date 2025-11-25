@@ -200,7 +200,7 @@
                     <i class="fa-solid fa-envelope"></i>
                     <span>Contact</span>
                 </button>
-                <a href="Add Supplier Page.html?mode=edit&id=supplier-123" class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                <a id="supplier-card-edit-btn" href="Add Supplier Page.html?mode=edit&id=supplier-123" class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
                     <i class="fa-solid fa-pencil"></i>
                     <span>Edit Supplier</span>
                 </a>
@@ -1402,6 +1402,57 @@ window.addEventListener('load', function() {
             // Handle form submission (template for now, no automation)
             alert('Quote request submitted (template - no automation in MVP)');
             requestQuoteModal.classList.add('hidden');
+        });
+    }
+
+    const cardEditButton = document.getElementById('supplier-card-edit-btn');
+    if (cardEditButton) {
+        cardEditButton.addEventListener('click', function() {
+            const profile = {
+                slug: 'supplier-123',
+                id: 'supplier-123',
+                name: 'Thirdway AV',
+                tradingName: 'Thirdway Technologies',
+                category: 'cleaning',
+                description: 'Premium AV and IT solutions provider covering Central London',
+                companyReg: '12345678',
+                vatNumber: 'GB123456789',
+                website: 'https://www.thirdway.co.uk',
+                preferred: true,
+                rank: '1',
+                landlord: 'UNION Properties',
+                properties: ['99-bishopsgate', 'one-canada-square', 'principal-place'],
+                coverageType: 'Building',
+                coverageAreas: ['city-core'],
+                assetTypes: ['offices'],
+                operatingHours: 'Mon-Fri 9am-6pm, 24/7 emergency',
+                contactName: 'Ben Clarke',
+                contactRole: 'Account Manager',
+                contactEmail: 'ben.clarke@thirdway.co.uk',
+                contactPhone: '+44 20 7123 4567',
+                contractStatus: 'active',
+                contractRef: 'CON-2024-001',
+                contractStart: '2024-01-01',
+                contractEnd: '2024-12-31',
+                renewalDate: '2024-12-31',
+                renewalType: 'fixed',
+                noticePeriod: '90',
+                noticePeriodUnit: 'days',
+                currency: 'GBP',
+                baseRate: '45.00',
+                callOutFee: '75.00',
+                minCharge: '100.00',
+                outOfHoursUplift: '25',
+                responseTime: '2',
+                responseTimeUnit: 'hours',
+                resolutionTime: '24',
+                resolutionTimeUnit: 'hours',
+                emergencyResponseTime: '1',
+                emergencyResponseTimeUnit: 'hours',
+                onboardingStatus: 'in-progress',
+                pricingNotes: 'Core UNION partner for AV.'
+            };
+            sessionStorage.setItem('activeSupplierEdit', JSON.stringify(profile));
         });
     }
 });

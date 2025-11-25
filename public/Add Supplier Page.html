@@ -973,33 +973,25 @@ function toggleSecondaryContact() {
     icon.classList.toggle('rotate-180');
 }
 
-// Check if we're in edit mode
-window.addEventListener('load', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const mode = urlParams.get('mode');
-    const supplierId = urlParams.get('id');
-    
-    if (mode === 'edit' && supplierId) {
-        // Update page title and description
-        document.getElementById('page-title').textContent = 'Edit Supplier';
-        document.getElementById('page-title-nav').textContent = 'Edit Supplier';
-        document.getElementById('page-description').textContent = 'Update supplier details, contract information, and compliance documents';
-        document.getElementById('save-btn-text').textContent = 'Update Supplier';
-        
-        // Load supplier data (in a real app, this would fetch from an API)
-        loadSupplierData(supplierId);
-    }
-});
+const SUPPLIER_STORAGE_KEY = 'activeSupplierEdit';
 
-// Function to load supplier data into the form
-function loadSupplierData(supplierId) {
-    // Comprehensive supplier data store - maps supplier IDs/names to their full data
-    // In a real app, this would come from an API
-    const supplierData = {
+function slugifyId(value = '') {
+    return value
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/&/g, 'and')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+function getStaticSupplierData() {
+    return {
         'supplier-123': {
+            slug: 'supplier-123',
             name: 'Thirdway AV',
             tradingName: 'Thirdway Technologies',
-            category: 'cleaning', // Note: category values may need mapping
+            category: 'cleaning',
             description: 'Premium AV and IT solutions provider covering Central London',
             companyReg: '12345678',
             vatNumber: 'GB123456789',
@@ -1035,10 +1027,11 @@ function loadSupplierData(supplierId) {
             resolutionTimeUnit: 'hours',
             emergencyResponseTime: '1',
             emergencyResponseTimeUnit: 'hours',
-            onboardingStatus: 'complete'
+            onboardingStatus: 'complete',
+            pricingNotes: 'Core UNION partner for AV.'
         },
-        // Add more suppliers based on the list page data
-        'Thirdway AV': {
+        'thirdway-av': {
+            slug: 'thirdway-av',
             name: 'Thirdway AV',
             tradingName: 'Thirdway Technologies',
             category: 'cleaning',
@@ -1066,22 +1059,63 @@ function loadSupplierData(supplierId) {
             renewalType: 'fixed',
             noticePeriod: '90',
             noticePeriodUnit: 'days',
-            onboardingStatus: 'in-progress'
+            currency: 'GBP',
+            baseRate: '45.00',
+            callOutFee: '75.00',
+            minCharge: '100.00',
+            outOfHoursUplift: '20',
+            responseTime: '2',
+            responseTimeUnit: 'hours',
+            resolutionTime: '24',
+            resolutionTimeUnit: 'hours',
+            emergencyResponseTime: '1',
+            emergencyResponseTimeUnit: 'hours',
+            onboardingStatus: 'in-progress',
+            pricingNotes: 'Includes 24/7 out-of-hours cover.'
         }
     };
+}
+
+function resolveSupplierData(requestedId) {
+    const slug = slugifyId(requestedId || '');
+    const storedPayload = sessionStorage.getItem(SUPPLIER_STORAGE_KEY);
     
-    // Try to find supplier by ID first, then by name
-    let data = supplierData[supplierId];
-    if (!data && supplierId) {
-        // Try to find by matching name in the data keys
-        const matchingKey = Object.keys(supplierData).find(key => 
-            supplierData[key].name && supplierData[key].name.toLowerCase() === supplierId.toLowerCase()
-        );
-        if (matchingKey) {
-            data = supplierData[matchingKey];
+    if (storedPayload) {
+        try {
+            const parsed = JSON.parse(storedPayload);
+            const parsedSlug = slugifyId(parsed.slug || parsed.id || parsed.name);
+            if (!slug || parsedSlug === slug) {
+                return { data: parsed, fromStorage: true };
+            }
+        } catch (err) {
+            console.warn('Unable to parse stored supplier data', err);
         }
     }
     
+    const staticData = getStaticSupplierData();
+    const fallback = staticData[slug] || staticData[requestedId];
+    return { data: fallback || null, fromStorage: false };
+}
+
+// Check if we're in edit mode
+window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const supplierId = urlParams.get('id');
+    
+    if (mode === 'edit' && supplierId) {
+        document.getElementById('page-title').textContent = 'Edit Supplier';
+        document.getElementById('page-title-nav').textContent = 'Edit Supplier';
+        document.getElementById('page-description').textContent = 'Update supplier details, contract information, and compliance documents';
+        document.getElementById('save-btn-text').textContent = 'Update Supplier';
+        
+        loadSupplierData(supplierId);
+    }
+});
+
+// Function to load supplier data into the form
+function loadSupplierData(supplierId) {
+    const { data, fromStorage } = resolveSupplierData(supplierId);
     if (!data) {
         console.warn('Supplier data not found for:', supplierId);
         return;
@@ -1226,6 +1260,10 @@ function loadSupplierData(supplierId) {
     
     const contactPhoneInput = document.getElementById('contact-phone');
     if (contactPhoneInput) contactPhoneInput.value = data.contactPhone || '';
+    
+    if (fromStorage) {
+        sessionStorage.removeItem(SUPPLIER_STORAGE_KEY);
+    }
 }
 
 // Handle coverage type button clicks

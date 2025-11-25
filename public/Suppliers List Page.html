@@ -1421,6 +1421,265 @@ function toggleSecondaryContact() {
     }
 }
 
+const SUPPLIER_STORAGE_KEY = 'activeSupplierEdit';
+
+function slugifySupplierName(name = '') {
+    return name
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/&/g, 'and')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+function createSupplierProfile(overrides = {}) {
+    const slug = overrides.slug || slugifySupplierName(overrides.name || '');
+    return {
+        slug,
+        id: overrides.id || slug,
+        name: overrides.name || '',
+        tradingName: overrides.tradingName || overrides.name || '',
+        category: overrides.category || 'contractor',
+        description: overrides.description || '',
+        companyReg: overrides.companyReg || '00000000',
+        vatNumber: overrides.vatNumber || 'GB000000000',
+        website: overrides.website || '',
+        preferred: overrides.preferred || false,
+        rank: overrides.rank || '',
+        landlord: overrides.landlord || 'UNION Properties',
+        properties: overrides.properties ? [...overrides.properties] : [],
+        coverageType: overrides.coverageType || 'Building',
+        coverageAreas: overrides.coverageAreas ? [...overrides.coverageAreas] : [],
+        assetTypes: overrides.assetTypes ? [...overrides.assetTypes] : ['offices'],
+        operatingHours: overrides.operatingHours || 'Mon-Fri 9am-6pm',
+        contactName: overrides.contactName || '',
+        contactRole: overrides.contactRole || 'Account Manager',
+        contactEmail: overrides.contactEmail || '',
+        contactPhone: overrides.contactPhone || '',
+        contractStatus: overrides.contractStatus || 'active',
+        contractRef: overrides.contractRef || 'CON-2024-000',
+        contractStart: overrides.contractStart || '2024-01-01',
+        contractEnd: overrides.contractEnd || '2024-12-31',
+        renewalDate: overrides.renewalDate || '2024-12-31',
+        renewalType: overrides.renewalType || 'fixed',
+        noticePeriod: overrides.noticePeriod || '60',
+        noticePeriodUnit: overrides.noticePeriodUnit || 'days',
+        currency: overrides.currency || 'GBP',
+        baseRate: overrides.baseRate || '0.00',
+        callOutFee: overrides.callOutFee || '0.00',
+        minCharge: overrides.minCharge || '0.00',
+        outOfHoursUplift: overrides.outOfHoursUplift || '0',
+        responseTime: overrides.responseTime || '4',
+        responseTimeUnit: overrides.responseTimeUnit || 'hours',
+        resolutionTime: overrides.resolutionTime || '24',
+        resolutionTimeUnit: overrides.resolutionTimeUnit || 'hours',
+        emergencyResponseTime: overrides.emergencyResponseTime || '2',
+        emergencyResponseTimeUnit: overrides.emergencyResponseTimeUnit || 'hours',
+        onboardingStatus: overrides.onboardingStatus || 'complete',
+        pricingNotes: overrides.pricingNotes || ''
+    };
+}
+
+const supplierProfileMap = {
+    'thirdway-av': createSupplierProfile({
+        slug: 'thirdway-av',
+        name: 'Thirdway AV',
+        tradingName: 'Thirdway Technologies',
+        category: 'contractor',
+        description: 'Audio-visual & tech solutions',
+        preferred: true,
+        rank: '1',
+        properties: ['99-bishopsgate', 'one-canada-square'],
+        coverageAreas: ['city-core', 'east-quarter'],
+        assetTypes: ['offices'],
+        operatingHours: 'Mon-Fri 9am-6pm, 24/7 emergency',
+        contactName: 'Ben Taylor',
+        contactRole: 'Account Manager',
+        contactEmail: 'ben@thirdway.co.uk',
+        contactPhone: '020 7946 0958',
+        contractRef: 'CON-2024-001',
+        renewalDate: '2025-12-15',
+        noticePeriod: '90',
+        baseRate: '45.00',
+        callOutFee: '75.00',
+        minCharge: '100.00',
+        outOfHoursUplift: '20',
+        onboardingStatus: 'in-progress',
+        pricingNotes: 'Includes priority AV response for UNION buildings.'
+    }),
+    'premier-cleaning-services': createSupplierProfile({
+        slug: 'premier-cleaning-services',
+        name: 'Premier Cleaning Services',
+        tradingName: 'Premier Cleaning Services',
+        category: 'cleaning',
+        description: 'Commercial cleaning specialists',
+        properties: ['99-bishopsgate', 'principal-place'],
+        coverageAreas: ['city-core', 'west-business', 'east-quarter'],
+        assetTypes: ['offices', 'mixed-use'],
+        operatingHours: '24/7 scheduled cleaning teams',
+        contactName: 'Sarah Mitchell',
+        contactRole: 'Account Director',
+        contactEmail: 'sarah@premier-cs.com',
+        contactPhone: '020 7946 0123',
+        contractRef: 'CON-2023-045',
+        contractStart: '2023-03-20',
+        contractEnd: '2026-03-20',
+        renewalDate: '2026-03-20',
+        renewalType: 'fixed',
+        noticePeriod: '60',
+        baseRate: '22.00',
+        callOutFee: '50.00',
+        minCharge: '80.00',
+        onboardingStatus: 'complete',
+        pricingNotes: 'Weekend deep-clean is included twice a month.'
+    }),
+    'city-maintenance-co': createSupplierProfile({
+        slug: 'city-maintenance-co',
+        name: 'City Maintenance Co',
+        tradingName: 'City Maintenance Co',
+        category: 'contractor',
+        description: '24/7 repairs & maintenance',
+        properties: ['99-bishopsgate', 'canary-wharf-tower'],
+        coverageAreas: ['city-core', 'south-docks'],
+        assetTypes: ['offices', 'industrial'],
+        operatingHours: 'Always on-call teams',
+        contactName: 'James Parker',
+        contactRole: 'Operations Lead',
+        contactEmail: 'james@citymaint.co.uk',
+        contactPhone: '020 7946 0789',
+        contractRef: 'CON-2022-078',
+        contractStart: '2022-06-30',
+        contractEnd: '2025-06-30',
+        renewalDate: '2025-06-30',
+        responseTime: '1',
+        emergencyResponseTime: '1',
+        onboardingStatus: 'complete',
+        baseRate: '55.00',
+        callOutFee: '90.00',
+        minCharge: '120.00',
+        pricingNotes: 'Includes priority mechanical and electrical support.'
+    }),
+    'techsupport-pro': createSupplierProfile({
+        slug: 'techsupport-pro',
+        name: 'TechSupport Pro',
+        tradingName: 'TechSupport IT Services',
+        category: 'contractor',
+        description: 'IT infrastructure & support',
+        properties: ['shoreditch-office', 'mayfair-building'],
+        coverageAreas: ['east-quarter', 'west-business'],
+        assetTypes: ['offices'],
+        operatingHours: 'Mon-Fri 8am-8pm, on-call weekends',
+        contactName: 'Rachel Green',
+        contactRole: 'Service Delivery Lead',
+        contactEmail: 'rachel@techsupport.com',
+        contactPhone: '020 7946 0234',
+        contractStatus: 'review',
+        contractRef: 'CON-2024-112',
+        contractStart: '2024-01-15',
+        contractEnd: '2024-12-31',
+        renewalDate: '2024-12-31',
+        renewalType: 'rolling',
+        noticePeriod: '30',
+        onboardingStatus: 'not-started',
+        baseRate: '40.00',
+        callOutFee: '65.00',
+        minCharge: '90.00',
+        pricingNotes: 'Trial phase – formal onboarding still pending.'
+    }),
+    'green-spaces-ltd': createSupplierProfile({
+        slug: 'green-spaces-ltd',
+        name: 'Green Spaces Ltd',
+        tradingName: 'Green Interior Plants',
+        category: 'landscaping',
+        description: 'Office plants & landscaping',
+        properties: ['principal-place', 'shoreditch-office'],
+        coverageAreas: ['city-core', 'west-business'],
+        assetTypes: ['offices', 'mixed-use'],
+        operatingHours: 'Mon-Fri 7am-3pm',
+        contactName: 'Oliver Green',
+        contactRole: 'Founder',
+        contactEmail: 'oliver@greenspaces.co.uk',
+        contactPhone: '020 7946 0456',
+        contractRef: 'CON-2024-210',
+        contractStart: '2024-02-15',
+        contractEnd: '2025-09-10',
+        renewalDate: '2025-09-10',
+        onboardingStatus: 'in-progress',
+        baseRate: '30.00',
+        callOutFee: '40.00',
+        minCharge: '60.00',
+        pricingNotes: 'Seasonal planting refresh every quarter.'
+    }),
+    'artisan-coffee-co': createSupplierProfile({
+        slug: 'artisan-coffee-co',
+        name: 'Artisan Coffee Co',
+        tradingName: 'Bespoke Coffee Co',
+        category: 'contractor',
+        description: 'Premium coffee & pantry services',
+        properties: ['99-bishopsgate', 'mayfair-building'],
+        coverageAreas: ['city-core', 'east-quarter'],
+        assetTypes: ['offices'],
+        operatingHours: 'Mon-Fri 6am-6pm',
+        contactName: 'Emma Watson',
+        contactRole: 'Client Success Manager',
+        contactEmail: 'emma@artisancoffee.com',
+        contactPhone: '020 7946 0321',
+        contractRef: 'CON-2024-305',
+        contractStart: '2024-01-05',
+        contractEnd: '2025-11-05',
+        renewalDate: '2025-11-05',
+        baseRate: '18.00',
+        callOutFee: '35.00',
+        minCharge: '60.00',
+        onboardingStatus: 'complete',
+        pricingNotes: 'Includes weekly bean deliveries & maintenance.'
+    })
+};
+
+function mapCategoryLabelToFormValue(label = '') {
+    const normalized = label.toLowerCase();
+    if (normalized.includes('clean')) return 'cleaning';
+    if (normalized.includes('plant') || normalized.includes('landscape')) return 'landscaping';
+    if (normalized.includes('security')) return 'security';
+    if (normalized.includes('lift')) return 'lifts';
+    if (normalized.includes('m&e') || normalized.includes('maintenance') || normalized.includes('r&m')) return 'me';
+    return 'contractor';
+}
+
+function mapCoverageStringToValues(coverageText = '') {
+    return coverageText
+        .split(',')
+        .map(part => part.trim().toLowerCase())
+        .filter(Boolean)
+        .map(area => {
+            if (area.includes('central')) return 'city-core';
+            if (area.includes('east')) return 'east-quarter';
+            if (area.includes('west')) return 'west-business';
+            if (area.includes('north')) return 'north-industrial';
+            if (area.includes('south')) return 'south-docks';
+            if (area.includes('canary')) return 'canary-wharf-tower';
+            if (area.includes('shoreditch')) return 'shoreditch-office';
+            if (area.includes('mayfair')) return 'mayfair-building';
+            return area.replace(/\s+/g, '-');
+        });
+}
+
+function buildProfileFromRow({ name, categoryLabel, coverageText, contactName, contactEmail, contactPhone }) {
+    return createSupplierProfile({
+        slug: slugifySupplierName(name),
+        name,
+        tradingName: name,
+        category: mapCategoryLabelToFormValue(categoryLabel),
+        description: `${categoryLabel || 'Supplier'} services`,
+        coverageAreas: mapCoverageStringToValues(coverageText),
+        contactName,
+        contactEmail,
+        contactPhone,
+        onboardingStatus: 'in-progress'
+    });
+}
+
 function switchSupplierTab(tabName) {
     // Hide all tab contents
     document.querySelectorAll('.supplier-tab-content').forEach(content => {
@@ -1606,6 +1865,7 @@ function showSupplierDetails(row) {
     const displayContactName = isThirdwayAV ? 'James Turner' : contactName;
     const displayContactEmail = isThirdwayAV ? 'james.turner@thirdwayav.com' : contactEmail;
     const displayContactPhone = isThirdwayAV ? '020 7123 4567' : contactPhone;
+    const supplierSlug = slugifySupplierName(displayName);
     
     document.getElementById('supplier-details-content').innerHTML = `
         <div class="bg-white border-b border-[#E6E6E6] px-8 py-6 mb-0">
@@ -1648,7 +1908,7 @@ function showSupplierDetails(row) {
                         <i class="fa-solid fa-envelope"></i>
                         <span>Contact</span>
                     </button>
-                    <a href="Add Supplier Page.html?mode=edit&id=${encodeURIComponent(displayName)}" class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                    <a id="edit-supplier-link" href="Add Supplier Page.html?mode=edit&id=${supplierSlug}" class="border border-[#E6E6E6] text-primary px-5 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-pencil"></i>
                         <span>Edit Supplier</span>
                     </a>
@@ -2147,6 +2407,34 @@ function showSupplierDetails(row) {
             </div>
         </div>
     `;
+    
+    const editLink = document.getElementById('edit-supplier-link');
+    if (editLink) {
+        editLink.addEventListener('click', () => {
+            const baseProfile = supplierProfileMap[supplierSlug];
+            let profile;
+            if (baseProfile) {
+                profile = {
+                    ...baseProfile,
+                    properties: [...baseProfile.properties],
+                    coverageAreas: [...baseProfile.coverageAreas],
+                    assetTypes: [...baseProfile.assetTypes]
+                };
+            } else {
+                profile = buildProfileFromRow({
+                    name: displayName,
+                    categoryLabel: displayCategory,
+                    coverageText: displayCoverage,
+                    contactName: displayContactName,
+                    contactEmail: displayContactEmail,
+                    contactPhone: displayContactPhone
+                });
+            }
+            profile.slug = supplierSlug;
+            profile.id = supplierSlug;
+            sessionStorage.setItem(SUPPLIER_STORAGE_KEY, JSON.stringify(profile));
+        }, { once: true });
+    }
     
     document.getElementById('supplier-details-overlay').classList.remove('hidden');
     const panel = document.getElementById('supplier-details-panel');
