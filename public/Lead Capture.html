@@ -236,58 +236,90 @@
                 <div class="grid grid-cols-1 gap-4">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label class="text-xs font-semibold text-secondary uppercase">Space Size</label>
+                      <label class="text-xs font-semibold text-secondary uppercase">Space Size <span class="text-red-500">*</span></label>
                       <input
                         name="size"
+                        required
+                        type="text"
                         class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
                         placeholder="e.g. 20,000 sq ft"
                       />
                       <p class="text-xs text-secondary mt-1">Enter total requirement in sq ft so we can triage capacity.</p>
                     </div>
                     <div>
-                      <label class="text-xs font-semibold text-secondary uppercase">Timeline</label>
-                      <select
+                      <label class="text-xs font-semibold text-secondary uppercase">Move-in Timing <span class="text-red-500">*</span></label>
+                      <input
                         name="timeline"
+                        required
+                        type="text"
                         class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-                      >
-                        <option value="">Select timeline</option>
-                        <option value="0-4">0–4 weeks</option>
-                        <option value="1-3">1–3 months</option>
-                        <option value="3-6">3–6 months</option>
-                        <option value="6+">6+ months</option>
-                      </select>
+                        placeholder="e.g. 1st September, Q2 2025, H2 next year"
+                      />
+                      <p class="text-xs text-secondary mt-1">Enter specific date or range (e.g., "1st September" or "Q2 2025")</p>
                     </div>
                   </div>
                   <div>
-                    <label class="text-xs font-semibold text-secondary uppercase">Preferred Locations</label>
-                    <input
-                      name="locations"
-                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-                      placeholder="City Core, Canary Wharf"
-                    />
-                  </div>
-                  <div>
-                    <label class="text-xs font-semibold text-secondary uppercase">Budget Range</label>
+                    <label class="text-xs font-semibold text-secondary uppercase">Preferred Locations <span class="text-red-500">*</span></label>
                     <select
-                      name="budget"
+                      name="locations"
+                      required
+                      multiple
                       class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      size="3"
                     >
-                      <option value="">Select annual rent</option>
-                      <option value="over-100">£100k+ annual</option>
-                      <option value="50-99">£50k–£99k annual</option>
-                      <option value="25-49">£25k–£49k annual</option>
-                      <option value="10-24">£10k–£24k annual</option>
-                      <option value="under-10">Under £10k annual</option>
+                      <option value="City Core">City Core</option>
+                      <option value="Shoreditch">Shoreditch</option>
+                      <option value="Mayfair">Mayfair</option>
+                      <option value="Canary Wharf">Canary Wharf</option>
+                      <option value="King's Cross">King's Cross</option>
+                      <option value="Southwark">Southwark</option>
                     </select>
+                    <p class="text-xs text-secondary mt-1">Hold Ctrl/Cmd to select multiple submarkets</p>
                   </div>
                   <div>
-                    <label class="text-xs font-semibold text-secondary uppercase">Requirement Notes</label>
+                    <label class="text-xs font-semibold text-secondary uppercase">Location Notes</label>
+                    <textarea
+                      name="locationNotes"
+                      rows="2"
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="e.g. 5-minute walk from Liverpool Street Station, warehouse-style space"
+                    ></textarea>
+                    <p class="text-xs text-secondary mt-1">Add specific location requirements or preferences</p>
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Monthly Budget (All-Inclusive) <span class="text-red-500">*</span></label>
+                    <input
+                      name="budget"
+                      required
+                      type="text"
+                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                      placeholder="e.g. £8,500 per month"
+                    />
+                    <p class="text-xs text-secondary mt-1">Enter monthly all-inclusive amount (not annual ranges)</p>
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Fit-out Preferences</label>
+                    <div class="mt-2 space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          name="preFittedOnly"
+                          class="h-4 w-4 text-primary border-[#E6E6E6] rounded focus:ring-primary"
+                        />
+                        <span class="text-sm text-primary">Pre-fitted only</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-xs font-semibold text-secondary uppercase">Requirement Notes <span class="text-red-500">*</span></label>
                     <textarea
                       name="notes"
+                      required
                       rows="4"
                       class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-                      placeholder="Hybrid desk ratio, specialist lab needs, ESG priorities..."
+                      placeholder="Hybrid desk ratio, specialist lab needs, ESG priorities, warehouse-style requirements..."
                     ></textarea>
+                    <p class="text-xs text-secondary mt-1">Capture specific requirements like fit-out style, amenities, or special needs</p>
                   </div>
                   <div class="mt-2 border border-dashed border-[#E6E6E6] rounded-lg p-4 bg-muted">
                     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -350,9 +382,10 @@
         const form = document.getElementById('lead-capture-form');
         const cards = document.querySelectorAll('.channel-card');
         const sizeInput = form.elements['size'];
-        const budgetSelect = form.elements['budget'];
-        const timelineSelect = form.elements['timeline'];
+        const budgetInput = form.elements['budget'];
+        const timelineInput = form.elements['timeline'];
         const notesInput = form.elements['notes'];
+        const locationsSelect = form.elements['locations'];
         const nameInput = form.elements['name'];
         const companyInput = form.elements['company'];
         const emailInput = form.elements['email'];
@@ -404,8 +437,8 @@
 
         const watchers = [
           { element: sizeInput, event: 'input' },
-          { element: budgetSelect, event: 'change' },
-          { element: timelineSelect, event: 'change' }
+          { element: budgetInput, event: 'input' },
+          { element: timelineInput, event: 'input' }
         ];
 
         watchers.forEach(({ element, event }) => {
@@ -461,34 +494,43 @@
           // Simplified preview scoring - full scoring happens during qualification
           let score = 0;
 
-          const budgetValue = budgetSelect.value;
+          // Parse budget from text input (e.g., "£8,500 per month" or "8500")
+          const budgetText = budgetInput.value.trim();
           let budgetStatus = 'Weak';
-          if (budgetValue) {
-            if (['over-100', '50-99'].includes(budgetValue)) {
-              score += 20;
-              budgetStatus = 'Strong';
-            } else if (['25-49'].includes(budgetValue)) {
-              score += 12;
-              budgetStatus = 'Fair';
-            } else {
-              score += 6;
-              budgetStatus = 'Weak';
+          if (budgetText) {
+            const budgetMatch = budgetText.match(/[\d,]+/);
+            if (budgetMatch) {
+              const budgetAmount = parseInt(budgetMatch[0].replace(/,/g, ''), 10);
+              if (budgetAmount >= 10000) {
+                score += 20;
+                budgetStatus = 'Strong';
+              } else if (budgetAmount >= 5000) {
+                score += 12;
+                budgetStatus = 'Fair';
+              } else if (budgetAmount > 0) {
+                score += 6;
+                budgetStatus = 'Weak';
+              }
             }
           }
 
-          const timelineValue = timelineSelect.value;
+          // Parse timeline from free text (look for urgency indicators)
+          const timelineText = timelineInput.value.trim().toLowerCase();
           let timingStatus = 'Cold';
-          if (timelineValue === '0-4') {
-            score += 20;
-            timingStatus = 'Hot';
-          } else if (timelineValue === '1-3') {
-            score += 15;
-            timingStatus = 'Warm';
-          } else if (timelineValue === '3-6') {
-            score += 10;
-            timingStatus = 'Warm';
-          } else {
-            timingStatus = 'Cold';
+          if (timelineText) {
+            // Check for immediate/urgent indicators
+            if (/\b(immediate|asap|urgent|now|this week|this month|within 2 weeks|within 1 month)\b/.test(timelineText)) {
+              score += 20;
+              timingStatus = 'Hot';
+            } else if (/\b(q1|q2|january|february|march|april|may|june|1st|2nd|3rd|4th|5th|6th|7th|8th|9th|10th|11th|12th|13th|14th|15th|16th|17th|18th|19th|20th|21st|22nd|23rd|24th|25th|26th|27th|28th|29th|30th|31st)\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|january|february|march|april|may|june|july|august|september|october|november|december)\b/.test(timelineText)) {
+              score += 15;
+              timingStatus = 'Warm';
+            } else if (/\b(q3|q4|h2|next year|202[5-9])\b/.test(timelineText)) {
+              score += 10;
+              timingStatus = 'Warm';
+            } else {
+              timingStatus = 'Cold';
+            }
           }
 
           // Simple preview score (not full qualification)
