@@ -683,19 +683,75 @@
     return gradeScale[gradeScale.length - 1];
   }
 
+  // Helper function to migrate old BANT/bonus structure to new scoring system
+  function migrateToNewScoring(lead) {
+    // If already using new structure, return as-is
+    if (lead.budgetScore !== undefined) {
+      return;
+    }
+
+    // Migrate from old BANT structure
+    if (lead.bant) {
+      // Scale budget from 0-25 to 0-20
+      lead.budgetScore = Math.round((lead.bant.budget / 25) * 20);
+      
+      // Broker score: derive from source (Broker Referral = high, others = medium/low)
+      const isBrokerSource = (lead.source || '').toLowerCase().includes('broker');
+      lead.brokerScore = isBrokerSource ? 18 : (lead.bant.authority > 15 ? 12 : 8);
+      
+      // Location score: derive from requirement.locations (clear locations = high)
+      const hasLocations = lead.requirement?.locations && lead.requirement.locations.length > 0;
+      const locationCount = lead.requirement?.locations?.length || 0;
+      lead.locationScore = hasLocations ? Math.min(15 + locationCount * 2, 20) : 5;
+      
+      // Scale timeline from 0-25 to 0-20
+      lead.timingScore = Math.round((lead.bant.timeline / 25) * 20);
+      
+      // Term Length: default to medium (10), can be adjusted manually
+      lead.termLengthScore = 10;
+      
+      // Remove old structure
+      delete lead.bant;
+    } else {
+      // Default values if no old structure exists
+      lead.budgetScore = 0;
+      lead.brokerScore = 0;
+      lead.locationScore = 0;
+      lead.timingScore = 0;
+      lead.termLengthScore = 0;
+    }
+    
+    // Remove bonus scoring
+    if (lead.bonus) {
+      delete lead.bonus;
+    }
+  }
+
   function computeLeadScores(lead) {
     lead.propertyMatches = buildProperties(lead.propertyMatches || []);
     lead.alternativeProperties = buildProperties(lead.alternatives || []);
     delete lead.alternatives;
 
-    const bantScore = lead.bant.budget + lead.bant.authority + lead.bant.need + lead.bant.timeline;
-    const bonusScore = lead.bonus.propertyFit + lead.bonus.sourceQuality + lead.bonus.companyProfile;
-    const hasUnknown = Object.values(lead.bant).some((value) => value === 0);
-    const gradeInfo = determineGradeFromScore(bantScore, hasUnknown);
+    // Migrate old structure if needed
+    migrateToNewScoring(lead);
 
-    lead.bantScore = bantScore;
-    lead.bonusScore = bonusScore;
-    lead.totalScore = bantScore + bonusScore;
+    // Ensure all scoring dimensions exist with defaults
+    lead.budgetScore = lead.budgetScore ?? 0;
+    lead.brokerScore = lead.brokerScore ?? 0;
+    lead.locationScore = lead.locationScore ?? 0;
+    lead.timingScore = lead.timingScore ?? 0;
+    lead.termLengthScore = lead.termLengthScore ?? 0;
+
+    // Calculate total score (sum of 5 dimensions, each 0-20, total 0-100)
+    const totalScore = lead.budgetScore + lead.brokerScore + lead.locationScore + lead.timingScore + lead.termLengthScore;
+    const hasUnknown = [lead.budgetScore, lead.brokerScore, lead.locationScore, lead.timingScore, lead.termLengthScore].some((value) => value === 0);
+    const gradeInfo = determineGradeFromScore(totalScore, hasUnknown);
+
+    // Remove old score properties
+    delete lead.bantScore;
+    delete lead.bonusScore;
+    
+    lead.totalScore = totalScore;
     lead.grade = gradeInfo.grade;
     lead.gradeInfo = gradeInfo;
     lead.priority = gradeInfo.priority;

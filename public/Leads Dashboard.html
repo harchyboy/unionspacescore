@@ -314,88 +314,68 @@
 
           <!-- Score Adjustments -->
           <div class="space-y-4">
-            <h3 class="text-sm font-semibold text-primary uppercase tracking-wide">Score Adjustments</h3>
+            <h3 class="text-sm font-semibold text-primary uppercase tracking-wide">Lead Scoring</h3>
             
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-primary mb-2">Budget (0-25)</label>
+                <label class="block text-sm font-medium text-primary mb-2">Budget (0-20)</label>
                 <input
                   type="number"
                   id="qualify-budget"
                   min="0"
-                  max="25"
-                  step="5"
-                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-primary mb-2">Authority (0-25)</label>
-                <input
-                  type="number"
-                  id="qualify-authority"
-                  min="0"
-                  max="25"
-                  step="5"
-                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-primary mb-2">Need (0-25)</label>
-                <input
-                  type="number"
-                  id="qualify-need"
-                  min="0"
-                  max="25"
-                  step="5"
-                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-primary mb-2">Timeline (0-25)</label>
-                <input
-                  type="number"
-                  id="qualify-timeline-score"
-                  min="0"
-                  max="25"
-                  step="5"
-                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-primary mb-2">Property Fit (0-10)</label>
-                <input
-                  type="number"
-                  id="qualify-property-fit"
-                  min="0"
-                  max="10"
+                  max="20"
                   step="1"
                   class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 />
+                <p class="text-xs text-secondary mt-1">0 = no budget, 20 = signed off and aligned</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-primary mb-2">Source Quality (0-5)</label>
+                <label class="block text-sm font-medium text-primary mb-2">Broker (0-20)</label>
                 <input
                   type="number"
-                  id="qualify-source-quality"
+                  id="qualify-broker"
                   min="0"
-                  max="5"
+                  max="20"
                   step="1"
                   class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 />
+                <p class="text-xs text-secondary mt-1">0 = weak/hostile, 20 = highly engaged broker</p>
               </div>
               <div>
-                <label class="block text-sm font-medium text-primary mb-2">Company Profile (0-5)</label>
+                <label class="block text-sm font-medium text-primary mb-2">Location (0-20)</label>
                 <input
                   type="number"
-                  id="qualify-company-profile"
+                  id="qualify-location"
                   min="0"
-                  max="5"
+                  max="20"
                   step="1"
                   class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
                 />
+                <p class="text-xs text-secondary mt-1">0 = unclear, 20 = clear short list in core areas</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Timing (0-20)</label>
+                <input
+                  type="number"
+                  id="qualify-timing"
+                  min="0"
+                  max="20"
+                  step="1"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+                <p class="text-xs text-secondary mt-1">0 = vague or &gt;18 months, 20 = must move in 3-6 months</p>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-primary mb-2">Term Length (0-20)</label>
+                <input
+                  type="number"
+                  id="qualify-termLength"
+                  min="0"
+                  max="20"
+                  step="1"
+                  class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+                <p class="text-xs text-secondary mt-1">0 = very short term, 20 = long term commitment aligned with UNION</p>
               </div>
             </div>
           </div>
@@ -668,7 +648,7 @@
                   </td>
                   <td class="px-4 py-4">
                     <div class="font-semibold text-primary">${lead.totalScore}</div>
-                    <div class="text-xs text-secondary">${lead.bantScore} BANT / ${lead.bonusScore} bonus</div>
+                    <div class="text-xs text-secondary">${lead.totalScore} / 100</div>
                   </td>
                   <td class="px-4 py-4">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${gradeInfo?.color || 'bg-slate-100 text-slate-700'}">
@@ -753,16 +733,12 @@
           document.getElementById('qualify-notes').value = lead.requirement?.notes || '';
           document.getElementById('qualify-grade').value = lead.grade || 'U';
           
-          // BANT scores
-          document.getElementById('qualify-budget').value = lead.bant?.budget || 0;
-          document.getElementById('qualify-authority').value = lead.bant?.authority || 0;
-          document.getElementById('qualify-need').value = lead.bant?.need || 0;
-          document.getElementById('qualify-timeline-score').value = lead.bant?.timeline || 0;
-          
-          // Bonus scores
-          document.getElementById('qualify-property-fit').value = lead.bonus?.propertyFit || 0;
-          document.getElementById('qualify-source-quality').value = lead.bonus?.sourceQuality || 0;
-          document.getElementById('qualify-company-profile').value = lead.bonus?.companyProfile || 0;
+          // Lead scoring dimensions
+          document.getElementById('qualify-budget').value = lead.budgetScore ?? 0;
+          document.getElementById('qualify-broker').value = lead.brokerScore ?? 0;
+          document.getElementById('qualify-location').value = lead.locationScore ?? 0;
+          document.getElementById('qualify-timing').value = lead.timingScore ?? 0;
+          document.getElementById('qualify-termLength').value = lead.termLengthScore ?? 0;
 
           // Show slide-out
           const overlay = document.getElementById('qualify-overlay');
@@ -838,27 +814,20 @@
           if (timeline) lead.requirement.timeline = timeline;
           if (notes) lead.requirement.notes = notes;
 
-          // Update BANT scores
-          if (!lead.bant) lead.bant = {};
-          lead.bant.budget = parseInt(document.getElementById('qualify-budget').value) || 0;
-          lead.bant.authority = parseInt(document.getElementById('qualify-authority').value) || 0;
-          lead.bant.need = parseInt(document.getElementById('qualify-need').value) || 0;
-          lead.bant.timeline = parseInt(document.getElementById('qualify-timeline-score').value) || 0;
+          // Update lead scoring dimensions
+          lead.budgetScore = Math.max(0, Math.min(20, parseInt(document.getElementById('qualify-budget').value) || 0));
+          lead.brokerScore = Math.max(0, Math.min(20, parseInt(document.getElementById('qualify-broker').value) || 0));
+          lead.locationScore = Math.max(0, Math.min(20, parseInt(document.getElementById('qualify-location').value) || 0));
+          lead.timingScore = Math.max(0, Math.min(20, parseInt(document.getElementById('qualify-timing').value) || 0));
+          lead.termLengthScore = Math.max(0, Math.min(20, parseInt(document.getElementById('qualify-termLength').value) || 0));
 
-          // Update bonus scores
-          if (!lead.bonus) lead.bonus = {};
-          lead.bonus.propertyFit = parseInt(document.getElementById('qualify-property-fit').value) || 0;
-          lead.bonus.sourceQuality = parseInt(document.getElementById('qualify-source-quality').value) || 0;
-          lead.bonus.companyProfile = parseInt(document.getElementById('qualify-company-profile').value) || 0;
-
-          // Recalculate scores using LEAD_UTILS
-          const bantScore = lead.bant.budget + lead.bant.authority + lead.bant.need + lead.bant.timeline;
-          const bonusScore = lead.bonus.propertyFit + lead.bonus.sourceQuality + lead.bonus.companyProfile;
-          const hasUnknown = Object.values(lead.bant).some((value) => value === 0);
+          // Calculate total score (sum of 5 dimensions, each 0-20, total 0-100)
+          const totalScore = lead.budgetScore + lead.brokerScore + lead.locationScore + lead.timingScore + lead.termLengthScore;
+          const hasUnknown = [lead.budgetScore, lead.brokerScore, lead.locationScore, lead.timingScore, lead.termLengthScore].some((value) => value === 0);
           
           // Update grade - use manual selection or calculate from score
           const manualGrade = document.getElementById('qualify-grade').value;
-          const calculatedGradeInfo = window.LEAD_UTILS?.determineGradeFromScore(bantScore, hasUnknown);
+          const calculatedGradeInfo = window.LEAD_UTILS?.determineGradeFromScore(totalScore, hasUnknown);
           
           // If manual grade is set and different from calculated, use manual
           // Otherwise use calculated grade
@@ -868,9 +837,7 @@
             lead.grade = calculatedGradeInfo?.grade || 'U';
           }
 
-          lead.bantScore = bantScore;
-          lead.bonusScore = bonusScore;
-          lead.totalScore = bantScore + bonusScore;
+          lead.totalScore = totalScore;
           lead.gradeInfo = calculatedGradeInfo;
           lead.hasUnknown = hasUnknown;
 
@@ -894,8 +861,7 @@
                 notes: lead.requirement.notes
               },
               grade: lead.grade,
-              bantScore: lead.bantScore,
-              bonusScore: lead.bonusScore,
+              totalScore: lead.totalScore,
               totalScore: lead.totalScore,
               createdAt: new Date().toISOString(),
               convertedFromLead: lead.id

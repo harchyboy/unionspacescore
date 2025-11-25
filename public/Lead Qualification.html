@@ -78,7 +78,7 @@
             <p class="text-xs text-secondary uppercase tracking-widest mb-1">Lead Qualification</p>
             <h1 id="lead-title" class="text-3xl font-semibold text-primary">Lead</h1>
             <p id="lead-subtitle" class="text-sm text-secondary mt-1">
-              Apply BANT scoring, validate bonus signals, and align the right property match.
+              Apply lead scoring and align the right property match.
             </p>
           </div>
           <div class="flex items-center gap-3 flex-wrap justify-end">
@@ -117,24 +117,10 @@
               <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm space-y-6">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <p class="text-xs text-secondary uppercase tracking-wider">BANT Score</p>
-                    <div class="flex items-end gap-3 mt-2">
-                      <p id="bant-score" class="text-4xl font-semibold text-primary">0</p>
-                      <span class="text-secondary text-sm">/ 100 pts</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p class="text-xs text-secondary uppercase tracking-wider">Bonus</p>
-                    <div class="flex items-end gap-3 mt-2">
-                      <p id="bonus-score" class="text-3xl font-semibold text-primary">0</p>
-                      <span class="text-secondary text-sm">/ 20 pts</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p class="text-xs text-secondary uppercase tracking-wider">Total</p>
+                    <p class="text-xs text-secondary uppercase tracking-wider">Lead Score</p>
                     <div class="flex items-end gap-3 mt-2">
                       <p id="total-score" class="text-4xl font-semibold text-primary">0</p>
-                      <span class="text-secondary text-sm">/ 120 pts</span>
+                      <span class="text-secondary text-sm">/ 100 pts</span>
                     </div>
                   </div>
                   <div class="text-right">
@@ -149,137 +135,133 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div class="space-y-2" data-bant-block="budget">
+                  <div class="space-y-2" data-score-block="budget">
                     <div class="flex items-center justify-between">
                       <p class="text-sm font-semibold text-primary">Budget</p>
                       <span class="text-xs text-secondary" id="budget-points">0 pts</span>
                     </div>
-                    <select
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      step="1"
                       class="w-full border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                      data-bant-select="budget"
-                    >
-                      <option value="0">Unknown</option>
-                      <option value="5">Under £10k annual</option>
-                      <option value="10">£10k-£24k annual</option>
-                      <option value="15">£25k-£49k annual</option>
-                      <option value="20">£50k-£99k annual</option>
-                      <option value="25">£100k+ annual</option>
-                    </select>
+                      data-score-input="budget"
+                      placeholder="0-20"
+                    />
+                    <p class="text-xs text-secondary">0 = no budget, 20 = signed off and aligned with proposal</p>
                     <input
                       type="range"
                       min="0"
-                      max="25"
-                      step="5"
+                      max="20"
+                      step="1"
                       class="w-full accent-primary"
-                      data-bant-slider="budget"
-                      readonly
+                      data-score-slider="budget"
                     />
                   </div>
 
-                  <div class="space-y-2" data-bant-block="authority">
+                  <div class="space-y-2" data-score-block="broker">
                     <div class="flex items-center justify-between">
-                      <p class="text-sm font-semibold text-primary">Authority</p>
-                      <span class="text-xs text-secondary" id="authority-points">0 pts</span>
+                      <p class="text-sm font-semibold text-primary">Broker</p>
+                      <span class="text-xs text-secondary" id="broker-points">0 pts</span>
                     </div>
-                    <select
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      step="1"
                       class="w-full border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                      data-bant-select="authority"
-                    >
-                      <option value="0">Unknown</option>
-                      <option value="5">Individual Contributor</option>
-                      <option value="10">Coordinator / Assistant</option>
-                      <option value="15">Manager</option>
-                      <option value="20">VP / Director</option>
-                      <option value="25">C-Level / Owner</option>
-                    </select>
-                    <input type="range" min="0" max="25" step="5" data-bant-slider="authority" class="w-full accent-primary" readonly />
+                      data-score-input="broker"
+                      placeholder="0-20"
+                    />
+                    <p class="text-xs text-secondary">0 = weak/hostile, 20 = highly engaged broker championing UNION</p>
+                    <input
+                      type="range"
+                      min="0"
+                      max="20"
+                      step="1"
+                      class="w-full accent-primary"
+                      data-score-slider="broker"
+                    />
                   </div>
 
-                  <div class="space-y-2" data-bant-block="need">
+                  <div class="space-y-2" data-score-block="location">
                     <div class="flex items-center justify-between">
-                      <p class="text-sm font-semibold text-primary">Need</p>
-                      <span class="text-xs text-secondary" id="need-points">0 pts</span>
+                      <p class="text-sm font-semibold text-primary">Location</p>
+                      <span class="text-xs text-secondary" id="location-points">0 pts</span>
                     </div>
-                    <select
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      step="1"
                       class="w-full border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                      data-bant-select="need"
-                    >
-                      <option value="0">Unknown</option>
-                      <option value="5">Exploring - 6+ months</option>
-                      <option value="10">Low - 3-6 months</option>
-                      <option value="15">Medium - 1-3 months</option>
-                      <option value="20">High - within 1 month</option>
-                      <option value="25">Critical - Immediate</option>
-                    </select>
-                    <input type="range" min="0" max="25" step="5" data-bant-slider="need" class="w-full accent-primary" readonly />
+                      data-score-input="location"
+                      placeholder="0-20"
+                    />
+                    <p class="text-xs text-secondary">0 = unclear or outside target markets, 20 = clear short list in core areas</p>
+                    <input
+                      type="range"
+                      min="0"
+                      max="20"
+                      step="1"
+                      class="w-full accent-primary"
+                      data-score-slider="location"
+                    />
                   </div>
 
-                  <div class="space-y-2" data-bant-block="timeline">
+                  <div class="space-y-2" data-score-block="timing">
                     <div class="flex items-center justify-between">
-                      <p class="text-sm font-semibold text-primary">Timeline</p>
-                      <span class="text-xs text-secondary" id="timeline-points">0 pts</span>
+                      <p class="text-sm font-semibold text-primary">Timing</p>
+                      <span class="text-xs text-secondary" id="timing-points">0 pts</span>
                     </div>
-                    <select
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      step="1"
                       class="w-full border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                      data-bant-select="timeline"
-                    >
-                      <option value="0">Unknown</option>
-                      <option value="5">Future (6+ months)</option>
-                      <option value="10">Long-term (3-6 months)</option>
-                      <option value="15">Medium-term (1-3 months)</option>
-                      <option value="20">Short-term (2-4 weeks)</option>
-                      <option value="25">Immediate (&lt; 2 weeks)</option>
-                    </select>
-                    <input type="range" min="0" max="25" step="5" data-bant-slider="timeline" class="w-full accent-primary" readonly />
+                      data-score-input="timing"
+                      placeholder="0-20"
+                    />
+                    <p class="text-xs text-secondary">0 = vague or &gt;18 months, 20 = must move in next 3-6 months</p>
+                    <input
+                      type="range"
+                      min="0"
+                      max="20"
+                      step="1"
+                      class="w-full accent-primary"
+                      data-score-slider="timing"
+                    />
+                  </div>
+
+                  <div class="space-y-2 md:col-span-2" data-score-block="termLength">
+                    <div class="flex items-center justify-between">
+                      <p class="text-sm font-semibold text-primary">Term Length</p>
+                      <span class="text-xs text-secondary" id="termLength-points">0 pts</span>
+                    </div>
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      step="1"
+                      class="w-full border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                      data-score-input="termLength"
+                      placeholder="0-20"
+                    />
+                    <p class="text-xs text-secondary">0 = very short term, 20 = long term commitment aligned with UNION model</p>
+                    <input
+                      type="range"
+                      min="0"
+                      max="20"
+                      step="1"
+                      class="w-full accent-primary"
+                      data-score-slider="termLength"
+                    />
                   </div>
                 </div>
               </div>
 
-              <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm space-y-4">
-                <div class="flex items-center justify-between">
-                  <h2 class="text-lg font-semibold text-primary">Bonus Scoring</h2>
-                  <span class="text-xs text-secondary">Push signal-driven uplift</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label class="text-xs font-semibold text-secondary uppercase">Property Fit</label>
-                    <select
-                      data-bonus-select="propertyFit"
-                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-                    >
-                      <option value="-5">No suitable properties (-5)</option>
-                      <option value="2">Limited options (+2)</option>
-                      <option value="5">Good alternatives (+5)</option>
-                      <option value="10">Perfect match (+10)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-xs font-semibold text-secondary uppercase">Source Quality</label>
-                    <select
-                      data-bonus-select="sourceQuality"
-                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-                    >
-                      <option value="0">Cold outreach (+0)</option>
-                      <option value="2">Inbound call (+2)</option>
-                      <option value="3">Website direct (+3)</option>
-                      <option value="5">Broker referral (+5)</option>
-                      <option value="5">Existing client referral (+5)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-xs font-semibold text-secondary uppercase">Company Profile</label>
-                    <select
-                      data-bonus-select="companyProfile"
-                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-                    >
-                      <option value="0">Individual (+0)</option>
-                      <option value="2">Startup (+2)</option>
-                      <option value="3">Growing company (+3)</option>
-                      <option value="5">Recognized brand (+5)</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
 
               <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm">
                 <div class="flex items-center justify-between mb-4">
@@ -287,7 +269,7 @@
                   <span id="priority-text" class="text-xs text-secondary">Action recommendations</span>
                 </div>
                 <div id="status-badges" class="flex flex-wrap gap-2 mb-4"></div>
-                <div id="bant-health" class="grid grid-cols-1 md:grid-cols-4 gap-3"></div>
+                <div id="score-health" class="grid grid-cols-1 md:grid-cols-5 gap-3"></div>
               </div>
             </div>
 
@@ -536,9 +518,8 @@
           return;
         }
 
-        const bantSelects = document.querySelectorAll('[data-bant-select]');
-        const bantSliders = document.querySelectorAll('[data-bant-slider]');
-        const bonusSelects = document.querySelectorAll('[data-bonus-select]');
+        const scoreInputs = document.querySelectorAll('[data-score-input]');
+        const scoreSliders = document.querySelectorAll('[data-score-slider]');
         const leadTitleEl = document.getElementById('lead-title');
         const leadSubtitleEl = document.getElementById('lead-subtitle');
         const detailLink = document.getElementById('open-detail-link');
@@ -651,32 +632,36 @@
           });
         }
 
-        bantSelects.forEach((select) => {
-          const key = select.dataset.bantSelect;
-          const value = lead.bant[key];
-          select.value = value.toString();
-        });
-        bantSliders.forEach((slider) => {
-          const key = slider.dataset.bantSlider;
-          slider.value = lead.bant[key];
-          // Prevent any user interaction with the slider - it should only update via dropdown
-          const preventInteraction = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-          };
-          slider.addEventListener('input', preventInteraction, true);
-          slider.addEventListener('change', preventInteraction, true);
-          slider.addEventListener('mousedown', preventInteraction, true);
-          slider.addEventListener('mouseup', preventInteraction, true);
-          slider.addEventListener('touchstart', preventInteraction, true);
-          slider.addEventListener('touchend', preventInteraction, true);
-          slider.addEventListener('click', preventInteraction, true);
+        // Initialize scoring dimensions with defaults if not present
+        if (lead.budgetScore === undefined) lead.budgetScore = 0;
+        if (lead.brokerScore === undefined) lead.brokerScore = 0;
+        if (lead.locationScore === undefined) lead.locationScore = 0;
+        if (lead.timingScore === undefined) lead.timingScore = 0;
+        if (lead.termLengthScore === undefined) lead.termLengthScore = 0;
+
+        // Populate inputs and sliders
+        scoreInputs.forEach((input) => {
+          const key = input.dataset.scoreInput;
+          const scoreKey = key === 'budget' ? 'budgetScore' : 
+                          key === 'broker' ? 'brokerScore' :
+                          key === 'location' ? 'locationScore' :
+                          key === 'timing' ? 'timingScore' :
+                          key === 'termLength' ? 'termLengthScore' : null;
+          if (scoreKey && lead[scoreKey] !== undefined) {
+            input.value = lead[scoreKey].toString();
+          }
         });
 
-        bonusSelects.forEach((select) => {
-          const key = select.dataset.bonusSelect;
-          select.value = lead.bonus[key];
+        scoreSliders.forEach((slider) => {
+          const key = slider.dataset.scoreSlider;
+          const scoreKey = key === 'budget' ? 'budgetScore' : 
+                          key === 'broker' ? 'brokerScore' :
+                          key === 'location' ? 'locationScore' :
+                          key === 'timing' ? 'timingScore' :
+                          key === 'termLength' ? 'termLengthScore' : null;
+          if (scoreKey && lead[scoreKey] !== undefined) {
+            slider.value = lead[scoreKey].toString();
+          }
         });
 
         const statusContainer = document.getElementById('status-badges');
@@ -693,19 +678,34 @@
         renderProperties('recommended-grid', lead.propertyMatches);
         renderAlternatives(lead.alternativeProperties);
 
-        ;['budget', 'authority', 'need', 'timeline'].forEach((key) => {
-          document.querySelector(`[data-bant-block="${key}"] select`).addEventListener('change', (event) => {
-            document.querySelector(`[data-bant-slider="${key}"]`).value = event.target.value;
-            lead.bant[key] = Number(event.target.value);
-            updateScore();
-          });
-        });
+        // Set up bidirectional sync between inputs and sliders
+        const scoreDimensions = ['budget', 'broker', 'location', 'timing', 'termLength'];
+        scoreDimensions.forEach((key) => {
+          const input = document.querySelector(`[data-score-input="${key}"]`);
+          const slider = document.querySelector(`[data-score-slider="${key}"]`);
+          const scoreKey = key === 'budget' ? 'budgetScore' : 
+                          key === 'broker' ? 'brokerScore' :
+                          key === 'location' ? 'locationScore' :
+                          key === 'timing' ? 'timingScore' :
+                          key === 'termLength' ? 'termLengthScore' : null;
 
-        bonusSelects.forEach((select) => {
-          select.addEventListener('change', (event) => {
-            lead.bonus[select.dataset.bonusSelect] = Number(event.target.value);
-            updateScore();
-          });
+          if (input && slider && scoreKey) {
+            // Input -> Slider and Lead
+            input.addEventListener('input', (event) => {
+              const value = Math.max(0, Math.min(20, parseInt(event.target.value) || 0));
+              slider.value = value;
+              lead[scoreKey] = value;
+              updateScore();
+            });
+
+            // Slider -> Input and Lead
+            slider.addEventListener('input', (event) => {
+              const value = parseInt(event.target.value);
+              input.value = value;
+              lead[scoreKey] = value;
+              updateScore();
+            });
+          }
         });
 
         document.getElementById('save-progress').addEventListener('click', () => {
@@ -716,25 +716,32 @@
         updateScore();
 
         function updateScore() {
-          const bantScore = lead.bant.budget + lead.bant.authority + lead.bant.need + lead.bant.timeline;
-          const bonusScore = lead.bonus.propertyFit + lead.bonus.sourceQuality + lead.bonus.companyProfile;
-          const hasUnknown = Object.values(lead.bant).some((points) => points === 0);
+          // Ensure all scores are numbers
+          const budgetScore = Number(lead.budgetScore || 0);
+          const brokerScore = Number(lead.brokerScore || 0);
+          const locationScore = Number(lead.locationScore || 0);
+          const timingScore = Number(lead.timingScore || 0);
+          const termLengthScore = Number(lead.termLengthScore || 0);
+
+          // Calculate total (sum of 5 dimensions, each 0-20, total 0-100)
+          const totalScore = budgetScore + brokerScore + locationScore + timingScore + termLengthScore;
+          const hasUnknown = [budgetScore, brokerScore, locationScore, timingScore, termLengthScore].some((points) => points === 0);
+          
           const gradeInfo =
-            window.LEAD_UTILS?.determineGradeFromScore(bantScore, hasUnknown) || {
+            window.LEAD_UTILS?.determineGradeFromScore(totalScore, hasUnknown) || {
               grade: 'U',
               color: 'bg-slate-100 text-slate-700',
-              description: 'Awaiting inputs — capture BANT data.',
+              description: 'Awaiting inputs — capture qualification data.',
               priority: 'Gather missing information before progressing.'
             };
 
-          document.getElementById('bant-score').textContent = bantScore;
-          document.getElementById('bonus-score').textContent = bonusScore;
-          document.getElementById('total-score').textContent = bantScore + bonusScore;
+          document.getElementById('total-score').textContent = totalScore;
 
-          document.getElementById('budget-points').textContent = `${lead.bant.budget} pts`;
-          document.getElementById('authority-points').textContent = `${lead.bant.authority} pts`;
-          document.getElementById('need-points').textContent = `${lead.bant.need} pts`;
-          document.getElementById('timeline-points').textContent = `${lead.bant.timeline} pts`;
+          document.getElementById('budget-points').textContent = `${budgetScore} pts`;
+          document.getElementById('broker-points').textContent = `${brokerScore} pts`;
+          document.getElementById('location-points').textContent = `${locationScore} pts`;
+          document.getElementById('timing-points').textContent = `${timingScore} pts`;
+          document.getElementById('termLength-points').textContent = `${termLengthScore} pts`;
 
           const gradeBadge = document.getElementById('grade-badge');
           gradeBadge.textContent = `${gradeInfo.grade} — ${gradeInfo.description.split('—')[0].trim()}`;
@@ -742,29 +749,30 @@
           document.getElementById('grade-description').textContent = gradeInfo.description;
           document.getElementById('priority-text').textContent = gradeInfo.priority;
 
-          renderBantHealth();
+          renderScoreHealth();
         }
 
-        function renderBantHealth() {
-          const container = document.getElementById('bant-health');
+        function renderScoreHealth() {
+          const container = document.getElementById('score-health');
           const ranges = [
-            { key: 'budget', label: 'Budget' },
-            { key: 'authority', label: 'Authority' },
-            { key: 'need', label: 'Need' },
-            { key: 'timeline', label: 'Timeline' }
+            { key: 'budgetScore', label: 'Budget' },
+            { key: 'brokerScore', label: 'Broker' },
+            { key: 'locationScore', label: 'Location' },
+            { key: 'timingScore', label: 'Timing' },
+            { key: 'termLengthScore', label: 'Term Length' }
           ];
 
           container.innerHTML = ranges
             .map((range) => {
-              const score = lead.bant[range.key];
+              const score = Number(lead[range.key] || 0);
               const color =
-                score >= 20 ? 'bg-emerald-100 text-emerald-700' : score >= 10 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700';
+                score >= 16 ? 'bg-emerald-100 text-emerald-700' : score >= 10 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700';
               return `
                 <div class="p-3 rounded-lg border border-[#E6E6E6]">
                   <p class="text-xs text-secondary uppercase">${range.label}</p>
                   <p class="text-sm font-semibold mt-1">${score} pts</p>
                   <span class="inline-flex mt-2 px-2 py-0.5 rounded-full text-xs font-medium ${color}">
-                    ${score === 0 ? 'Unknown' : score >= 20 ? 'Verified' : score >= 10 ? 'In progress' : 'At risk'}
+                    ${score === 0 ? 'Unknown' : score >= 16 ? 'Strong' : score >= 10 ? 'Moderate' : 'Weak'}
                   </span>
                 </div>
               `;

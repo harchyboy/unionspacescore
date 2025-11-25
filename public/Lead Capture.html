@@ -223,19 +223,6 @@
                       <option value="broker">Broker / advisor</option>
                     </select>
                   </div>
-                  <div class="md:col-span-2">
-                    <label class="text-xs font-semibold text-secondary uppercase">Authority</label>
-                    <select
-                      name="authority"
-                      class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
-                    >
-                      <option value="unknown">Unknown</option>
-                      <option value="manager">Manager</option>
-                      <option value="director">Director</option>
-                      <option value="c-suite">C-suite</option>
-                      <option value="final">Final decision maker</option>
-                    </select>
-                  </div>
                 </div>
               </div>
             </div>
@@ -244,7 +231,7 @@
               <div class="bg-white border border-[#E6E6E6] rounded-xl p-5 shadow-sm">
                 <div class="flex items-center justify-between mb-4">
                   <h2 class="text-lg font-semibold text-primary">Requirement Brief</h2>
-                  <span class="text-xs text-secondary">Fuel BANT scoring</span>
+                  <span class="text-xs text-secondary">Capture requirement details</span>
                 </div>
                 <div class="grid grid-cols-1 gap-4">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -305,19 +292,17 @@
                   <div class="mt-2 border border-dashed border-[#E6E6E6] rounded-lg p-4 bg-muted">
                     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                       <div>
-                        <p class="text-xs text-secondary uppercase tracking-wide">Fuel BANT scoring</p>
+                        <p class="text-xs text-secondary uppercase tracking-wide">Lead scoring preview</p>
                         <p id="lead-score-text" class="inline-flex items-center px-4 py-2 rounded-full border border-[#E6E6E6] bg-white text-sm font-semibold text-primary mt-2">
                           Lead score: 0 / 100 (Cold)
                         </p>
                       </div>
                       <div class="flex flex-wrap gap-2 text-xs font-semibold">
                         <span id="pill-budget" class="px-3 py-1 rounded-full border border-[#E6E6E6] text-secondary bg-white">Budget: Weak</span>
-                        <span id="pill-authority" class="px-3 py-1 rounded-full border border-[#E6E6E6] text-secondary bg-white">Authority: Unknown</span>
-                        <span id="pill-need" class="px-3 py-1 rounded-full border border-[#E6E6E6] text-secondary bg-white">Need: Low</span>
                         <span id="pill-timing" class="px-3 py-1 rounded-full border border-[#E6E6E6] text-secondary bg-white">Timing: Cold</span>
                       </div>
                     </div>
-                    <p class="text-xs text-secondary mt-3">Live BANT score updates as you capture detail.</p>
+                    <p class="text-xs text-secondary mt-3">Scoring will be completed during qualification.</p>
                   </div>
                 </div>
               </div>
@@ -368,7 +353,6 @@
         const budgetSelect = form.elements['budget'];
         const timelineSelect = form.elements['timeline'];
         const notesInput = form.elements['notes'];
-        const authoritySelect = form.elements['authority'];
         const nameInput = form.elements['name'];
         const companyInput = form.elements['company'];
         const emailInput = form.elements['email'];
@@ -385,8 +369,6 @@
 
         const leadScoreText = document.getElementById('lead-score-text');
         const pillBudget = document.getElementById('pill-budget');
-        const pillAuthority = document.getElementById('pill-authority');
-        const pillNeed = document.getElementById('pill-need');
         const pillTiming = document.getElementById('pill-timing');
 
         const chipBaseClass =
@@ -405,24 +387,10 @@
           Strong: 'bg-emerald-50 border-emerald-200 text-emerald-800'
         };
 
-        const needStyleMap = {
-          Low: 'bg-white border-[#E6E6E6] text-secondary',
-          Medium: 'bg-amber-50 border-amber-200 text-amber-800',
-          High: 'bg-emerald-50 border-emerald-200 text-emerald-800'
-        };
-
         const timingStyleMap = {
           Cold: 'bg-slate-100 border-slate-200 text-slate-700',
           Warm: 'bg-amber-50 border-amber-200 text-amber-800',
           Hot: 'bg-emerald-50 border-emerald-200 text-emerald-800'
-        };
-
-        const authorityStyleMap = {
-          Unknown: 'bg-muted border-[#E6E6E6] text-secondary',
-          Manager: 'bg-white border-[#E6E6E6] text-secondary',
-          Director: 'bg-amber-50 border-amber-200 text-amber-800',
-          'C-suite': 'bg-amber-50 border-amber-200 text-amber-800',
-          'Final decision maker': 'bg-emerald-50 border-emerald-200 text-emerald-800'
         };
 
         cards.forEach((card) => {
@@ -437,9 +405,7 @@
         const watchers = [
           { element: sizeInput, event: 'input' },
           { element: budgetSelect, event: 'change' },
-          { element: timelineSelect, event: 'change' },
-          { element: notesInput, event: 'input' },
-          { element: authoritySelect, event: 'change' }
+          { element: timelineSelect, event: 'change' }
         ];
 
         watchers.forEach(({ element, event }) => {
@@ -492,34 +458,31 @@
         });
 
         function calculateScore() {
+          // Simplified preview scoring - full scoring happens during qualification
           let score = 0;
-
-          const cleanedSize = parseInt(sizeInput.value.replace(/[^0-9]/g, ''), 10) || 0;
-          if (cleanedSize > 15000) {
-            score += 20;
-          } else if (cleanedSize > 5000) {
-            score += 10;
-          }
 
           const budgetValue = budgetSelect.value;
           let budgetStatus = 'Weak';
           if (budgetValue) {
-            score += 20;
             if (['over-100', '50-99'].includes(budgetValue)) {
-              score += 10;
+              score += 20;
               budgetStatus = 'Strong';
-            } else {
+            } else if (['25-49'].includes(budgetValue)) {
+              score += 12;
               budgetStatus = 'Fair';
+            } else {
+              score += 6;
+              budgetStatus = 'Weak';
             }
           }
 
           const timelineValue = timelineSelect.value;
           let timingStatus = 'Cold';
           if (timelineValue === '0-4') {
-            score += 30;
+            score += 20;
             timingStatus = 'Hot';
           } else if (timelineValue === '1-3') {
-            score += 20;
+            score += 15;
             timingStatus = 'Warm';
           } else if (timelineValue === '3-6') {
             score += 10;
@@ -528,75 +491,16 @@
             timingStatus = 'Cold';
           }
 
-          const notesValue = notesInput.value.trim();
-          const notesLength = notesValue.length;
-          let needStatus = 'Low';
-          let needScore = 0;
-
-          if (notesLength >= 40 && notesLength <= 120) {
-            needScore = 10;
-            needStatus = 'Medium';
-          } else if (notesLength > 120) {
-            needScore = 20;
-            needStatus = 'High';
-          }
-
-          const lowerNotes = notesValue.toLowerCase();
-          const technicalKeywords = /(lab|laboratory|technical|specialist)/i;
-          const esgKeywords = /(esg|sustainability|epc|compliance)/i;
-
-          if (technicalKeywords.test(lowerNotes)) {
-            needScore += 5;
-          }
-          if (esgKeywords.test(lowerNotes)) {
-            needScore += 5;
-          }
-
-          needScore = Math.min(needScore, 25);
-          if (needScore >= 20) {
-            needStatus = 'High';
-          } else if (needScore >= 10) {
-            needStatus = 'Medium';
-          } else {
-            needStatus = 'Low';
-          }
-          score += needScore;
-
-          const authorityValue = authoritySelect.value || 'unknown';
-          const authorityLabelMap = {
-            unknown: 'Unknown',
-            manager: 'Manager',
-            director: 'Director',
-            'c-suite': 'C-suite',
-            final: 'Final decision maker'
-          };
-          const authorityLabel = authorityLabelMap[authorityValue] || 'Unknown';
-          if (authorityValue === 'manager') {
-            score += 5;
-          } else if (authorityValue === 'director') {
-            score += 10;
-          } else if (authorityValue === 'c-suite') {
-            score += 15;
-          } else if (authorityValue === 'final') {
-            score += 20;
-          }
-
-          const label = score >= 70 ? 'Hot' : score >= 40 ? 'Warm' : 'Cold';
-          leadScoreText.textContent = `Lead score: ${score} / 100 (${label})`;
+          // Simple preview score (not full qualification)
+          const label = score >= 30 ? 'Hot' : score >= 20 ? 'Warm' : 'Cold';
+          leadScoreText.textContent = `Lead score preview: ${score} / 100 (${label})`;
           leadScoreText.className = `${chipBaseClass} ${chipColorMap[label]}`;
 
           pillBudget.textContent = `Budget: ${budgetStatus}`;
           pillBudget.className = `${pillBaseClass} ${budgetStyleMap[budgetStatus]}`;
 
-          pillNeed.innerHTML = `Need: ${needStatus} <span class="ml-1 text-[11px] font-normal text-secondary">(${needScore} pts)</span>`;
-          pillNeed.className = `${pillBaseClass} ${needStyleMap[needStatus]}`;
-
           pillTiming.textContent = `Timing: ${timingStatus}`;
           pillTiming.className = `${pillBaseClass} ${timingStyleMap[timingStatus]}`;
-
-          const authorityStyle = authorityStyleMap[authorityLabel] || authorityStyleMap['Unknown'];
-          pillAuthority.textContent = `Authority: ${authorityLabel}`;
-          pillAuthority.className = `${pillBaseClass} ${authorityStyle}`;
         }
 
         function enableConfidentialMode() {
