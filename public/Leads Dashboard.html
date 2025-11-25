@@ -458,6 +458,13 @@
                   </label>
                 </form>
               </div>
+              <div id="recommended-units-preview" class="hidden">
+                <label class="block text-sm font-medium text-primary mb-2">Recommended Units</label>
+                <div id="units-thumbnails" class="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto p-2 border border-[#E6E6E6] rounded-lg bg-muted">
+                  <!-- Thumbnails will be populated here -->
+                </div>
+                <p class="text-xs text-secondary mt-2">These units will be included when sending to brokers.</p>
+              </div>
               <div>
                 <label class="block text-sm font-medium text-primary mb-2">Internal Note</label>
                 <textarea
@@ -1001,7 +1008,54 @@
           // Clear internal note field
           document.getElementById('assign-internal-note').value = '';
           
+          // Populate recommended units preview
+          populateRecommendedUnitsPreview(lead);
+          
           modal.classList.remove('hidden');
+        }
+
+        function populateRecommendedUnitsPreview(lead) {
+          const previewSection = document.getElementById('recommended-units-preview');
+          const thumbnailsContainer = document.getElementById('units-thumbnails');
+          
+          if (!previewSection || !thumbnailsContainer) return;
+          
+          // Get recommended units from lead
+          const recommendedUnits = lead?.propertyMatches || [];
+          
+          if (!recommendedUnits.length) {
+            previewSection.classList.add('hidden');
+            return;
+          }
+          
+          // Show preview section
+          previewSection.classList.remove('hidden');
+          
+          // Get property library to enrich unit data
+          const propertyLibrary = window.LEAD_UTILS?.propertyLibrary || {};
+          
+          // Render thumbnails
+          thumbnailsContainer.innerHTML = recommendedUnits.map((unit) => {
+            // Get full property data if available
+            const fullProperty = propertyLibrary[unit.id] || unit;
+            const image = fullProperty.image || 'https://via.placeholder.com/150?text=No+Image';
+            const name = fullProperty.name || unit.name || 'Unknown Property';
+            const fitScore = unit.fit || 80;
+            
+            return `
+              <div class="relative group cursor-pointer" title="${name} (${fitScore}% fit)">
+                <img 
+                  src="${image}" 
+                  alt="${name}" 
+                  class="w-full h-20 object-cover rounded-lg border border-[#E6E6E6] group-hover:border-primary transition-base"
+                />
+                <div class="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs px-1 py-0.5 rounded-b-lg">
+                  <div class="truncate">${name}</div>
+                  <div class="text-xs opacity-90">${fitScore}% fit</div>
+                </div>
+              </div>
+            `;
+          }).join('');
         }
 
         function closeAssignModal() {
