@@ -539,6 +539,10 @@
         const searchInput = document.getElementById('lead-search');
         const tableBody = document.getElementById('leads-table-body');
         const state = { grade: '', source: '', status: '', search: '' };
+        const contactTypeStyles = {
+          broker: 'bg-amber-50 text-amber-800 border-amber-200',
+          tenant: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        };
 
         const uniqueValues = (key) => [...new Set(leads.map((lead) => lead[key]))].sort();
         uniqueValues('source').forEach((source) => {
@@ -584,6 +588,20 @@
           });
         }
 
+        function getContactTypeInfo(lead) {
+          const typeValue = resolveContactType(lead);
+          const label = typeValue === 'broker' ? 'Broker' : 'Direct Tenant';
+          const classes = contactTypeStyles[typeValue] || contactTypeStyles.tenant;
+          return { label, classes };
+        }
+
+        function resolveContactType(lead = {}) {
+          if (lead.contactType) return lead.contactType === 'broker' ? 'broker' : 'tenant';
+          if (lead.contact?.type) return lead.contact.type === 'broker' ? 'broker' : 'tenant';
+          const source = (lead.source || '').toLowerCase();
+          return source.includes('broker') ? 'broker' : 'tenant';
+        }
+
         function renderTable() {
           const filtered = leads.filter((lead) => {
             // Filter out archived leads and converted leads
@@ -609,11 +627,17 @@
               const gradeInfo =
                 window.LEAD_UTILS?.gradeScale.find((scale) => scale.grade === lead.grade) ||
                 window.LEAD_UTILS?.gradeScale[window.LEAD_UTILS.gradeScale.length - 1];
+              const contactTypeInfo = getContactTypeInfo(lead);
               return `
                 <tr class="hover:bg-muted transition-base">
                   <td class="px-4 py-4 font-medium text-primary">${lead.reference}</td>
                   <td class="px-4 py-4">
-                    <div class="font-semibold text-primary">${lead.contact.name}</div>
+                    <div class="flex items-center gap-2">
+                      <div class="font-semibold text-primary">${lead.contact.name}</div>
+                      <span class="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold border ${contactTypeInfo.classes}">
+                        ${contactTypeInfo.label}
+                      </span>
+                    </div>
                     <div class="text-xs text-secondary">${lead.contact.email}</div>
                   </td>
                   <td class="px-4 py-4">
