@@ -55,7 +55,12 @@
       }
 
       .badge {
-        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+        display: inline-flex;
+        align-items: center;
+        padding: 0.125rem 0.625rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
       }
 
       .scroll-hidden::-webkit-scrollbar {
@@ -161,6 +166,14 @@
                     class="w-full lg:w-64 pl-9 pr-3 py-2 rounded-lg border border-[#E6E6E6] text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
+                <select
+                  id="contact-type-filter"
+                  class="px-3 py-2 rounded-lg border border-[#E6E6E6] text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">All Contacts</option>
+                  <option value="tenant">Direct Tenants</option>
+                  <option value="broker">Broker / Advisors</option>
+                </select>
                 <select
                   id="source-filter"
                   class="px-3 py-2 rounded-lg border border-[#E6E6E6] text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
@@ -534,11 +547,12 @@
       document.addEventListener('DOMContentLoaded', () => {
         const leads = window.LEADS_DATA || [];
         const gradeButtons = document.querySelectorAll('[data-grade-filter]');
+        const contactTypeFilter = document.getElementById('contact-type-filter');
         const sourceFilter = document.getElementById('source-filter');
         const statusFilter = document.getElementById('status-filter');
         const searchInput = document.getElementById('lead-search');
         const tableBody = document.getElementById('leads-table-body');
-        const state = { grade: '', source: '', status: '', search: '' };
+        const state = { grade: '', source: '', status: '', contactType: '', search: '' };
         const contactTypeStyles = {
           broker: 'bg-amber-50 text-amber-800 border-amber-200',
           tenant: 'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -565,6 +579,11 @@
 
         sourceFilter.addEventListener('change', (event) => {
           state.source = event.target.value;
+          renderTable();
+        });
+
+        contactTypeFilter.addEventListener('change', (event) => {
+          state.contactType = event.target.value;
           renderTable();
         });
 
@@ -615,11 +634,14 @@
             const matchesGrade = state.grade ? lead.grade === state.grade : true;
             const matchesSource = state.source ? lead.source === state.source : true;
             const matchesStatus = state.status ? lead.status === state.status : true;
+            const matchesContactType = state.contactType
+              ? resolveContactType(lead) === state.contactType
+              : true;
             const matchesSearch = state.search
               ? lead.contact.name.toLowerCase().includes(state.search) ||
                 lead.company.toLowerCase().includes(state.search)
               : true;
-            return matchesGrade && matchesSource && matchesStatus && matchesSearch;
+            return matchesGrade && matchesSource && matchesStatus && matchesContactType && matchesSearch;
           });
 
           tableBody.innerHTML = filtered
