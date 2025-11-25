@@ -229,7 +229,8 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg border border-concrete/30 p-6">
+                    <!-- Disposal Agent and Landlord - Only show at Heads of Terms stage or later -->
+                    <div id="disposal-agent-section" class="bg-white rounded-lg border border-concrete/30 p-6 hidden" data-stage-conditional="heads-of-terms">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-semibold text-slate uppercase tracking-wide">Disposal Agent</h3>
                             <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
@@ -261,7 +262,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-lg border border-concrete/30 p-6">
+                    <div id="landlord-section" class="bg-white rounded-lg border border-concrete/30 p-6 hidden" data-stage-conditional="heads-of-terms">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-semibold text-slate uppercase tracking-wide">Landlord</h3>
                             <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
@@ -385,8 +386,15 @@
                         </div>
                     </div>
 
+                    <!-- Special Requirements / Notes - Moved to Lead/Tenant Level -->
                     <div class="bg-white rounded-lg border border-concrete/30 p-6">
-                        <h3 class="text-sm font-semibold text-slate uppercase tracking-wide mb-4">Constraints &amp; Notes</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-slate uppercase tracking-wide">Special Requirements / Notes</h3>
+                            <span class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-800 text-xs font-semibold rounded">
+                                <i class="fa-solid fa-user mr-1"></i>
+                                Lead Level
+                            </span>
+                        </div>
                         <div class="space-y-3">
                             <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
                                 <div class="flex items-start">
@@ -416,6 +424,10 @@
                                 </div>
                             </div>
                         </div>
+                        <p class="text-xs text-concrete mt-3 italic">
+                            <i class="fa-solid fa-info-circle mr-1"></i>
+                            Captured during initial lead qualification
+                        </p>
                     </div>
                 </div>
             </div>
@@ -1133,5 +1145,62 @@
     </button>
     </div>
 </div>
+
+<script>
+// Conditional display of landlord and disposal agent based on stage
+(function() {
+    // Stages where landlord and disposal agent should be visible
+    const stagesWithLandlordAndAgent = [
+        'heads-of-terms',
+        'hots-in',
+        'legals',
+        'notify-involve-ops',
+        'handoff',
+        'won'
+    ];
+    
+    function updateConditionalSections() {
+        // Get current stage from status bar
+        const stageElement = document.querySelector('#status-bar [class*="bg-"]');
+        let currentStage = 'qualified'; // default
+        
+        if (stageElement) {
+            const stageText = stageElement.textContent.trim().toLowerCase();
+            // Map stage text to stage identifiers
+            if (stageText.includes('heads of terms') || stageText.includes('hots')) {
+                currentStage = 'heads-of-terms';
+            } else if (stageText.includes('legals')) {
+                currentStage = 'legals';
+            } else if (stageText.includes('handoff') || stageText.includes('notify')) {
+                currentStage = 'notify-involve-ops';
+            } else if (stageText.includes('won')) {
+                currentStage = 'won';
+            }
+        }
+        
+        // Show/hide conditional sections
+        const conditionalSections = document.querySelectorAll('[data-stage-conditional]');
+        conditionalSections.forEach(section => {
+            const requiredStage = section.getAttribute('data-stage-conditional');
+            if (stagesWithLandlordAndAgent.includes(currentStage)) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Run on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateConditionalSections);
+    } else {
+        updateConditionalSections();
+    }
+    
+    // Also update when stage changes (if you have dynamic stage updates)
+    // You can call updateConditionalSections() whenever the stage changes
+    window.updateConditionalSections = updateConditionalSections;
+})();
+</script>
 </body>
 </html>
