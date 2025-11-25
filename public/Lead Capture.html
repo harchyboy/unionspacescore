@@ -124,6 +124,32 @@
                   <h2 class="text-lg font-semibold text-primary">Contact Details</h2>
                   <span class="text-xs text-secondary">Who reached out?</span>
                 </div>
+                <div class="space-y-2">
+                  <label class="text-xs font-semibold text-secondary uppercase flex items-center justify-between">
+                    Search Existing Contact
+                    <span id="contact-lookup-status" class="text-[11px] font-normal text-secondary">No contact selected</span>
+                  </label>
+                  <div class="flex flex-col gap-2 md:flex-row">
+                    <div class="flex-1">
+                      <input
+                        id="contact-lookup"
+                        list="contact-suggestions"
+                        class="w-full px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                        placeholder="Start typing name, company or email..."
+                        autocomplete="off"
+                      />
+                      <datalist id="contact-suggestions"></datalist>
+                    </div>
+                    <button
+                      type="button"
+                      id="contact-load"
+                      class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm font-medium text-primary hover:bg-muted transition disabled:opacity-40"
+                      disabled
+                    >
+                      Load contact
+                    </button>
+                  </div>
+                </div>
                 <div class="border border-dashed border-[#E6E6E6] rounded-lg p-4 bg-muted">
                   <label for="confidential-toggle" class="flex items-start gap-3 cursor-pointer">
                     <input
@@ -340,6 +366,10 @@
         const confidentialHint = document.getElementById('confidential-hint');
         const holdingEntityField = document.getElementById('holding-entity-field');
         const holdingEntityInput = form.elements['holdingEntity'];
+        const contactLookupInput = document.getElementById('contact-lookup');
+        const contactLoadButton = document.getElementById('contact-load');
+        const contactLookupStatus = document.getElementById('contact-lookup-status');
+        const contactSuggestions = document.getElementById('contact-suggestions');
 
         const leadScoreText = document.getElementById('lead-score-text');
         const pillBudget = document.getElementById('pill-budget');
@@ -422,11 +452,29 @@
           }
         });
 
+        const contactsIndex = buildContactsIndex();
+        hydrateContactSuggestions(contactsIndex);
+
+        contactLookupInput.addEventListener('input', () => {
+          const contact = resolveContactFromInput(contactLookupInput.value, contactsIndex);
+          updateContactLookupState(contact);
+        });
+
+        contactLoadButton.addEventListener('click', () => {
+          const contact = resolveContactFromInput(contactLookupInput.value, contactsIndex);
+          if (contact) {
+            applyContactDetails(contact);
+            pushToast(`Loaded ${contact.name}'s profile into this lead.`);
+          }
+        });
+
         form.addEventListener('submit', (event) => {
           event.preventDefault();
           pushToast('Lead captured and routed to qualification queue.');
           form.reset();
           disableConfidentialMode(true);
+          contactLookupInput.value = '';
+          updateContactLookupState(null);
           cards.forEach((c) => c.classList.remove('border-primary', 'bg-muted'));
           calculateScore();
         });
@@ -576,6 +624,74 @@
           }
           if (counter <= 0) counter = 1;
           return `Confidential ${String(counter).padStart(3, '0')}`;
+        }
+
+        function buildContactsIndex() {
+          const leads = Array.isArray(window.LEADS_DATA) ? window.LEADS_DATA : [];
+          const byEmail = new Map();
+          leads.forEach((lead) => {
+            const contact = lead.contact || {};
+            const email = (contact.email || '').toLowerCase();
+            if (!email || byEmail.has(email)) return;
+            byEmail.set(email, {
+              label: `${contact.name || 'Unknown'} — ${lead.company || 'Unknown Company'} (${contact.email || 'no email'})`,
+              name: contact.name || '',
+              company: lead.company || '',
+              email: contact.email || '',
+              phone: contact.phone || ''
+            });
+          });
+          return Array.from(byEmail.values());
+        }
+
+        function hydrateContactSuggestions(contacts) {
+          contactSuggestions.innerHTML = '';
+          contacts.forEach((contact) => {
+            const option = document.createElement('option');
+            option.value = contact.label;
+            contactSuggestions.appendChild(option);
+          });
+          if (!contacts.length) {
+            contactLookupInput.placeholder = 'No saved contacts yet';
+            contactLookupInput.disabled = true;
+            contactLoadButton.disabled = true;
+            contactLookupStatus.textContent = 'No saved contacts available';
+          }
+        }
+
+        function resolveContactFromInput(value, contacts) {
+          const trimmed = value.trim().toLowerCase();
+          if (!trimmed) return null;
+          return (
+            contacts.find((contact) => contact.label.toLowerCase() === trimmed) ||
+            contacts.find(
+              (contact) =>
+                contact.name.toLowerCase() === trimmed ||
+                contact.email.toLowerCase() === trimmed ||
+                contact.company.toLowerCase() === trimmed
+            ) ||
+            null
+          );
+        }
+
+        function updateContactLookupState(contact) {
+          if (contact) {
+            contactLookupStatus.textContent = `Match found: ${contact.name}`;
+            contactLoadButton.disabled = false;
+          } else {
+            contactLookupStatus.textContent = 'No contact selected';
+            contactLoadButton.disabled = true;
+          }
+        }
+
+        function applyContactDetails(contact) {
+          if (!contact) return;
+          disableConfidentialMode(true);
+          nameInput.value = contact.name || '';
+          companyInput.value = contact.company || '';
+          emailInput.value = contact.email || '';
+          phoneInput.value = contact.phone || '';
+          updateContactLookupState(contact);
         }
 
         function pushToast(message) {
