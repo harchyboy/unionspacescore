@@ -124,6 +124,31 @@
                   <h2 class="text-lg font-semibold text-primary">Contact Details</h2>
                   <span class="text-xs text-secondary">Who reached out?</span>
                 </div>
+                <div class="border border-dashed border-[#E6E6E6] rounded-lg p-4 bg-muted">
+                  <label for="confidential-toggle" class="flex items-start gap-3 cursor-pointer">
+                    <input
+                      id="confidential-toggle"
+                      type="checkbox"
+                      class="mt-1 h-4 w-4 text-primary border-[#E6E6E6] rounded focus:ring-primary"
+                    />
+                    <div>
+                      <span class="text-sm font-semibold text-primary">Mark requirement as confidential</span>
+                      <p id="confidential-hint" class="text-xs text-secondary mt-1">
+                        Tenant identity disclosed; capture standard details.
+                      </p>
+                    </div>
+                  </label>
+                </div>
+                <div id="holding-entity-field" class="hidden">
+                  <label class="text-xs font-semibold text-secondary uppercase">Holding Entity Code</label>
+                  <input
+                    name="holdingEntity"
+                    readonly
+                    class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg bg-muted text-primary font-semibold"
+                    placeholder="Confidential 001"
+                  />
+                  <p class="text-xs text-secondary mt-1">Auto-generated identifier while tenant remains undisclosed.</p>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label class="text-xs font-semibold text-secondary uppercase">Name</label>
@@ -307,6 +332,14 @@
         const timelineSelect = form.elements['timeline'];
         const notesInput = form.elements['notes'];
         const authoritySelect = form.elements['authority'];
+        const nameInput = form.elements['name'];
+        const companyInput = form.elements['company'];
+        const emailInput = form.elements['email'];
+        const phoneInput = form.elements['phone'];
+        const confidentialToggle = document.getElementById('confidential-toggle');
+        const confidentialHint = document.getElementById('confidential-hint');
+        const holdingEntityField = document.getElementById('holding-entity-field');
+        const holdingEntityInput = form.elements['holdingEntity'];
 
         const leadScoreText = document.getElementById('lead-score-text');
         const pillBudget = document.getElementById('pill-budget');
@@ -373,10 +406,27 @@
 
         calculateScore();
 
+        const contactPlaceholders = {
+          name: nameInput.placeholder,
+          company: companyInput.placeholder,
+          email: emailInput.placeholder,
+          phone: phoneInput.placeholder || ''
+        };
+        const requiredContactInputs = [nameInput, companyInput, emailInput];
+
+        confidentialToggle.addEventListener('change', () => {
+          if (confidentialToggle.checked) {
+            enableConfidentialMode();
+          } else {
+            disableConfidentialMode();
+          }
+        });
+
         form.addEventListener('submit', (event) => {
           event.preventDefault();
           pushToast('Lead captured and routed to qualification queue.');
           form.reset();
+          disableConfidentialMode(true);
           cards.forEach((c) => c.classList.remove('border-primary', 'bg-muted'));
           calculateScore();
         });
@@ -487,6 +537,45 @@
           const authorityStyle = authorityStyleMap[authorityLabel] || authorityStyleMap['Unknown'];
           pillAuthority.textContent = `Authority: ${authorityLabel}`;
           pillAuthority.className = `${pillBaseClass} ${authorityStyle}`;
+        }
+
+        function enableConfidentialMode() {
+          const holdingEntityCode = generateConfidentialCode();
+          holdingEntityInput.value = holdingEntityCode;
+          holdingEntityField.classList.remove('hidden');
+          confidentialHint.textContent = `Holding entity ${holdingEntityCode} created. Backfill tenant details later.`;
+          requiredContactInputs.forEach((input) => input.removeAttribute('required'));
+          nameInput.placeholder = 'Optional until disclosed';
+          companyInput.placeholder = 'Optional until disclosed';
+          emailInput.placeholder = 'Optional contact email';
+          phoneInput.placeholder = 'Optional contact number';
+        }
+
+        function disableConfidentialMode(resetToggle = false) {
+          holdingEntityInput.value = '';
+          holdingEntityField.classList.add('hidden');
+          confidentialHint.textContent = 'Tenant identity disclosed; capture standard details.';
+          requiredContactInputs.forEach((input) => input.setAttribute('required', 'required'));
+          nameInput.placeholder = contactPlaceholders.name;
+          companyInput.placeholder = contactPlaceholders.company;
+          emailInput.placeholder = contactPlaceholders.email;
+          phoneInput.placeholder = contactPlaceholders.phone;
+          if (resetToggle) {
+            confidentialToggle.checked = false;
+          }
+        }
+
+        function generateConfidentialCode() {
+          let counter = 0;
+          try {
+            counter = parseInt(localStorage.getItem('union-confidential-counter') || '0', 10) || 0;
+            counter += 1;
+            localStorage.setItem('union-confidential-counter', counter.toString());
+          } catch (error) {
+            counter = Math.floor(Date.now() % 1000);
+          }
+          if (counter <= 0) counter = 1;
+          return `Confidential ${String(counter).padStart(3, '0')}`;
         }
 
         function pushToast(message) {
