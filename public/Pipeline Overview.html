@@ -256,9 +256,22 @@
                         <i class="fa-regular fa-bell text-lg"></i>
                         <span class="absolute top-1 right-1 w-2 h-2 bg-slate rounded-full"></span>
                     </button>
-                    <button class="p-2 text-concrete hover:text-slate transition-colors">
-                        <i class="fa-solid fa-magnifying-glass text-lg"></i>
-                    </button>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="pipeline-search" 
+                            placeholder="Search deals by company name..." 
+                            class="pl-10 pr-4 py-2 text-sm border border-concrete/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate w-64"
+                        >
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-concrete"></i>
+                        <button 
+                            id="clear-search" 
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-concrete hover:text-slate hidden"
+                            onclick="clearSearch()"
+                        >
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
                     <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
                         <i class="fa-solid fa-circle-question mr-2"></i>
                         Help
@@ -1831,10 +1844,139 @@ window.addEventListener('load', function() {
     window.refreshPipelineBoard = function() {
         renderIntakeColumn();
         // Add other column renders here as needed
+        
+        // Re-apply search filter if active
+        if (pipelineSearch && pipelineSearch.value.trim() !== '') {
+            filterDealsBySearch(pipelineSearch.value);
+        }
     };
 
     // Initial render
     renderIntakeColumn();
+
+    // Search functionality
+    const pipelineSearch = document.getElementById('pipeline-search');
+    const clearSearchBtn = document.getElementById('clear-search');
+
+    function filterDealsBySearch(searchTerm) {
+        const searchLower = searchTerm.toLowerCase().trim();
+        let totalVisible = 0;
+        let totalHidden = 0;
+
+        // Get all deal cards across all columns
+        document.querySelectorAll('[id^="stage-"]').forEach(stage => {
+            const container = stage.querySelector('.flex-1.overflow-y-auto');
+            if (!container) return;
+
+            let stageVisible = 0;
+            let stageHidden = 0;
+
+            // Find all deal cards (divs with rounded-lg that contain h4)
+            container.querySelectorAll('div.rounded-lg').forEach(card => {
+                const h4 = card.querySelector('h4');
+                if (!h4) return; // Skip if not a deal card
+
+                const companyName = h4.textContent.trim().toLowerCase();
+                const sourceText = card.querySelector('p.text-xs.text-concrete')?.textContent.trim().toLowerCase() || '';
+                
+                // Search in company name and source
+                const matches = searchLower === '' || 
+                    companyName.includes(searchLower) || 
+                    sourceText.includes(searchLower);
+
+                if (matches) {
+                    card.style.display = '';
+                    stageVisible++;
+                    totalVisible++;
+                } else {
+                    card.style.display = 'none';
+                    stageHidden++;
+                    totalHidden++;
+                }
+            });
+
+            // Update stage count to show visible count
+            const countElement = stage.querySelector('h3 + .text-xs.text-concrete, h3 ~ .text-xs.text-concrete');
+            if (countElement) {
+                const originalCount = countElement.getAttribute('data-original-count') || countElement.textContent.trim();
+                if (!countElement.hasAttribute('data-original-count')) {
+                    countElement.setAttribute('data-original-count', originalCount);
+                }
+                
+                if (searchLower === '') {
+                    countElement.textContent = originalCount;
+                } else {
+                    countElement.textContent = `${stageVisible}${stageHidden > 0 ? ` (${parseInt(originalCount) - stageVisible} hidden)` : ''}`;
+                }
+            }
+        });
+
+        // Show/hide clear button
+        if (clearSearchBtn) {
+            if (searchLower === '') {
+                clearSearchBtn.classList.add('hidden');
+            } else {
+                clearSearchBtn.classList.remove('hidden');
+            }
+        }
+
+        // Show search results summary
+        if (searchLower !== '' && totalVisible === 0) {
+            showSearchFeedback('No deals found matching your search', 'info');
+        }
+    }
+
+    // Wire up search input
+    if (pipelineSearch) {
+        pipelineSearch.addEventListener('input', function(e) {
+            filterDealsBySearch(e.target.value);
+        });
+
+        // Clear search on Escape
+        pipelineSearch.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                clearSearch();
+            }
+        });
+
+        // Focus search on Ctrl/Cmd + K
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                pipelineSearch.focus();
+                pipelineSearch.select();
+            }
+        });
+    }
+
+    // Clear search function
+    window.clearSearch = function() {
+        if (pipelineSearch) {
+            pipelineSearch.value = '';
+            filterDealsBySearch('');
+            pipelineSearch.focus();
+        }
+    };
+
+    function showSearchFeedback(message, type = 'info') {
+        // Remove existing feedback if any
+        const existing = document.getElementById('search-feedback');
+        if (existing) {
+            existing.remove();
+        }
+
+        const toast = document.createElement('div');
+        toast.id = 'search-feedback';
+        const bgColor = type === 'error' ? 'bg-red-600' : type === 'info' ? 'bg-blue-600' : 'bg-slate';
+        toast.className = `fixed top-24 right-8 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 z-50 transition-all`;
+        toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-exclamation-circle' : type === 'info' ? 'fa-info-circle' : 'fa-check-circle'}"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 2000);
+    }
 
     // Pipeline board has isolated horizontal scroll - like an iframe
     // Horizontal scrolling in Kanban doesn't affect page scroll
