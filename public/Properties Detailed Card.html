@@ -636,6 +636,94 @@
     </div>
   </div>
 
+  <!-- Publish to Brokers Modal -->
+  <div id="modal-publish-brokers" class="fixed inset-0 bg-black/40 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-lg w-full max-w-2xl p-6 max-h-[80vh] flex flex-col">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-lg font-semibold text-primary">Publish to Brokers</h3>
+          <p class="text-sm text-secondary mt-1">Select which brokers to send this property to</p>
+        </div>
+        <button id="close-publish-brokers" aria-label="Close" class="text-secondary hover:text-primary">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto mb-4">
+        <div class="mb-4">
+          <p class="text-sm text-secondary mb-3">Select one or more brokers to publish this property to:</p>
+          <div id="broker-selection" class="space-y-3">
+            <label class="flex items-center space-x-3 p-3 border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth cursor-pointer">
+              <input type="checkbox" name="brokers" value="Knight Frank" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-primary">Knight Frank</div>
+                <div class="text-xs text-secondary">Commercial property services</div>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-3 border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth cursor-pointer">
+              <input type="checkbox" name="brokers" value="CBRE" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-primary">CBRE</div>
+                <div class="text-xs text-secondary">Global real estate services</div>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-3 border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth cursor-pointer">
+              <input type="checkbox" name="brokers" value="JLL" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-primary">JLL</div>
+                <div class="text-xs text-secondary">Jones Lang LaSalle</div>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-3 border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth cursor-pointer">
+              <input type="checkbox" name="brokers" value="Savills" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-primary">Savills</div>
+                <div class="text-xs text-secondary">Property consultants</div>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-3 border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth cursor-pointer">
+              <input type="checkbox" name="brokers" value="Cushman & Wakefield" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-primary">Cushman & Wakefield</div>
+                <div class="text-xs text-secondary">Commercial real estate services</div>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-3 border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth cursor-pointer">
+              <input type="checkbox" name="brokers" value="Colliers" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-primary">Colliers</div>
+                <div class="text-xs text-secondary">Real estate services</div>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-3 border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth cursor-pointer">
+              <input type="checkbox" name="brokers" value="BNP Paribas Real Estate" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+              <div class="flex-1">
+                <div class="text-sm font-medium text-primary">BNP Paribas Real Estate</div>
+                <div class="text-xs text-secondary">Property investment services</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="p-3 bg-muted rounded-lg">
+          <div class="flex items-start space-x-2">
+            <i class="fa-solid fa-info-circle text-primary mt-0.5"></i>
+            <div class="text-xs text-secondary">
+              <p class="font-medium text-primary mb-1">Property Information</p>
+              <p id="publish-property-info" class="text-secondary">This property will be shared with the selected brokers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end space-x-3 pt-4 border-t border-[#E6E6E6]">
+        <button id="cancel-publish-brokers" class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-muted transition-all-smooth">
+          Cancel
+        </button>
+        <button id="confirm-publish-brokers" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all-smooth">
+          Publish to Selected Brokers
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
   <script src="leads-data.js"></script>
   <script>
@@ -691,8 +779,76 @@
     document.getElementById('close-viewing')?.addEventListener('click', closeModal);
     modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Mock buttons
-    document.getElementById('btn-publish')?.addEventListener('click', () => alert('Preflight checks passed. Ready to publish.'));
+    // Publish to Brokers Modal functionality
+    const publishBrokersModal = document.getElementById('modal-publish-brokers');
+    const closePublishBrokersBtn = document.getElementById('close-publish-brokers');
+    const cancelPublishBrokersBtn = document.getElementById('cancel-publish-brokers');
+    const confirmPublishBrokersBtn = document.getElementById('confirm-publish-brokers');
+    const btnPublish = document.getElementById('btn-publish');
+
+    function openPublishBrokersModal() {
+      if (!publishBrokersModal) return;
+      
+      // Update property info in modal
+      const propertyTitle = document.getElementById('prop-title')?.textContent || 'This property';
+      const propertyInfo = document.getElementById('publish-property-info');
+      if (propertyInfo) {
+        propertyInfo.textContent = `${propertyTitle} will be shared with the selected brokers.`;
+      }
+      
+      publishBrokersModal.classList.remove('hidden');
+      publishBrokersModal.classList.add('flex');
+    }
+
+    function closePublishBrokersModal() {
+      if (!publishBrokersModal) return;
+      publishBrokersModal.classList.add('hidden');
+      publishBrokersModal.classList.remove('flex');
+      
+      // Uncheck all broker checkboxes
+      const checkboxes = publishBrokersModal.querySelectorAll('input[name="brokers"]');
+      checkboxes.forEach(cb => cb.checked = false);
+    }
+
+    btnPublish?.addEventListener('click', openPublishBrokersModal);
+    closePublishBrokersBtn?.addEventListener('click', closePublishBrokersModal);
+    cancelPublishBrokersBtn?.addEventListener('click', closePublishBrokersModal);
+    
+    publishBrokersModal?.addEventListener('click', (e) => {
+      if (e.target === publishBrokersModal) closePublishBrokersModal();
+    });
+
+    confirmPublishBrokersBtn?.addEventListener('click', () => {
+      const selectedBrokers = Array.from(
+        publishBrokersModal.querySelectorAll('input[name="brokers"]:checked')
+      ).map(cb => cb.value);
+
+      if (selectedBrokers.length === 0) {
+        alert('Please select at least one broker to publish to.');
+        return;
+      }
+
+      const propertyTitle = document.getElementById('prop-title')?.textContent || 'Property';
+      const brokerList = selectedBrokers.length === 1 
+        ? selectedBrokers[0] 
+        : selectedBrokers.slice(0, -1).join(', ') + ' and ' + selectedBrokers[selectedBrokers.length - 1];
+
+      // Show success message
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50 transition-all-smooth';
+      toast.innerHTML = `
+        <i class="fa-solid fa-check-circle"></i>
+        <span>${propertyTitle} published to ${brokerList}.</span>
+      `;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+
+      closePublishBrokersModal();
+    });
 
     // Add to Lead functionality
     function getCurrentPropertyId() {
