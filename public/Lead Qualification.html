@@ -112,9 +112,35 @@
           </div>
         </header>
 
-        <section class="flex-1 overflow-y-auto px-8 py-6 space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 space-y-6">
+        <section class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+          <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm space-y-4">
+            <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+              <div>
+                <h2 class="text-lg font-semibold text-primary">Recommended Units</h2>
+                <p class="text-xs text-secondary">Front-and-centre shortlist powered by fit scoring</p>
+              </div>
+              <div class="flex flex-wrap gap-2 items-center">
+                <select
+                  id="unit-add-select"
+                  class="min-w-[220px] px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+                >
+                  <option value="">Select unit to add</option>
+                </select>
+                <button
+                  id="unit-add-btn"
+                  type="button"
+                  class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition"
+                >
+                  Add Unit
+                </button>
+              </div>
+            </div>
+            <div class="text-xs text-secondary">Auto-matched units can be curated manually. Remove mismatches or add units from the portfolio.</div>
+            <div id="recommended-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+
+          <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="xl:col-span-2 space-y-6">
               <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm space-y-6">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
@@ -276,60 +302,32 @@
 
             <div class="space-y-6">
               <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm space-y-4">
-                <div class="flex items-center justify-between">
+                <div>
                   <h2 class="text-lg font-semibold text-primary">Tenant Requirements</h2>
-                  <span class="text-xs text-secondary">Snapshot</span>
+                  <p class="text-xs text-secondary">Snapshot of what matters most</p>
                 </div>
-                <dl class="space-y-3 text-sm">
-                  <div class="flex items-center justify-between">
-                    <dt class="text-secondary">Size</dt>
+                <dl class="grid grid-cols-1 gap-4 text-sm">
+                  <div class="space-y-1">
+                    <dt class="text-secondary text-xs uppercase tracking-wide">Size</dt>
                     <dd id="req-size" class="font-semibold text-primary"></dd>
                   </div>
-                  <div class="flex items-center justify-between">
-                    <dt class="text-secondary">Locations</dt>
-                    <dd id="req-locations" class="font-semibold text-primary text-right"></dd>
+                  <div class="space-y-1">
+                    <dt class="text-secondary text-xs uppercase tracking-wide">Locations</dt>
+                    <dd id="req-locations" class="font-semibold text-primary"></dd>
                   </div>
-                  <div class="flex items-center justify-between">
-                    <dt class="text-secondary">Budget Range</dt>
+                  <div class="space-y-1">
+                    <dt class="text-secondary text-xs uppercase tracking-wide">Budget Range</dt>
                     <dd id="req-budget" class="font-semibold text-primary"></dd>
                   </div>
-                  <div class="flex items-center justify-between">
-                    <dt class="text-secondary">Timeline</dt>
+                  <div class="space-y-1">
+                    <dt class="text-secondary text-xs uppercase tracking-wide">Timeline</dt>
                     <dd id="req-timeline" class="font-semibold text-primary"></dd>
                   </div>
-                  <div>
-                    <dt class="text-secondary mb-1">Notes</dt>
+                  <div class="space-y-1">
+                    <dt class="text-secondary text-xs uppercase tracking-wide">Notes</dt>
                     <dd id="req-notes" class="text-sm text-primary"></dd>
                   </div>
                 </dl>
-              </div>
-
-              <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm space-y-4">
-                <div class="space-y-3">
-                  <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div>
-                      <h2 class="text-lg font-semibold text-primary">Recommended Units</h2>
-                      <span class="text-xs text-secondary">Suitability index</span>
-                    </div>
-                    <div class="flex flex-wrap gap-2 items-center">
-                      <select
-                        id="unit-add-select"
-                        class="min-w-[220px] px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:outline-none"
-                      >
-                        <option value="">Select unit to add</option>
-                      </select>
-                      <button
-                        id="unit-add-btn"
-                        type="button"
-                        class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition"
-                      >
-                        Add Unit
-                      </button>
-                    </div>
-                  </div>
-                  <p class="text-xs text-secondary">Auto-matched units can be curated manually. Remove mismatches or add units from the portfolio.</p>
-                </div>
-                <div id="recommended-grid" class="grid grid-cols-1 gap-4"></div>
               </div>
 
               <div class="bg-white border border-[#E6E6E6] rounded-2xl p-6 shadow-sm space-y-4">
@@ -366,7 +364,7 @@
           </div>
           <form id="edit-lead-form" class="px-6 py-5 space-y-6">
             <div>
-              <p class="text-xs font-semibold text-secondary uppercase mb-2">Contact</p>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Primary Contact</p>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="text-sm text-secondary">Name</label>
@@ -410,7 +408,7 @@
             </div>
 
             <div>
-              <p class="text-xs font-semibold text-secondary uppercase mb-2">Lead meta</p>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Qualification Status</p>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="text-sm text-secondary">Source</label>
@@ -443,7 +441,33 @@
             </div>
 
             <div>
-              <p class="text-xs font-semibold text-secondary uppercase mb-2">Requirement</p>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Scoring Inputs</p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="text-sm text-secondary">Budget (0-20)</label>
+                  <input type="number" name="scoreBudget" min="0" max="20" class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Broker (0-20)</label>
+                  <input type="number" name="scoreBroker" min="0" max="20" class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Location (0-20)</label>
+                  <input type="number" name="scoreLocation" min="0" max="20" class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Timing (0-20)</label>
+                  <input type="number" name="scoreTiming" min="0" max="20" class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+                <div>
+                  <label class="text-sm text-secondary">Term Length (0-20)</label>
+                  <input type="number" name="scoreTerm" min="0" max="20" class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Tenant Requirements</p>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="text-sm text-secondary">Space size</label>
@@ -502,6 +526,16 @@
               </div>
             </div>
 
+            <div>
+              <p class="text-xs font-semibold text-secondary uppercase mb-2">Additional Notes</p>
+              <textarea
+                name="additionalNotes"
+                rows="3"
+                class="w-full mt-1 px-3 py-2 border border-[#E6E6E6] rounded-lg focus:ring-2 focus:ring-primary focus:outline-none"
+                placeholder="Special requirements, landlord appetite updates, service expectations..."
+              ></textarea>
+            </div>
+
             <div class="flex items-center justify-end gap-3 border-t border-[#E6E6E6] pt-4">
               <button
                 type="button"
@@ -558,6 +592,21 @@
         const reqBudgetEl = document.getElementById('req-budget');
         const reqTimelineEl = document.getElementById('req-timeline');
         const reqNotesEl = document.getElementById('req-notes');
+        const scoreFieldMap = {
+          budget: { form: 'scoreBudget', leadKey: 'budgetScore' },
+          broker: { form: 'scoreBroker', leadKey: 'brokerScore' },
+          location: { form: 'scoreLocation', leadKey: 'locationScore' },
+          timing: { form: 'scoreTiming', leadKey: 'timingScore' },
+          termLength: { form: 'scoreTerm', leadKey: 'termLengthScore' }
+        };
+        const clampScore = (value) => Math.max(0, Math.min(20, Number(value) || 0));
+
+        function syncScoreField(key, value) {
+          const input = document.querySelector(`[data-score-input="${key}"]`);
+          const slider = document.querySelector(`[data-score-slider="${key}"]`);
+          if (input) input.value = value.toString();
+          if (slider) slider.value = value.toString();
+        }
 
         detailLink.href = `Lead Qualification.html?id=${lead.id}`;
         lead.propertyMatches = Array.isArray(lead.propertyMatches) ? lead.propertyMatches : [];
@@ -609,6 +658,12 @@
           editLeadForm.elements.budgetRange.value = lead.requirement.budgetRange || '£100k+ annual';
           editLeadForm.elements.timeline.value = lead.requirement.timeline || 'Immediate';
           editLeadForm.elements.notes.value = lead.requirement.notes || '';
+          if (editLeadForm.elements.scoreBudget) editLeadForm.elements.scoreBudget.value = lead.budgetScore ?? 0;
+          if (editLeadForm.elements.scoreBroker) editLeadForm.elements.scoreBroker.value = lead.brokerScore ?? 0;
+          if (editLeadForm.elements.scoreLocation) editLeadForm.elements.scoreLocation.value = lead.locationScore ?? 0;
+          if (editLeadForm.elements.scoreTiming) editLeadForm.elements.scoreTiming.value = lead.timingScore ?? 0;
+          if (editLeadForm.elements.scoreTerm) editLeadForm.elements.scoreTerm.value = lead.termLengthScore ?? 0;
+          if (editLeadForm.elements.additionalNotes) editLeadForm.elements.additionalNotes.value = lead.additionalNotes || '';
         }
 
         function openEditModal() {
@@ -643,9 +698,20 @@
           lead.requirement.budgetRange = formData.get('budgetRange') || lead.requirement.budgetRange;
           lead.requirement.timeline = formData.get('timeline') || lead.requirement.timeline;
           lead.requirement.notes = (formData.get('notes') || '').trim();
+          lead.additionalNotes = (formData.get('additionalNotes') || '').trim();
+
+          Object.entries(scoreFieldMap).forEach(([key, meta]) => {
+            if (!meta.form) return;
+            const rawValue = formData.get(meta.form);
+            if (rawValue === null) return;
+            const scoreValue = clampScore(rawValue);
+            lead[meta.leadKey] = scoreValue;
+            syncScoreField(key, scoreValue);
+          });
 
           refreshLeadHeader();
           refreshRequirementCard();
+          updateScore();
           closeEditModal();
           pushToast('Lead updated for this session.');
         }
