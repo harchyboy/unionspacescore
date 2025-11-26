@@ -47,6 +47,41 @@
             position: relative;
             z-index: 10;
         }
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            position: relative;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+        input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid rgba(142, 142, 142, 0.3);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
     </style>
     <script>
         // Detect if page is loaded in iframe and add embedded class
@@ -938,17 +973,17 @@
             </div>
 
             <div class="p-6 space-y-4">
-                <a href="Viewings.html" class="w-full px-4 py-3 bg-slate text-white rounded-lg hover:bg-slate/90 transition-colors font-semibold text-sm flex items-center justify-center">
+                <button onclick="openScheduleViewingModal()" class="w-full px-4 py-3 bg-slate text-white rounded-lg hover:bg-slate/90 transition-colors font-semibold text-sm flex items-center justify-center">
                     <i class="fa-solid fa-calendar-plus mr-2"></i>
                     Schedule Viewing
-                </a>
+                </button>
 
                 <a href="Proposal Builder.html?embedded=true" class="w-full px-4 py-3 bg-white text-slate rounded-lg hover:bg-stone transition-colors border border-concrete/30 font-semibold text-sm flex items-center justify-center">
                     <i class="fa-solid fa-file-invoice mr-2"></i>
                     Create Proposal
                 </a>
 
-                <button class="w-full px-4 py-3 bg-white text-slate rounded-lg hover:bg-stone transition-colors border border-concrete/30 font-semibold text-sm flex items-center justify-center">
+                <button onclick="openAddNoteModal()" class="w-full px-4 py-3 bg-white text-slate rounded-lg hover:bg-stone transition-colors border border-concrete/30 font-semibold text-sm flex items-center justify-center">
                     <i class="fa-solid fa-comment-dots mr-2"></i>
                     Add Note
                 </button>
@@ -1204,6 +1239,305 @@
     // You can call updateConditionalSections() whenever the stage changes
     window.updateConditionalSections = updateConditionalSections;
 })();
+
+// Schedule Viewing Modal Functions
+function openScheduleViewingModal() {
+    const modal = document.getElementById('schedule-viewing-modal');
+    const dateInput = document.getElementById('viewing-date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeScheduleViewingModal() {
+    const modal = document.getElementById('schedule-viewing-modal');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    // Reset form
+    document.getElementById('viewing-date').value = '';
+    document.getElementById('viewing-time').value = '';
+    document.getElementById('viewing-property').value = '';
+    document.getElementById('viewing-floor').value = '';
+    document.getElementById('disposal-agent-email').value = '';
+    document.getElementById('broker-email').value = '';
+}
+
+function confirmScheduleViewing() {
+    const date = document.getElementById('viewing-date').value;
+    const time = document.getElementById('viewing-time').value;
+    const property = document.getElementById('viewing-property').value;
+    const floor = document.getElementById('viewing-floor').value;
+    const disposalEmail = document.getElementById('disposal-agent-email').value;
+    const brokerEmail = document.getElementById('broker-email').value;
+
+    if (!date || !time || !property) {
+        showToast('Please fill in date, time, and property', 'error');
+        return;
+    }
+
+    // Create calendar invites (separate for disposal agent and broker)
+    const viewingDateTime = new Date(`${date}T${time}`);
+    const formattedDate = viewingDateTime.toLocaleDateString('en-GB', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    const formattedTime = viewingDateTime.toLocaleTimeString('en-GB', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+
+    // Send separate calendar invites
+    if (disposalEmail) {
+        sendCalendarInvite(disposalEmail, 'disposal-agent', formattedDate, formattedTime, property, floor);
+    }
+    if (brokerEmail) {
+        sendCalendarInvite(brokerEmail, 'broker', formattedDate, formattedTime, property, floor);
+    }
+
+    showToast('Viewing scheduled and calendar invites sent');
+    closeScheduleViewingModal();
+}
+
+function sendCalendarInvite(email, recipientType, date, time, property, floor) {
+    // In a real implementation, this would send actual calendar invites
+    console.log(`Sending calendar invite to ${recipientType} (${email}):`, {
+        date,
+        time,
+        property,
+        floor
+    });
+}
+
+// Add Note Modal Functions
+function openAddNoteModal() {
+    const modal = document.getElementById('add-note-modal');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // Focus on note textarea
+    setTimeout(() => {
+        document.getElementById('note-text').focus();
+    }, 100);
+}
+
+function closeAddNoteModal() {
+    const modal = document.getElementById('add-note-modal');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    // Reset form
+    document.getElementById('note-text').value = '';
+    document.getElementById('note-type').value = 'general';
+}
+
+function saveNote() {
+    const noteText = document.getElementById('note-text').value.trim();
+    const noteType = document.getElementById('note-type').value;
+
+    if (!noteText) {
+        showToast('Please enter a note', 'error');
+        return;
+    }
+
+    // In a real implementation, this would save to the backend
+    console.log('Saving note:', { text: noteText, type: noteType });
+    
+    // Add note to timeline (if timeline section exists)
+    addNoteToTimeline(noteText, noteType);
+    
+    showToast('Note added successfully');
+    closeAddNoteModal();
+}
+
+function addNoteToTimeline(noteText, noteType) {
+    const timelineSection = document.getElementById('timeline-section');
+    if (!timelineSection) return;
+
+    // Find the timeline container (space-y-6 inside the white card)
+    const timelineContainer = timelineSection.querySelector('.space-y-6');
+    if (!timelineContainer) return;
+
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const dateString = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    const timeAgo = 'Just now';
+
+    const noteIcon = noteType === 'call' ? 'fa-phone' : 
+                     noteType === 'email' ? 'fa-envelope' : 
+                     noteType === 'meeting' ? 'fa-calendar' : 
+                     'fa-comment-dots';
+
+    const noteBgColor = noteType === 'call' ? 'bg-green-100 text-green-800' :
+                        noteType === 'email' ? 'bg-purple-100 text-purple-800' :
+                        noteType === 'meeting' ? 'bg-blue-100 text-blue-800' :
+                        'bg-slate/10 text-slate';
+
+    const noteLabel = noteType === 'call' ? 'Phone Call' :
+                      noteType === 'email' ? 'Email' :
+                      noteType === 'meeting' ? 'Meeting' :
+                      'Note';
+
+    const noteHTML = `
+        <div class="flex items-start">
+            <div class="w-10 h-10 ${noteBgColor} rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                <i class="fa-solid ${noteIcon}"></i>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-semibold text-slate">${noteLabel} Added</h4>
+                    <span class="text-xs text-concrete">${timeAgo}</span>
+                </div>
+                <p class="text-sm text-concrete mb-3">${noteText}</p>
+                <div class="flex items-center space-x-3">
+                    <span class="inline-flex items-center px-2 py-1 ${noteBgColor} text-xs font-semibold rounded">
+                        ${noteLabel}
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    timelineContainer.insertAdjacentHTML('afterbegin', noteHTML);
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    const bgColor = type === 'error' ? 'bg-red-600' : 'bg-slate';
+    toast.className = `fixed bottom-8 right-8 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 z-50 transition-all`;
+    toast.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i><span>${message}</span>`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Close modals on Escape key
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const viewingModal = document.getElementById('schedule-viewing-modal');
+        const noteModal = document.getElementById('add-note-modal');
+        if (viewingModal && viewingModal.classList.contains('open')) {
+            closeScheduleViewingModal();
+        }
+        if (noteModal && noteModal.classList.contains('open')) {
+            closeAddNoteModal();
+        }
+    }
+});
 </script>
+
+<!-- Schedule Viewing Modal -->
+<div id="schedule-viewing-modal" class="modal-overlay">
+    <div class="modal-backdrop" onclick="closeScheduleViewingModal()"></div>
+    <div class="modal-content">
+        <div class="px-6 py-4 border-b border-concrete/30">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate">Schedule Viewing</h2>
+                    <p class="text-xs text-concrete">Book a property viewing for this deal</p>
+                </div>
+                <button class="text-concrete hover:text-slate transition-colors" onclick="closeScheduleViewingModal()">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Date</label>
+                <input type="date" id="viewing-date" class="w-full" min="">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Time</label>
+                <input type="time" id="viewing-time" class="w-full">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Property</label>
+                <select id="viewing-property" class="w-full px-4 py-2 border border-concrete/30 rounded-lg text-sm">
+                    <option value="">Select property...</option>
+                    <option value="42-moorgate">42 Moorgate</option>
+                    <option value="15-bishopsgate">15 Bishopsgate</option>
+                    <option value="20-fenchurch">20 Fenchurch</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Floor/Unit</label>
+                <input type="text" id="viewing-floor" class="w-full px-4 py-2 border border-concrete/30 rounded-lg text-sm" placeholder="e.g., Floor 6">
+            </div>
+            <div class="pt-4 border-t border-concrete/30">
+                <h3 class="text-sm font-semibold text-slate mb-3">Send Calendar Invites</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-stone rounded-lg">
+                        <div>
+                            <p class="text-sm font-semibold text-slate">Disposal Agent</p>
+                            <p class="text-xs text-concrete">Separate invite to avoid sharing contacts</p>
+                        </div>
+                        <input type="email" id="disposal-agent-email" class="flex-1 ml-4 px-3 py-1.5 text-sm border border-concrete/30 rounded" placeholder="agent@example.com">
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-stone rounded-lg">
+                        <div>
+                            <p class="text-sm font-semibold text-slate">Broker</p>
+                            <p class="text-xs text-concrete">Separate invite to avoid sharing contacts</p>
+                        </div>
+                        <input type="email" id="broker-email" class="flex-1 ml-4 px-3 py-1.5 text-sm border border-concrete/30 rounded" placeholder="broker@example.com">
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 pt-4">
+                <button onclick="closeScheduleViewingModal()" class="flex-1 px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    Cancel
+                </button>
+                <button onclick="confirmScheduleViewing()" class="flex-1 px-4 py-2 text-sm bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold">
+                    <i class="fa-solid fa-calendar-plus mr-2"></i>
+                    Schedule & Send Invites
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Note Modal -->
+<div id="add-note-modal" class="modal-overlay">
+    <div class="modal-backdrop" onclick="closeAddNoteModal()"></div>
+    <div class="modal-content">
+        <div class="px-6 py-4 border-b border-concrete/30">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate">Add Note</h2>
+                    <p class="text-xs text-concrete">Record important information about this deal</p>
+                </div>
+                <button class="text-concrete hover:text-slate transition-colors" onclick="closeAddNoteModal()">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <div class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Note Type</label>
+                <select id="note-type" class="w-full px-4 py-2 border border-concrete/30 rounded-lg text-sm">
+                    <option value="general">General Note</option>
+                    <option value="call">Phone Call</option>
+                    <option value="email">Email</option>
+                    <option value="meeting">Meeting</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate mb-2">Note</label>
+                <textarea id="note-text" rows="6" class="w-full px-4 py-3 border border-concrete/30 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-slate/20 focus:border-slate" placeholder="Enter your note here..."></textarea>
+            </div>
+            <div class="flex items-center space-x-3 pt-4">
+                <button onclick="closeAddNoteModal()" class="flex-1 px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    Cancel
+                </button>
+                <button onclick="saveNote()" class="flex-1 px-4 py-2 text-sm bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold">
+                    <i class="fa-solid fa-save mr-2"></i>
+                    Save Note
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
