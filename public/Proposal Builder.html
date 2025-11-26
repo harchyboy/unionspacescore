@@ -44,8 +44,15 @@
         (function() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('embedded') === 'true') {
-                document.documentElement.classList.add('embedded');
-                document.body.classList.add('embedded');
+                const applyEmbedded = () => {
+                    document.documentElement.classList.add('embedded');
+                    document.body.classList.add('embedded');
+                };
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', applyEmbedded);
+                } else {
+                    applyEmbedded();
+                }
             }
         })();
     </script>
