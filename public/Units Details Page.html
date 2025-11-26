@@ -183,77 +183,77 @@
         <div id="filters-section" class="bg-white border-b border-[#E6E6E6] px-8 py-4">
             <div class="flex items-center space-x-3 flex-wrap gap-2">
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Size Bands</option>
-                        <option>0-1,000 sq ft</option>
-                        <option>1,000-2,500 sq ft</option>
-                        <option>2,500-5,000 sq ft</option>
-                        <option>5,000-10,000 sq ft</option>
-                        <option>10,000+ sq ft</option>
+                    <select id="filter-size-band" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Size Bands</option>
+                        <option value="0-1000">0-1,000 sq ft</option>
+                        <option value="1000-2500">1,000-2,500 sq ft</option>
+                        <option value="2500-5000">2,500-5,000 sq ft</option>
+                        <option value="5000-10000">5,000-10,000 sq ft</option>
+                        <option value="10000+">10,000+ sq ft</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Fit-out</option>
-                        <option>Unfitted</option>
-                        <option>Part Fitted</option>
-                        <option>Fitted</option>
+                    <select id="filter-fitout" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Fit-out</option>
+                        <option value="Unfitted">Unfitted</option>
+                        <option value="Part Fitted">Part Fitted</option>
+                        <option value="Fitted">Fitted</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Status</option>
-                        <option>Available</option>
-                        <option>Under Offer</option>
-                        <option>Let</option>
+                    <select id="filter-status" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Status</option>
+                        <option value="Available">Available</option>
+                        <option value="Under Offer">Under Offer</option>
+                        <option value="Let">Let</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Pricing Modes</option>
-                        <option>All-Inclusive</option>
-                        <option>Bolt-On</option>
+                    <select id="filter-pricing-mode" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Pricing Modes</option>
+                        <option value="All-Inclusive">All-Inclusive</option>
+                        <option value="Bolt-On">Bolt-On</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Visibility</option>
-                        <option>Public</option>
-                        <option>Private</option>
+                    <select id="filter-visibility" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Visibility</option>
+                        <option value="Public">Public</option>
+                        <option value="Private">Private</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Submarkets</option>
-                        <option>City Core</option>
-                        <option>Shoreditch</option>
-                        <option>Mayfair</option>
-                        <option>Canary Wharf</option>
+                    <select id="filter-submarket" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Submarkets</option>
+                        <option value="City Core">City Core</option>
+                        <option value="Shoreditch">Shoreditch</option>
+                        <option value="Mayfair">Mayfair</option>
+                        <option value="Canary Wharf">Canary Wharf</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
                 <div class="relative">
-                    <select class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option>All Pipeline Stages</option>
-                        <option>Viewing</option>
-                        <option>HoTs</option>
-                        <option>Legals</option>
+                    <select id="filter-pipeline" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Pipeline Stages</option>
+                        <option value="Viewing">Viewing</option>
+                        <option value="HoTs">HoTs</option>
+                        <option value="Legals">Legals</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
                 
-                <button class="text-secondary hover:text-primary text-sm ml-2">
+                <button id="clear-filters" class="text-secondary hover:text-primary text-sm ml-2">
                     Clear all
                 </button>
             </div>
@@ -281,7 +281,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#E6E6E6]">
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer relative overflow-visible" onclick="window.location.href='Units More Detail Card.html'">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer relative overflow-visible" data-size="2450" data-fitout="Fitted" data-status="Available" data-pricing-mode="All-Inclusive" data-visibility="Private" data-submarket="City Core" data-pipeline="Viewing" onclick="window.location.href='Units More Detail Card.html'">
                                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -316,7 +316,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer" onclick="window.location.href='Units More Detail Card.html'">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer" data-size="3200" data-fitout="Fitted" data-status="Under Offer" data-pricing-mode="Bolt-On" data-visibility="Public" data-submarket="Shoreditch" data-pipeline="HoTs" onclick="window.location.href='Units More Detail Card.html'">
                                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -354,7 +354,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer" data-size="1850" data-fitout="Part Fitted" data-status="Available" data-pricing-mode="All-Inclusive" data-visibility="Public" data-submarket="Canary Wharf" data-pipeline="">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -389,7 +389,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer" data-size="4100" data-fitout="Fitted" data-status="Available" data-pricing-mode="Bolt-On" data-visibility="Private" data-submarket="City Core" data-pipeline="Viewing">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -427,7 +427,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer" data-size="2800" data-fitout="Fitted" data-status="Under Offer" data-pricing-mode="All-Inclusive" data-visibility="Public" data-submarket="Shoreditch" data-pipeline="Legals">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -462,7 +462,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer" data-size="1500" data-fitout="Fitted" data-status="Available" data-pricing-mode="All-Inclusive" data-visibility="Public" data-submarket="City Core" data-pipeline="">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -497,7 +497,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer" data-size="5400" data-fitout="Part Fitted" data-status="Let" data-pricing-mode="Bolt-On" data-visibility="Private" data-submarket="Canary Wharf" data-pipeline="">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -535,7 +535,7 @@
                                 </td>
                             </tr>
                             
-                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer">
+                            <tr class="unit-row hover:bg-muted transition-all-smooth cursor-pointer" data-size="3600" data-fitout="Fitted" data-status="Available" data-pricing-mode="All-Inclusive" data-visibility="Public" data-submarket="City Core" data-pipeline="Viewing">
                                 <td class="px-6 py-4">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </td>
@@ -1197,6 +1197,140 @@ window.addEventListener('load', function() {
         boltOnFields.classList.add('hidden');
         fitoutBudgetSection.classList.add('hidden');
     });
+    
+    // Filter functionality
+    function applyFilters() {
+        const sizeBandFilter = document.getElementById('filter-size-band')?.value || '';
+        const fitoutFilter = document.getElementById('filter-fitout')?.value || '';
+        const statusFilter = document.getElementById('filter-status')?.value || '';
+        const pricingModeFilter = document.getElementById('filter-pricing-mode')?.value || '';
+        const visibilityFilter = document.getElementById('filter-visibility')?.value || '';
+        const submarketFilter = document.getElementById('filter-submarket')?.value || '';
+        const pipelineFilter = document.getElementById('filter-pipeline')?.value || '';
+        
+        const unitRows = document.querySelectorAll('.unit-row');
+        let visibleCount = 0;
+        
+        unitRows.forEach(function(row) {
+            let show = true;
+            
+            // Filter by size band
+            if (sizeBandFilter && show) {
+                const size = parseInt(row.getAttribute('data-size') || '0');
+                let matches = false;
+                
+                if (sizeBandFilter === '0-1000' && size >= 0 && size < 1000) {
+                    matches = true;
+                } else if (sizeBandFilter === '1000-2500' && size >= 1000 && size < 2500) {
+                    matches = true;
+                } else if (sizeBandFilter === '2500-5000' && size >= 2500 && size < 5000) {
+                    matches = true;
+                } else if (sizeBandFilter === '5000-10000' && size >= 5000 && size < 10000) {
+                    matches = true;
+                } else if (sizeBandFilter === '10000+' && size >= 10000) {
+                    matches = true;
+                }
+                
+                if (!matches) {
+                    show = false;
+                }
+            }
+            
+            // Filter by fit-out
+            if (fitoutFilter && show) {
+                const fitout = row.getAttribute('data-fitout') || '';
+                if (fitout !== fitoutFilter) {
+                    show = false;
+                }
+            }
+            
+            // Filter by status
+            if (statusFilter && show) {
+                const status = row.getAttribute('data-status') || '';
+                if (status !== statusFilter) {
+                    show = false;
+                }
+            }
+            
+            // Filter by pricing mode
+            if (pricingModeFilter && show) {
+                const pricingMode = row.getAttribute('data-pricing-mode') || '';
+                if (pricingMode !== pricingModeFilter) {
+                    show = false;
+                }
+            }
+            
+            // Filter by visibility
+            if (visibilityFilter && show) {
+                const visibility = row.getAttribute('data-visibility') || '';
+                if (visibility !== visibilityFilter) {
+                    show = false;
+                }
+            }
+            
+            // Filter by submarket
+            if (submarketFilter && show) {
+                const submarket = row.getAttribute('data-submarket') || '';
+                if (submarket !== submarketFilter) {
+                    show = false;
+                }
+            }
+            
+            // Filter by pipeline stage
+            if (pipelineFilter && show) {
+                const pipeline = row.getAttribute('data-pipeline') || '';
+                if (pipeline !== pipelineFilter) {
+                    show = false;
+                }
+            }
+            
+            // Show or hide row
+            if (show) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        // Update unit count
+        const countElement = document.querySelector('#bulk-actions-bar .text-sm.text-secondary');
+        if (countElement) {
+            countElement.textContent = `Showing ${visibleCount} of ${unitRows.length} units`;
+        }
+    }
+    
+    // Add event listeners to all filters
+    const filterSelects = [
+        'filter-size-band',
+        'filter-fitout',
+        'filter-status',
+        'filter-pricing-mode',
+        'filter-visibility',
+        'filter-submarket',
+        'filter-pipeline'
+    ];
+    
+    filterSelects.forEach(function(filterId) {
+        const filter = document.getElementById(filterId);
+        if (filter) {
+            filter.addEventListener('change', applyFilters);
+        }
+    });
+    
+    // Clear filters button
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', function() {
+            filterSelects.forEach(function(filterId) {
+                const filter = document.getElementById(filterId);
+                if (filter) {
+                    filter.value = '';
+                }
+            });
+            applyFilters();
+        });
+    }
 });
 </script>
 
