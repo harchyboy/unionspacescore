@@ -1943,129 +1943,169 @@ window.addEventListener('load', function() {
     let draggedFromStage = null;
     let isDraggingCard = false;
     
-    // Get all stage columns (drop zones)
-    const stageColumns = document.querySelectorAll('[id^="stage-"]');
-    const stageContainers = document.querySelectorAll('[id^="stage-"] .flex-1.overflow-y-auto');
-    
-    // Get all cards
-    const cards = document.querySelectorAll('[id^="stage-"] .bg-stone, [id^="stage-"] .bg-blue-50, [id^="stage-"] .bg-purple-50, [id^="stage-"] .bg-indigo-50, [id^="stage-"] .bg-teal-50, [id^="stage-"] .bg-amber-50, [id^="stage-"] .bg-orange-50, [id^="stage-"] .bg-cyan-50, [id^="stage-"] .bg-emerald-50, [id^="stage-"] .bg-violet-50, [id^="stage-"] .bg-green-50, [id^="stage-"] .bg-red-50');
-    
-    // Make cards draggable
-    cards.forEach(card => {
-        card.setAttribute('draggable', 'true');
-        card.classList.add('cursor-move');
+    // Function to initialize drag and drop
+    function initializeDragAndDrop() {
+        // Get all stage columns (drop zones)
+        const stageColumns = document.querySelectorAll('[id^="stage-"]');
+        const stageContainers = document.querySelectorAll('[id^="stage-"] .flex-1.overflow-y-auto');
         
-        // Drag start
-        card.addEventListener('dragstart', function(e) {
-            draggedCard = this;
-            draggedFromStage = this.closest('[id^="stage-"]');
-            this.style.opacity = '0.5';
-            this.classList.add('dragging');
-            isDraggingCard = true;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.outerHTML);
-        });
-        
-        // Drag end
-        card.addEventListener('dragend', function(e) {
-            this.style.opacity = '1';
-            this.classList.remove('dragging');
-            stageContainers.forEach(container => {
-                container.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
-            });
-            requestAnimationFrame(() => {
-                isDraggingCard = false;
-            });
-        });
-        
-        // Click handler (for card details)
-        card.addEventListener('click', function(e) {
-            if (isDraggingCard) {
-                return;
-            }
-            if (!e.target.closest('button')) {
-                openDealDetail();
-            }
-        });
-    });
-    
-    // Make stage containers drop zones
-    stageContainers.forEach(container => {
-        let dragOverCounter = 0;
-        
-        container.addEventListener('dragover', function(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            e.dataTransfer.dropEffect = 'move';
-            this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
-            dragOverCounter++;
-            return false;
-        });
-        
-        container.addEventListener('dragenter', function(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            dragOverCounter++;
-            this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
-            return false;
-        });
-        
-        container.addEventListener('dragleave', function(e) {
-            dragOverCounter--;
-            // Only remove class if we've left the container (not just a child element)
-            if (dragOverCounter === 0) {
-                this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+        // Get all cards - use a more robust selector: find divs with rounded-lg that contain h4 (company name)
+        const cards = [];
+        document.querySelectorAll('[id^="stage-"]').forEach(stageColumn => {
+            const cardContainer = stageColumn.querySelector('.flex-1.overflow-y-auto');
+            if (cardContainer) {
+                cardContainer.querySelectorAll('div.rounded-lg').forEach(card => {
+                    // Only include if it has an h4 (company name) - it's a deal card
+                    if (card.querySelector('h4')) {
+                        cards.push(card);
+                    }
+                });
             }
         });
         
-        container.addEventListener('drop', function(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-            if (e.preventDefault) {
-                e.preventDefault();
+        // Make cards draggable - check if already initialized to avoid duplicate listeners
+        cards.forEach(card => {
+            if (card.dataset.dragInitialized === 'true') {
+                return; // Already initialized
             }
             
-            dragOverCounter = 0;
-            this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+            card.setAttribute('draggable', 'true');
+            card.dataset.dragInitialized = 'true';
+            card.classList.add('cursor-move');
             
-            if (draggedCard && draggedCard !== null) {
-                const targetStage = this.closest('[id^="stage-"]');
-                
-                // Only move if dropping in a different stage
-                if (targetStage && targetStage !== draggedFromStage) {
-                    // Remove from old stage
-                    draggedCard.remove();
-                    
-                    // Add to new stage
-                    this.appendChild(draggedCard);
-                    
-                    // Update card counts
-                    updateCardCounts();
-                    
-                    // Show success feedback
-                    showDragFeedback('Card moved successfully');
-                } else if (targetStage === draggedFromStage) {
-                    // Same stage - just reset visual state
-                    showDragFeedback('Card returned to original position');
+            // Drag start
+            card.addEventListener('dragstart', function(e) {
+                draggedCard = this;
+                draggedFromStage = this.closest('[id^="stage-"]');
+                this.style.opacity = '0.5';
+                this.classList.add('dragging');
+                isDraggingCard = true;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', this.outerHTML);
+            });
+            
+            // Drag end
+            card.addEventListener('dragend', function(e) {
+                this.style.opacity = '1';
+                this.classList.remove('dragging');
+                document.querySelectorAll('[id^="stage-"] .flex-1.overflow-y-auto').forEach(container => {
+                    container.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+                });
+                requestAnimationFrame(() => {
+                    isDraggingCard = false;
+                });
+            });
+            
+            // Click handler (for card details)
+            card.addEventListener('click', function(e) {
+                if (isDraggingCard) {
+                    return;
                 }
+                if (!e.target.closest('button')) {
+                    openDealDetail();
+                }
+            });
+        });
+        
+        // Make stage containers drop zones - only if not already initialized
+        stageContainers.forEach(container => {
+            if (container.dataset.dropInitialized === 'true') {
+                return; // Already initialized
             }
             
-            return false;
+            container.dataset.dropInitialized = 'true';
+            let dragOverCounter = 0;
+            
+            container.addEventListener('dragover', function(e) {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                e.dataTransfer.dropEffect = 'move';
+                this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+                dragOverCounter++;
+                return false;
+            });
+            
+            container.addEventListener('dragenter', function(e) {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                dragOverCounter++;
+                this.classList.add('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+                return false;
+            });
+            
+            container.addEventListener('dragleave', function(e) {
+                dragOverCounter--;
+                // Only remove class if we've left the container (not just a child element)
+                if (dragOverCounter === 0) {
+                    this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+                }
+            });
+            
+            container.addEventListener('drop', function(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation();
+                }
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                
+                dragOverCounter = 0;
+                this.classList.remove('border-2', 'border-slate', 'bg-slate/5', 'drag-over');
+                
+                if (draggedCard && draggedCard !== null) {
+                    const targetStage = this.closest('[id^="stage-"]');
+                    
+                    // Only move if dropping in a different stage
+                    if (targetStage && targetStage !== draggedFromStage) {
+                        // Remove from old stage
+                        draggedCard.remove();
+                        
+                        // Add to new stage
+                        this.appendChild(draggedCard);
+                        
+                        // Re-initialize drag for the moved card
+                        draggedCard.dataset.dragInitialized = 'false';
+                        initializeDragAndDrop();
+                        
+                        // Update card counts
+                        updateCardCounts();
+                        
+                        // Show success feedback
+                        showDragFeedback('Card moved successfully');
+                    } else if (targetStage === draggedFromStage) {
+                        // Same stage - just reset visual state
+                        showDragFeedback('Card returned to original position');
+                    }
+                }
+                
+                return false;
+            });
         });
-    });
+    }
+    
+    // Initialize drag and drop when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeDragAndDrop);
+    } else {
+        initializeDragAndDrop();
+    }
     
     // Function to update card counts in stage headers
     function updateCardCounts() {
-        stageColumns.forEach(stage => {
-            const stageId = stage.id;
+        document.querySelectorAll('[id^="stage-"]').forEach(stage => {
             const container = stage.querySelector('.flex-1.overflow-y-auto');
-            const countElement = stage.querySelector('.text-xs.text-concrete');
+            const countElement = stage.querySelector('h3 + .text-xs.text-concrete, h3 ~ .text-xs.text-concrete');
             
             if (container && countElement) {
-                const cardCount = container.querySelectorAll('.bg-stone, .bg-blue-50, .bg-purple-50, .bg-indigo-50, .bg-teal-50, .bg-amber-50, .bg-orange-50, .bg-cyan-50, .bg-emerald-50, .bg-violet-50, .bg-green-50, .bg-red-50').length;
+                // Count cards by finding divs with rounded-lg that contain h4
+                let cardCount = 0;
+                container.querySelectorAll('div.rounded-lg').forEach(card => {
+                    if (card.querySelector('h4')) {
+                        cardCount++;
+                    }
+                });
                 countElement.textContent = countElement.textContent.replace(/\d+/, cardCount);
             }
         });
