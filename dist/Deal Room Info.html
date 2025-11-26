@@ -356,8 +356,33 @@
                             <div class="text-xs text-secondary">Est: Dec 15</div>
                         </div>
                     </div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Suppliers for this Building Section -->
+            <div class="bg-[#F0F0F0] border-b border-[#E6E6E6] px-8 py-6">
+                <div class="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-primary mb-1">Suppliers for this Building</h3>
+                            <div class="text-sm text-secondary">Suppliers linked to 99 Bishopsgate or Canary Wharf Group plc</div>
+                        </div>
+                        <button onclick="window.location.href='Suppliers List Page.html'" class="px-4 py-2 text-sm font-medium text-primary border border-[#E6E6E6] rounded-lg hover:bg-muted transition-all-smooth flex items-center space-x-2">
+                            <i class="fa-solid fa-external-link-alt text-xs"></i>
+                            <span>View All Suppliers</span>
+                        </button>
+                    </div>
+                    
+                    <div id="building-suppliers-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Supplier cards will be populated by JavaScript -->
+                    </div>
+                    
+                    <div id="no-suppliers-message" class="text-center py-8 text-secondary" style="display: none;">
+                        <i class="fa-solid fa-building text-4xl mb-3 opacity-50"></i>
+                        <p class="text-sm">No suppliers linked to this building yet.</p>
+                    </div>
+                </div>
             </div>
             
             <!-- Property Details and Stakeholders Section -->
@@ -2469,6 +2494,168 @@
                 if (requestQuoteFromDealModal) requestQuoteFromDealModal.classList.add('hidden');
             });
         }
+        
+        // Suppliers for this Building
+        function loadBuildingSuppliers() {
+            // Current deal property and landlord
+            const dealProperty = '99 Bishopsgate';
+            const dealLandlord = 'Canary Wharf Group plc';
+            
+            // Sample supplier data (in production, this would come from an API)
+            const allSuppliers = [
+                {
+                    id: 'supplier-1',
+                    name: 'Thirdway AV',
+                    category: 'AV & Tech',
+                    coverage: ['Central', 'East'],
+                    landlord: 'Canary Wharf Group plc',
+                    linkedProperties: ['99 Bishopsgate', 'One Canada Square'],
+                    preferred: true,
+                    rank: 1,
+                    status: 'active',
+                    sla: 98,
+                    icon: 'fa-tv'
+                },
+                {
+                    id: 'supplier-2',
+                    name: 'Premier Cleaning Services',
+                    category: 'Cleaning',
+                    coverage: ['All London'],
+                    landlord: 'Canary Wharf Group plc',
+                    linkedProperties: ['99 Bishopsgate'],
+                    preferred: true,
+                    rank: 2,
+                    status: 'active',
+                    sla: 95,
+                    icon: 'fa-broom'
+                },
+                {
+                    id: 'supplier-3',
+                    name: 'City Maintenance Co',
+                    category: 'R&M',
+                    coverage: ['Central'],
+                    landlord: 'Canary Wharf Group plc',
+                    linkedProperties: ['99 Bishopsgate', 'Canary Wharf Tower'],
+                    preferred: false,
+                    rank: null,
+                    status: 'active',
+                    sla: 92,
+                    icon: 'fa-wrench'
+                },
+                {
+                    id: 'supplier-4',
+                    name: 'Metro Security Solutions',
+                    category: 'Security',
+                    coverage: ['Central', 'East'],
+                    landlord: 'Canary Wharf Group plc',
+                    linkedProperties: ['99 Bishopsgate'],
+                    preferred: true,
+                    rank: 1,
+                    status: 'active',
+                    sla: 97,
+                    icon: 'fa-shield-halved'
+                },
+                {
+                    id: 'supplier-5',
+                    name: 'Elite Catering Group',
+                    category: 'Catering',
+                    coverage: ['Central'],
+                    landlord: null,
+                    linkedProperties: ['99 Bishopsgate'],
+                    preferred: false,
+                    rank: null,
+                    status: 'active',
+                    sla: 90,
+                    icon: 'fa-utensils'
+                }
+            ];
+            
+            // Filter suppliers by property or landlord
+            const buildingSuppliers = allSuppliers.filter(supplier => {
+                const matchesProperty = supplier.linkedProperties && supplier.linkedProperties.includes(dealProperty);
+                const matchesLandlord = supplier.landlord && supplier.landlord === dealLandlord;
+                return matchesProperty || matchesLandlord;
+            });
+            
+            // Render suppliers
+            const suppliersList = document.getElementById('building-suppliers-list');
+            const noSuppliersMessage = document.getElementById('no-suppliers-message');
+            
+            if (!suppliersList) return;
+            
+            if (buildingSuppliers.length === 0) {
+                suppliersList.style.display = 'none';
+                if (noSuppliersMessage) noSuppliersMessage.style.display = 'block';
+                return;
+            }
+            
+            if (noSuppliersMessage) noSuppliersMessage.style.display = 'none';
+            suppliersList.style.display = 'grid';
+            
+            suppliersList.innerHTML = buildingSuppliers.map(supplier => {
+                const preferredBadge = supplier.preferred 
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <i class="fa-solid fa-star text-xs mr-1"></i>Preferred
+                       </span>`
+                    : '';
+                
+                const rankBadge = supplier.rank 
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary text-white">
+                        Rank ${supplier.rank}
+                       </span>`
+                    : '';
+                
+                const coverageText = Array.isArray(supplier.coverage) 
+                    ? supplier.coverage.join(', ') 
+                    : supplier.coverage || 'N/A';
+                
+                const landlordText = supplier.landlord || 'Not specified';
+                
+                return `
+                    <div class="border border-[#E6E6E6] rounded-lg p-4 hover:shadow-md transition-all-smooth cursor-pointer" onclick="window.location.href='Suppliers Adding Card.html?id=${supplier.id}'">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid ${supplier.icon} text-white text-sm"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-semibold text-primary truncate">${supplier.name}</h4>
+                                    <p class="text-xs text-secondary">${supplier.category}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 mb-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-secondary">Coverage:</span>
+                                <span class="text-xs text-primary font-medium">${coverageText}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-secondary">Landlord/Owner:</span>
+                                <span class="text-xs text-primary font-medium truncate ml-2">${landlordText}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-secondary">SLA:</span>
+                                <span class="text-xs font-medium ${supplier.sla >= 95 ? 'text-green-600' : supplier.sla >= 80 ? 'text-yellow-600' : 'text-red-600'}">${supplier.sla}%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-3 border-t border-[#E6E6E6]">
+                            <div class="flex items-center space-x-2">
+                                ${preferredBadge}
+                                ${rankBadge}
+                            </div>
+                            <button class="text-xs text-primary hover:text-secondary transition-colors">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Load building suppliers on page load
+        loadBuildingSuppliers();
     });
 </script>
 
