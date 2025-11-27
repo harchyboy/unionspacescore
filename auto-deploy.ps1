@@ -56,6 +56,6 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Write-Host "`n✓ Auto-deploy completed successfully!" -ForegroundColor Green
-Write-Host "Changes committed, pushed, and built." -ForegroundColor Green
+Write-Host "`nAuto-deploy completed successfully!" -ForegroundColor Green
+Write-Host 'Changes committed, pushed, and built.' -ForegroundColor Green
 
