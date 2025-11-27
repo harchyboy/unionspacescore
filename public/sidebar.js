@@ -51,12 +51,12 @@ function applyActiveState(sidebar, navKey) {
   }
 
   link.classList.add('bg-primary', 'text-white', 'shadow-sm');
-  link.classList.remove('text-slate', 'hover:bg-stone');
+  link.classList.remove('text-primary', 'hover:bg-stone');
 
   const icon = link.querySelector('i');
   if (icon) {
     icon.classList.add('text-white');
-    icon.classList.remove('text-slate', 'text-concrete');
+    icon.classList.remove('text-secondary');
   }
 
   const badge = link.querySelector('[data-nav-badge]');
