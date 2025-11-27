@@ -40,6 +40,13 @@
       .slide-over.open {
         transform: translateX(0);
       }
+      .company-people-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      .company-people-row-selected {
+        background-color: #f4f4f4;
+      }
     </style>
 </head>
 <body class="bg-stone font-sans">
@@ -745,6 +752,8 @@
     </div>
 
     <script>
+        let currentPeopleSection = null;
+
         function formatCurrency(value) {
             return new Intl.NumberFormat('en-GB', {
                 style: 'currency',
@@ -975,49 +984,57 @@
 
                     <!-- People Tab -->
                     <div id="company-tab-people" class="company-tab-content hidden">
-                        <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
-                            <div class="px-6 py-4 border-b border-[#E6E6E6]">
-                                <h3 class="text-lg font-semibold text-primary">All Contacts</h3>
-                                <p class="text-xs text-secondary mt-1">${people} ${people === 1 ? 'contact' : 'contacts'} linked to this company</p>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead class="bg-[#fafafa] border-b border-[#E6E6E6]">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Name</th>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Role</th>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Phone / Email</th>
-                                            <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Activity Count</th>
-                                            <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-[#E6E6E6]">
-                                        ${peopleData.length > 0
-                                            ? peopleData.map(person => `
-                                                <tr class="hover:bg-[#fafafa] transition-colors">
-                                                    <td class="px-6 py-4">
-                                                        <div class="flex items-center space-x-3">
-                                                            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                                                                ${person.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                        <div class="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-6">
+                            <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                                <div class="px-6 py-4 border-b border-[#E6E6E6]">
+                                    <h3 class="text-lg font-semibold text-primary">All Contacts</h3>
+                                    <p class="text-xs text-secondary mt-1">${people} ${people === 1 ? 'contact' : 'contacts'} linked to this company</p>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead class="bg-[#fafafa] border-b border-[#E6E6E6]">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Name</th>
+                                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Role</th>
+                                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Phone / Email</th>
+                                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Activity Count</th>
+                                                <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-[#E6E6E6]">
+                                            ${peopleData.length > 0
+                                                ? peopleData.map((person, index) => `
+                                                    <tr class="company-people-row hover:bg-[#fafafa] transition-colors" data-person-index="${index}">
+                                                        <td class="px-6 py-4">
+                                                            <div class="flex items-center space-x-3">
+                                                                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                                                                    ${person.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                                                                </div>
+                                                                <div class="font-medium text-primary text-sm">${person.name}</div>
                                                             </div>
-                                                            <div class="font-medium text-primary text-sm">${person.name}</div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="px-6 py-4 text-sm text-secondary">${person.role}</td>
-                                                    <td class="px-6 py-4">
-                                                        <div class="text-sm text-primary">${person.email}</div>
-                                                        ${person.phone ? `<div class="text-xs text-secondary">${person.phone}</div>` : ''}
-                                                    </td>
-                                                    <td class="px-6 py-4 text-sm text-secondary">${Math.floor(Math.random() * 20) + 5}</td>
-                                                    <td class="px-6 py-4 text-right">
-                                                        <a href="Contacts List Page.html" class="text-primary hover:underline text-sm font-medium">View Contact</a>
-                                                    </td>
-                                                </tr>
-                                            `).join('')
-                                            : '<tr><td colspan="5" class="px-6 py-8 text-center text-secondary">No contacts found</td></tr>'
-                                        }
-                                    </tbody>
-                                </table>
+                                                        </td>
+                                                        <td class="px-6 py-4 text-sm text-secondary">${person.role}</td>
+                                                        <td class="px-6 py-4">
+                                                            <div class="text-sm text-primary">${person.email || 'Not provided'}</div>
+                                                            ${person.phone ? `<div class="text-xs text-secondary">${person.phone}</div>` : ''}
+                                                        </td>
+                                                        <td class="px-6 py-4 text-sm text-secondary">${Math.floor(Math.random() * 20) + 5}</td>
+                                                        <td class="px-6 py-4 text-right">
+                                                            <button type="button" class="text-primary hover:underline text-sm font-medium">View Contact</button>
+                                                        </td>
+                                                    </tr>
+                                                `).join('')
+                                                : '<tr><td colspan="5" class="px-6 py-8 text-center text-secondary">No contacts found</td></tr>'
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="person-detail-panel" class="bg-white rounded-lg border border-[#E6E6E6] min-h-[300px]">
+                                <div class="h-full flex flex-col items-center justify-center text-secondary text-sm p-6 text-center">
+                                    <i class="fa-solid fa-id-card text-2xl mb-3"></i>
+                                    <p>Select a contact to preview their profile.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1144,6 +1161,8 @@
                 </div>
             `;
 
+                initializeCompanyPeopleSection(peopleData);
+
                 // Show overlay and panel
                 const overlay = document.getElementById('company-details-overlay');
                 const panel = document.getElementById('company-details-panel');
@@ -1168,6 +1187,10 @@
         function closeCompanyDetails() {
             document.getElementById('company-details-overlay').classList.add('hidden');
             document.getElementById('company-details-panel').classList.remove('open');
+            if (currentPeopleSection) {
+                currentPeopleSection.reset();
+                currentPeopleSection = null;
+            }
         }
 
         function switchCompanyTab(tabName) {
@@ -1186,6 +1209,9 @@
             const selectedContent = document.getElementById('company-tab-' + tabName);
             if (selectedContent) {
                 selectedContent.classList.remove('hidden');
+            }
+            if (tabName === 'people' && currentPeopleSection) {
+                currentPeopleSection.ensureSelection();
             }
             
             // Add active state to selected tab
@@ -1294,6 +1320,115 @@
                 const timeB = parseInt(b.time);
                 return timeA - timeB;
             });
+        }
+
+        function initializeCompanyPeopleSection(peopleData) {
+            const panel = document.getElementById('person-detail-panel');
+            const rows = Array.from(document.querySelectorAll('.company-people-row'));
+
+            if (!panel || !rows.length) {
+                currentPeopleSection = null;
+                return;
+            }
+
+            const defaultPanelState = panel.innerHTML;
+
+            const clearSelection = () => {
+                rows.forEach(row => row.classList.remove('company-people-row-selected'));
+            };
+
+            const resetPanel = () => {
+                panel.innerHTML = defaultPanelState;
+            };
+
+            const renderDetail = (person) => {
+                const initials = person.name
+                    ? person.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                    : '?';
+
+                panel.innerHTML = `
+                    <div class="px-6 py-5 border-b border-[#E6E6E6] flex items-start justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-semibold">
+                                ${initials}
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-secondary mb-1">Key contact</p>
+                                <h4 class="text-xl font-semibold text-primary">${person.name}</h4>
+                                <p class="text-sm text-secondary">${person.role || 'Contact'}</p>
+                            </div>
+                        </div>
+                        <button type="button" class="text-secondary hover:text-primary" data-close-person-panel>
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="p-6 space-y-5">
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-secondary">Email</p>
+                                <p class="text-sm text-primary">${person.email || 'Not provided'}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-secondary">Phone</p>
+                                <p class="text-sm text-primary">${person.phone || 'No phone on file'}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-[#F0F0F0] rounded-lg p-3">
+                                <p class="text-xs text-secondary uppercase tracking-wider mb-1">Activity</p>
+                                <p class="text-lg font-semibold text-primary">${Math.floor(Math.random() * 15) + 5}</p>
+                            </div>
+                            <div class="bg-[#F0F0F0] rounded-lg p-3">
+                                <p class="text-xs text-secondary uppercase tracking-wider mb-1">Last touch</p>
+                                <p class="text-sm text-primary">${Math.floor(Math.random() * 10) + 1} days ago</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <button class="w-full border border-[#E6E6E6] rounded-lg py-2.5 text-sm font-medium text-primary hover:bg-muted transition-all-smooth flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-envelope"></i>
+                                <span>Send Email</span>
+                            </button>
+                            <button class="w-full bg-primary text-white rounded-lg py-2.5 text-sm font-medium hover:bg-primary/90 transition-all-smooth flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>Assign Task</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                const closeBtn = panel.querySelector('[data-close-person-panel]');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        clearSelection();
+                        resetPanel();
+                    });
+                }
+            };
+
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    const index = parseInt(row.dataset.personIndex || '-1', 10);
+                    const person = peopleData[index];
+                    if (!person) return;
+                    clearSelection();
+                    row.classList.add('company-people-row-selected');
+                    renderDetail(person);
+                });
+            });
+
+            currentPeopleSection = {
+                ensureSelection: () => {
+                    const alreadySelected = rows.some(row => row.classList.contains('company-people-row-selected'));
+                    if (!alreadySelected && rows.length) {
+                        rows[0].click();
+                    }
+                },
+                reset: () => {
+                    clearSelection();
+                    resetPanel();
+                }
+            };
         }
 
         // Sort state
