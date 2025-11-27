@@ -177,6 +177,75 @@
             max-height: 1000px;
             transition: max-height 0.5s ease-in;
         }
+        
+        .info-tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.35rem;
+            height: 1.35rem;
+            font-size: 0.65rem;
+            border-radius: 9999px;
+            border: 1px solid var(--border);
+            background-color: var(--muted);
+            color: var(--secondary);
+            cursor: pointer;
+            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+        }
+        
+        .info-tooltip:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .info-tooltip:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        
+        .info-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 0.75rem);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            font-size: 0.75rem;
+            line-height: 1.2;
+            padding: 0.4rem 0.65rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            white-space: normal;
+            width: max-content;
+            max-width: 260px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            z-index: 30;
+        }
+        
+        .info-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 0.35rem);
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--primary) transparent transparent transparent;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        
+        .info-tooltip:hover::after,
+        .info-tooltip:hover::before,
+        .info-tooltip:focus-visible::after,
+        .info-tooltip:focus-visible::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -244,7 +313,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Supplier Name (Company) <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Supplier Name (Company) <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Supplier name help" data-tooltip="Use the legal entity that will appear on onboarding paperwork and contracts.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <input type="text" id="supplier-name" name="supplier-name" placeholder="e.g., Thirdway AV" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <p id="supplier-name-error" class="text-xs text-destructive mt-1 hidden">Supplier name is required.</p>
@@ -259,7 +333,12 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Category <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Category <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Category help" data-tooltip="Pick the service line this supplier fulfils so reporting, SLAs, and approvals route correctly.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <div class="relative">
                                     <select id="supplier-category" class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
@@ -336,7 +415,12 @@
                         <div class="space-y-6">
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Coverage Type <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Coverage Type <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Coverage type help" data-tooltip="Tell us the geographic scale this partner covers so scheduling and matching stay accurate.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <div class="flex flex-wrap gap-2" id="coverage-type-buttons">
                                     <button type="button" class="tag-pill coverage-type-btn" data-type="Building">
@@ -358,7 +442,12 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Coverage Areas <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Coverage Areas <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Coverage areas help" data-tooltip="Highlight every market the supplier actively serves. Choose at least one area to keep matching accurate.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <div class="relative">
                                     <select id="coverage-areas" multiple class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent min-h-[100px]">
@@ -446,7 +535,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Contact Name <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Contact Name <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Primary contact help" data-tooltip="We’ll use this name in escalations, onboarding tasks, and service reviews. Choose the daily relationship owner.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <input type="text" id="contact-name" name="contact-name" placeholder="e.g., John Smith" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <p id="contact-name-error" class="text-xs text-destructive mt-1 hidden">Contact name is required.</p>
@@ -461,7 +555,12 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Email <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Email <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Contact email help" data-tooltip="Alerts, reminders, and deal-room invites go here. Use a monitored inbox.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <input type="email" id="contact-email" name="contact-email" placeholder="john.smith@example.com" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <p id="contact-email-error" class="text-xs text-destructive mt-1 hidden">Email is required and must be valid.</p>
@@ -469,7 +568,12 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Phone <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Phone <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Contact phone help" data-tooltip="We’ll only call for incident escalations or urgent SLA updates. Provide a direct number.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <input type="tel" id="contact-phone" name="contact-phone" placeholder="+44 20 7123 4567" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
                                 <p id="contact-phone-error" class="text-xs text-destructive mt-1 hidden">Phone number is required.</p>
@@ -516,7 +620,12 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Contract Status <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Contract Status <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Contract status help" data-tooltip="Determines renewal reminders, compliance checks, and visibility on dashboards. Keep it current.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <div class="relative">
                                     <select id="contract-status" name="contract-status" class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
@@ -561,7 +670,12 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Renewal Date <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Renewal Date <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Renewal date help" data-tooltip="We trigger reminders and approvals from this date whenever the contract status is Active.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <div class="relative">
                                     <input type="date" id="renewal-date" class="w-full px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
@@ -607,7 +721,12 @@
                             
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2">
-                                    Onboarding Status <span class="text-destructive">*</span>
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Onboarding Status <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Onboarding status help" data-tooltip="Controls which playbooks still need action (insurance, policies, compliance).">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
                                 </label>
                                 <div class="relative">
                                     <select id="supplier-onboarding-status" class="w-full appearance-none px-4 py-2.5 bg-input border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">

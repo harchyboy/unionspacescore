@@ -201,6 +201,75 @@
         body.embedded #main-content {
             margin-left: 0;
         }
+        
+        .info-tooltip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.25rem;
+            height: 1.25rem;
+            font-size: 0.65rem;
+            border-radius: 9999px;
+            border: 1px solid var(--border);
+            background-color: var(--muted);
+            color: var(--secondary);
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        
+        .info-tooltip:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .info-tooltip:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        
+        .info-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 0.5rem);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            font-size: 0.75rem;
+            line-height: 1.25;
+            padding: 0.35rem 0.6rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            white-space: normal;
+            width: max-content;
+            max-width: 240px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            z-index: 20;
+        }
+        
+        .info-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 0.2rem);
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: var(--primary) transparent transparent transparent;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        
+        .info-tooltip:hover::after,
+        .info-tooltip:hover::before,
+        .info-tooltip:focus-visible::after,
+        .info-tooltip:focus-visible::before {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
     <script src="sidebar.js" defer></script>
 </head>
@@ -252,7 +321,7 @@
                     <button id="cancel-unit-btn" type="button" class="border border-[#E6E6E6] text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-muted transition-all-smooth">
                         Cancel
                     </button>
-                    <button id="save-unit-btn" type="button" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <button id="save-unit-btn" type="button" class="save-unit-trigger bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-check"></i>
                         <span>Save Unit</span>
                     </button>
@@ -270,16 +339,34 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-name">Unit name / label <span class="text-destructive">*</span></label>
-                                <input id="unit-name" name="unitName" type="text" required aria-invalid="true" class="w-full px-4 py-3 border border-destructive rounded-lg focus:outline-none focus:ring-2 focus:ring-destructive placeholder:text-secondary/70" placeholder="Suite 4.02">
-                                <p class="text-xs text-destructive mt-2 font-medium flex items-center space-x-2">
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-name">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Unit name / label <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Unit name help" data-tooltip="Use the naming convention that appears on floor plans and contracts so brokers can recognise the space.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
+                                </label>
+                                <input id="unit-name" name="unitName" type="text" required aria-invalid="false" class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="Suite 4.02">
+                                <p id="unit-name-error" class="text-xs text-destructive mt-2 font-medium flex items-center gap-2 hidden">
                                     <i class="fa-solid fa-circle-exclamation"></i>
                                     <span>Unit name is required.</span>
                                 </p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-floor">Floor <span class="text-destructive">*</span></label>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-floor">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Floor <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Floor help" data-tooltip="Add the building level so matching engines can filter by lift access or split floors.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
+                                </label>
                                 <input id="unit-floor" name="floor" type="text" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-secondary/70" placeholder="G, 01, 02, LG">
+                                <p id="unit-floor-error" class="text-xs text-destructive mt-2 font-medium flex items-center gap-2 hidden">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>Floor information is required.</span>
+                                </p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="unit-type">Unit type</label>
@@ -311,8 +398,19 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-area">Area (sq ft) <span class="text-destructive">*</span></label>
-                                <input id="unit-area" name="areaSqft" type="number" inputmode="decimal" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="2500">
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-area">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Area (sq ft) <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Area help" data-tooltip="Enter the net internal area so analytics and quoting rent remain accurate. Use numbers only.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
+                                </label>
+                                <input id="unit-area" name="areaSqft" type="number" inputmode="decimal" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="2500" min="1">
+                                <p id="unit-area-error" class="text-xs text-destructive mt-2 font-medium flex items-center gap-2 hidden">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>Enter a positive square footage.</span>
+                                </p>
                                 <p class="text-xs text-secondary mt-2">Use net internal area where possible.</p>
                             </div>
                             <div>
@@ -356,7 +454,14 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-status">Unit availability status <span class="text-destructive">*</span></label>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-status">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Unit availability status <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Availability status help" data-tooltip="Status drives pipeline dashboards and automation. Switch to ‘Let’ or ‘Under offer’ as soon as a deal moves.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
+                                </label>
                                 <select id="unit-status" name="status" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
                                     <option value="available">Available</option>
                                     <option value="under-offer">Under offer</option>
@@ -364,6 +469,10 @@
                                     <option value="held">Held</option>
                                     <option value="draft">Draft</option>
                                 </select>
+                                <p id="unit-status-error" class="text-xs text-destructive mt-2 font-medium flex items-center gap-2 hidden">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>Select the current status.</span>
+                                </p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="available-from">Available from date</label>
@@ -434,12 +543,23 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-primary mb-2" for="unit-visibility">Visibility <span class="text-destructive">*</span></label>
+                                <label class="block text-sm font-medium text-primary mb-2" for="unit-visibility">
+                                    <span class="inline-flex items-center gap-2">
+                                        <span>Visibility <span class="text-destructive">*</span></span>
+                                        <button type="button" class="info-tooltip" aria-label="Visibility help" data-tooltip="Controls whether brokers and tenant reps can see this suite. Keep Private until marketing is approved.">
+                                            <i class="fa-solid fa-circle-question"></i>
+                                        </button>
+                                    </span>
+                                </label>
                                 <select id="unit-visibility" name="visibility" required class="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 bg-white">
                                     <option value="public">Public</option>
                                     <option value="private" selected>Private</option>
                                 </select>
                                 <p class="text-xs text-secondary mt-2">Defaults to Private to keep suites internal until ready.</p>
+                                <p id="unit-visibility-error" class="text-xs text-destructive mt-2 font-medium flex items-center gap-2 hidden">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span>Select how broadly we can share this unit.</span>
+                                </p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-primary mb-2" for="marketing-status">Marketing status</label>
@@ -655,7 +775,7 @@
                     <button class="border border-[#E6E6E6] text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-all-smooth">
                         Cancel
                     </button>
-                    <button class="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
+                    <button type="button" class="save-unit-trigger bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                         <i class="fa-solid fa-check"></i>
                         <span>Save unit</span>
                     </button>
@@ -760,10 +880,150 @@ window.addEventListener('load', function() {
         });
     }
     
-    const saveUnitBtn = document.getElementById('save-unit-btn');
     const unitForm = document.getElementById('unit-form');
     const cancelUnitBtn = document.getElementById('cancel-unit-btn');
     const backToUnitsBtn = document.getElementById('back-to-units');
+    const saveUnitButtons = document.querySelectorAll('.save-unit-trigger');
+    
+    const validationConfig = {
+        'unit-name': {
+            validator: (value) => value.trim().length > 0,
+            message: 'Unit name is required.'
+        },
+        'unit-floor': {
+            validator: (value) => value.trim().length > 0,
+            message: 'Floor information is required.'
+        },
+        'unit-area': {
+            validator: (value) => {
+                const numeric = parseFloat(value);
+                return !isNaN(numeric) && numeric > 0;
+            },
+            message: 'Enter a positive square footage.'
+        },
+        'unit-status': {
+            validator: (value) => value.trim().length > 0,
+            message: 'Select the current status.'
+        },
+        'unit-visibility': {
+            validator: (value) => value.trim().length > 0,
+            message: 'Select how broadly we can share this unit.'
+        }
+    };
+    
+    function setFieldValidity(fieldId, isValid) {
+        const field = document.getElementById(fieldId);
+        const errorElement = document.getElementById(`${fieldId}-error`);
+        if (!field || !errorElement) return;
+        
+        if (isValid) {
+            field.classList.remove('border-destructive');
+            field.classList.add('border-[#E6E6E6]');
+            field.setAttribute('aria-invalid', 'false');
+            errorElement.classList.add('hidden');
+        } else {
+            field.classList.add('border-destructive');
+            field.classList.remove('border-[#E6E6E6]');
+            field.setAttribute('aria-invalid', 'true');
+            errorElement.classList.remove('hidden');
+        }
+    }
+    
+    function validateField(fieldId) {
+        const config = validationConfig[fieldId];
+        const field = document.getElementById(fieldId);
+        if (!config || !field) return true;
+        const isValid = config.validator(field.value || '', field);
+        setFieldValidity(fieldId, isValid);
+        return isValid;
+    }
+    
+    function validateUnitForm() {
+        const errors = [];
+        Object.entries(validationConfig).forEach(([fieldId, config]) => {
+            const valid = validateField(fieldId);
+            if (!valid) {
+                errors.push(config.message);
+            }
+        });
+        return {
+            isValid: errors.length === 0,
+            errors
+        };
+    }
+    
+    function showValidationSummary(errors) {
+        if (!errors.length) return;
+        
+        const existing = document.getElementById('unit-validation-summary');
+        if (existing) existing.remove();
+        
+        const summary = document.createElement('div');
+        summary.id = 'unit-validation-summary';
+        summary.className = 'fixed top-8 left-1/2 transform -translate-x-1/2 bg-destructive text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-md';
+        summary.innerHTML = `
+            <div class="flex items-start space-x-3">
+                <i class="fa-solid fa-exclamation-circle text-xl mt-0.5"></i>
+                <div class="flex-1">
+                    <h3 class="font-semibold mb-2">Please fix the following:</h3>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                        ${errors.map(err => `<li>${err}</li>`).join('')}
+                    </ul>
+                </div>
+                <button type="button" aria-label="Dismiss validation summary" class="text-white hover:text-gray-200">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+        `;
+        summary.querySelector('button')?.addEventListener('click', () => summary.remove());
+        document.body.appendChild(summary);
+        
+        setTimeout(() => {
+            summary.style.opacity = '0';
+            setTimeout(() => summary.remove(), 300);
+        }, 4000);
+    }
+    
+    function scrollToFirstInvalidField() {
+        const errorField = document.querySelector('#unit-form .border-destructive');
+        if (errorField) {
+            errorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            errorField.focus({ preventScroll: true });
+        }
+    }
+    
+    function persistSelectedAmenities() {
+        if (!unitForm) return [];
+        const selected = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value);
+        
+        const existingHiddenInput = unitForm.querySelector('input[name="amenitiesArray"]');
+        if (existingHiddenInput) {
+            existingHiddenInput.remove();
+        }
+        
+        if (selected.length > 0) {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'amenitiesArray';
+            hiddenInput.value = JSON.stringify(selected);
+            unitForm.appendChild(hiddenInput);
+        }
+        
+        return selected;
+    }
+    
+    Object.keys(validationConfig).forEach((fieldId) => {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+        const events = field.tagName === 'SELECT' ? ['change', 'blur'] : ['input', 'blur'];
+        events.forEach(eventName => {
+            field.addEventListener(eventName, () => {
+                if (eventName === 'blur' || field.classList.contains('border-destructive')) {
+                    validateField(fieldId);
+                }
+            });
+        });
+    });
     
     // Prevent form submission on Enter key or accidental submit
     if (unitForm) {
@@ -782,45 +1042,28 @@ window.addEventListener('load', function() {
         }
     });
 
-    saveUnitBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Collect all selected amenities
-        const selectedAmenities = [];
-        const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]:checked');
-        amenityCheckboxes.forEach(checkbox => {
-            selectedAmenities.push(checkbox.value);
+    saveUnitButtons.forEach((button) => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const { isValid, errors } = validateUnitForm();
+            if (!isValid) {
+                showValidationSummary(errors);
+                scrollToFirstInvalidField();
+                return;
+            }
+            
+            const selectedAmenities = persistSelectedAmenities();
+            console.info('Selected amenities:', selectedAmenities);
+            
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
+            toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Unit created successfully. Dossier generated.</span>';
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.remove();
+            }, 3500);
         });
-        
-        // Log selected amenities (for debugging - can be removed in production)
-        console.log('Selected amenities:', selectedAmenities);
-        
-        // You can also store them in a hidden input field for form submission
-        // Remove any existing hidden input
-        const existingHiddenInput = document.querySelector('input[name="amenitiesArray"]');
-        if (existingHiddenInput) {
-            existingHiddenInput.remove();
-        }
-        
-        // Add hidden input with selected amenities as JSON array
-        if (selectedAmenities.length > 0) {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'amenitiesArray';
-            hiddenInput.value = JSON.stringify(selectedAmenities);
-            unitForm.appendChild(hiddenInput);
-        }
-        
-        // Form validation and submission logic would go here
-        // For now, just show success toast
-        const toast = document.createElement('div');
-        toast.className = 'fixed bottom-8 right-8 bg-primary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
-        toast.innerHTML = '<i class="fa-solid fa-check-circle"></i><span>Unit created successfully. Dossier generated.</span>';
-        document.body.appendChild(toast);
-        
-        setTimeout(function() {
-            toast.remove();
-        }, 3500);
     });
     
     // Detect if page is loaded in iframe and add embedded class
