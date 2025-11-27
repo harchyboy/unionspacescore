@@ -6,7 +6,9 @@ async function loadSharedSidebar() {
 
   let sidebarHTML;
   try {
-    const response = await fetch('shared-sidebar.html', { cache: 'no-store' });
+    // Add timestamp to prevent caching of the sidebar HTML
+    const cacheBuster = new Date().getTime();
+    const response = await fetch(`shared-sidebar.html?v=${cacheBuster}`, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Failed to fetch shared sidebar: ${response.status}`);
     }
