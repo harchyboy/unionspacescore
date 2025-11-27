@@ -56,10 +56,10 @@
                             Manage company relationships and track performance
                         </p>
                     </div>
-                    <a href="Companies Adding Card.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium flex items-center">
+                    <button id="add-company-btn" type="button" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium flex items-center">
                         <i class="fa-solid fa-plus mr-2"></i>
                         Add company
-                    </a>
+                    </button>
                 </div>
 
                 <div class="mt-6 flex items-center space-x-4">
@@ -668,6 +668,79 @@
                 <i class="fa-solid fa-building text-4xl mb-4"></i>
                 <p>Select a company to view details</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Add Company Modal -->
+    <div id="add-company-modal" class="hidden fixed inset-0 bg-black/50 z-[60] flex items-start justify-center overflow-y-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl">
+            <div class="flex items-start justify-between border-b border-[#E6E6E6] px-8 py-6">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-secondary mb-1">New entry</p>
+                    <h2 class="text-2xl font-semibold text-primary">Add Company</h2>
+                    <p class="text-sm text-secondary">Capture the key details for a new relationship</p>
+                </div>
+                <button type="button" class="text-secondary hover:text-primary transition-all-smooth" data-close-add-company>
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+
+            <div id="add-company-toast" class="hidden mx-8 mt-6 rounded-lg bg-green-50 text-green-800 px-4 py-3 text-sm font-medium">
+                Company added and ready for enrichment.
+            </div>
+
+            <form id="add-company-form" class="px-8 py-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="company-name" class="text-xs font-semibold uppercase tracking-wider text-secondary mb-2 block">Company name</label>
+                        <input id="company-name" name="company-name" type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. Union Estates">
+                    </div>
+                    <div>
+                        <label for="company-type" class="text-xs font-semibold uppercase tracking-wider text-secondary mb-2 block">Company type</label>
+                        <select id="company-type" name="company-type" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select type</option>
+                            <option value="Agency">Agency</option>
+                            <option value="Landlord">Landlord</option>
+                            <option value="Supplier">Supplier</option>
+                            <option value="Client">Client</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="relationship-owner" class="text-xs font-semibold uppercase tracking-wider text-secondary mb-2 block">Relationship owner</label>
+                        <input id="relationship-owner" name="relationship-owner" type="text" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. Tom Davies">
+                    </div>
+                    <div>
+                        <label for="company-status" class="text-xs font-semibold uppercase tracking-wider text-secondary mb-2 block">Status</label>
+                        <select id="company-status" name="company-status" required class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select status</option>
+                            <option value="Active">Active</option>
+                            <option value="Dormant">Dormant</option>
+                            <option value="Prospect">Prospect</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="company-email" class="text-xs font-semibold uppercase tracking-wider text-secondary mb-2 block">Primary email</label>
+                        <input id="company-email" name="company-email" type="email" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="hello@company.com">
+                    </div>
+                    <div>
+                        <label for="company-phone" class="text-xs font-semibold uppercase tracking-wider text-secondary mb-2 block">Phone</label>
+                        <input id="company-phone" name="company-phone" type="tel" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="+44 20 1234 5678">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="company-notes" class="text-xs font-semibold uppercase tracking-wider text-secondary mb-2 block">Notes</label>
+                    <textarea id="company-notes" name="company-notes" rows="4" class="w-full px-4 py-2.5 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Context, background, or next steps"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-[#E6E6E6]">
+                    <button type="button" data-close-add-company class="px-5 py-2.5 border border-[#E6E6E6] rounded-lg text-sm font-medium text-primary hover:bg-muted transition-all-smooth">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-all-smooth">Create company</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1333,6 +1406,64 @@
                 sortTable(currentSort.column);
             }
         }
+
+        // Add Company modal interactions
+        (function initAddCompanyModal() {
+            const trigger = document.getElementById('add-company-btn');
+            const modal = document.getElementById('add-company-modal');
+            const form = document.getElementById('add-company-form');
+            const toast = document.getElementById('add-company-toast');
+            const closeButtons = document.querySelectorAll('[data-close-add-company]');
+            let toastTimeout;
+
+            if (!modal || !trigger) {
+                return;
+            }
+
+            const openModal = () => {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeModal = () => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                if (toast) {
+                    toast.classList.add('hidden');
+                }
+                if (toastTimeout) {
+                    clearTimeout(toastTimeout);
+                    toastTimeout = null;
+                }
+            };
+
+            trigger.addEventListener('click', openModal);
+
+            closeButtons.forEach(btn => {
+                btn.addEventListener('click', closeModal);
+            });
+
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            if (form) {
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    if (toast) {
+                        toast.classList.remove('hidden');
+                    }
+                    toastTimeout = setTimeout(() => {
+                        if (form) {
+                            form.reset();
+                        }
+                        closeModal();
+                    }, 2000);
+                });
+            }
+        })();
 
         // Add event listeners for filters
         window.addEventListener('load', function() {
