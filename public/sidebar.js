@@ -61,7 +61,7 @@ function applyActiveState(sidebar, navKey) {
 
   const badge = link.querySelector('[data-nav-badge]');
   if (badge) {
-    badge.classList.remove('bg-slate', 'text-white', 'bg-secondary', 'bg-red-600');
+    badge.classList.remove('bg-slate', 'text-white', 'bg-secondary', 'bg-red-600', 'bg-teal-600');
     badge.classList.add('bg-white', 'text-primary');
   }
 }
