@@ -286,9 +286,68 @@
                                 <th class="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="contacts-table-body" class="divide-y divide-[#E6E6E6]">
-                            <!-- Rows will be populated by JS -->
-                        </tbody>
+                        <tbody class="divide-y divide-[#E6E6E6]">
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="James Parker" data-contact-role="Senior Partner" data-contact-type="Flex Broker" data-contact-company="Knight Frank" data-contact-email="j.parker@knightfrank.com" data-contact-phone="+44 20 7629 8171" data-contact-avatar="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&h=128&fit=crop&crop=faces" data-contact-health="Excellent" data-contact-activity-hours="2" data-contact-submarket="City Core">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&h=128&fit=crop&crop=faces" alt="James Parker" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">James Parker</div>
+                                            <div class="text-xs text-secondary">Senior Partner</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">
+                                        <i class="fa-solid fa-handshake mr-1.5"></i>
+                                        Brokers
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-primary">Knight Frank</td>
+                                <td class="px-6 py-4 text-sm text-primary">j.parker@knightfrank.com</td>
+                                <td class="px-6 py-4 text-sm text-secondary">+44 20 7629 8171</td>
+                                <td class="px-6 py-4 text-sm text-secondary">2 hours ago</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-chart-line mr-1"></i>
+                                            3 deals
+                                        </span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+                                            <i class="fa-solid fa-eye mr-1"></i>
+                                            2 viewings
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+                                        Excellent
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-secondary hover:text-primary">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" data-contact-name="Sarah Chen" data-contact-role="Head of Agency" data-contact-type="Disposal Agent" data-contact-company="CBRE" data-contact-email="sarah.chen@cbre.com" data-contact-phone="+44 20 7182 2000" data-contact-avatar="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop&crop=faces" data-contact-health="Good" data-contact-activity-hours="5" data-contact-submarket="Shoreditch">
+                                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop&crop=faces" alt="Sarah Chen" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="font-semibold text-primary text-sm">Sarah Chen</div>
+                                            <div class="text-xs text-secondary">Head of Agency</div>
+                                        </div>
+                                    </div>
+                                </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">
                                         <i class="fa-solid fa-building mr-1.5"></i>
