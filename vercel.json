@@ -1,8 +1,8 @@
 {
-  "buildCommand": "node build-static.js",
+  "buildCommand": "vite build",
   "outputDirectory": "dist",
-  "installCommand": "pnpm install",
-  "framework": null,
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "framework": "vite",
   "cleanUrls": false,
   "trailingSlash": false
 }

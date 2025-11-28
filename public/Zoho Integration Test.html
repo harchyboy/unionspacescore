@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoho Creator Integration Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">
+                    Zoho Creator Integration Test
+                </h1>
+                <p class="text-gray-600">
+                    Test your connection to Zoho Creator API
+                </p>
+            </div>
+
+            <!-- Main Card -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <!-- Input Section -->
+                <div class="mb-6">
+                    <label for="nameInput" class="block text-sm font-medium text-gray-700 mb-2">
+                        Enter Your Name
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nameInput" 
+                        placeholder="e.g., John Doe"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        value="World"
+                    />
+                </div>
+
+                <!-- Button -->
+                <button 
+                    id="callApiBtn"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <span id="btnText">Call Zoho Function</span>
+                    <span id="loadingSpinner" class="hidden ml-2">
+                        <svg class="animate-spin inline-block h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                </button>
+
+                <!-- Response Section -->
+                <div id="responseSection" class="mt-6 hidden">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        Response from Zoho:
+                    </h3>
+                    <div id="responseContent" class="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-auto max-h-96">
+                        <!-- Response will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Error Section -->
+                <div id="errorSection" class="mt-6 hidden">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-red-800 mb-2">
+                            Error
+                        </h3>
+                        <p id="errorMessage" class="text-red-700">
+                            <!-- Error message will be inserted here -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Setup Instructions -->
+            <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-blue-900 mb-4">
+                    Setup Instructions
+                </h2>
+                <ol class="space-y-2 text-blue-800">
+                    <li class="flex">
+                        <span class="font-semibold mr-2">1.</span>
+                        <span>Set up your Zoho Creator API endpoint and get an OAuth token</span>
+                    </li>
+                    <li class="flex">
+                        <span class="font-semibold mr-2">2.</span>
+                        <span>Add environment variables to your Vercel project:</span>
+                    </li>
+                </ol>
+                <div class="mt-4 bg-white border border-blue-300 rounded-lg p-4">
+                    <pre class="text-sm text-gray-800"><code>ZOHO_OAUTH_TOKEN=your_oauth_token_here
+ZOHO_API_ENDPOINT=https://creator.zoho.com/api/v2/...</code></pre>
+                </div>
+                <ol start="3" class="mt-4 space-y-2 text-blue-800">
+                    <li class="flex">
+                        <span class="font-semibold mr-2">3.</span>
+                        <span>Deploy to Vercel or test locally with <code class="bg-blue-100 px-2 py-1 rounded">pnpm dev</code></span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById('nameInput');
+        const callApiBtn = document.getElementById('callApiBtn');
+        const btnText = document.getElementById('btnText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const responseSection = document.getElementById('responseSection');
+        const responseContent = document.getElementById('responseContent');
+        const errorSection = document.getElementById('errorSection');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Handle button click
+        callApiBtn.addEventListener('click', async () => {
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showError('Please enter a name');
+                return;
+            }
+
+            // Reset UI
+            hideResponse();
+            hideError();
+            setLoading(true);
+
+            try {
+                const response = await fetch('/api/zoho-proxy', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({ name })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResponse(data);
+                } else {
+                    // Show detailed error information
+                    const errorMsg = data.error || 'Something went wrong';
+                    const details = data.details ? `\n\nDetails: ${JSON.stringify(data.details, null, 2)}` : '';
+                    throw new Error(errorMsg + details);
+                }
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Handle Enter key in input
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                callApiBtn.click();
+            }
+        });
+
+        // Helper functions
+        function setLoading(isLoading) {
+            callApiBtn.disabled = isLoading;
+            if (isLoading) {
+                btnText.textContent = 'Calling API...';
+                loadingSpinner.classList.remove('hidden');
+            } else {
+                btnText.textContent = 'Call Zoho Function';
+                loadingSpinner.classList.add('hidden');
+            }
+        }
+
+        function showResponse(data) {
+            responseContent.innerHTML = `<pre class="text-sm text-gray-800 whitespace-pre-wrap">${JSON.stringify(data, null, 2)}</pre>`;
+            responseSection.classList.remove('hidden');
+        }
+
+        function hideResponse() {
+            responseSection.classList.add('hidden');
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorSection.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorSection.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
+
