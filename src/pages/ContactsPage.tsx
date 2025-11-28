@@ -91,6 +91,9 @@ const ContactsPage: React.FC = () => {
                 <button className="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary whitespace-nowrap">Brokers</button>
                 <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth whitespace-nowrap">Disposal Agents</button>
                 <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth whitespace-nowrap">Traditional Tenant Reps</button>
+                <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth whitespace-nowrap">Landlords</button>
+                <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth whitespace-nowrap">Clients / Occupiers</button>
+                <button className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border-b-2 border-transparent hover:border-secondary transition-all-smooth whitespace-nowrap">Suppliers</button>
                 <div className="flex-1"></div>
                 <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
                     <i className="fa-solid fa-filter"></i>
@@ -109,6 +112,27 @@ const ContactsPage: React.FC = () => {
                 <div className="relative">
                     <select className="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="all">All Firms</option>
+                    </select>
+                    <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+
+                <div className="relative">
+                    <select className="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Submarkets</option>
+                    </select>
+                    <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+
+                <div className="relative">
+                    <select className="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Activity</option>
+                    </select>
+                    <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+                </div>
+
+                <div className="relative">
+                    <select className="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">All Relationship Health</option>
                     </select>
                     <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
