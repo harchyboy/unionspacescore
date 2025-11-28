@@ -112,12 +112,50 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const url = `${ZOHO_CREATE_CONTACT_URL}?publickey=${ZOHO_PUBLIC_KEY}`;
         
         // Map frontend payload to what your Zoho function expects
-        // Zoho Function: create_crm_contact(name, email, phone, company)
+        // Zoho Function: create_crm_contact(name, email, phone, company, type, territory, ...)
+        // NOTE: You must update your Zoho Creator function to accept this JSON map argument 'data'
+        // OR update the function signature to accept all these individual arguments.
+        // Sending as a single 'data' JSON string is often easier.
+        
         const zohoPayload = {
             name: payload.name,
             email: payload.email,
             phone: payload.phone,
-            company: payload.company
+            company: payload.company,
+            
+            // Pass all other fields as a map or individual fields depending on your Zoho setup
+            // Here we pass a 'details' map for flexibility if the Zoho function supports it
+            details: {
+                role: payload.role,
+                cityRegion: payload.cityRegion,
+                contactType: payload.contactType,
+                brokerageTerritory: payload.brokerageTerritory,
+                specialisms: payload.specialisms,
+                preferredSubmarkets: payload.preferredSubmarkets,
+                referralSource: payload.referralSource,
+                commissionStructure: payload.commissionStructure,
+                landlordRoster: payload.landlordRoster,
+                instructionTypes: payload.instructionTypes,
+                serviceCategory: payload.serviceCategory,
+                coverageAreas: payload.coverageAreas,
+                rateCard: payload.rateCard,
+                leadTime: payload.leadTime,
+                portfolioSize: payload.portfolioSize,
+                assetClasses: payload.assetClasses,
+                geographicFocus: payload.geographicFocus,
+                propertyCount: payload.propertyCount,
+                companySize: payload.companySize,
+                industrySector: payload.industrySector,
+                minSize: payload.minSize,
+                maxSize: payload.maxSize,
+                budgetMin: payload.budgetMin,
+                budgetMax: payload.budgetMax,
+                relationshipNotes: payload.relationshipNotes,
+                emailLoggingConsent: payload.emailLoggingConsent,
+                confidentialRequirement: payload.confidentialRequirement,
+                communicationCadence: payload.communicationCadence,
+                contactStatus: payload.contactStatus
+            }
         };
 
         const response = await axios.post(url, zohoPayload);
