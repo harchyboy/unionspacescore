@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Configuration</title>
+    <script src='https://cdn.tailwindcss.com'></script>
+            <script>
+            tailwind.config = {
+                        theme: {
+                            extend: {
+                                colors: {
+                                    border: "var(--border)",
+                                    input: "var(--input)",
+                                    ring: "var(--ring)",
+                                    background: "var(--background)",
+                                    foreground: "var(--foreground)",
+                                    primary: {
+                                        DEFAULT: "var(--primary)",
+                                        foreground: "var(--primary-foreground)",
+                                    },
+                                    secondary: {
+                                        DEFAULT: "var(--secondary)",
+                                        foreground: "var(--secondary-foreground)",
+                                    },
+                                    destructive: {
+                                        DEFAULT: "var(--destructive)",
+                                        foreground: "var(--destructive-foreground)",
+                                    },
+                                    muted: {
+                                        DEFAULT: "var(--muted)",
+                                        foreground: "var(--muted-foreground)",
+                                    },
+                                    accent: {
+                                        DEFAULT: "var(--accent)",
+                                        foreground: "var(--accent-foreground)",
+                                    },
+                                    popover: {
+                                        DEFAULT: "var(--popover)",
+                                        foreground: "var(--popover-foreground)",
+                                    },
+                                    card: {
+                                        DEFAULT: "var(--card)",
+                                        foreground: "var(--card-foreground)",
+                                    },
+                                    sidebar: {
+                                        DEFAULT: "var(--sidebar)",
+                                        foreground: "var(--sidebar-foreground)",
+                                        primary: "var(--sidebar-primary)",
+                                        "primary-foreground": "var(--sidebar-primary-foreground)",
+                                        accent: "var(--sidebar-accent)",
+                                        "accent-foreground": "var(--sidebar-accent-foreground)",
+                                        border: "var(--sidebar-border)",
+                                        ring: "var(--sidebar-ring)",
+                                    },
+                                    chart: {
+                                        1: "var(--chart-1)",
+                                        2: "var(--chart-2)",
+                                        3: "var(--chart-3)",
+                                        4: "var(--chart-4)",
+                                        5: "var(--chart-5)",
+                                    },
+                                },
+                                borderRadius: {
+                                    lg: "var(--radius)",
+                                    md: "calc(var(--radius) - 2px)",
+                                    sm: "calc(var(--radius) - 4px)",
+                                },
+                                fontFamily: {
+                                    sans: ["var(--font-sans)"],
+                                    serif: ["var(--font-serif)"],
+                                    mono: ["var(--font-mono)"],
+                                },
+                                boxShadow: {
+                                    '2xs': 'var(--shadow-2xs)',
+                                    'xs': 'var(--shadow-xs)',
+                                    'sm': 'var(--shadow-sm)',
+                                    'DEFAULT': 'var(--shadow)',
+                                    'md': 'var(--shadow-md)',
+                                    'lg': 'var(--shadow-lg)',
+                                    'xl': 'var(--shadow-xl)',
+                                    '2xl': 'var(--shadow-2xl)',
+                                },
+                            },
+                        }
+                    }
+            </script>
+            
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #FAFAFA;
+            --foreground: #252525;
+            --card: #ffffff;
+            --card-foreground: #252525;
+            --primary: #252525;
+            --primary-foreground: #ffffff;
+            --secondary: #8E8E8E;
+            --secondary-foreground: #ffffff;
+            --muted: #F0F0F0;
+            --muted-foreground: #252525;
+            --accent: #8E8E8E;
+            --accent-foreground: #ffffff;
+            --destructive: #ef4444;
+            --destructive-foreground: #ffffff;
+            --border: #E6E6E6;
+            --input: #FFFFFF;
+            --ring: #94a3b8;
+            --font-sans: Inter, sans-serif;
+            --radius: 10px;
+            --shadow: -2px 4px 12px 4px rgba(51,51,51,0.05);
+        }
+        ::-webkit-scrollbar { display: none;}
+        body {
+            font-family: var(--font-sans);
+        }
+    </style>
+</head>
+<body class="bg-[#FAFAFA]">
+
+<!-- Header -->
+<header id="header" class="bg-card border-b border-border">
+    <div class="flex items-center justify-between px-8 py-4">
+        <div class="flex items-center space-x-6">
+            <button class="text-secondary hover:text-foreground transition-colors">
+                <i class="fa-solid fa-arrow-left text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-primary text-primary-foreground rounded flex items-center justify-center">
+                    <i class="fa-solid fa-file-contract text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-semibold text-foreground">New Proposal Configuration</h1>
+                    <p class="text-xs text-secondary">Internal deal structuring workspace</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 px-3 py-1.5 bg-muted rounded-lg">
+                <i class="fa-solid fa-circle-check text-xs text-secondary"></i>
+                <span class="text-sm text-secondary">Auto-saved 2 min ago</span>
+            </div>
+            <button class="px-5 py-2 text-sm font-medium text-secondary border border-border rounded-lg hover:bg-muted transition-colors">
+                Save Draft
+            </button>
+            <button class="px-5 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-opacity">
+                Generate Proposal
+            </button>
+            <button class="w-9 h-9 flex items-center justify-center text-secondary hover:bg-muted rounded-lg transition-colors">
+                <i class="fa-solid fa-ellipsis-h"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Main Layout -->
+<div class="flex">
+    <!-- Left Sidebar - Progress Navigation -->
+    <aside id="sidebar-navigation" class="w-72 bg-card border-r border-border p-6">
+        <div class="mb-8">
+            <h2 class="text-xs font-semibold text-secondary uppercase tracking-wide mb-4">Configuration Steps</h2>
+            <nav class="space-y-1">
+                <div class="flex items-center space-x-3 px-4 py-3 bg-muted rounded-lg">
+                    <div class="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">1</div>
+                    <span class="text-sm font-semibold text-foreground">Deal Type</span>
+                </div>
+                <div class="flex items-center space-x-3 px-4 py-3 hover:bg-muted rounded-lg transition-colors cursor-pointer">
+                    <div class="w-6 h-6 bg-muted border border-border rounded-full flex items-center justify-center text-xs font-medium text-secondary">2</div>
+                    <span class="text-sm text-secondary">Service Selection</span>
+                </div>
+                <div class="flex items-center space-x-3 px-4 py-3 hover:bg-muted rounded-lg transition-colors cursor-pointer">
+                    <div class="w-6 h-6 bg-muted border border-border rounded-full flex items-center justify-center text-xs font-medium text-secondary">3</div>
+                    <span class="text-sm text-secondary">Billing Structure</span>
+                </div>
+                <div class="flex items-center space-x-3 px-4 py-3 hover:bg-muted rounded-lg transition-colors cursor-pointer">
+                    <div class="w-6 h-6 bg-muted border border-border rounded-full flex items-center justify-center text-xs font-medium text-secondary">4</div>
+                    <span class="text-sm text-secondary">Pricing Configuration</span>
+                </div>
+                <div class="flex items-center space-x-3 px-4 py-3 hover:bg-muted rounded-lg transition-colors cursor-pointer">
+                    <div class="w-6 h-6 bg-muted border border-border rounded-full flex items-center justify-center text-xs font-medium text-secondary">5</div>
+                    <span class="text-sm text-secondary">Terms & Conditions</span>
+                </div>
+                <div class="flex items-center space-x-3 px-4 py-3 hover:bg-muted rounded-lg transition-colors cursor-pointer">
+                    <div class="w-6 h-6 bg-muted border border-border rounded-full flex items-center justify-center text-xs font-medium text-secondary">6</div>
+                    <span class="text-sm text-secondary">Special Exceptions</span>
+                </div>
+                <div class="flex items-center space-x-3 px-4 py-3 hover:bg-muted rounded-lg transition-colors cursor-pointer">
+                    <div class="w-6 h-6 bg-muted border border-border rounded-full flex items-center justify-center text-xs font-medium text-secondary">7</div>
+                    <span class="text-sm text-secondary">Internal Summary</span>
+                </div>
+            </nav>
+        </div>
+
+        <div class="pt-6 border-t border-border">
+            <h3 class="text-xs font-semibold text-secondary uppercase tracking-wide mb-4">Quick Actions</h3>
+            <div class="space-y-2">
+                <button class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted rounded-lg transition-colors">
+                    <i class="fa-solid fa-copy text-xs"></i>
+                    <span>Duplicate Previous</span>
+                </button>
+                <button class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted rounded-lg transition-colors">
+                    <i class="fa-solid fa-file-import text-xs"></i>
+                    <span>Import Template</span>
+                </button>
+                <button class="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-secondary hover:bg-muted rounded-lg transition-colors">
+                    <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+                    <span>View History</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8 p-4 bg-muted rounded-lg">
+            <div class="flex items-start space-x-3">
+                <i class="fa-solid fa-lightbulb text-secondary text-sm mt-0.5"></i>
+                <div>
+                    <p class="text-xs font-medium text-foreground mb-1">Pro Tip</p>
+                    <p class="text-xs text-secondary leading-relaxed">Configure all pricing before generating to avoid revisions.</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="flex-1 overflow-auto">
+        <!-- Deal Context Bar -->
+        <section id="deal-context-section" class="bg-card border-b border-border px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div>
+                        <p class="text-xs text-secondary uppercase tracking-wide mb-1">Deal Reference</p>
+                        <p class="text-lg font-semibold text-foreground">DEAL-2024-0847</p>
+                    </div>
+                    <div class="w-px h-10 bg-border"></div>
+                    <div>
+                        <p class="text-xs text-secondary uppercase tracking-wide mb-1">Tenant</p>
+                        <p class="text-base font-medium text-foreground">Vertex Analytics Ltd</p>
+                    </div>
+                    <div class="w-px h-10 bg-border"></div>
+                    <div>
+                        <p class="text-xs text-secondary uppercase tracking-wide mb-1">Property</p>
+                        <p class="text-base font-medium text-foreground">Shoreditch Exchange, Floor 4</p>
+                    </div>
+                    <div class="w-px h-10 bg-border"></div>
+                    <div>
+                        <p class="text-xs text-secondary uppercase tracking-wide mb-1">Square Footage</p>
+                        <p class="text-base font-medium text-foreground">3,200 sq ft</p>
+                    </div>
+                </div>
+                <button class="text-sm text-secondary hover:text-foreground transition-colors">
+                    <i class="fa-solid fa-pen-to-square mr-2"></i>
+                    Edit Deal Info
+                </button>
+            </div>
+        </section>
+
+        <!-- Step 1: Deal Type Selection -->
+        <section id="deal-type-section" class="px-8 py-8">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Deal Type Selection</h2>
+                    <p class="text-sm text-secondary">Choose the commercial structure that defines how services and costs are packaged.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div class="bg-card border-2 border-primary rounded-xl p-6 cursor-pointer hover:shadow-lg transition-all">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-primary text-primary-foreground rounded-lg flex items-center justify-center">
+                                <i class="fa-solid fa-layer-group text-xl"></i>
+                            </div>
+                            <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fa-solid fa-check text-primary-foreground text-xs"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-foreground mb-2">All-Inclusive Package</h3>
+                        <p class="text-sm text-secondary mb-4">Single monthly rate covering rent, services, and utilities. Simplified billing, maximum convenience.</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2 text-xs text-secondary">
+                                <i class="fa-solid fa-circle-check text-primary"></i>
+                                <span>One invoice per month</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-secondary">
+                                <i class="fa-solid fa-circle-check text-primary"></i>
+                                <span>Predictable costs</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-secondary">
+                                <i class="fa-solid fa-circle-check text-primary"></i>
+                                <span>Premium positioning</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-xl p-6 cursor-pointer hover:border-primary hover:shadow-lg transition-all">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-muted text-foreground rounded-lg flex items-center justify-center">
+                                <i class="fa-solid fa-puzzle-piece text-xl"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-foreground mb-2">Modular (Bolt-On)</h3>
+                        <p class="text-sm text-secondary mb-4">Base rent plus selected services. Tenant pays only for what they use with itemized billing.</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2 text-xs text-secondary">
+                                <i class="fa-solid fa-circle text-xs"></i>
+                                <span>Flexible service selection</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-secondary">
+                                <i class="fa-solid fa-circle text-xs"></i>
+                                <span>Itemized invoicing</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs text-secondary">
+                                <i class="fa-solid fa-circle text-xs"></i>
+                                <span>Cost transparency</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-muted rounded-lg p-6">
+                    <div class="flex items-start space-x-4">
+                        <i class="fa-solid fa-info-circle text-primary text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-semibold text-foreground mb-2">Deal Type Implications</h4>
+                            <p class="text-sm text-secondary mb-3">All-Inclusive creates a single contract with bundled pricing. Modular separates UNION services from the lease, allowing add/remove throughout the term.</p>
+                            <div class="flex items-center space-x-6 text-xs text-secondary">
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                    <span>Affects revenue recognition</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                    <span>Changes billing workflow</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-handshake"></i>
+                                    <span>Impacts contract structure</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Service Selection Matrix -->
+        <section id="service-selection-section" class="px-8 py-8 bg-muted">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Service Selection</h2>
+                    <p class="text-sm text-secondary">Choose which UNION services to include in this proposal. Core services are recommended for all deals.</p>
+                </div>
+
+                <div class="bg-card rounded-xl overflow-hidden mb-6">
+                    <div class="bg-primary text-primary-foreground px-6 py-4">
+                        <h3 class="text-base font-semibold">Core Services (Recommended)</h3>
+                        <p class="text-xs opacity-80 mt-1">Essential services that define the UNION experience</p>
+                    </div>
+                    <div class="divide-y divide-border">
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-muted transition-colors">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary" id="service-cleaning">
+                                <label for="service-cleaning" class="flex-1 cursor-pointer">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-broom text-primary"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-foreground">Daily Cleaning</p>
+                                            <p class="text-xs text-secondary">Mon-Fri deep clean, bin rotation, restocking</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-foreground">£1,280/month</p>
+                                    <p class="text-xs text-secondary">£0.40/sq ft</p>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-muted transition-colors">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary" id="service-reception">
+                                <label for="service-reception" class="flex-1 cursor-pointer">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-user-tie text-primary"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-foreground">Reception Services</p>
+                                            <p class="text-xs text-secondary">8am-6pm weekdays, guest management, mail handling</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-foreground">£2,400/month</p>
+                                    <p class="text-xs text-secondary">Shared cost</p>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-muted transition-colors">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary" id="service-internet">
+                                <label for="service-internet" class="flex-1 cursor-pointer">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-wifi text-primary"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-foreground">Enterprise Internet</p>
+                                            <p class="text-xs text-secondary">1Gbps leased line, managed WiFi, 24/7 support</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-foreground">£850/month</p>
+                                    <p class="text-xs text-secondary">Dedicated line</p>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-muted transition-colors">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary" id="service-utilities">
+                                <label for="service-utilities" class="flex-1 cursor-pointer">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-bolt text-primary"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-foreground">Utilities (Elec, Water, Heat)</p>
+                                            <p class="text-xs text-secondary">All-inclusive utilities with fair usage cap</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-foreground">£960/month</p>
+                                    <p class="text-xs text-secondary">£0.30/sq ft</p>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl overflow-hidden mb-6">
+                    <div class="bg-muted px-6 py-4 border-b border-border">
+                        <h3 class="text-base font-semibold text-foreground">Premium Add-Ons</h3>
+                        <p class="text-xs text-secondary mt-1">Enhanced services for differentiated offerings</p>
+                    </div>
+                    <div class="divide-y divide-border">
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-muted transition-colors">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <input type="checkbox" class="w-5 h-5 rounded border-border text-primary focus:ring-primary" id="service-coffee">
+                                <label for="service-coffee" class="flex-1 cursor-pointer">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-mug-hot text-secondary"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-foreground">Barista Coffee Service</p>
+                                            <p class="text-xs text-secondary">Premium beans, daily barista, unlimited consumption</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-foreground">£640/month</p>
+                                    <p class="text-xs text-secondary">£0.20/sq ft</p>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-muted transition-colors">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <input type="checkbox" checked class="w-5 h-5 rounded border-border text-primary focus:ring-primary" id="service-meeting">
+                                <label for="service-meeting" class="flex-1 cursor-pointer">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-users text-primary"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-foreground">Meeting Room Credits</p>
+                                            <p class="text-xs text-secondary">20 hours/month across all building meeting spaces</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-foreground">£450/month</p>
+                                    <p class="text-xs text-secondary">20hr allocation</p>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-muted transition-colors">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <input type="checkbox" class="w-5 h-5 rounded border-border text-primary focus:ring-primary" id="service-events">
+                                <label for="service-events" class="flex-1 cursor-pointer">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fa-solid fa-champagne-glasses text-secondary"></i>
+                                        <div>
+                                            <p class="text-sm font-medium text-foreground">Events & Catering</p>
+                                            <p class="text-xs text-secondary">Quarterly team events, ad-hoc catering coordination</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center space-x-6">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold text-foreground">£1,200/month</p>
+                                    <p class="text-xs text-secondary">4 events/year</p>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl overflow-hidden">
+                    <div class="bg-muted px-6 py-4 border-b border-border">
+                        <h3 class="text-base font-semibold text-foreground">Bespoke Services</h3>
+                        <p class="text-xs text-secondary mt-1">Custom solutions priced per requirement</p>
+                    </div>
+                    <div class="px-6 py-4">
+                        <button class="w-full flex items-center justify-center space-x-2 px-4 py-3 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-muted transition-all">
+                            <i class="fa-solid fa-plus text-primary"></i>
+                            <span class="text-sm font-medium text-foreground">Add Custom Service</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 3: Billing Structure Configuration -->
+        <section id="billing-structure-section" class="px-8 py-8">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Billing Structure</h2>
+                    <p class="text-sm text-secondary">Define how each service is charged and when payments are collected.</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="bg-card border border-border rounded-xl p-6">
+                        <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-calendar-days text-xl text-foreground"></i>
+                        </div>
+                        <h3 class="text-sm font-semibold text-foreground mb-2">Monthly Recurring</h3>
+                        <p class="text-xs text-secondary mb-4">Fixed fee charged on the same day each month</p>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-secondary">Applied to</span>
+                            <span class="font-semibold text-foreground">6 services</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-xl p-6">
+                        <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-chart-line text-xl text-foreground"></i>
+                        </div>
+                        <h3 class="text-sm font-semibold text-foreground mb-2">Usage-Based</h3>
+                        <p class="text-xs text-secondary mb-4">Variable cost calculated on actual consumption</p>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-secondary">Applied to</span>
+                            <span class="font-semibold text-foreground">0 services</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-xl p-6">
+                        <div class="w-12 h-12 bg-muted rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-coins text-xl text-foreground"></i>
+                        </div>
+                        <h3 class="text-sm font-semibold text-foreground mb-2">One-Time</h3>
+                        <p class="text-xs text-secondary mb-4">Single charge for setup or project work</p>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-secondary">Applied to</span>
+                            <span class="font-semibold text-foreground">0 services</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border overflow-hidden">
+                    <div class="px-6 py-4 bg-muted border-b border-border">
+                        <h3 class="text-base font-semibold text-foreground">Service Billing Details</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-border bg-muted">
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">Service</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">Billing Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">Rate</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">Billing Day</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-foreground uppercase tracking-wider">Indexation</th>
+                                    <th class="px-6 py-3 text-center text-xs font-semibold text-foreground uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                <tr class="hover:bg-muted transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-broom text-primary"></i>
+                                            <span class="text-sm font-medium text-foreground">Daily Cleaning</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-muted text-xs font-medium text-foreground rounded-full">Monthly Recurring</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-foreground">£1,280.00</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">1st of month</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">CPI Annual</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button class="text-secondary hover:text-foreground">
+                                            <i class="fa-solid fa-ellipsis-h"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-user-tie text-primary"></i>
+                                            <span class="text-sm font-medium text-foreground">Reception Services</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-muted text-xs font-medium text-foreground rounded-full">Monthly Recurring</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-foreground">£2,400.00</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">1st of month</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">CPI Annual</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button class="text-secondary hover:text-foreground">
+                                            <i class="fa-solid fa-ellipsis-h"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-wifi text-primary"></i>
+                                            <span class="text-sm font-medium text-foreground">Enterprise Internet</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-muted text-xs font-medium text-foreground rounded-full">Monthly Recurring</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-foreground">£850.00</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">1st of month</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">Fixed</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button class="text-secondary hover:text-foreground">
+                                            <i class="fa-solid fa-ellipsis-h"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-bolt text-primary"></i>
+                                            <span class="text-sm font-medium text-foreground">Utilities</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-muted text-xs font-medium text-foreground rounded-full">Monthly Recurring</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-foreground">£960.00</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">1st of month</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">Quarterly Review</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button class="text-secondary hover:text-foreground">
+                                            <i class="fa-solid fa-ellipsis-h"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-muted transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fa-solid fa-users text-primary"></i>
+                                            <span class="text-sm font-medium text-foreground">Meeting Room Credits</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-muted text-xs font-medium text-foreground rounded-full">Monthly Recurring</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-foreground">£450.00</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">1st of month</td>
+                                    <td class="px-6 py-4 text-sm text-secondary">Fixed</td>
+                                    <td class="px-6 py-4 text-center">
+                                        <button class="text-secondary hover:text-foreground">
+                                            <i class="fa-solid fa-ellipsis-h"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 4: Pricing Configuration -->
+        <section id="pricing-configuration-section" class="px-8 py-8 bg-muted">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Pricing Configuration</h2>
+                    <p class="text-sm text-secondary">Set discounts, markups, and final pricing before proposal generation.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div class="bg-card rounded-xl p-6">
+                        <h3 class="text-base font-semibold text-foreground mb-6">Pricing Strategy</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Discount Type</label>
+                                <select class="w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option>No Discount</option>
+                                    <option>Percentage Off</option>
+                                    <option>Fixed Amount Off</option>
+                                    <option>First Month Free</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Contract Length Incentive</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="0" class="flex-1 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">% off for 3+ years</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Early Payment Discount</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="2" class="flex-1 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">% if paid 7 days early</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-xl p-6">
+                        <h3 class="text-base font-semibold text-foreground mb-6">Cost Adjustments</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Service Margin</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="15" class="flex-1 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">% markup on cost</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Admin Fee</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="150" class="flex-1 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">£ per month</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Rounding Rule</label>
+                                <select class="w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option>Round to nearest £10</option>
+                                    <option>Round to nearest £50</option>
+                                    <option>Round to nearest £100</option>
+                                    <option>No rounding</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border overflow-hidden">
+                    <div class="px-6 py-4 bg-primary text-primary-foreground">
+                        <h3 class="text-base font-semibold">Pricing Breakdown</h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between py-3 border-b border-border">
+                            <span class="text-sm text-foreground">Base Services Subtotal</span>
+                            <span class="text-lg font-semibold text-foreground">£5,490.00</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-border">
+                            <span class="text-sm text-foreground">Premium Add-Ons</span>
+                            <span class="text-lg font-semibold text-foreground">£450.00</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-border">
+                            <span class="text-sm text-secondary">Service Margin (15%)</span>
+                            <span class="text-sm font-medium text-secondary">+£891.00</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-border">
+                            <span class="text-sm text-secondary">Admin Fee</span>
+                            <span class="text-sm font-medium text-secondary">+£150.00</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-border">
+                            <span class="text-sm text-secondary">Early Payment Discount (2%)</span>
+                            <span class="text-sm font-medium text-secondary">-£139.62</span>
+                        </div>
+                        <div class="flex items-center justify-between py-4 bg-muted rounded-lg px-4">
+                            <span class="text-base font-semibold text-foreground">Monthly Total (Rounded)</span>
+                            <span class="text-2xl font-bold text-foreground">£6,840.00</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-secondary pt-2">
+                            <span>Annual Contract Value</span>
+                            <span class="font-semibold">£82,080.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 5: Terms & Conditions -->
+        <section id="terms-conditions-section" class="px-8 py-8">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Terms & Conditions</h2>
+                    <p class="text-sm text-secondary">Define contract terms, notice periods, and service level agreements.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <h3 class="text-base font-semibold text-foreground mb-6">Contract Terms</h3>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Initial Term</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="36" class="w-24 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <select class="flex-1 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                        <option>Months</option>
+                                        <option>Years</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Notice Period</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="6" class="w-24 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">months before term end</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Renewal Terms</label>
+                                <select class="w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option>Auto-renew for same term</option>
+                                    <option>Auto-renew for 12 months</option>
+                                    <option>Convert to rolling monthly</option>
+                                    <option>No auto-renewal</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Break Clause</label>
+                                <select class="w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option>None</option>
+                                    <option>After 12 months</option>
+                                    <option>After 24 months</option>
+                                    <option>Mutual agreement only</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <h3 class="text-base font-semibold text-foreground mb-6">Service Level Agreement</h3>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Response Time (Critical)</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="2" class="w-24 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">hours</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Response Time (Standard)</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="24" class="w-24 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">hours</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Uptime Guarantee</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="number" value="99.5" step="0.1" class="w-24 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <span class="text-sm text-secondary">% for core services</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Service Credits</label>
+                                <select class="w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option>Pro-rata refund if SLA breached</option>
+                                    <option>Fixed penalty per incident</option>
+                                    <option>No service credits</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border p-6">
+                    <h3 class="text-base font-semibold text-foreground mb-6">Payment Terms</h3>
+                    <div class="grid grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Payment Due</label>
+                            <select class="w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option>7 days before period</option>
+                                <option>On 1st of month</option>
+                                <option>Net 15 days</option>
+                                <option>Net 30 days</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Late Payment Fee</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="number" value="3" class="flex-1 px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                <span class="text-sm text-secondary">%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-secondary uppercase tracking-wide mb-2">Deposit Required</label>
+                            <select class="w-full px-4 py-2.5 bg-input border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option>No deposit</option>
+                                <option>1 month</option>
+                                <option>2 months</option>
+                                <option>Custom amount</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 6: Special Exceptions -->
+        <section id="special-exceptions-section" class="px-8 py-8 bg-muted">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Special Exceptions</h2>
+                    <p class="text-sm text-secondary">Document any non-standard terms, custom arrangements, or deal-specific conditions.</p>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border overflow-hidden mb-6">
+                    <div class="px-6 py-4 bg-muted border-b border-border flex items-center justify-between">
+                        <h3 class="text-base font-semibold text-foreground">Active Exceptions</h3>
+                        <button class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-opacity">
+                            <i class="fa-solid fa-plus mr-2"></i>Add Exception
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="bg-muted rounded-lg p-6 border-l-4 border-primary mb-4">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa-solid fa-shield-halved text-primary text-lg mt-0.5"></i>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-foreground mb-1">First 3 Months Rent-Free</h4>
+                                        <p class="text-xs text-secondary">Tenant receives full rent abatement for initial quarter to offset fit-out costs.</p>
+                                    </div>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center space-x-4 text-xs text-secondary">
+                                <span><i class="fa-solid fa-tag mr-1"></i>Commercial</span>
+                                <span><i class="fa-solid fa-calendar mr-1"></i>Term-limited</span>
+                                <span><i class="fa-solid fa-user mr-1"></i>Approved by Max</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-muted rounded-lg p-6 border-l-4 border-secondary mb-4">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex items-start space-x-3">
+                                    <i class="fa-solid fa-wrench text-secondary text-lg mt-0.5"></i>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-foreground mb-1">Custom Furniture Package Included</h4>
+                                        <p class="text-xs text-secondary">£15,000 furniture allowance built into monthly rate, not itemized separately.</p>
+                                    </div>
+                                </div>
+                                <button class="text-secondary hover:text-foreground">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center space-x-4 text-xs text-secondary">
+                                <span><i class="fa-solid fa-tag mr-1"></i>Service</span>
+                                <span><i class="fa-solid fa-infinity mr-1"></i>Permanent</span>
+                                <span><i class="fa-solid fa-user mr-1"></i>Approved by Dani</span>
+                            </div>
+                        </div>
+
+                        <button class="w-full flex items-center justify-center space-x-2 px-4 py-4 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-muted transition-all">
+                            <i class="fa-solid fa-plus text-primary"></i>
+                            <span class="text-sm font-medium text-foreground">Add Another Exception</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <h3 class="text-base font-semibold text-foreground mb-4">Exception Categories</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-2 h-2 bg-primary rounded-full"></div>
+                                    <span class="text-sm text-foreground">Commercial Terms</span>
+                                </div>
+                                <span class="text-xs font-semibold text-secondary">1 active</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                                    <span class="text-sm text-foreground">Service Modifications</span>
+                                </div>
+                                <span class="text-xs font-semibold text-secondary">1 active</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-2 h-2 bg-muted rounded-full"></div>
+                                    <span class="text-sm text-secondary">Payment Adjustments</span>
+                                </div>
+                                <span class="text-xs text-secondary">0 active</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-2 h-2 bg-muted rounded-full"></div>
+                                    <span class="text-sm text-secondary">SLA Variations</span>
+                                </div>
+                                <span class="text-xs text-secondary">0 active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <h3 class="text-base font-semibold text-foreground mb-4">Approval Status</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3 p-3 bg-muted rounded-lg">
+                                <div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-foreground">Max (Strategy)</p>
+                                    <p class="text-xs text-secondary">Approved 2 exceptions</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3 p-3 bg-muted rounded-lg">
+                                <div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-semibold">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-foreground">Dani (Operations)</p>
+                                    <p class="text-xs text-secondary">Approved 1 exception</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 7: Internal Summary -->
+        <section id="internal-summary-section" class="px-8 py-8">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Internal Summary</h2>
+                    <p class="text-sm text-secondary">Final review before generating the tenant-facing proposal document.</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-foreground">Deal Structure</h3>
+                            <i class="fa-solid fa-check-circle text-primary text-xl"></i>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Type</span>
+                                <span class="font-medium text-foreground">All-Inclusive</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Services</span>
+                                <span class="font-medium text-foreground">5 included</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Term</span>
+                                <span class="font-medium text-foreground">36 months</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-foreground">Pricing</h3>
+                            <i class="fa-solid fa-check-circle text-primary text-xl"></i>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Monthly</span>
+                                <span class="font-medium text-foreground">£6,840</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Annual</span>
+                                <span class="font-medium text-foreground">£82,080</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Margin</span>
+                                <span class="font-medium text-foreground">15%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-foreground">Exceptions</h3>
+                            <i class="fa-solid fa-check-circle text-primary text-xl"></i>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Active</span>
+                                <span class="font-medium text-foreground">2 items</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Approved</span>
+                                <span class="font-medium text-foreground">100%</span>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-secondary">Impact</span>
+                                <span class="font-medium text-foreground">-£4,500</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border overflow-hidden mb-6">
+                    <div class="px-6 py-4 bg-primary text-primary-foreground">
+                        <h3 class="text-base font-semibold">Complete Configuration Overview</h3>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <div>
+                            <h4 class="text-sm font-semibold text-foreground mb-3">Services Included</h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="flex items-center space-x-2 text-sm">
+                                    <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                    <span class="text-foreground">Daily Cleaning</span>
+                                    <span class="text-secondary text-xs ml-auto">£1,280/mo</span>
+                                </div>
+                                <div class="flex items-center space-x-2 text-sm">
+                                    <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                    <span class="text-foreground">Reception Services</span>
+                                    <span class="text-secondary text-xs ml-auto">£2,400/mo</span>
+                                </div>
+                                <div class="flex items-center space-x-2 text-sm">
+                                    <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                    <span class="text-foreground">Enterprise Internet</span>
+                                    <span class="text-secondary text-xs ml-auto">£850/mo</span>
+                                </div>
+                                <div class="flex items-center space-x-2 text-sm">
+                                    <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                    <span class="text-foreground">Utilities</span>
+                                    <span class="text-secondary text-xs ml-auto">£960/mo</span>
+                                </div>
+                                <div class="flex items-center space-x-2 text-sm">
+                                    <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                    <span class="text-foreground">Meeting Room Credits</span>
+                                    <span class="text-secondary text-xs ml-auto">£450/mo</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-border pt-6">
+                            <h4 class="text-sm font-semibold text-foreground mb-3">Key Terms</h4>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <p class="text-xs text-secondary uppercase tracking-wide mb-1">Contract Length</p>
+                                    <p class="text-sm font-medium text-foreground">36 months</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-secondary uppercase tracking-wide mb-1">Notice Period</p>
+                                    <p class="text-sm font-medium text-foreground">6 months</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-secondary uppercase tracking-wide mb-1">Break Clause</p>
+                                    <p class="text-sm font-medium text-foreground">None</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-secondary uppercase tracking-wide mb-1">Payment Terms</p>
+                                    <p class="text-sm font-medium text-foreground">7 days advance</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-secondary uppercase tracking-wide mb-1">SLA Response</p>
+                                    <p class="text-sm font-medium text-foreground">2hr critical</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-secondary uppercase tracking-wide mb-1">Indexation</p>
+                                    <p class="text-sm font-medium text-foreground">CPI Annual</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-border pt-6">
+                            <h4 class="text-sm font-semibold text-foreground mb-3">Internal Notes</h4>
+                            <textarea rows="4" placeholder="Add any internal context, deal background, or coordination notes..." class="w-full px-4 py-3 bg-muted border border-border rounded-lg text-sm text-foreground placeholder-secondary focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-muted rounded-xl p-6 mb-6">
+                    <div class="flex items-start space-x-4">
+                        <i class="fa-solid fa-info-circle text-primary text-xl mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-semibold text-foreground mb-2">Next Steps After Generation</h4>
+                            <ul class="space-y-2 text-sm text-secondary">
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-circle text-xs mt-1"></i>
+                                    <span>Proposal PDF will be generated with UNION branding and tenant details</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-circle text-xs mt-1"></i>
+                                    <span>You can preview before sending to tenant via Deal Room</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-circle text-xs mt-1"></i>
+                                    <span>All changes are version-controlled for audit trail</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fa-solid fa-circle text-xs mt-1"></i>
+                                    <span>Tenant acceptance triggers onboarding workflow automatically</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button class="px-6 py-3 text-sm font-medium text-secondary border border-border rounded-lg hover:bg-muted transition-colors">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i>Save as Template
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <button class="px-6 py-3 text-sm font-medium text-secondary border border-border rounded-lg hover:bg-muted transition-colors">
+                            Back to Editing
+                        </button>
+                        <button class="px-8 py-3 text-base font-semibold text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-opacity shadow-lg">
+                            <i class="fa-solid fa-file-export mr-2"></i>Generate Proposal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Context Section -->
+        <section id="deal-intelligence-section" class="px-8 py-8 bg-muted">
+            <div class="max-w-5xl">
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Deal Intelligence</h2>
+                    <p class="text-sm text-secondary">Historical data and benchmarks to inform your configuration decisions.</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-foreground">Similar Deals</h3>
+                            <i class="fa-solid fa-chart-simple text-secondary"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-foreground mb-2">8</p>
+                        <p class="text-xs text-secondary">Comparable proposals in last 6 months</p>
+                        <button class="mt-4 text-xs font-medium text-primary hover:underline">View comparisons</button>
+                    </div>
+
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-foreground">Avg. Monthly Rate</h3>
+                            <i class="fa-solid fa-coins text-secondary"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-foreground mb-2">£6,420</p>
+                        <p class="text-xs text-secondary">For 3,000-3,500 sq ft in Shoreditch</p>
+                        <div class="mt-4 flex items-center space-x-2">
+                            <div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                                <div class="h-full bg-primary" style="width: 93%"></div>
+                            </div>
+                            <span class="text-xs font-medium text-primary">+6.5%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-xl border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-foreground">Win Rate</h3>
+                            <i class="fa-solid fa-trophy text-secondary"></i>
+                        </div>
+                        <p class="text-3xl font-bold text-foreground mb-2">72%</p>
+                        <p class="text-xs text-secondary">For All-Inclusive proposals</p>
+                        <button class="mt-4 text-xs font-medium text-primary hover:underline">View success factors</button>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border overflow-hidden">
+                    <div class="px-6 py-4 bg-muted border-b border-border">
+                        <h3 class="text-base font-semibold text-foreground">Tenant Profile & Preferences</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="text-sm font-semibold text-foreground mb-4">Company Details</h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Industry</span>
+                                        <span class="font-medium text-foreground">Technology / Analytics</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Team Size</span>
+                                        <span class="font-medium text-foreground">45-50 people</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Growth Stage</span>
+                                        <span class="font-medium text-foreground">Series B</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-secondary">Previous Office</span>
+                                        <span class="font-medium text-foreground">Serviced office</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-foreground mb-4">Requirements</h4>
+                                <div class="space-y-2">
+                                    <div class="flex items-center space-x-2 text-sm">
+                                        <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                        <span class="text-foreground">High-spec meeting rooms (priority)</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-sm">
+                                        <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                        <span class="text-foreground">Fast internet essential</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-sm">
+                                        <i class="fa-solid fa-circle-check text-primary text-xs"></i>
+                                        <span class="text-foreground">Flexibility for headcount growth</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2 text-sm">
+                                        <i class="fa-solid fa-circle text-xs text-secondary"></i>
+                                        <span class="text-secondary">Branded reception (nice-to-have)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Configuration History -->
+        <section id="configuration-history-section" class="px-8 py-8">
+            <div class="max-w-5xl">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold text-foreground mb-2">Configuration History</h2>
+                    <p class="text-sm text-secondary">Track changes and maintain audit trail of proposal evolution.</p>
+                </div>
+
+                <div class="bg-card rounded-xl border border-border overflow-hidden">
+                    <div class="divide-y divide-border">
+                        <div class="px-6 py-4 flex items-center space-x-4 hover:bg-muted transition-colors">
+                            <div class="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold text-sm">
+                                MJ
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-foreground">Max Johnson updated pricing configuration</p>
+                                <p class="text-xs text-secondary">Added 2% early payment discount • 14 minutes ago</p>
+                            </div>
+                            <button class="text-sm text-secondary hover:text-foreground">View change</button>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center space-x-4 hover:bg-muted transition-colors">
+                            <div class="w-10 h-10 bg-secondary text-secondary-foreground rounded-full flex items-center justify-center font-semibold text-sm">
+                                DP
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-foreground">Dani Peters approved custom furniture exception</p>
+                                <p class="text-xs text-secondary">£15,000 allowance included in base package • 1 hour ago</p>
+                            </div>
+                            <button class="text-sm text-secondary hover:text-foreground">View change</button>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center space-x-4 hover:bg-muted transition-colors">
+                            <div class="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold text-sm">
+                                MJ
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-foreground">Max Johnson added 3 months rent-free exception</p>
+                                <p class="text-xs text-secondary">Commercial concession to secure deal • 2 hours ago</p>
+                            </div>
+                            <button class="text-sm text-secondary hover:text-foreground">View change</button>
+                        </div>
+
+                        <div class="px-6 py-4 flex items-center space-x-4 hover:bg-muted transition-colors">
+                            <div class="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-semibold text-sm">
+                                TW
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-foreground">Tom Wilson created initial configuration</p>
+                                <p class="text-xs text-secondary">Selected All-Inclusive deal type with 5 core services • 3 hours ago</p>
+                            </div>
+                            <button class="text-sm text-secondary hover:text-foreground">View change</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Right Sidebar - Calculator & Insights -->
+    <aside id="sidebar-calculator" class="w-96 bg-card border-l border-border overflow-auto">
+        <div class="p-6">
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-semibold text-foreground">Live Calculator</h3>
+                    <i class="fa-solid fa-calculator text-primary text-lg"></i>
+                </div>
+                <div class="bg-muted rounded-lg p-4 mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs text-secondary uppercase tracking-wide">Monthly Total</span>
+                        <button class="text-xs text-primary hover:underline">Breakdown</button>
+                    </div>
+                    <p class="text-3xl font-bold text-foreground mb-1">£6,840</p>
+                    <p class="text-xs text-secondary">£2.14 per sq ft per month</p>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-secondary">Base Services</span>
+                        <span class="font-medium text-foreground">£5,490</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-secondary">Add-Ons</span>
+                        <span class="font-medium text-foreground">£450</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-secondary">Margin (15%)</span>
+                        <span class="font-medium text-foreground">£891</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-secondary">Admin Fee</span>
+                        <span class="font-medium text-foreground">£150</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm border-t border-border pt-3">
+                        <span class="text-secondary">Discounts</span>
+                        <span class="font-medium text-destructive">-£141</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-border pt-6 mb-6">
+                <h3 class="text-base font-semibold text-foreground mb-4">Contract Value</h3>
+                <div class="space-y-4">
+                    <div class="bg-muted rounded-lg p-4">
+                        <p class="text-xs text-secondary uppercase tracking-wide mb-1">36-Month Total</p>
+                        <p class="text-2xl font-bold text-foreground">£246,240</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-muted rounded-lg p-3">
+                            <p class="text-xs text-secondary mb-1">Year 1</p>
+                            <p class="text-lg font-semibold text-foreground">£82,080</p>
+                        </div>
+                        <div class="bg-muted rounded-lg p-3">
+                            <p class="text-xs text-secondary mb-1">Year 2</p>
+                            <p class="text-lg font-semibold text-foreground">£82,080</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-border pt-6 mb-6">
+                <h3 class="text-base font-semibold text-foreground mb-4">Profitability</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-secondary">Gross Margin</span>
+                        <span class="font-semibold text-foreground">18.2%</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-secondary">Monthly Profit</span>
+                        <span class="font-semibold text-foreground">£1,245</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-secondary">Annual Profit</span>
+                        <span class="font-semibold text-foreground">£14,940</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-border pt-6 mb-6">
+                <h3 class="text-base font-semibold text-foreground mb-4">Benchmarks</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-secondary">vs. Market Average</span>
+                            <span class="text-xs font-semibold text-primary">+6.5%</span>
+                        </div>
+                        <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
+                            <div class="h-full bg-primary" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs text-secondary">vs. UNION Average</span>
+                            <span class="text-xs font-semibold text-primary">+2.1%</span>
+                        </div>
+                        <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
+                            <div class="h-full bg-primary" style="width: 52%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-muted rounded-lg p-4">
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-lightbulb text-primary mt-0.5"></i>
+                    <div>
+                        <p class="text-xs font-semibold text-foreground mb-1">Optimization Tip</p>
+                        <p class="text-xs text-secondary leading-relaxed">Consider bundling meeting room credits into base package for cleaner pricing presentation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div

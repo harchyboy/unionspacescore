@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heads of Terms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: '#252525',
+                        concrete: '#8E8E8E',
+                        stone: '#F0F0F0'
+                    },
+                    fontFamily: {
+                        'haltung': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script>window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>::-webkit-scrollbar { display: none;}</style>
+</head>
+<body class="bg-stone font-haltung">
+
+<div id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-white border-r border-concrete/30 flex flex-col z-50">
+    <div class="p-6 border-b border-concrete/30">
+        <div class="text-2xl font-semibold text-slate tracking-tight">UNION</div>
+        <div class="text-xs text-concrete mt-1">Core Dashboard</div>
+    </div>
+    
+    <nav class="flex-1 overflow-y-auto py-6">
+        <div class="px-4 mb-6">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">Pipeline</div>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-chart-line w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Deals</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-building w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Properties</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 bg-slate text-white rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-folder-open w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Deal Room</span>
+            </a>
+        </div>
+        
+        <div class="px-4 mb-6">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">Operations</div>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-handshake w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Handoff</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-rocket w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Onboarding</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-boxes-stacked w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Services</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-ticket w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Tickets</span>
+                <span class="ml-auto bg-slate text-white text-xs px-2 py-0.5 rounded-full">3</span>
+            </a>
+        </div>
+        
+        <div class="px-4 mb-6">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">Management</div>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-users w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Suppliers</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-chart-bar w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Analytics</span>
+            </a>
+        </div>
+        
+        <div class="px-4">
+            <div class="text-xs font-semibold text-concrete uppercase tracking-wide mb-3">System</div>
+            <a href="#" class="flex items-center px-3 py-2.5 text-slate hover:bg-stone rounded-lg transition-colors mb-1">
+                <i class="fa-solid fa-gear w-5 mr-3 text-sm"></i>
+                <span class="text-sm">Settings</span>
+            </a>
+        </div>
+    </nav>
+    
+    <div class="p-4 border-t border-concrete/30">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-slate rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                MD
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-slate text-sm truncate">Max Davies</p>
+                <p class="text-xs text-concrete truncate">Strategy Director</p>
+            </div>
+            <button class="text-concrete hover:text-slate">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="main-content" class="ml-64">
+    <header id="header" class="bg-white border-b border-concrete/30 sticky top-0 z-40">
+        <div class="flex items-center justify-between px-8 py-4">
+            <div class="flex items-center space-x-6">
+                <div>
+                    <div class="flex items-center space-x-3">
+                        <button class="p-2 text-concrete hover:text-slate transition-colors">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h1 class="text-2xl font-semibold text-slate">Landlord Heads of Terms</h1>
+                    </div>
+                    <p class="text-sm text-concrete mt-0.5 ml-12">Reference document for lease agreement context</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button class="relative p-2 text-concrete hover:text-slate transition-colors">
+                    <i class="fa-regular fa-bell text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-slate rounded-full"></span>
+                </button>
+                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </button>
+                <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    <i class="fa-solid fa-circle-question mr-2"></i>
+                    Help
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="status-bar" class="bg-white border-b border-concrete/30 px-8 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <div>
+                    <div class="text-xs text-concrete uppercase tracking-wide mb-1">Document Status</div>
+                    <div class="flex items-center">
+                        <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm font-semibold rounded-full">
+                            <i class="fa-solid fa-circle-check mr-2"></i>
+                            Uploaded & Tagged
+                        </span>
+                    </div>
+                </div>
+                <div class="h-8 w-px bg-concrete/30"></div>
+                <div>
+                    <div class="text-xs text-concrete uppercase tracking-wide mb-1">Deal ID</div>
+                    <div class="text-sm font-semibold text-slate">UNION-2024-047</div>
+                </div>
+                <div class="h-8 w-px bg-concrete/30"></div>
+                <div>
+                    <div class="text-xs text-concrete uppercase tracking-wide mb-1">Tenant</div>
+                    <div class="text-sm font-semibold text-slate">Apex Technologies Ltd</div>
+                </div>
+                <div class="h-8 w-px bg-concrete/30"></div>
+                <div>
+                    <div class="text-xs text-concrete uppercase tracking-wide mb-1">Property</div>
+                    <div class="text-sm font-semibold text-slate">42 Moorgate, Floor 6</div>
+                </div>
+                <div class="h-8 w-px bg-concrete/30"></div>
+                <div>
+                    <div class="text-xs text-concrete uppercase tracking-wide mb-1">Upload Date</div>
+                    <div class="text-sm font-semibold text-slate">12 Nov 2024</div>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    <i class="fa-solid fa-download mr-2"></i>
+                    Download
+                </button>
+                <button class="px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                    <i class="fa-solid fa-pen-to-square mr-2"></i>
+                    Replace Version
+                </button>
+                <button class="px-6 py-2 text-sm bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold">
+                    <i class="fa-solid fa-signature mr-2"></i>
+                    Request Signature
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="hot-overview" class="px-8 py-8">
+        <div class="max-w-7xl">
+            <div class="grid grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg border border-concrete/30 p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-file-contract text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate mb-1">Document Type</h3>
+                    <p class="text-2xl font-semibold text-slate mb-1">HoT (Landlord)</p>
+                    <p class="text-xs text-concrete">Reference Only</p>
+                </div>
+
+                <div class="bg-white rounded-lg border border-concrete/30 p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-building text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate mb-1">Landlord Entity</h3>
+                    <p class="text-2xl font-semibold text-slate mb-1">Moorgate Properties</p>
+                    <p class="text-xs text-concrete">Managing Agent: Knight Frank</p>
+                </div>
+
+                <div class="bg-white rounded-lg border border-concrete/30 p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-calendar-check text-amber-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate mb-1">Agreement Date</h3>
+                    <p class="text-2xl font-semibold text-slate mb-1">08 Nov 2024</p>
+                    <p class="text-xs text-concrete">Negotiated by Tom Davies</p>
+                </div>
+
+                <div class="bg-white rounded-lg border border-concrete/30 p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 bg-stone rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-layer-group text-slate text-xl"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate mb-1">Version</h3>
+                    <p class="text-2xl font-semibold text-slate mb-1">v3 (Final)</p>
+                    <p class="text-xs text-concrete">2 previous versions</p>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-8">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-800 text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-sm font-semibold text-slate mb-2">Reference Document — Not Negotiated via UNION</h3>
+                        <p class="text-sm text-concrete leading-relaxed">This Heads of Terms document represents the landlord's lease agreement and was negotiated outside UNION's contract flow. It is attached for reference only and provides context for the tenant's occupancy. The landlord HoT typically remains unchanged post-agreement and is not subject to UNION's service contract modifications. Any changes to the underlying lease must be coordinated directly with the landlord and their agents.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="document-viewer" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2">
+                    <div class="bg-white rounded-lg border border-concrete/30">
+                        <div class="border-b border-concrete/30 px-6 py-4 flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate">Document Preview</h3>
+                                <p class="text-sm text-concrete mt-1">Landlord_HoT_Apex_Technologies_v3_Final.pdf</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                </button>
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-magnifying-glass-minus"></i>
+                                </button>
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-expand"></i>
+                                </button>
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-print"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="bg-stone rounded-lg p-8 mb-4 min-h-[800px]">
+                                <div class="bg-white rounded shadow-sm p-8 max-w-3xl mx-auto">
+                                    <div class="text-center mb-8">
+                                        <h1 class="text-3xl font-semibold text-slate mb-2">HEADS OF TERMS</h1>
+                                        <p class="text-sm text-concrete">Without Prejudice & Subject to Contract</p>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Property Details</h2>
+                                        <div class="space-y-3">
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Address:</span>
+                                                <span class="text-sm font-semibold text-slate">42 Moorgate, London EC2R 6EL</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Floor/Unit:</span>
+                                                <span class="text-sm font-semibold text-slate">6th Floor, Suite 601</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Area:</span>
+                                                <span class="text-sm font-semibold text-slate">6,200 sq ft (576 sq m)</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Use:</span>
+                                                <span class="text-sm font-semibold text-slate">Office (B1 Use Class)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Parties</h2>
+                                        <div class="space-y-3">
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Landlord:</span>
+                                                <span class="text-sm font-semibold text-slate">Moorgate Properties Ltd</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Tenant:</span>
+                                                <span class="text-sm font-semibold text-slate">Apex Technologies Ltd</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Managing Agent:</span>
+                                                <span class="text-sm font-semibold text-slate">Knight Frank LLP</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Lease Terms</h2>
+                                        <div class="space-y-3">
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Term:</span>
+                                                <span class="text-sm font-semibold text-slate">5 years</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Commencement:</span>
+                                                <span class="text-sm font-semibold text-slate">15 January 2025</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Expiry:</span>
+                                                <span class="text-sm font-semibold text-slate">14 January 2030</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Break Clause:</span>
+                                                <span class="text-sm font-semibold text-slate">Month 36 (6 months notice)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Rent & Financial</h2>
+                                        <div class="space-y-3">
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Annual Rent:</span>
+                                                <span class="text-sm font-semibold text-slate">£372,000 per annum</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Rent per sq ft:</span>
+                                                <span class="text-sm font-semibold text-slate">£60 psf</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Rent Free Period:</span>
+                                                <span class="text-sm font-semibold text-slate">3 months (Jan-Mar 2025)</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Service Charge:</span>
+                                                <span class="text-sm font-semibold text-slate">£24,800 per annum (estimated)</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Business Rates:</span>
+                                                <span class="text-sm font-semibold text-slate">Tenant's responsibility</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Rent Deposit:</span>
+                                                <span class="text-sm font-semibold text-slate">£93,000 (3 months rent)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Rent Review</h2>
+                                        <div class="space-y-3">
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Review Pattern:</span>
+                                                <span class="text-sm font-semibold text-slate">Annual</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">Review Basis:</span>
+                                                <span class="text-sm font-semibold text-slate">Open Market Rent (upward only)</span>
+                                            </div>
+                                            <div class="flex justify-between py-2">
+                                                <span class="text-sm text-concrete">First Review:</span>
+                                                <span class="text-sm font-semibold text-slate">15 January 2026</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Repairing & Insurance</h2>
+                                        <div class="space-y-2">
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Repairing Obligations:</span>
+                                                <span class="text-sm text-concrete">Full Repairing and Insuring (FRI) lease. Tenant responsible for internal repairs and decorations.</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Insurance:</span>
+                                                <span class="text-sm text-concrete">Landlord to insure building. Tenant to reimburse insurance premium via service charge.</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Dilapidations:</span>
+                                                <span class="text-sm text-concrete">Schedule of Condition to be agreed. Tenant to reinstate at lease end.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Alterations & Use</h2>
+                                        <div class="space-y-2">
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Alterations:</span>
+                                                <span class="text-sm text-concrete">Non-structural alterations permitted with landlord's prior consent (not to be unreasonably withheld). Structural alterations prohibited.</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Permitted Use:</span>
+                                                <span class="text-sm text-concrete">Office use (B1 Use Class) only. No other use permitted without landlord consent.</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Signage:</span>
+                                                <span class="text-sm text-concrete">Internal signage permitted. External signage subject to landlord approval and planning consent.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Assignment & Subletting</h2>
+                                        <div class="space-y-2">
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Assignment:</span>
+                                                <span class="text-sm text-concrete">Permitted with landlord's consent (not to be unreasonably withheld). Subject to guarantor if required.</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Subletting:</span>
+                                                <span class="text-sm text-concrete">Part subletting prohibited. Whole premises subletting permitted with landlord consent at market rent.</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Sharing Occupation:</span>
+                                                <span class="text-sm text-concrete">Permitted with group companies only, subject to landlord notification.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Legal Costs</h2>
+                                        <div class="space-y-2">
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Landlord's Legal Costs:</span>
+                                                <span class="text-sm text-concrete">Tenant to pay landlord's reasonable legal costs (capped at £3,500 + VAT).</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm font-semibold text-slate block mb-1">Agent Fees:</span>
+                                                <span class="text-sm text-concrete">Landlord to pay agent fees. No tenant contribution required.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <h2 class="text-lg font-semibold text-slate mb-4 pb-2 border-b border-concrete/30">Special Conditions</h2>
+                                        <div class="space-y-2">
+                                            <div class="py-2">
+                                                <span class="text-sm text-concrete">• Landlord to provide Cat A fit-out prior to commencement</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm text-concrete">• Tenant entitled to 24/7 access with prior notification to building management</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm text-concrete">• 4 allocated car parking spaces included (additional spaces available at £200/month each)</span>
+                                            </div>
+                                            <div class="py-2">
+                                                <span class="text-sm text-concrete">• Tenant may engage third-party service providers for bundled office services (subject to building regulations)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-6 border-t border-concrete/30">
+                                        <p class="text-xs text-concrete text-center">This document is issued without prejudice and subject to contract. No legal obligations arise until formal lease documentation is executed by both parties.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between text-sm text-concrete">
+                                <span>Page 1 of 1</span>
+                                <span>Document ID: HoT-APX-2024-047</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-1">
+                    <div class="bg-white rounded-lg border border-concrete/30 mb-6">
+                        <div class="border-b border-concrete/30 px-6 py-4">
+                            <h3 class="text-lg font-semibold text-slate">Document Details</h3>
+                        </div>
+                        
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <div class="text-xs text-concrete uppercase tracking-wide mb-2">File Information</div>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-sm py-1">
+                                        <span class="text-concrete">Format:</span>
+                                        <span class="font-semibold text-slate">PDF</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm py-1">
+                                        <span class="text-concrete">Size:</span>
+                                        <span class="font-semibold text-slate">2.4 MB</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm py-1">
+                                        <span class="text-concrete">Pages:</span>
+                                        <span class="font-semibold text-slate">8</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-concrete/30">
+                                <div class="text-xs text-concrete uppercase tracking-wide mb-2">Upload Information</div>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-sm py-1">
+                                        <span class="text-concrete">Uploaded by:</span>
+                                        <span class="font-semibold text-slate">Max Davies</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm py-1">
+                                        <span class="text-concrete">Upload date:</span>
+                                        <span class="font-semibold text-slate">12 Nov 2024</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm py-1">
+                                        <span class="text-concrete">Last accessed:</span>
+                                        <span class="font-semibold text-slate">2 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-concrete/30">
+                                <div class="text-xs text-concrete uppercase tracking-wide mb-2">Document Tags</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+                                        HoT (Landlord)
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-stone text-slate text-xs font-semibold rounded-full">
+                                        Reference Only
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-stone text-slate text-xs font-semibold rounded-full">
+                                        Final Version
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-stone text-slate text-xs font-semibold rounded-full">
+                                        Lease Context
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-concrete/30">
+                                <button class="w-full px-4 py-2 text-sm bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold mb-2">
+                                    <i class="fa-solid fa-download mr-2"></i>
+                                    Download Document
+                                </button>
+                                <button class="w-full px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30 mb-2">
+                                    <i class="fa-solid fa-share-nodes mr-2"></i>
+                                    Share with Stakeholders
+                                </button>
+                                <button class="w-full px-4 py-2 text-sm text-slate hover:bg-stone rounded-lg transition-colors border border-concrete/30">
+                                    <i class="fa-solid fa-clock-rotate-left mr-2"></i>
+                                    View Version History
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                        <div class="flex items-start">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                <i class="fa-solid fa-circle-info text-blue-800"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate mb-2">About Landlord HoTs</h4>
+                                <p class="text-xs text-concrete leading-relaxed">This document is maintained for reference and does not require active management within UNION workflows. Changes to the landlord lease must be coordinated directly with the property owner and their managing agents.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="version-history" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Version History</h3>
+                    <p class="text-sm text-concrete mt-1">Track all document revisions and negotiations</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="border border-green-200 bg-green-50/50 rounded-lg p-5">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start flex-1">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fa-solid fa-circle-check text-green-800 text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h4 class="text-sm font-semibold text-slate">Version 3 (Final)</h4>
+                                            <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+                                                Current
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-concrete mb-3">All terms agreed. Rent free period extended to 3 months. Break clause confirmed at month 36.</p>
+                                        <div class="flex items-center space-x-6 text-xs text-concrete">
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-calendar mr-2"></i>
+                                                <span>12 Nov 2024</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-user mr-2"></i>
+                                                <span>Uploaded by Max Davies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-file-pdf mr-2"></i>
+                                                <span>2.4 MB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 ml-4">
+                                    <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                    <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg p-5">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start flex-1">
+                                    <div class="w-12 h-12 bg-stone rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fa-solid fa-file-lines text-slate text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h4 class="text-sm font-semibold text-slate">Version 2</h4>
+                                            <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
+                                                Superseded
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-concrete mb-3">Rent reduced to £60 psf. Service charge cap added. Break clause negotiation in progress.</p>
+                                        <div class="flex items-center space-x-6 text-xs text-concrete">
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-calendar mr-2"></i>
+                                                <span>05 Nov 2024</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-user mr-2"></i>
+                                                <span>Uploaded by Max Davies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-file-pdf mr-2"></i>
+                                                <span>2.2 MB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 ml-4">
+                                    <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                    <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg p-5">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start flex-1">
+                                    <div class="w-12 h-12 bg-stone rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fa-solid fa-file-lines text-slate text-xl"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h4 class="text-sm font-semibold text-slate">Version 1 (Initial)</h4>
+                                            <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
+                                                Superseded
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-concrete mb-3">Initial terms proposed. Rent at £65 psf. 1 month rent free. No break clause.</p>
+                                        <div class="flex items-center space-x-6 text-xs text-concrete">
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-calendar mr-2"></i>
+                                                <span>28 Oct 2024</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-user mr-2"></i>
+                                                <span>Uploaded by Max Davies</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <i class="fa-solid fa-file-pdf mr-2"></i>
+                                                <span>2.1 MB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 ml-4">
+                                    <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                    <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="key-terms-summary" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Key Terms Summary</h3>
+                    <p class="text-sm text-concrete mt-1">Essential lease details at a glance</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="border border-concrete/30 rounded-lg p-5">
+                            <h4 class="text-xs font-semibold text-concrete uppercase tracking-wide mb-4">Financial Terms</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Annual Rent</span>
+                                    <span class="font-semibold text-slate">£372,000</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Rate per sq ft</span>
+                                    <span class="font-semibold text-slate">£60</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Service Charge</span>
+                                    <span class="font-semibold text-slate">£24,800</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Rent Deposit</span>
+                                    <span class="font-semibold text-slate">£93,000</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2">
+                                    <span class="text-concrete">Rent Free Period</span>
+                                    <span class="font-semibold text-slate">3 months</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg p-5">
+                            <h4 class="text-xs font-semibold text-concrete uppercase tracking-wide mb-4">Lease Duration</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Term Length</span>
+                                    <span class="font-semibold text-slate">5 years</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Commencement</span>
+                                    <span class="font-semibold text-slate">15 Jan 2025</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Expiry</span>
+                                    <span class="font-semibold text-slate">14 Jan 2030</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Break Clause</span>
+                                    <span class="font-semibold text-slate">Month 36</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2">
+                                    <span class="text-concrete">Notice Period</span>
+                                    <span class="font-semibold text-slate">6 months</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg p-5">
+                            <h4 class="text-xs font-semibold text-concrete uppercase tracking-wide mb-4">Property Details</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Square Footage</span>
+                                    <span class="font-semibold text-slate">6,200 sq ft</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Floor</span>
+                                    <span class="font-semibold text-slate">6th Floor</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Use Class</span>
+                                    <span class="font-semibold text-slate">B1 Office</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2 border-b border-concrete/20">
+                                    <span class="text-concrete">Parking Spaces</span>
+                                    <span class="font-semibold text-slate">4 included</span>
+                                </div>
+                                <div class="flex justify-between text-sm py-2">
+                                    <span class="text-concrete">Access</span>
+                                    <span class="font-semibold text-slate">24/7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stakeholder-contacts" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Landlord & Agent Contacts</h3>
+                    <p class="text-sm text-concrete mt-1">Key contacts for lease-related matters</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="border border-concrete/30 rounded-lg p-5 hover:border-slate/50 transition-colors">
+                            <div class="flex items-start mb-4">
+                                <div class="w-14 h-14 bg-slate rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4 flex-shrink-0">
+                                    MP
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Moorgate Properties Ltd</h4>
+                                    <p class="text-xs text-concrete mb-2">Landlord Entity</p>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                                            <i class="fa-solid fa-building mr-1"></i>
+                                            Landlord
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-2 pt-4 border-t border-concrete/30">
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
+                                    <span>25 Finsbury Square, London EC2A 1DX</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-envelope w-4 mr-2"></i>
+                                    <span>leasing@moorgateproperties.co.uk</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-phone w-4 mr-2"></i>
+                                    <span>+44 20 7400 5000</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg p-5 hover:border-slate/50 transition-colors">
+                            <div class="flex items-start mb-4">
+                                <div class="w-14 h-14 bg-slate rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4 flex-shrink-0">
+                                    KF
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Knight Frank LLP</h4>
+                                    <p class="text-xs text-concrete mb-2">Managing Agent</p>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
+                                            <i class="fa-solid fa-handshake mr-1"></i>
+                                            Agent
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-2 pt-4 border-t border-concrete/30">
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-location-dot w-4 mr-2"></i>
+                                    <span>55 Baker Street, London W1U 8AN</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-envelope w-4 mr-2"></i>
+                                    <span>commercial@knightfrank.com</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-phone w-4 mr-2"></i>
+                                    <span>+44 20 7629 8171</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg p-5 hover:border-slate/50 transition-colors">
+                            <div class="flex items-start mb-4">
+                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-4.jpg" alt="Robert Harrison" class="w-14 h-14 rounded-full mr-4 object-cover">
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Robert Harrison</h4>
+                                    <p class="text-xs text-concrete mb-2">Senior Leasing Manager • Knight Frank</p>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                            <i class="fa-solid fa-star mr-1"></i>
+                                            Primary Contact
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-2 pt-4 border-t border-concrete/30">
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-envelope w-4 mr-2"></i>
+                                    <span>robert.harrison@knightfrank.com</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-phone w-4 mr-2"></i>
+                                    <span>+44 20 7629 8171</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-mobile-screen-button w-4 mr-2"></i>
+                                    <span>+44 7700 900789</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-concrete/30 rounded-lg p-5 hover:border-slate/50 transition-colors">
+                            <div class="flex items-start mb-4">
+                                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-7.jpg" alt="Emma Clarke" class="w-14 h-14 rounded-full mr-4 object-cover">
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-slate mb-1">Emma Clarke</h4>
+                                    <p class="text-xs text-concrete mb-2">Building Manager • Knight Frank</p>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
+                                            <i class="fa-solid fa-building-user mr-1"></i>
+                                            Operations
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-2 pt-4 border-t border-concrete/30">
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-envelope w-4 mr-2"></i>
+                                    <span>emma.clarke@knightfrank.com</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-phone w-4 mr-2"></i>
+                                    <span>+44 20 7400 5123</span>
+                                </div>
+                                <div class="flex items-center text-xs text-concrete">
+                                    <i class="fa-solid fa-mobile-screen-button w-4 mr-2"></i>
+                                    <span>+44 7700 900890</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deal-context" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Deal Context & Notes</h3>
+                    <p class="text-sm text-concrete mt-1">Background and negotiation history</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-handshake text-blue-800"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-2">Negotiation Summary</h4>
+                                    <p class="text-sm text-concrete leading-relaxed">Initial terms proposed at £65 psf with 1 month rent free. After three rounds of negotiation, final agreement reached at £60 psf with 3 months rent free and break clause at month 36. Landlord was motivated to secure quality tenant for long-term occupancy. Break clause was key tenant requirement for flexibility.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-5">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-circle-check text-green-800"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-2">All-Inclusive Deal Structure</h4>
+                                    <p class="text-sm text-concrete leading-relaxed">This is an All-Inclusive arrangement where landlord has appetite for bundled services. UNION maintains separate service agreement with landlord for core services (cleaning, security, waste management). Additional tenant-specific services (coffee, AV, plants) are direct UNION agreements. This structure provides landlord with predictable service delivery while allowing tenant flexibility for add-ons.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-stone border border-concrete/30 rounded-lg p-5">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-lightbulb text-slate"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-2">Special Provisions</h4>
+                                    <p class="text-sm text-concrete leading-relaxed mb-3">Landlord agreed to Cat A fit-out prior to commencement, which accelerates tenant move-in timeline. 24/7 access granted with building notification requirement. Tenant may engage third-party service providers subject to building regulations—this clause was critical for UNION's service model and was explicitly negotiated to ensure flexibility.</p>
+                                    <p class="text-sm text-concrete leading-relaxed">4 parking spaces included in base rent; additional spaces available at £200/month each. Tenant expressed interest in potential expansion to adjacent floor (Suite 602) in approximately 18 months if business growth continues.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-clipboard-list text-amber-800"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-2">Post-Agreement Actions</h4>
+                                    <p class="text-sm text-concrete leading-relaxed">Landlord to complete Cat A works by 20 December 2024. Schedule of Condition to be agreed by both parties before commencement. Rent deposit of £93,000 (3 months) to be held in designated account. Legal documentation to be executed by 30 November 2024. First rent payment due 15 April 2025 (after 3-month rent free period).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="related-documents" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Related Documents</h3>
+                    <p class="text-sm text-concrete mt-1">Associated agreements and supporting materials</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 border border-concrete/30 rounded-lg hover:border-slate/50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-file-signature text-green-800"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate">UNION Service Agreement</h4>
+                                    <p class="text-xs text-concrete mt-1">Executed • 15 Nov 2024 • 1.8 MB</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded">
+                                    Active
+                                </span>
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 border border-concrete/30 rounded-lg hover:border-slate/50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-stone rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-file-pdf text-slate"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate">Commercial Proposal (Accepted)</h4>
+                                    <p class="text-xs text-concrete mt-1">Final • 05 Nov 2024 • 3.2 MB</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
+                                    Archive
+                                </span>
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 border border-concrete/30 rounded-lg hover:border-slate/50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-stone rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-file-lines text-slate"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate">Tenant Requirements Brief</h4>
+                                    <p class="text-xs text-concrete mt-1">Reference • 28 Oct 2024 • 0.9 MB</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
+                                    Archive
+                                </span>
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 border border-concrete/30 rounded-lg hover:border-slate/50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-stone rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-file-image text-slate"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate">Floor Plans & Building Specs</h4>
+                                    <p class="text-xs text-concrete mt-1">Reference • 22 Oct 2024 • 5.6 MB</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <span class="inline-flex items-center px-2 py-1 bg-stone text-slate text-xs font-semibold rounded">
+                                    Reference
+                                </span>
+                                <button class="p-2 text-concrete hover:text-slate transition-colors">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 border border-amber-200 bg-amber-50/50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fa-solid fa-file-contract text-amber-800"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate">Formal Lease Agreement</h4>
+                                    <p class="text-xs text-concrete mt-1">Pending execution by landlord's solicitors</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <span class="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded">
+                                    In Progress
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="docusign-section" class="px-8 py-6">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Signature Management (Optional)</h3>
+                    <p class="text-sm text-concrete mt-1">DocuSign integration for visual parity if requested by landlord</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="bg-stone rounded-lg p-8 text-center">
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-signature text-slate text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-slate mb-2">DocuSign Integration Available</h4>
+                        <p class="text-sm text-concrete mb-6 max-w-2xl mx-auto">While landlord HoTs are typically handled outside UNION's workflow, DocuSign can be enabled if the landlord requests electronic signature for visual parity with UNION's service agreements. This creates a consistent signing experience across all deal documentation.</p>
+                        
+                        <div class="flex items-center justify-center space-x-4">
+                            <button class="px-6 py-2 bg-slate text-white hover:bg-slate/90 rounded-lg transition-colors font-semibold">
+                                <i class="fa-solid fa-paper-plane mr-2"></i>
+                                Send for Signature
+                            </button>
+                            <button class="px-6 py-2 text-slate hover:bg-white rounded-lg transition-colors border border-concrete/30">
+                                Configure Signers
+                            </button>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-concrete/30">
+                            <p class="text-xs text-concrete">
+                                <i class="fa-solid fa-circle-info mr-2"></i>
+                                This feature is optional and typically not required for landlord HoTs. Use only if explicitly requested for workflow consistency.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="workflow-states" class="px-8 py-6 mb-16">
+        <div class="max-w-7xl">
+            <div class="bg-white rounded-lg border border-concrete/30">
+                <div class="border-b border-concrete/30 px-6 py-4">
+                    <h3 class="text-lg font-semibold text-slate">Document Workflow States</h3>
+                    <p class="text-sm text-concrete mt-1">Tracking document status through deal lifecycle</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="relative">
+                        <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-concrete/30"></div>
+                        
+                        <div class="relative mb-8">
+                            <div class="flex items-start">
+                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-6 flex-shrink-0 relative z-10 border-4 border-white">
+                                    <i class="fa-solid fa-circle-check text-green-800 text-xl"></i>
+                                </div>
+                                <div class="flex-1 pt-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-sm font-semibold text-slate">Pre-HoT (Deal Room Allowed)</h4>
+                                        <span class="text-xs text-concrete">Status: Complete</span>
+                                    </div>
+                                    <p class="text-sm text-concrete">Deal Room can open before HoTs are finalized. This allows parallel workstreams for service selection and commercial negotiation.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative mb-8">
+                            <div class="flex items-start">
+                                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-6 flex-shrink-0 relative z-10 border-4 border-white">
+                                    <i class="fa-solid fa-circle-check text-green-800 text-xl"></i>
+                                </div>
+                                <div class="flex-1 pt-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-sm font-semibold text-slate">HoT Attached (Reference)</h4>
+                                        <span class="text-xs text-concrete">Status: Complete</span>
+                                    </div>
+                                    <p class="text-sm text-concrete">Document uploaded and tagged as reference material. Provides context for tenant occupancy without requiring active management within UNION workflows.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="flex items-start">
+                                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-6 flex-shrink-0 relative z-10 border-4 border-white">
+                                    <i class="fa-solid fa-gavel text-blue-800 text-xl"></i>
+                                </div>
+                                <div class="flex-1 pt-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-sm font-semibold text-slate">Legals Started</h4>
+                                        <span class="text-xs text-concrete">Status: In Progress</span>
+                                    </div>
+                                    <p class="text-sm text-concrete">Formal lease documentation being prepared by landlord's solicitors. Expected execution date: 30 November 2024. UNION service agreements proceed independently on parallel track.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-concrete/30">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                            <div class="flex items-start">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-lightbulb text-blue-800"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate mb-2">Flexible Workflow Note</h4>
+                                    <p class="text-sm text-concrete leading-relaxed">Some deals may open Deal Room before HoTs are finalized. This flexible approach allows commercial discussions and service scoping to progress while lease terms are being negotiated with the landlord. The HoT document can be uploaded at any stage and serves as reference context rather than a workflow blocker.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer" class="bg-white border-t border-concrete/30 px-8 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div class="text-2xl font-semibold text-slate">UNION</div>
+                    <div class="h-4 w-px bg-concrete/30"></div>
+                    <p class="text-xs text-concrete">Built For The Best</p>
+                </div>
+                
+                <div class="flex items-center space-x-6 text-xs text-concrete">
+                    <a href="#" class="hover:text-slate transition-colors">Documentation</a>
+                    <a href="#" class="hover:text-slate transition-colors">Support</a>
+                    <a href="#" class="hover:text-slate transition-colors">System Status</a>
+                    <span>© 2024 UNION. All rights reserved.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div id="help-button" class="fixed bottom-8 right-8 z-50">
+    <button class="w-14 h-14 bg-slate text-white rounded-full shadow-lg hover:bg-slate/90 transition-all flex items-center justify-center">
+        <i class="fa-solid fa-circle-question text-xl"></i>
+    </button>
+</div>
+
+</body>
+</html>
