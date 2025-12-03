@@ -214,6 +214,12 @@ The CI workflow (`.github/workflows/ci.yml`) includes:
 - **Formatting**: Prettier 3.6.2
 - **Git Hooks**: Husky 9.1.7
 
+## Zoho Integration
+
+This application integrates with the Zoho One ecosystem (CRM, Creator).
+
+For architectural decisions on when to use standard CRM APIs vs. Zoho Creator workflows, please refer to [ARCHITECTURE.md](./ARCHITECTURE.md).
+
 ## Project Structure
 
 ```
