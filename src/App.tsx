@@ -169,9 +169,9 @@ function App() {
               {isFeatureEnabled(FEATURES.CONTACTS) && (
                 <>
                   <Route path="/contacts" element={<ContactsList />} />
-                  <Route path="/contacts/:id" element={<ContactDetailsPage />} />
-                  <Route path="/contacts/:id/edit" element={<ContactEdit />} />
                   <Route path="/contacts/new" element={<ContactNew />} />
+                  <Route path="/contacts/:id/edit" element={<ContactEdit />} />
+                  <Route path="/contacts/:id" element={<ContactDetailsPage />} />
                 </>
               )}
               {isFeatureEnabled(FEATURES.ANALYTICS) && (

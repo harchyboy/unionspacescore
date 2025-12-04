@@ -524,8 +524,8 @@
         
         <div class="bg-white border-b border-[#E6E6E6] px-8 py-6">
             <div class="max-w-4xl mx-auto">
-                <h1 class="text-3xl font-semibold text-primary mb-2">Add Contact</h1>
-                <p class="text-secondary text-sm">Expand your network. Fill in the details below to create a new contact record.</p>
+                <h1 id="contact-modal-title" class="text-3xl font-semibold text-primary mb-2">Add Contact</h1>
+                <p id="contact-modal-subtitle" class="text-secondary text-sm">Expand your network. Fill in the details below to create a new contact record.</p>
             </div>
         </div>
         
@@ -830,8 +830,8 @@
         <i class="fa-solid fa-check text-white"></i>
     </div>
     <div>
-        <div class="font-semibold">Contact added successfully</div>
-        <div class="text-xs opacity-90">Record created and ready to use</div>
+        <div id="success-toast-title" class="font-semibold">Contact added successfully</div>
+        <div id="success-toast-subtitle" class="text-xs opacity-90">Record created and ready to use</div>
     </div>
 </div>
 
@@ -863,6 +863,33 @@ const TYPE_VALUE_MAP = {
     supplier: 'Supplier',
 };
 
+const TYPE_LABEL_TO_VALUE = {
+    'Flex Broker': 'flex-broker',
+    Broker: 'flex-broker',
+    'Disposal Agent': 'disposal-agent',
+    Tenant: 'tenant',
+    Supplier: 'supplier',
+};
+
+let isEditingContact = false;
+let editingContactId = null;
+
+const contactModalElements = {
+    modal: null,
+    form: null,
+    modalTitle: null,
+    modalSubtitle: null,
+    submitButton: null,
+    submitLabel: null,
+    successToast: null,
+    successToastTitle: null,
+    successToastSubtitle: null,
+    typeRadios: [],
+    brokerSection: null,
+    disposalSection: null,
+    supplierSection: null,
+};
+
 function normalizeContactsResponse(data) {
     if (!data) return [];
     if (Array.isArray(data.items)) return data.items;
@@ -885,6 +912,132 @@ function formatLastActivity(hours) {
     if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
     const days = Math.floor(hours / 24);
     return `${days} day${days === 1 ? '' : 's'} ago`;
+}
+
+function setTypeSections(value) {
+    const { brokerSection, disposalSection, supplierSection } = contactModalElements;
+    if (brokerSection) brokerSection.classList.add('hidden');
+    if (disposalSection) disposalSection.classList.add('hidden');
+    if (supplierSection) supplierSection.classList.add('hidden');
+
+    if (value === 'flex-broker' && brokerSection) {
+        brokerSection.classList.remove('hidden');
+    } else if (value === 'disposal-agent' && disposalSection) {
+        disposalSection.classList.remove('hidden');
+    } else if (value === 'supplier' && supplierSection) {
+        supplierSection.classList.remove('hidden');
+    }
+}
+
+function selectContactType(value) {
+    if (!contactModalElements.typeRadios.length) return;
+    contactModalElements.typeRadios.forEach(function(radio) {
+        radio.checked = value ? radio.value === value : false;
+    });
+    setTypeSections(value);
+}
+
+async function fetchContactById(id) {
+    const response = await fetch(`${CONTACTS_API_URL}/${id}`);
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to load contact');
+    }
+    return response.json();
+}
+
+async function updateContactApi(id, payload) {
+    const response = await fetch(`${CONTACTS_API_URL}/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to update contact');
+    }
+
+    return response.json();
+}
+
+function closeContactModal() {
+    const { modal, form } = contactModalElements;
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    document.body.style.overflow = '';
+    if (form) {
+        form.reset();
+    }
+    isEditingContact = false;
+    editingContactId = null;
+    selectContactType(null);
+}
+
+function populateContactForm(contactData) {
+    const { form } = contactModalElements;
+    if (!form || !contactData) return;
+
+    const firstNameInput = form.querySelector('input[name="first_name"]');
+    const lastNameInput = form.querySelector('input[name="last_name"]');
+    const emailInput = form.querySelector('input[name="email"]');
+    const phoneInput = form.querySelector('input[name="phone"]');
+    const companyInput = form.querySelector('input[name="company"]');
+    const roleInput = form.querySelector('input[name="role"]');
+
+    if (firstNameInput) firstNameInput.value = contactData.firstName || '';
+    if (lastNameInput) lastNameInput.value = contactData.lastName || '';
+    if (emailInput) emailInput.value = contactData.email || '';
+    if (phoneInput) phoneInput.value = contactData.phone || contactData.mobile || '';
+    if (companyInput) companyInput.value = contactData.company || '';
+    if (roleInput) roleInput.value = contactData.role || '';
+
+    const typeValue = TYPE_LABEL_TO_VALUE[contactData.type] || 'flex-broker';
+    selectContactType(typeValue);
+}
+
+function openContactModal(mode = 'add', contactData = null) {
+    const {
+        modal,
+        form,
+        modalTitle,
+        modalSubtitle,
+        submitLabel,
+    } = contactModalElements;
+
+    if (!modal || !form) return;
+
+    isEditingContact = mode === 'edit';
+    editingContactId = isEditingContact && contactData ? contactData.id : null;
+
+    if (modalTitle) modalTitle.textContent = isEditingContact ? 'Edit Contact' : 'Add Contact';
+    if (modalSubtitle) {
+        modalSubtitle.textContent = isEditingContact
+            ? 'Update the details below to keep this record accurate.'
+            : 'Expand your network. Fill in the details below to create a new contact record.';
+    }
+    if (submitLabel) submitLabel.textContent = isEditingContact ? 'Save Changes' : 'Add Contact';
+
+    if (!isEditingContact || !contactData) {
+        form.reset();
+        selectContactType(null);
+    } else {
+        populateContactForm(contactData);
+    }
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+async function openEditContact(contactId) {
+    if (!contactId) return;
+    try {
+        const contact = await fetchContactById(contactId);
+        openContactModal('edit', contact);
+    } catch (error) {
+        alert(error.message || 'Failed to load contact details.');
+    }
 }
 
 function getTypeMeta(type) {
@@ -938,6 +1091,7 @@ function renderContactsTable(contacts) {
 
             return `
             <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row"
+                data-contact-id="${contact.id || ''}"
                 data-contact-name="${safeName}"
                 data-contact-role="${safeRole}"
                 data-contact-type="${contact.type || ''}"
@@ -1174,7 +1328,7 @@ function showContactDetails(row) {
                 <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-semibold text-primary">Contact Information</h3>
-                        <button class="text-secondary hover:text-primary text-sm">
+                        <button class="text-secondary hover:text-primary text-sm" data-action="edit-contact">
                             <i class="fa-solid fa-pencil mr-1"></i>
                             Edit
                         </button>
@@ -1614,6 +1768,15 @@ function showContactDetails(row) {
         </div>
         </div>
     `;
+
+    const editButton = document.querySelector('#contact-details-content [data-action="edit-contact"]');
+    if (editButton) {
+        editButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            openEditContact(row.dataset.contactId);
+        });
+    }
     
     document.getElementById('contact-details-overlay').classList.remove('hidden');
     document.getElementById('contact-details-panel').classList.add('open');
@@ -1738,67 +1901,65 @@ window.addEventListener('load', function() {
     const disposalSection = document.getElementById('disposal-agent-section');
     const supplierSection = document.getElementById('supplier-specific-section');
     const successToast = document.getElementById('success-toast');
-    
+
+    contactModalElements.modal = modal;
+    contactModalElements.form = form;
+    contactModalElements.modalTitle = document.getElementById('contact-modal-title');
+    contactModalElements.modalSubtitle = document.getElementById('contact-modal-subtitle');
+    contactModalElements.submitButton = document.querySelector('#form-actions button[type="submit"]');
+    contactModalElements.submitLabel = contactModalElements.submitButton?.querySelector('span') || null;
+    contactModalElements.successToast = successToast;
+    contactModalElements.successToastTitle = document.getElementById('success-toast-title');
+    contactModalElements.successToastSubtitle = document.getElementById('success-toast-subtitle');
+    contactModalElements.typeRadios = Array.from(typeRadios);
+    contactModalElements.brokerSection = brokerSection;
+    contactModalElements.disposalSection = disposalSection;
+    contactModalElements.supplierSection = supplierSection;
+
     if (addContactBtn) {
         addContactBtn.addEventListener('click', function() {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            openContactModal('add');
         });
     }
-    
-    function closeAddContactModal() {
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-    
+
     if (closeModal) {
-        closeModal.addEventListener('click', closeAddContactModal);
+        closeModal.addEventListener('click', closeContactModal);
     }
-    
+
     if (backButton) {
-        backButton.addEventListener('click', closeAddContactModal);
+        backButton.addEventListener('click', closeContactModal);
     }
-    
+
     if (cancelButton) {
         cancelButton.addEventListener('click', function() {
             if (confirm('Discard changes and return to contacts list?')) {
-                closeAddContactModal();
+                closeContactModal();
             }
         });
     }
-    
+
     if (modal) {
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
-                closeAddContactModal();
+                closeContactModal();
             }
         });
     }
-    
+
     if (typeRadios.length > 0) {
         typeRadios.forEach(function(radio) {
             radio.addEventListener('change', function() {
-                brokerSection.classList.add('hidden');
-                disposalSection.classList.add('hidden');
-                supplierSection.classList.add('hidden');
-                
-                if (this.value === 'flex-broker') {
-                    brokerSection.classList.remove('hidden');
-                } else if (this.value === 'disposal-agent') {
-                    disposalSection.classList.remove('hidden');
-                } else if (this.value === 'supplier') {
-                    supplierSection.classList.remove('hidden');
-                }
+                setTypeSections(this.value);
             });
         });
     }
-    
+
     if (form) {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(form);
-            const submitButton = form.querySelector('button[type="submit"]');
-            const submitLabel = submitButton?.querySelector('span');
+            const submitButton = contactModalElements.submitButton;
+            const submitLabel = contactModalElements.submitLabel;
             if (submitButton) submitButton.disabled = true;
             if (submitLabel) submitLabel.textContent = 'Saving...';
 
@@ -1815,40 +1976,53 @@ window.addEventListener('load', function() {
             if (!payload.lastName || !payload.email) {
                 alert('Last name and email are required.');
                 if (submitButton) submitButton.disabled = false;
-                if (submitLabel) submitLabel.textContent = 'Add Contact';
+                if (submitLabel) submitLabel.textContent = isEditingContact ? 'Save Changes' : 'Add Contact';
                 return;
             }
 
             try {
-                await createContact(payload);
+                if (isEditingContact && editingContactId) {
+                    await updateContactApi(editingContactId, payload);
+                    if (contactModalElements.successToastTitle) {
+                        contactModalElements.successToastTitle.textContent = 'Contact updated successfully';
+                    }
+                    if (contactModalElements.successToastSubtitle) {
+                        contactModalElements.successToastSubtitle.textContent = 'CRM record updated and synced.';
+                    }
+                } else {
+                    await createContact(payload);
+                    if (contactModalElements.successToastTitle) {
+                        contactModalElements.successToastTitle.textContent = 'Contact added successfully';
+                    }
+                    if (contactModalElements.successToastSubtitle) {
+                        contactModalElements.successToastSubtitle.textContent = 'Record created and ready to use.';
+                    }
+                }
+
                 if (successToast) {
                     successToast.classList.remove('hidden');
                     setTimeout(function() {
                         successToast.classList.add('hidden');
                     }, 2000);
                 }
-                closeAddContactModal();
-                form.reset();
-                brokerSection.classList.add('hidden');
-                disposalSection.classList.add('hidden');
-                supplierSection.classList.add('hidden');
+                closeContactModal();
                 await fetchContacts(true);
             } catch (error) {
-                alert(error.message || 'Failed to create contact. Please try again.');
+                alert(error.message || 'Failed to save contact. Please try again.');
             } finally {
                 if (submitButton) submitButton.disabled = false;
-                if (submitLabel) submitLabel.textContent = 'Add Contact';
+                if (submitLabel) submitLabel.textContent = isEditingContact ? 'Save Changes' : 'Add Contact';
             }
         });
     }
-    
+
     if (saveDraftButton) {
         saveDraftButton.addEventListener('click', function() {
             const toast = document.createElement('div');
             toast.className = 'fixed bottom-8 right-8 bg-secondary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
             toast.innerHTML = '<div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center"><i class="fa-solid fa-save text-white"></i></div><div><div class="font-semibold">Draft saved</div><div class="text-xs opacity-90">You can complete this later</div></div>';
             document.body.appendChild(toast);
-            
+
             setTimeout(function() {
                 toast.remove();
             }, 2500);
@@ -2218,9 +2392,7 @@ window.addEventListener('load', function() {
                     alert('Contact created successfully!');
                     form.reset();
                     // Close modal logic if function exists
-                    if (typeof closeAddContactModal === 'function') {
-                        closeAddContactModal();
-                    }
+                    closeContactModal();
                     fetchContacts(true);
                 } catch (error) {
                     console.error('Error creating contact:', error);
