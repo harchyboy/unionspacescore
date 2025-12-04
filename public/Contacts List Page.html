@@ -321,8 +321,8 @@
                         <div class="text-secondary text-sm font-medium">Total Contacts</div>
                         <i class="fa-solid fa-users text-primary"></i>
                     </div>
-                    <div class="text-3xl font-semibold text-primary">26</div>
-                    <div class="text-xs text-secondary mt-2">+8 this month</div>
+                    <div id="total-contacts-count" class="text-3xl font-semibold text-primary">26</div>
+                    <div id="total-contacts-change" class="text-xs text-secondary mt-2">+8 this month</div>
                 </div>
                 
                 <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
@@ -1049,6 +1049,19 @@ function renderContactsTable(contacts) {
     if (!tbody) return;
 
     contactsData = contacts;
+
+    const totalContactsCountEl = document.getElementById('total-contacts-count');
+    const totalContactsChangeEl = document.getElementById('total-contacts-change');
+    if (totalContactsCountEl) {
+        const brokerCount = contacts.filter((contact) => {
+            const type = (contact.type || '').toLowerCase();
+            return type.includes('broker');
+        }).length;
+        totalContactsCountEl.textContent = brokerCount.toString();
+    }
+    if (totalContactsChangeEl) {
+        totalContactsChangeEl.textContent = 'Brokers synced from Zoho CRM';
+    }
 
     if (!contacts || contacts.length === 0) {
         tbody.innerHTML = `
