@@ -23,14 +23,23 @@ interface ZohoContactRecord {
 export interface ContactDto {
   id: string;
   name: string;
+  firstName?: string | null;
+  lastName?: string | null;
   email?: string | null;
   phone?: string | null;
+  mobile?: string | null;
   company?: string | null;
   type?: string | null;
   role?: string | null;
   health?: string | null;
   lastActivityHours?: number | null;
   submarket?: string | null;
+  // Performance Metrics
+  referralVolume?: number | null;
+  revenueAttribution?: number | null;
+  conversionRate?: number | null;
+  commissionPaid?: number | null;
+  qualityScore?: number | null;
 }
 
 export interface CreateContactPayload {
@@ -151,17 +160,29 @@ function mapContact(record: ZohoContactRecord): ContactDto {
     record.Email ||
     'Unnamed contact';
 
+  // Cast to access custom fields
+  const r = record as Record<string, unknown>;
+
   return {
     id: record.id,
     name,
+    firstName: record.First_Name ?? null,
+    lastName: record.Last_Name ?? null,
     email: record.Email ?? null,
-    phone: record.Phone ?? record.Mobile ?? null,
+    phone: record.Phone ?? null,
+    mobile: record.Mobile ?? null,
     company: record.Company ?? record.Account_Name?.name ?? null,
     type: normaliseType(record.Contact_Type),
     role: record.Title ?? null,
     lastActivityHours: hoursSince(record.Last_Activity_Time),
-    submarket: (record as { Submarket__c?: string }).Submarket__c ?? null,
-    health: (record as { Relationship_Health__c?: string }).Relationship_Health__c ?? null,
+    submarket: (r.Submarket as string) ?? null,
+    health: (r.Relationship_Health as string) ?? null,
+    // Performance Metrics from Zoho CRM
+    referralVolume: typeof r.Referral_Volume === 'number' ? r.Referral_Volume : null,
+    revenueAttribution: typeof r.Revenue_Attribution === 'number' ? r.Revenue_Attribution : null,
+    conversionRate: typeof r.Conversion_Rate === 'number' ? r.Conversion_Rate : null,
+    commissionPaid: typeof r.Commission_Paid === 'number' ? r.Commission_Paid : null,
+    qualityScore: typeof r.Quality_Score === 'number' ? r.Quality_Score : null,
   };
 }
 

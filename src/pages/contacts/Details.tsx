@@ -36,36 +36,8 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { toasts, showToast, removeToast } = useToast();
 
-  // Mock communications data - in real app, this would come from API
-  const mockCommunications: Communication[] = [
-    {
-      id: '1',
-      type: 'email',
-      subject: 'Property Shortlist for Tech Client',
-      from: 'marcus.reynolds@savills.com',
-      content:
-        "Hi Tom, Following our call yesterday, I've narrowed down the options for our confidential tech client. They're particularly interested in 99 Bishopsgate and The Leadenhall Building. Could we arrange viewings for next week?",
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '2',
-      type: 'call',
-      subject: 'New Requirement Discussion',
-      duration: '18 minutes',
-      content:
-        'Discussed new confidential requirement for Series B tech scale-up. Client needs 8-10k sq ft, 45-55 desks, budget £65-75 psf. Preferred areas: City Core, Shoreditch.',
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: '3',
-      type: 'meeting',
-      subject: 'Quarterly Broker Catch-up',
-      location: 'Savills Office, 33 Margaret St',
-      content:
-        'Quarterly review meeting with Marcus. Discussed pipeline for Q2, reviewed closed deals from Q1 (3 successful placements).',
-      timestamp: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ];
+  // Communications - empty until connected to Zoho
+  const communications: Communication[] = [];
 
   const handleDelete = async () => {
     if (!id) return;
@@ -367,13 +339,58 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
               <CardTitle>Performance Metrics</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-secondary">Performance data will be displayed here</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">
+                    Referral Volume
+                  </label>
+                  <div className="text-2xl font-semibold text-primary">
+                    {contact.referralVolume ?? '-'}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">
+                    Revenue Attribution
+                  </label>
+                  <div className="text-2xl font-semibold text-primary">
+                    {contact.revenueAttribution != null
+                      ? `£${contact.revenueAttribution.toLocaleString()}`
+                      : '-'}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">
+                    Conversion Rate
+                  </label>
+                  <div className="text-2xl font-semibold text-primary">
+                    {contact.conversionRate != null ? `${contact.conversionRate}%` : '-'}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">
+                    Commission Paid
+                  </label>
+                  <div className="text-2xl font-semibold text-primary">
+                    {contact.commissionPaid != null
+                      ? `£${contact.commissionPaid.toLocaleString()}`
+                      : '-'}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">
+                    Quality Score
+                  </label>
+                  <div className="text-2xl font-semibold text-primary">
+                    {contact.qualityScore != null ? `${contact.qualityScore}%` : '-'}
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="communications" className="mt-6">
-          <CommunicationLog communications={mockCommunications} />
+          <CommunicationLog communications={communications} />
         </TabsContent>
 
         <TabsContent value="documents" className="mt-6">

@@ -42,6 +42,12 @@ export interface Contact {
     sms: boolean;
     preferredMethod: 'email' | 'phone' | 'sms';
   };
+  // Performance Metrics (from Zoho CRM)
+  referralVolume?: number | null;
+  revenueAttribution?: number | null;
+  conversionRate?: number | null;
+  commissionPaid?: number | null;
+  qualityScore?: number | null;
   createdAt: string;
   updatedAt: string;
 }

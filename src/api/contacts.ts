@@ -1,0 +1,181 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type {
+  Contact,
+  ContactListParams,
+  ContactListResponse,
+  CreateContactInput,
+  UpdateContactInput,
+} from '../types/contact';
+
+const API_BASE = '/api/contacts';
+
+// Transform API response to Contact type
+function transformContact(data: Record<string, unknown>): Contact {
+  const firstName = (data.firstName as string) || (data.name as string)?.split(' ')[0] || '';
+  const lastName = (data.lastName as string) || (data.name as string)?.split(' ').slice(1).join(' ') || '';
+  
+  return {
+    id: data.id as string,
+    firstName,
+    lastName,
+    fullName: data.name as string || `${firstName} ${lastName}`.trim(),
+    email: data.email as string || '',
+    phone: data.phone as string | undefined,
+    mobile: data.mobile as string | undefined,
+    company: data.company as string | undefined,
+    type: (data.type as Contact['type']) || 'flex-broker',
+    role: data.role as string | undefined,
+    territory: data.territory as string | undefined,
+    relationshipHealth: (data.health as Contact['relationshipHealth']) || 'good',
+    relationshipHealthScore: data.relationshipHealthScore as number | undefined,
+    lastActivity: data.lastActivity as string | undefined,
+    // Performance Metrics
+    referralVolume: data.referralVolume as number | null | undefined,
+    revenueAttribution: data.revenueAttribution as number | null | undefined,
+    conversionRate: data.conversionRate as number | null | undefined,
+    commissionPaid: data.commissionPaid as number | null | undefined,
+    qualityScore: data.qualityScore as number | null | undefined,
+    createdAt: data.createdAt as string || new Date().toISOString(),
+    updatedAt: data.updatedAt as string || new Date().toISOString(),
+  };
+}
+
+// Fetch all contacts
+async function fetchContacts(params?: ContactListParams): Promise<ContactListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', params.page.toString());
+  if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
+
+  const url = `${API_BASE}${searchParams.toString() ? `?${searchParams}` : ''}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch contacts');
+  }
+
+  const data = await response.json();
+  const items = (data.items || []).map(transformContact);
+
+  return {
+    items,
+    total: data.total || items.length,
+    page: data.page || 1,
+    pageSize: data.pageSize || 200,
+    totalPages: Math.ceil((data.total || items.length) / (data.pageSize || 200)),
+  };
+}
+
+// Fetch single contact
+async function fetchContact(id: string): Promise<Contact> {
+  const response = await fetch(`${API_BASE}/${id}`);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch contact');
+  }
+
+  const data = await response.json();
+  return transformContact(data);
+}
+
+// Create contact
+async function createContact(input: CreateContactInput): Promise<Contact> {
+  const response = await fetch(API_BASE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      email: input.email,
+      phone: input.phone,
+      company: input.company,
+      type: input.type,
+      role: input.role,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to create contact' }));
+    throw new Error(error.message || 'Failed to create contact');
+  }
+
+  const data = await response.json();
+  return transformContact(data);
+}
+
+// Update contact
+async function updateContact(input: UpdateContactInput): Promise<Contact> {
+  const response = await fetch(`${API_BASE}/${input.id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update contact');
+  }
+
+  const data = await response.json();
+  return transformContact(data);
+}
+
+// Delete contact
+async function deleteContact(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE}/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete contact');
+  }
+}
+
+// React Query Hooks
+export function useContacts(params?: ContactListParams) {
+  return useQuery({
+    queryKey: ['contacts', params],
+    queryFn: () => fetchContacts(params),
+  });
+}
+
+export function useContact(id: string) {
+  return useQuery({
+    queryKey: ['contact', id],
+    queryFn: () => fetchContact(id),
+    enabled: !!id,
+  });
+}
+
+export function useCreateContact() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createContact,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+    },
+  });
+}
+
+export function useUpdateContact() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateContact,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      queryClient.invalidateQueries({ queryKey: ['contact', data.id] });
+    },
+  });
+}
+
+export function useDeleteContact() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteContact,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+    },
+  });
+}
+
