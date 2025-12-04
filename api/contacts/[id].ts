@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // ==========================================
-// ZOHO LIBRARY (Inlined to fix import issues)
+// ZOHO LIBRARY (Inlined for serverless)
 // ==========================================
 
 interface ZohoContactRecord {
@@ -20,7 +20,7 @@ interface ZohoContactRecord {
   [key: string]: unknown;
 }
 
-export interface ContactDto {
+interface ContactDto {
   id: string;
   name: string;
   firstName?: string | null;
@@ -34,7 +34,6 @@ export interface ContactDto {
   health?: string | null;
   lastActivityHours?: number | null;
   submarket?: string | null;
-  // Performance Metrics
   referralVolume?: number | null;
   revenueAttribution?: number | null;
   conversionRate?: number | null;
@@ -42,18 +41,7 @@ export interface ContactDto {
   qualityScore?: number | null;
 }
 
-export interface CreateContactPayload {
-  firstName?: string | null;
-  lastName: string;
-  email: string;
-  phone?: string | null;
-  company?: string | null;
-  type?: string | null;
-  role?: string | null;
-}
-
-export interface UpdateContactPayload {
-  id: string;
+interface UpdateContactPayload {
   firstName?: string | null;
   lastName?: string | null;
   email?: string | null;
@@ -174,7 +162,6 @@ function mapContact(record: ZohoContactRecord): ContactDto {
     record.Email ||
     'Unnamed contact';
 
-  // Cast to access custom fields
   const r = record as Record<string, unknown>;
 
   return {
@@ -191,32 +178,11 @@ function mapContact(record: ZohoContactRecord): ContactDto {
     lastActivityHours: hoursSince(record.Last_Activity_Time),
     submarket: (r.Submarket as string) ?? null,
     health: (r.Relationship_Health as string) ?? null,
-    // Performance Metrics from Zoho CRM
     referralVolume: typeof r.Referral_Volume === 'number' ? r.Referral_Volume : null,
     revenueAttribution: typeof r.Revenue_Attribution === 'number' ? r.Revenue_Attribution : null,
     conversionRate: typeof r.Conversion_Rate === 'number' ? r.Conversion_Rate : null,
     commissionPaid: typeof r.Commission_Paid === 'number' ? r.Commission_Paid : null,
     qualityScore: typeof r.Quality_Score === 'number' ? r.Quality_Score : null,
-  };
-}
-
-async function listContacts(page = 1, perPage = 200) {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    per_page: perPage.toString(),
-    sort_order: 'desc',
-    sort_by: 'Modified_Time',
-  });
-
-  const response = await zohoRequest<{
-    data?: ZohoContactRecord[];
-    info?: { more_records?: boolean; count?: number };
-  }>(`/crm/v2/Contacts?${params.toString()}`);
-
-  const records = response.data ?? [];
-  return {
-    items: records.map(mapContact),
-    info: response.info ?? {},
   };
 }
 
@@ -226,44 +192,7 @@ async function getContact(id: string): Promise<ContactDto | null> {
   return record ? mapContact(record) : null;
 }
 
-async function createContact(payload: CreateContactPayload) {
-  const body = {
-    data: [
-      {
-        First_Name: payload.firstName || undefined,
-        Last_Name: payload.lastName,
-        Email: payload.email,
-        Phone: payload.phone || undefined,
-        Company: payload.company || undefined,
-        Contact_Type: normaliseType(payload.type || undefined) || undefined,
-        Title: payload.role || undefined,
-      },
-    ],
-    trigger: [],
-  };
-
-  const response = await zohoRequest<{
-    data?: { details?: { id: string } }[];
-  }>('/crm/v2/Contacts', {
-    method: 'POST',
-    body: JSON.stringify(body),
-  });
-
-  const createdId = response.data?.[0]?.details?.id;
-  if (!createdId) {
-    throw new Error('Zoho did not return an ID for the new contact');
-  }
-
-  const contact = await getContact(createdId);
-  if (!contact) {
-    throw new Error('Unable to load newly created contact');
-  }
-
-  return contact;
-}
-
-async function updateContact(id: string, payload: Partial<UpdateContactPayload>) {
-  // Build the update object, only including fields that are provided
+async function updateContact(id: string, payload: UpdateContactPayload) {
   const updateData: Record<string, unknown> = {};
   
   if (payload.firstName !== undefined) updateData.First_Name = payload.firstName || null;
@@ -320,13 +249,8 @@ async function deleteContact(id: string) {
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,PATCH,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
-
-function parseNumber(value: unknown, fallback: number) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -336,51 +260,48 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
-  // Debug: Check if env vars are set (don't log actual values for security)
-  const envCheck = {
-    hasClientId: !!process.env.ZOHO_CLIENT_ID,
-    hasClientSecret: !!process.env.ZOHO_CLIENT_SECRET,
-    hasRefreshToken: !!process.env.ZOHO_REFRESH_TOKEN,
-    dc: process.env.ZOHO_DC || 'eu (default)',
-  };
-  console.log('Environment check:', envCheck);
+  const { id } = req.query;
+  const contactId = Array.isArray(id) ? id[0] : id;
+
+  if (!contactId) {
+    return res.status(400).json({ message: 'Contact ID is required' });
+  }
 
   try {
+    // GET /api/contacts/[id] - Get single contact
     if (req.method === 'GET') {
-      const page = parseNumber(req.query.page, 1);
-      const pageSize = parseNumber(req.query.pageSize, 200);
-      const { items, info } = await listContacts(page, pageSize);
-
-      return res.status(200).json({
-        items,
-        page,
-        pageSize,
-        total: info.count ?? items.length,
-        moreRecords: info.more_records ?? false,
-      });
+      const contact = await getContact(contactId);
+      if (!contact) {
+        return res.status(404).json({ message: 'Contact not found' });
+      }
+      return res.status(200).json(contact);
     }
 
-    if (req.method === 'POST') {
+    // PUT or PATCH /api/contacts/[id] - Update contact
+    if (req.method === 'PUT' || req.method === 'PATCH') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
-      const { firstName, lastName, email, phone, company, type, role } = body ?? {};
+      const { firstName, lastName, email, phone, mobile, company, type, role, territory, relationshipHealth } = body ?? {};
 
-      if (!lastName || !email) {
-        return res.status(400).json({
-          message: 'lastName and email are required',
-        });
-      }
-
-      const contact = await createContact({
+      const contact = await updateContact(contactId, {
         firstName,
         lastName,
         email,
         phone,
+        mobile,
         company,
         type,
         role,
+        territory,
+        relationshipHealth,
       });
 
-      return res.status(201).json(contact);
+      return res.status(200).json(contact);
+    }
+
+    // DELETE /api/contacts/[id] - Delete contact
+    if (req.method === 'DELETE') {
+      await deleteContact(contactId);
+      return res.status(200).json({ success: true, message: 'Contact deleted' });
     }
 
     return res.status(405).json({ message: 'Method Not Allowed' });
@@ -390,3 +311,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ message });
   }
 }
+
