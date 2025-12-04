@@ -15,7 +15,8 @@ import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
 
 const typeLabels: Record<string, string> = {
-  'flex-broker': 'Flex Broker',
+  'flex-broker': 'Broker',
+  'Flex Broker': 'Broker',
   'disposal-agent': 'Disposal Agent',
   tenant: 'Tenant',
   landlord: 'Landlord',
@@ -234,7 +235,9 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
                         </div>
                       </div>
                     )}
-                    {contact.role && <KeyValue label="Role" value={contact.role} />}
+                    {contact.role && contact.type !== 'flex-broker' && contact.type !== 'Flex Broker' && (
+                      <KeyValue label="Role" value={contact.role} />
+                    )}
                     {contact.territory && <KeyValue label="Territory" value={contact.territory} />}
                     {contact.specialisms && contact.specialisms.length > 0 && (
                       <div className="col-span-2">

@@ -841,7 +841,7 @@ let contactsData = [];
 let isFetchingContacts = false;
 
 const CONTACT_TYPE_META = {
-    'Flex Broker': { label: 'Brokers', icon: 'fa-handshake', badgeClass: 'bg-primary text-white' },
+    'Flex Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-handshake', badgeClass: 'bg-primary text-white' },
     'Disposal Agent': { label: 'Disposal Agents', icon: 'fa-building', badgeClass: 'bg-secondary text-white' },
     Tenant: { label: 'Traditional Tenant Reps', icon: 'fa-user-tie', badgeClass: 'bg-accent text-white' },
     Supplier: { label: 'Supplier', icon: 'fa-wrench', badgeClass: 'bg-muted text-primary' },
@@ -913,12 +913,13 @@ function renderContactsTable(contacts) {
         .map((contact) => {
             const rawName = contact.name || 'Unnamed Contact';
             const safeName = escapeHtml(rawName);
-            const safeRole = escapeHtml(contact.role || '—');
+            const isBroker = contact.type === 'Flex Broker' || contact.type === 'flex-broker' || contact.type === 'Broker';
+            const safeRole = isBroker ? '—' : escapeHtml(contact.role || '—');
             const safeCompany = escapeHtml(contact.company || '—');
             const safeEmail = escapeHtml(contact.email || '—');
             const safePhone = escapeHtml(contact.phone || '—');
             const typeMeta = getTypeMeta(contact.type);
-            const typeLabel = typeMeta.label;
+            const typeLabel = typeMeta.displayLabel || typeMeta.label;
             const health = contact.health || 'Good';
             const healthBadge = HEALTH_BADGES[health] || 'bg-muted text-primary';
             const lastActivity = formatLastActivity(contact.lastActivityHours);
@@ -1068,7 +1069,9 @@ function attachContactRowHandlers() {
 function showContactDetails(row) {
     const name = row.dataset.contactName;
     const role = row.dataset.contactRole;
-    const type = row.dataset.contactType;
+    const rawType = row.dataset.contactType;
+    const isBroker = rawType === 'Flex Broker' || rawType === 'flex-broker' || rawType === 'Broker';
+    const type = isBroker ? 'Broker' : rawType;
     const company = row.dataset.contactCompany;
     const email = row.dataset.contactEmail;
     const phone = row.dataset.contactPhone;
@@ -1077,6 +1080,7 @@ function showContactDetails(row) {
     const health = row.dataset.contactHealth || 'Good';
     
     const typeColors = {
+        'Broker': 'bg-primary text-white',
         'Flex Broker': 'bg-primary text-white',
         'Disposal Agent': 'bg-secondary text-white',
         'Tenant': 'bg-accent text-white',
@@ -1115,7 +1119,6 @@ function showContactDetails(row) {
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${typeColors[type] || 'bg-muted text-primary'}">
                                 ${type}
                             </span>
-                            ${type === 'Flex Broker' ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-primary">Top 10 Broker</span>' : ''}
                             ${confidential ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><i class="fa-solid fa-lock mr-1"></i>Confidential</span>' : ''}
                         </div>
                         <div class="flex items-center space-x-4 text-sm text-secondary">
@@ -1123,7 +1126,7 @@ function showContactDetails(row) {
                                 <i class="fa-solid fa-building"></i>
                                 <span>${company}</span>
                             </span>
-                            ${type === 'Flex Broker' ? `
+                            ${isBroker ? `
                             <span class="flex items-center space-x-1">
                                 <i class="fa-solid fa-map-marker-alt"></i>
                                 <span>City Core, Shoreditch</span>
@@ -1208,12 +1211,14 @@ function showContactDetails(row) {
                             </div>
                         </div>
                         
+                        ${!isBroker ? `
                         <div>
                             <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Role</label>
                             <span class="text-sm text-primary">${role}</span>
                         </div>
+                        ` : ''}
                         
-                        ${type === 'Flex Broker' ? `
+                        ${isBroker ? `
                         <div>
                             <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Territory</label>
                             <span class="text-sm text-primary">Central London</span>
@@ -1261,7 +1266,7 @@ function showContactDetails(row) {
                     
                     <div class="mt-6 pt-6 border-t border-[#E6E6E6]">
                         <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Notes</label>
-                        <p class="text-sm text-primary leading-relaxed">Key contact for ${company}. ${type === 'Flex Broker' ? 'Specializes in flexible office solutions and has a strong track record with quality referrals.' : type === 'Disposal Agent' ? 'Handles property disposals and has extensive market knowledge.' : 'Important relationship to maintain.'}</p>
+                        <p class="text-sm text-primary leading-relaxed">Key contact for ${company}. ${isBroker ? 'Specializes in flexible office solutions and has a strong track record with quality referrals.' : type === 'Disposal Agent' ? 'Handles property disposals and has extensive market knowledge.' : 'Important relationship to maintain.'}</p>
                     </div>
                     
                     <div class="mt-6 pt-6 border-t border-[#E6E6E6]">

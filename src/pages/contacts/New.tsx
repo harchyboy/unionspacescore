@@ -12,7 +12,7 @@ import { CompanyLookup } from '../../components/contacts/CompanyLookup';
 import type { ContactType } from '../../types/contact';
 
 const contactTypes: { value: ContactType; label: string }[] = [
-  { value: 'flex-broker', label: 'Flex Broker' },
+  { value: 'flex-broker', label: 'Broker' },
   { value: 'disposal-agent', label: 'Disposal Agent' },
   { value: 'tenant', label: 'Tenant/Prospect' },
   { value: 'landlord', label: 'Landlord' },
