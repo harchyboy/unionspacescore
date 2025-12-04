@@ -2132,7 +2132,8 @@ window.addEventListener('load', function() {
         const searchParam = trimmed.length >= 3 ? `?search=${encodeURIComponent(trimmed)}` : '';
         const response = await fetch(`/api/accounts${searchParam}`);
         if (!response.ok) {
-            throw new Error('Unable to load companies');
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.message || 'Unable to load companies');
         }
         const data = await response.json();
         return data.items || [];
@@ -2157,15 +2158,8 @@ window.addEventListener('load', function() {
     async function showSuggestions(query) {
         if (!companySuggestionsList) return;
         const trimmed = (query || '').trim();
-        companySuggestionsList.innerHTML = '';
-        companySuggestions.classList.remove('hidden');
-
-        if (trimmed && trimmed.length < 3) {
-            companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">Type at least 3 characters to search Zoho accounts.</div>';
-            return;
-        }
-
         companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">Searching...</div>';
+        companySuggestions.classList.remove('hidden');
 
         try {
             const results = await fetchCompanies(trimmed);
