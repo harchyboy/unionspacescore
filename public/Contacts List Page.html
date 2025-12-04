@@ -2051,8 +2051,12 @@ window.addEventListener('load', function() {
         return date.toLocaleDateString();
     }
 
-    function getInitials(firstName, lastName) {
-        return ((firstName || '')[0] || '') + ((lastName || '')[0] || '');
+    function getInitials(name) {
+        if (!name) return '?';
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) return '?';
+        if (parts.length === 1) return parts[0][0].toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     }
 
     function getTypeMeta(type) {
@@ -2087,7 +2091,7 @@ window.addEventListener('load', function() {
 
         tbody.innerHTML = contacts.map(contact => {
             const typeMeta = getTypeMeta(contact.type);
-            const initials = getInitials(contact.firstName, contact.lastName);
+            const initials = getInitials(contact.name);
             
             return `
             <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" 
@@ -2101,7 +2105,7 @@ window.addEventListener('load', function() {
                             ${initials}
                         </div>
                         <div>
-                            <div class="font-semibold text-primary text-sm">${escapeHtml(contact.firstName)} ${escapeHtml(contact.lastName)}</div>
+                            <div class="font-semibold text-primary text-sm">${escapeHtml(contact.name || 'Unnamed')}</div>
                             <div class="text-xs text-secondary">${escapeHtml(contact.role || '-')}</div>
                         </div>
                     </div>
