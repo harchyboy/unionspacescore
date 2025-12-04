@@ -601,6 +601,7 @@
                             <div class="relative">
                                 <label class="block text-sm font-semibold text-primary mb-2">Company Name <span class="text-destructive">*</span></label>
                                 <div class="relative">
+                                    <input type="hidden" id="company-id-input" name="company_id">
                                     <input type="text" id="company-input" name="company" required class="w-full px-4 py-3 pr-12 border border-[#E6E6E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all-smooth" placeholder="e.g., Knight Frank, CBRE, JLL">
                                     <button type="button" id="company-lookup-btn" class="absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 text-secondary hover:text-primary transition-all-smooth rounded hover:bg-muted" title="Search existing companies" style="margin-top: 0;">
                                         <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
@@ -984,6 +985,7 @@ function populateContactForm(contactData) {
     const emailInput = form.querySelector('input[name="email"]');
     const phoneInput = form.querySelector('input[name="phone"]');
     const companyInput = form.querySelector('input[name="company"]');
+    const companyIdInput = form.querySelector('input[name="company_id"]');
     const roleInput = form.querySelector('input[name="role"]');
 
     if (firstNameInput) firstNameInput.value = contactData.firstName || '';
@@ -991,6 +993,7 @@ function populateContactForm(contactData) {
     if (emailInput) emailInput.value = contactData.email || '';
     if (phoneInput) phoneInput.value = contactData.phone || contactData.mobile || '';
     if (companyInput) companyInput.value = contactData.company || '';
+    if (companyIdInput) companyIdInput.value = contactData.accountId || '';
     if (roleInput) roleInput.value = contactData.role || '';
 
     const typeValue = TYPE_LABEL_TO_VALUE[contactData.type] || 'flex-broker';
@@ -1990,6 +1993,8 @@ window.addEventListener('load', function() {
                 email: (formData.get('email') || '').toString().trim(),
                 phone: (formData.get('phone') || '').toString().trim() || null,
                 company: (formData.get('company') || '').toString().trim() || null,
+                companyCity: (formData.get('city') || '').toString().trim() || null,
+                accountId: (formData.get('company_id') || '').toString().trim() || null,
                 type: TYPE_VALUE_MAP[(formData.get('type') || '').toString()] || null,
                 role: (formData.get('role') || '').toString().trim() || null,
             };
@@ -2101,106 +2106,139 @@ window.addEventListener('load', function() {
     
     // Company lookup functionality
     const companyInput = document.getElementById('company-input');
+    const companyIdInput = document.getElementById('company-id-input');
     const companyLookupBtn = document.getElementById('company-lookup-btn');
     const companySuggestions = document.getElementById('company-suggestions');
     const companySuggestionsList = document.getElementById('company-suggestions-list');
-    
-    // Sample company data for prototype
-    const sampleCompanies = [
-        'Knight Frank',
-        'CBRE',
-        'JLL',
-        'Savills',
-        'Cushman & Wakefield',
-        'Colliers International',
-        'BNP Paribas Real Estate',
-        'Avison Young',
-        'DTZ',
-        'GVA',
-        'Lambert Smith Hampton',
-        'Gerald Eve',
-        'Bidwells',
-        'Strutt & Parker',
-        'Knight Knox',
-        'British Land',
-        'Landsec',
-        'Derwent London',
-        'Great Portland Estates',
-        'Shaftesbury'
-    ];
-    
-    function filterCompanies(query) {
-        if (!query || query.trim() === '') {
-            return sampleCompanies;
-        }
-        const lowerQuery = query.toLowerCase();
-        return sampleCompanies.filter(company => 
-            company.toLowerCase().includes(lowerQuery)
-        );
-    }
-    
-    function showSuggestions(query) {
-        const filtered = filterCompanies(query);
-        companySuggestionsList.innerHTML = '';
-        
-        if (filtered.length === 0) {
-            companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">No companies found. Type to create a new company.</div>';
-        } else {
-            filtered.slice(0, 10).forEach(function(company) {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'w-full px-4 py-2 text-left text-sm text-primary hover:bg-muted transition-all-smooth flex items-center space-x-2';
-                button.innerHTML = '<i class="fa-solid fa-building text-secondary text-xs"></i><span>' + company + '</span>';
-                button.addEventListener('click', function() {
-                    companyInput.value = company;
-                    companySuggestions.classList.add('hidden');
-                    companyInput.focus();
-                });
-                companySuggestionsList.appendChild(button);
-            });
-            
-            if (filtered.length > 10) {
-                const moreDiv = document.createElement('div');
-                moreDiv.className = 'px-4 py-2 text-xs text-secondary border-t border-[#E6E6E6]';
-                moreDiv.textContent = (filtered.length - 10) + ' more companies found';
-                companySuggestionsList.appendChild(moreDiv);
-            }
-        }
-        
-        companySuggestions.classList.remove('hidden');
-    }
-    
+    const cityInput = document.querySelector('input[name="city"]');
+    let companySearchTimeout = null;
+
     function hideSuggestions() {
         companySuggestions.classList.add('hidden');
     }
-    
-    if (companyInput) {
-        companyInput.addEventListener('input', function() {
-            showSuggestions(this.value);
+
+    function setSelectedCompany(account) {
+        if (!companyInput) return;
+        companyInput.value = account.name;
+        if (companyIdInput) companyIdInput.value = account.id || '';
+        if (cityInput && !cityInput.value && account.city) {
+            cityInput.value = account.city;
+        }
+        hideSuggestions();
+    }
+
+    async function fetchCompanies(query) {
+        const searchParam = query ? `?search=${encodeURIComponent(query)}` : '';
+        const response = await fetch(`/api/accounts${searchParam}`);
+        if (!response.ok) {
+            throw new Error('Unable to load companies');
+        }
+        const data = await response.json();
+        return data.items || [];
+    }
+
+    async function createCompany(name) {
+        const response = await fetch('/api/accounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name,
+                city: cityInput?.value || undefined,
+            }),
         });
-        
-        companyInput.addEventListener('focus', function() {
-            if (this.value) {
-                showSuggestions(this.value);
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.message || 'Failed to create company');
+        }
+        return response.json();
+    }
+
+    async function showSuggestions(query) {
+        if (!companySuggestionsList) return;
+        if (!companySuggestions.classList.contains('hidden')) {
+            companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">Searching...</div>';
+        }
+        companySuggestions.classList.remove('hidden');
+
+        try {
+            const results = await fetchCompanies(query);
+            companySuggestionsList.innerHTML = '';
+
+            if (results.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'px-4 py-2 text-sm text-secondary text-center';
+                emptyState.textContent = 'No companies found. You can add a new company below.';
+                companySuggestionsList.appendChild(emptyState);
+            } else {
+                results.slice(0, 10).forEach((account) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'w-full flex items-center justify-between px-4 py-2 text-sm text-primary hover:bg-muted transition-all-smooth';
+                    button.innerHTML = `<span class="flex items-center space-x-2"><i class="fa-solid fa-building text-secondary text-xs"></i><span>${account.name}</span></span><span class="text-xs text-secondary">${account.city || ''}</span>`;
+                    button.addEventListener('click', () => setSelectedCompany(account));
+                    companySuggestionsList.appendChild(button);
+                });
+            }
+
+            if (query && query.trim().length > 1) {
+                const addButton = document.createElement('button');
+                addButton.type = 'button';
+                addButton.className = 'w-full flex items-center space-x-2 px-4 py-2 text-sm text-primary border-t border-[#F0F0F0] hover:bg-muted transition-all-smooth';
+                addButton.innerHTML = `<i class="fa-solid fa-plus text-secondary text-xs"></i><span>Add "${query}" as a new company</span>`;
+                addButton.addEventListener('click', async () => {
+                    addButton.disabled = true;
+                    addButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-secondary text-xs"></i><span>Creating company...</span>';
+                    try {
+                        const account = await createCompany(query.trim());
+                        setSelectedCompany(account);
+                    } catch (error) {
+                        alert(error.message || 'Failed to create company.');
+                        addButton.disabled = false;
+                        addButton.innerHTML = `<i class="fa-solid fa-plus text-secondary text-xs"></i><span>Add "${query}" as a new company</span>`;
+                    }
+                });
+                companySuggestionsList.appendChild(addButton);
+            }
+        } catch (error) {
+            companySuggestionsList.innerHTML = `<div class="px-4 py-2 text-sm text-destructive text-center">${error.message || 'Unable to load companies.'}</div>`;
+        }
+    }
+
+    if (companyInput) {
+        companyInput.addEventListener('input', function () {
+            const value = this.value.trim();
+            if (companyIdInput) companyIdInput.value = '';
+            if (companySearchTimeout) clearTimeout(companySearchTimeout);
+            if (!value) {
+                hideSuggestions();
+                return;
+            }
+            companySearchTimeout = setTimeout(() => showSuggestions(value), 250);
+        });
+
+        companyInput.addEventListener('focus', function () {
+            const value = this.value.trim();
+            if (value) {
+                showSuggestions(value);
             }
         });
     }
-    
-    if (companyLookupBtn) {
-        companyLookupBtn.addEventListener('click', function(e) {
+
+    if (companyLookupBtn && companyInput) {
+        companyLookupBtn.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
+            const value = companyInput.value.trim();
             if (companySuggestions.classList.contains('hidden')) {
-                showSuggestions(companyInput.value || '');
+                showSuggestions(value);
             } else {
                 hideSuggestions();
             }
         });
     }
-    
-    // Close suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-        const companySection = document.querySelector('#company-details-section .relative');
+
+    document.addEventListener('click', function (e) {
+        const companySection = document.querySelector('#company-details-section');
         if (companySection && !companySection.contains(e.target)) {
             hideSuggestions();
         }

@@ -16,7 +16,7 @@ interface ZohoContactRecord {
   Title?: string;
   Contact_Type?: string;
   Last_Activity_Time?: string;
-  Account_Name?: { name?: string };
+  Account_Name?: { id?: string; name?: string };
   [key: string]: unknown;
 }
 
@@ -29,6 +29,7 @@ export interface ContactDto {
   phone?: string | null;
   mobile?: string | null;
   company?: string | null;
+  accountId?: string | null;
   type?: string | null;
   role?: string | null;
   health?: string | null;
@@ -48,6 +49,8 @@ export interface CreateContactPayload {
   email: string;
   phone?: string | null;
   company?: string | null;
+  companyCity?: string | null;
+  accountId?: string | null;
   type?: string | null;
   role?: string | null;
 }
@@ -60,6 +63,7 @@ export interface UpdateContactPayload {
   phone?: string | null;
   mobile?: string | null;
   company?: string | null;
+  accountId?: string | null;
   type?: string | null;
   role?: string | null;
   territory?: string | null;
@@ -186,6 +190,7 @@ function mapContact(record: ZohoContactRecord): ContactDto {
     phone: record.Phone ?? null,
     mobile: record.Mobile ?? null,
     company: record.Company ?? record.Account_Name?.name ?? null,
+    accountId: (record.Account_Name as { id?: string } | undefined)?.id ?? null,
     type: normaliseType(record.Contact_Type),
     role: record.Title ?? null,
     lastActivityHours: hoursSince(record.Last_Activity_Time),
@@ -235,6 +240,8 @@ async function createContact(payload: CreateContactPayload) {
         Email: payload.email,
         Phone: payload.phone || undefined,
         Company: payload.company || undefined,
+        Account_Name: payload.accountId ? { id: payload.accountId } : undefined,
+        Billing_City: payload.companyCity || undefined,
         Contact_Type: normaliseType(payload.type || undefined) || undefined,
         Title: payload.role || undefined,
       },
@@ -272,6 +279,9 @@ async function updateContact(id: string, payload: Partial<UpdateContactPayload>)
   if (payload.phone !== undefined) updateData.Phone = payload.phone || null;
   if (payload.mobile !== undefined) updateData.Mobile = payload.mobile || null;
   if (payload.company !== undefined) updateData.Company = payload.company || null;
+  if (payload.accountId !== undefined) {
+    updateData.Account_Name = payload.accountId ? { id: payload.accountId } : null;
+  }
   if (payload.type !== undefined) updateData.Contact_Type = normaliseType(payload.type) || null;
   if (payload.role !== undefined) updateData.Title = payload.role || null;
   if (payload.territory !== undefined) updateData.Territory = payload.territory || null;
@@ -362,7 +372,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (req.method === 'POST') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
-      const { firstName, lastName, email, phone, company, type, role } = body ?? {};
+      const { firstName, lastName, email, phone, company, companyCity, accountId, type, role } = body ?? {};
 
       if (!lastName || !email) {
         return res.status(400).json({
@@ -376,6 +386,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         email,
         phone,
         company,
+        companyCity,
+        accountId,
         type,
         role,
       });
