@@ -249,6 +249,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
+  // Debug: Check if env vars are set (don't log actual values for security)
+  const envCheck = {
+    hasClientId: !!process.env.ZOHO_CLIENT_ID,
+    hasClientSecret: !!process.env.ZOHO_CLIENT_SECRET,
+    hasRefreshToken: !!process.env.ZOHO_REFRESH_TOKEN,
+    dc: process.env.ZOHO_DC || 'eu (default)',
+  };
+  console.log('Environment check:', envCheck);
+
   try {
     if (req.method === 'GET') {
       const page = parseNumber(req.query.page, 1);
