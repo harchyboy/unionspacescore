@@ -1106,7 +1106,7 @@ function renderContactsTable(contacts) {
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full bg-primary bg-opacity-10 flex items-center justify-center text-primary font-semibold">
+                        <div class="w-10 h-10 rounded-full bg-muted border border-[#E6E6E6] flex items-center justify-center text-primary font-semibold">
                             ${initials}
                         </div>
                         <div>
@@ -1263,7 +1263,7 @@ function showContactDetails(row) {
                     ${avatar ? `
                     <img src="${avatar}" alt="${name}" class="w-16 h-16 rounded-full object-cover">
                     ` : `
-                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-semibold">
+                    <div class="w-16 h-16 bg-muted border border-[#E6E6E6] rounded-full flex items-center justify-center text-primary text-2xl font-semibold">
                         ${initials}
                     </div>
                     `}
