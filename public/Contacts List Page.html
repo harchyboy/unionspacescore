@@ -1070,7 +1070,9 @@ function renderContactsTable(contacts) {
             const safeRole = isBroker ? '—' : escapeHtml(contact.role || '—');
             const safeCompany = escapeHtml(contact.company || '—');
             const safeEmail = escapeHtml(contact.email || '—');
-            const safePhone = escapeHtml(contact.phone || '—');
+            const phoneValue = contact.phone || contact.mobile || '';
+            const mobileValue = contact.mobile || '';
+            const safePhone = escapeHtml(phoneValue || '—');
             const typeMeta = getTypeMeta(contact.type);
             const typeLabel = typeMeta.displayLabel || typeMeta.label;
             const health = contact.health || 'Good';
@@ -1097,7 +1099,8 @@ function renderContactsTable(contacts) {
                 data-contact-type="${contact.type || ''}"
                 data-contact-company="${safeCompany}"
                 data-contact-email="${safeEmail}"
-                data-contact-phone="${safePhone}"
+                data-contact-phone="${escapeHtml(contact.phone || '')}"
+                data-contact-mobile="${escapeHtml(contact.mobile || '')}"
                 data-contact-health="${health}"
                 data-contact-activity-hours="${activityValue}"
                 data-contact-submarket="${contact.submarket || ''}">
@@ -1229,6 +1232,7 @@ function showContactDetails(row) {
     const company = row.dataset.contactCompany;
     const email = row.dataset.contactEmail;
     const phone = row.dataset.contactPhone;
+    const mobile = row.dataset.contactMobile;
     const avatar = row.dataset.contactAvatar;
     const confidential = row.dataset.contactConfidential === 'true';
     const health = row.dataset.contactHealth || 'Good';
@@ -1348,20 +1352,24 @@ function showContactDetails(row) {
                         <div>
                             <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Phone</label>
                             <div class="flex items-center space-x-2">
-                                <span class="text-sm text-primary">${phone}</span>
+                                <span class="text-sm text-primary">${phone && phone.trim() ? phone : '—'}</span>
+                                ${phone && phone.trim() ? `
                                 <button class="text-secondary hover:text-primary">
                                     <i class="fa-solid fa-copy text-xs"></i>
                                 </button>
+                                ` : ''}
                             </div>
                         </div>
                         
                         <div>
                             <label class="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Mobile</label>
                             <div class="flex items-center space-x-2">
-                                <span class="text-sm text-primary">Not provided</span>
+                                <span class="text-sm text-primary">${mobile && mobile.trim() ? mobile : '—'}</span>
+                                ${mobile && mobile.trim() ? `
                                 <button class="text-secondary hover:text-primary">
                                     <i class="fa-solid fa-copy text-xs"></i>
                                 </button>
+                                ` : ''}
                             </div>
                         </div>
                         
