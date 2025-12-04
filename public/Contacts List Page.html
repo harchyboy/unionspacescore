@@ -2128,7 +2128,8 @@ window.addEventListener('load', function() {
     }
 
     async function fetchCompanies(query) {
-        const searchParam = query ? `?search=${encodeURIComponent(query)}` : '';
+        const trimmed = (query || '').trim();
+        const searchParam = trimmed.length >= 3 ? `?search=${encodeURIComponent(trimmed)}` : '';
         const response = await fetch(`/api/accounts${searchParam}`);
         if (!response.ok) {
             throw new Error('Unable to load companies');
@@ -2155,13 +2156,19 @@ window.addEventListener('load', function() {
 
     async function showSuggestions(query) {
         if (!companySuggestionsList) return;
-        if (!companySuggestions.classList.contains('hidden')) {
-            companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">Searching...</div>';
-        }
+        const trimmed = (query || '').trim();
+        companySuggestionsList.innerHTML = '';
         companySuggestions.classList.remove('hidden');
 
+        if (trimmed && trimmed.length < 3) {
+            companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">Type at least 3 characters to search Zoho accounts.</div>';
+            return;
+        }
+
+        companySuggestionsList.innerHTML = '<div class="px-4 py-2 text-sm text-secondary text-center">Searching...</div>';
+
         try {
-            const results = await fetchCompanies(query);
+            const results = await fetchCompanies(trimmed);
             companySuggestionsList.innerHTML = '';
 
             if (results.length === 0) {
@@ -2180,21 +2187,21 @@ window.addEventListener('load', function() {
                 });
             }
 
-            if (query && query.trim().length > 1) {
+            if (trimmed && trimmed.length >= 3) {
                 const addButton = document.createElement('button');
                 addButton.type = 'button';
                 addButton.className = 'w-full flex items-center space-x-2 px-4 py-2 text-sm text-primary border-t border-[#F0F0F0] hover:bg-muted transition-all-smooth';
-                addButton.innerHTML = `<i class="fa-solid fa-plus text-secondary text-xs"></i><span>Add "${query}" as a new company</span>`;
+                addButton.innerHTML = `<i class="fa-solid fa-plus text-secondary text-xs"></i><span>Add "${trimmed}" as a new company</span>`;
                 addButton.addEventListener('click', async () => {
                     addButton.disabled = true;
                     addButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-secondary text-xs"></i><span>Creating company...</span>';
                     try {
-                        const account = await createCompany(query.trim());
+                        const account = await createCompany(trimmed);
                         setSelectedCompany(account);
                     } catch (error) {
                         alert(error.message || 'Failed to create company.');
                         addButton.disabled = false;
-                        addButton.innerHTML = `<i class="fa-solid fa-plus text-secondary text-xs"></i><span>Add "${query}" as a new company</span>`;
+                        addButton.innerHTML = `<i class="fa-solid fa-plus text-secondary text-xs"></i><span>Add "${trimmed}" as a new company</span>`;
                     }
                 });
                 companySuggestionsList.appendChild(addButton);
