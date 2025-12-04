@@ -2129,7 +2129,7 @@ window.addEventListener('load', function() {
 
     async function fetchCompanies(query) {
         const trimmed = (query || '').trim();
-        const searchParam = trimmed.length >= 3 ? `?search=${encodeURIComponent(trimmed)}` : '';
+        const searchParam = trimmed.length >= 2 ? `?search=${encodeURIComponent(trimmed)}` : '';
         const response = await fetch(`/api/accounts${searchParam}`);
         if (!response.ok) {
             const error = await response.json().catch(() => ({}));
@@ -2181,7 +2181,7 @@ window.addEventListener('load', function() {
                 });
             }
 
-            if (trimmed && trimmed.length >= 3) {
+            if (trimmed && trimmed.length >= 2) {
                 const addButton = document.createElement('button');
                 addButton.type = 'button';
                 addButton.className = 'w-full flex items-center space-x-2 px-4 py-2 text-sm text-primary border-t border-[#F0F0F0] hover:bg-muted transition-all-smooth';

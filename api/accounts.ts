@@ -99,12 +99,17 @@ function mapAccount(record: ZohoAccountRecord): AccountDto {
 
 async function listAccounts(search?: string, limit = 10) {
   const trimmed = search?.trim();
-  if (trimmed && trimmed.length >= 3) {
+  if (trimmed && trimmed.length >= 2) {
     const criteria = encodeURIComponent(`(Account_Name:starts_with:${trimmed})`);
     const response = await zohoRequest<{ data?: ZohoAccountRecord[] }>(
       `/crm/v2/Accounts/search?criteria=${criteria}&per_page=${limit}`,
     );
     return (response.data ?? []).map(mapAccount);
+  }
+
+  // If search param is provided but too short, return empty list to avoid showing unrelated accounts
+  if (search !== undefined && trimmed !== undefined && trimmed.length > 0) {
+    return [];
   }
 
   const response = await zohoRequest<{ data?: ZohoAccountRecord[] }>(`/crm/v2/Accounts?per_page=${limit}`);
