@@ -100,7 +100,7 @@ function mapAccount(record: ZohoAccountRecord): AccountDto {
 async function listAccounts(search?: string, limit = 10) {
   const trimmed = search?.trim();
   if (trimmed && trimmed.length >= 3) {
-    const criteria = encodeURIComponent(`(Account_Name:contains:"${trimmed}")`);
+    const criteria = encodeURIComponent(`(Account_Name:starts_with:${trimmed})`);
     const response = await zohoRequest<{ data?: ZohoAccountRecord[] }>(
       `/crm/v2/Accounts/search?criteria=${criteria}&per_page=${limit}`,
     );
