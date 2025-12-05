@@ -76,6 +76,7 @@ async function zohoRequest<T>(path: string, init: FetchOptions = {}): Promise<T>
     headers,
   });
 
+  // Some Zoho endpoints can legitimately return 204 No Content
   if (response.status === 204) {
     return { data: [] } as T;
   }
@@ -85,7 +86,16 @@ async function zohoRequest<T>(path: string, init: FetchOptions = {}): Promise<T>
     throw new Error(`Zoho API error (${response.status}): ${text}`);
   }
 
-  return response.json() as Promise<T>;
+  const text = await response.text();
+  if (!text) {
+    return { data: [] } as T;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new Error(`Invalid JSON response from Zoho: ${text.substring(0, 120)}...`);
+  }
 }
 
 function mapAccount(record: ZohoAccountRecord): AccountDto {
@@ -97,7 +107,7 @@ function mapAccount(record: ZohoAccountRecord): AccountDto {
   };
 }
 
-async function listAccounts(search?: string, limit = 10) {
+async function listAccounts(search?: string, limit = 20) {
   const trimmed = search?.trim();
   if (trimmed && trimmed.length >= 2) {
     const criteria = encodeURIComponent(`(Account_Name:starts_with:${trimmed})`);
@@ -144,6 +154,7 @@ async function createAccount(payload: { name: string; city?: string | null }) {
     throw new Error('Zoho did not return an Account ID');
   }
 
+  // Return a normalised DTO
   return mapAccount({ id, Account_Name: payload.name, Billing_City: payload.city ?? undefined });
 }
 
@@ -163,7 +174,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     if (req.method === 'GET') {
       const search = typeof req.query.search === 'string' ? req.query.search : undefined;
-      const items = await listAccounts(search, 20);
+      const items = await listAccounts(search, 50);
       return res.status(200).json({ items });
     }
 
