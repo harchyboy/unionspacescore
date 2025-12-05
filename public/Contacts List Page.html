@@ -2428,13 +2428,13 @@ window.addEventListener('load', function() {
                     </button>
                     <div id="action-menu-${contact.id}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
                         <div class="py-1">
-                            <button onclick="event.stopPropagation(); handleEditClick('${contact.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <button type="button" onclick="event.preventDefault(); event.stopPropagation(); handleEditClick('${contact.id}')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fa-solid fa-pencil mr-2"></i> Edit
                             </button>
                             <a href="https://crm.zoho.eu/crm/org20066258959/tab/Contacts/${contact.id}" target="_blank" onclick="event.stopPropagation()" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                 <i class="fa-solid fa-external-link-alt mr-2"></i> View in Zoho
                             </a>
-                            <button onclick="event.stopPropagation(); handleDeleteClick('${contact.id}')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                            <button type="button" onclick="event.preventDefault(); event.stopPropagation(); handleDeleteClick('${contact.id}')" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                                 <i class="fa-solid fa-trash mr-2"></i> Delete
                             </button>
                         </div>
