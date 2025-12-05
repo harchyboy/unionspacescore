@@ -1,0 +1,11 @@
+<svg width="40" height="40" viewBox="0 0 640 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer corners -->
+  <path d="M 0 0 L 0 130 Q 0 0, 130 0 Z" fill="#252525"/>
+  <path d="M 640 0 L 640 130 Q 640 0, 510 0 Z" fill="#252525"/>
+  <path d="M 0 640 L 0 510 Q 0 640, 130 640 Z" fill="#252525"/>
+  <path d="M 640 640 L 640 510 Q 640 640, 510 640 Z" fill="#252525"/>
+  
+  <!-- White circle in center -->
+  <circle cx="320" cy="320" r="280" fill="white"/>
+</svg>
+
