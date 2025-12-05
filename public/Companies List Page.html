@@ -237,7 +237,7 @@
     function escapeHtml(value) {
       if (!value) return '';
       return value.replace(/[&<>"']/g, function (match) {
-        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', \"'\": '&#39;' };
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
         return map[match];
       });
     }
@@ -304,7 +304,7 @@
         let url = ACCOUNTS_API_URL;
         const trimmed = currentSearch.trim();
         if (trimmed && trimmed.length >= 2) {
-          url += \`?search=\${encodeURIComponent(trimmed)}\`;
+          url += `?search=${encodeURIComponent(trimmed)}`;
         }
 
         const response = await fetch(url);
