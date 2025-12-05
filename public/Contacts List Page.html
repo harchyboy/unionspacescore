@@ -811,6 +811,9 @@
                             Cancel
                         </button>
                         <div class="flex items-center space-x-4">
+                            <button type="button" id="save-draft-button" class="px-8 py-3 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-muted transition-all-smooth">
+                                Save Draft
+                            </button>
                             <button type="submit" class="px-8 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all-smooth flex items-center space-x-2">
                                 <span>Add Contact</span>
                                 <i class="fa-solid fa-arrow-right"></i>
@@ -1892,8 +1895,8 @@ function showContactDetails(contactOrRow) {
         // If passed an object, try to find the row to highlight
         const row = document.querySelector(`.contact-row[data-contact-id="${contactId}"]`);
         if (row) {
-            document.querySelectorAll('.contact-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
-            row.classList.add('bg-primary', 'bg-opacity-10');
+    document.querySelectorAll('.contact-row').forEach(r => r.classList.remove('bg-primary', 'bg-opacity-10'));
+    row.classList.add('bg-primary', 'bg-opacity-10');
         }
         document.getElementById('contact-details-panel').dataset.currentContactId = contactId;
     }
@@ -2020,6 +2023,7 @@ window.addEventListener('load', function() {
     const closeModal = document.getElementById('close-modal');
     const backButton = document.getElementById('back-button');
     const cancelButton = document.getElementById('cancel-button');
+    const saveDraftButton = document.getElementById('save-draft-button');
     const form = document.getElementById('add-contact-form');
     const typeRadios = document.querySelectorAll('input[name="type"]');
     const brokerSection = document.getElementById('broker-specific-section');
@@ -2040,21 +2044,21 @@ window.addEventListener('load', function() {
     contactModalElements.brokerSection = brokerSection;
     contactModalElements.disposalSection = disposalSection;
     contactModalElements.supplierSection = supplierSection;
-
+    
     if (addContactBtn) {
         addContactBtn.addEventListener('click', function() {
             openContactModal('add');
         });
     }
-
+    
     if (closeModal) {
         closeModal.addEventListener('click', closeContactModal);
     }
-
+    
     if (backButton) {
         backButton.addEventListener('click', closeContactModal);
     }
-
+    
     if (cancelButton) {
         cancelButton.addEventListener('click', function() {
             if (confirm('Discard changes and return to contacts list?')) {
@@ -2062,7 +2066,7 @@ window.addEventListener('load', function() {
             }
         });
     }
-
+    
     if (modal) {
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
@@ -2070,7 +2074,7 @@ window.addEventListener('load', function() {
             }
         });
     }
-
+    
     if (typeRadios.length > 0) {
         typeRadios.forEach(function(radio) {
             radio.addEventListener('change', function() {
@@ -2078,7 +2082,7 @@ window.addEventListener('load', function() {
             });
         });
     }
-
+    
     if (form) {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -2134,8 +2138,8 @@ window.addEventListener('load', function() {
                 if (successToast) {
                     successToast.classList.remove('hidden');
                     setTimeout(function() {
-                        successToast.classList.add('hidden');
-                    }, 2000);
+                    successToast.classList.add('hidden');
+            }, 2000);
                 }
                 closeContactModal();
                 
@@ -2156,14 +2160,14 @@ window.addEventListener('load', function() {
             }
         });
     }
-
+    
     if (saveDraftButton) {
         saveDraftButton.addEventListener('click', function() {
             const toast = document.createElement('div');
             toast.className = 'fixed bottom-8 right-8 bg-secondary text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50';
             toast.innerHTML = '<div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center"><i class="fa-solid fa-save text-white"></i></div><div><div class="font-semibold">Draft saved</div><div class="text-xs opacity-90">You can complete this later</div></div>';
             document.body.appendChild(toast);
-
+            
             setTimeout(function() {
                 toast.remove();
             }, 2500);
@@ -2278,22 +2282,22 @@ window.addEventListener('load', function() {
 
         try {
             const results = await fetchCompanies(trimmed);
-            companySuggestionsList.innerHTML = '';
-
+        companySuggestionsList.innerHTML = '';
+        
             if (results.length === 0) {
                 const emptyState = document.createElement('div');
                 emptyState.className = 'px-4 py-2 text-sm text-secondary text-center';
                 emptyState.textContent = 'No companies found. You can add a new company below.';
                 companySuggestionsList.appendChild(emptyState);
-            } else {
+        } else {
                 results.slice(0, 10).forEach((account) => {
-                    const button = document.createElement('button');
-                    button.type = 'button';
+                const button = document.createElement('button');
+                button.type = 'button';
                     button.className = 'w-full flex items-center justify-between px-4 py-2 text-sm text-primary hover:bg-muted transition-all-smooth';
                     button.innerHTML = `<span class="flex items-center space-x-2"><i class="fa-solid fa-building text-secondary text-xs"></i><span>${account.name}</span></span><span class="text-xs text-secondary">${account.city || ''}</span>`;
                     button.addEventListener('click', () => setSelectedCompany(account));
-                    companySuggestionsList.appendChild(button);
-                });
+                companySuggestionsList.appendChild(button);
+            });
             }
 
             if (trimmed && trimmed.length >= 2) {
@@ -2319,7 +2323,7 @@ window.addEventListener('load', function() {
             companySuggestionsList.innerHTML = `<div class="px-4 py-2 text-sm text-destructive text-center">${error.message || 'Unable to load companies.'}</div>`;
         }
     }
-
+    
     if (companyInput) {
         companyInput.addEventListener('input', function () {
             const value = this.value.trim();
@@ -2339,7 +2343,7 @@ window.addEventListener('load', function() {
             }
         });
     }
-
+    
     if (companyLookupBtn && companyInput) {
         companyLookupBtn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -2352,7 +2356,7 @@ window.addEventListener('load', function() {
             }
         });
     }
-
+    
     document.addEventListener('click', function (e) {
         const companySection = document.querySelector('#company-details-section');
         if (companySection && !companySection.contains(e.target)) {
