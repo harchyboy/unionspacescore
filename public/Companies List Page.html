@@ -362,12 +362,12 @@
     function openCompanyModal() {
       document.getElementById('company-modal-backdrop')?.classList.remove('hidden');
       document.getElementById('company-modal')?.classList.remove('hidden');
-      const nameInput = document.getElementById('company-name-input') as HTMLInputElement | null;
+      const nameInput = document.getElementById('company-name-input');
       if (nameInput) {
         nameInput.value = '';
         nameInput.focus();
       }
-      const cityInput = document.getElementById('company-city-input') as HTMLInputElement | null;
+      const cityInput = document.getElementById('company-city-input');
       if (cityInput) {
         cityInput.value = '';
       }
@@ -389,7 +389,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      const searchInput = document.getElementById('company-search') as HTMLInputElement | null;
+      const searchInput = document.getElementById('company-search');
       if (searchInput) {
         searchInput.addEventListener('input', debounce(function (event) {
           currentSearch = event.target.value || '';
@@ -417,8 +417,8 @@
       if (form) {
         form.addEventListener('submit', async function (event) {
           event.preventDefault();
-          const nameInput = document.getElementById('company-name-input') as HTMLInputElement | null;
-          const cityInput = document.getElementById('company-city-input') as HTMLInputElement | null;
+          const nameInput = document.getElementById('company-name-input');
+          const cityInput = document.getElementById('company-city-input');
           const submitButton = document.getElementById('company-submit-button');
 
           if (!nameInput || !nameInput.value.trim()) {
