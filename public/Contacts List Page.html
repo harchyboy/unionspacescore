@@ -2551,18 +2551,26 @@ window.addEventListener('load', function() {
             contactsData = items;
             renderContactsTable(contactsData);
             
-            // Force update the open panel with fresh data
             if (forceRefresh) {
                 const panel = document.getElementById('contact-details-panel');
                 if (panel && panel.classList.contains('open')) {
                     const currentId = panel.dataset.currentContactId;
                     if (currentId) {
-                        // Fetch specific contact to ensure we have the latest details
-                        // The list response might be slightly stale due to search indexing latency,
-                        // but fetching by ID is usually immediate/consistent in Zoho
-                        fetchContactById(currentId).then(updatedContact => {
-                            if (updatedContact) {
-                                showContactDetails(updatedContact);
+                        // Debug log
+                        console.log('Forcing update for panel contact:', currentId);
+                        
+                        // 1. Try to find in fresh list first
+                        const updatedFromList = items.find(c => c.id === currentId);
+                        if (updatedFromList) {
+                            console.log('Found updated contact in list, refreshing panel:', updatedFromList);
+                            showContactDetails(updatedFromList);
+                        }
+                        
+                        // 2. AND fetch directly to be absolutely sure (race condition safety)
+                        fetchContactById(currentId).then(directContact => {
+                            if (directContact) {
+                                console.log('Fetched fresh contact directly:', directContact);
+                                showContactDetails(directContact);
                             }
                         });
                     }
