@@ -2113,12 +2113,17 @@ window.addEventListener('load', function() {
 
             try {
                 if (isEditingContact && editingContactId) {
-                    await updateContactApi(editingContactId, payload);
+                    const updatedContact = await updateContactApi(editingContactId, payload);
                     if (contactModalElements.successToastTitle) {
                         contactModalElements.successToastTitle.textContent = 'Contact updated successfully';
                     }
                     if (contactModalElements.successToastSubtitle) {
                         contactModalElements.successToastSubtitle.textContent = 'CRM record updated and synced.';
+                    }
+                    // Immediately refresh the open details panel with the returned contact
+                    const panel = document.getElementById('contact-details-panel');
+                    if (panel && panel.classList.contains('open') && panel.dataset.currentContactId === editingContactId && updatedContact) {
+                        showContactDetails(updatedContact);
                     }
                 } else {
                     await createContact(payload);
