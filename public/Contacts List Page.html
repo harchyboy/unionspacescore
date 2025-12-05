@@ -1289,6 +1289,7 @@ function attachContactRowHandlers() {
     });
 }
 function showContactDetails(row) {
+    const contactId = row.dataset.contactId;
     const name = row.dataset.contactName;
     const role = row.dataset.contactRole;
     const rawType = row.dataset.contactType;
@@ -1397,7 +1398,7 @@ function showContactDetails(row) {
                 <div class="bg-white rounded-lg border border-[#E6E6E6] p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-semibold text-primary">Contact Information</h3>
-                        <button class="text-secondary hover:text-primary text-sm" data-action="edit-contact">
+                        <button type="button" class="text-secondary hover:text-primary text-sm" onclick="openEditContact('${contactId}')">
                             <i class="fa-solid fa-pencil mr-1"></i>
                             Edit
                         </button>
