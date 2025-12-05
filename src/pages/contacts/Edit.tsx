@@ -104,7 +104,7 @@ export function ContactEdit() {
 
   if (isLoading) {
     return (
-      <SlideOver isOpen={true} title="Edit Contact" onClose={() => navigate(-1)} size="lg">
+      <SlideOver isOpen={true} title="Edit Contact" onClose={() => navigate(`/contacts/${id}`)} size="lg">
         <div className="flex items-center justify-center h-64">
           <LoadingSpinner size="lg" />
         </div>
@@ -116,11 +116,11 @@ export function ContactEdit() {
     <SlideOver
       isOpen={true}
       title="Edit Contact"
-      onClose={() => navigate(-1)}
+      onClose={() => navigate(`/contacts/${id}`)}
       size="lg"
       footer={
         <div className="flex items-center space-x-3">
-          <Button variant="outline" onClick={() => navigate(-1)}>
+          <Button variant="outline" onClick={() => navigate(`/contacts/${id}`)}>
             Cancel
           </Button>
           <Button
