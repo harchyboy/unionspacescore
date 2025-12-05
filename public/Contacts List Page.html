@@ -2550,7 +2550,21 @@ window.addEventListener('load', function() {
             
             contactsData = items;
             renderContactsTable(contactsData);
-            refreshOpenDetailsPanel(contactsData);
+            
+            // Force update the open panel with fresh data
+            // We look up the fresh contact object from the new contactsData array
+            if (forceRefresh) {
+                const panel = document.getElementById('contact-details-panel');
+                if (panel && panel.classList.contains('open')) {
+                    const currentId = panel.dataset.currentContactId;
+                    if (currentId) {
+                        const updatedContact = contactsData.find(c => c.id === currentId);
+                        if (updatedContact) {
+                            showContactDetails(updatedContact);
+                        }
+                    }
+                }
+            }
             
         } catch (error) {
             console.error('Error fetching contacts:', error);
