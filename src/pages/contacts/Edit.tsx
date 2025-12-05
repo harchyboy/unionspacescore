@@ -42,7 +42,9 @@ export function ContactEdit() {
     phone: '',
     mobile: '',
     company: '',
-    type: 'internal' as ContactType,
+    accountId: '',
+    companyCity: '',
+    type: 'flex-broker' as ContactType,
     role: '',
     territory: '',
     submarkets: [] as string[],
@@ -64,6 +66,8 @@ export function ContactEdit() {
         phone: contact.phone || '',
         mobile: contact.mobile || '',
         company: contact.company || '',
+        accountId: contact.companyId || '',
+        companyCity: '', // not returned yet, reserved for future mapping
         type: contact.type,
         role: contact.role || '',
         territory: contact.territory || '',
@@ -100,6 +104,15 @@ export function ContactEdit() {
 
   const handleChange = (field: string, value: string | ContactType | RelationshipHealth | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCompanyChange = (value: string, meta?: { accountId?: string | null; city?: string | null }) => {
+    setFormData((prev) => ({
+      ...prev,
+      company: value,
+      accountId: meta?.accountId ?? '',
+      companyCity: meta?.city ?? prev.companyCity,
+    }));
   };
 
   if (isLoading) {
@@ -177,7 +190,8 @@ export function ContactEdit() {
           <CompanyLookup
             label="Company Name"
             value={formData.company}
-            onChange={(value) => handleChange('company', value)}
+            initialAccountId={formData.accountId}
+            onChange={handleCompanyChange}
           />
           <Select
             label="Type"

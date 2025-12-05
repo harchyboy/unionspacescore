@@ -35,6 +35,8 @@ export interface ContactDto {
   health?: string | null;
   lastActivityHours?: number | null;
   submarket?: string | null;
+  territory?: string | null;
+  notes?: string | null;
   // Performance Metrics
   referralVolume?: number | null;
   revenueAttribution?: number | null;
@@ -48,11 +50,14 @@ export interface CreateContactPayload {
   lastName: string;
   email: string;
   phone?: string | null;
+  mobile?: string | null;
   company?: string | null;
   companyCity?: string | null;
   accountId?: string | null;
   type?: string | null;
   role?: string | null;
+  territory?: string | null;
+  notes?: string | null;
 }
 
 export interface UpdateContactPayload {
@@ -68,6 +73,7 @@ export interface UpdateContactPayload {
   role?: string | null;
   territory?: string | null;
   relationshipHealth?: string | null;
+  notes?: string | null;
 }
 
 const requiredEnvVars = [
@@ -135,12 +141,27 @@ async function zohoRequest<T>(path: string, init: FetchOptions = {}): Promise<T>
     headers,
   });
 
+  // Handle 204 No Content (often used for success with no body)
+  if (response.status === 204) {
+    return {} as T;
+  }
+
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`Zoho API error (${response.status}): ${text}`);
   }
 
-  return response.json() as Promise<T>;
+  // Handle potentially empty or non-JSON responses for 200 OK
+  const text = await response.text();
+  if (!text) {
+    return {} as T;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch (e) {
+    throw new Error(`Invalid JSON response from Zoho: ${text.substring(0, 100)}...`);
+  }
 }
 
 function hoursSince(dateString?: string) {
@@ -167,6 +188,7 @@ function normaliseType(value?: string | null) {
     'traditional tenant reps': 'Tenant',
     supplier: 'Supplier',
     landlord: 'Landlord',
+    internal: 'Internal',
   };
   return map[lower] || value;
 }
@@ -195,6 +217,8 @@ function mapContact(record: ZohoContactRecord): ContactDto {
     role: record.Title ?? null,
     lastActivityHours: hoursSince(record.Last_Activity_Time),
     submarket: (r.Submarket as string) ?? null,
+    territory: (r.Territory as string) ?? null,
+    notes: (r.Description as string) ?? null,
     health: (r.Relationship_Health as string) ?? null,
     // Performance Metrics from Zoho CRM
     referralVolume: typeof r.Referral_Volume === 'number' ? r.Referral_Volume : null,
@@ -232,6 +256,8 @@ async function getContact(id: string): Promise<ContactDto | null> {
 }
 
 async function createContact(payload: CreateContactPayload) {
+  const normalizedType = normaliseType(payload.type || undefined) || undefined;
+
   const body = {
     data: [
       {
@@ -239,26 +265,47 @@ async function createContact(payload: CreateContactPayload) {
         Last_Name: payload.lastName,
         Email: payload.email,
         Phone: payload.phone || undefined,
+        Mobile: payload.mobile || undefined,
         Company: payload.company || undefined,
         Account_Name: payload.accountId ? { id: payload.accountId } : undefined,
         Billing_City: payload.companyCity || undefined,
-        Contact_Type: normaliseType(payload.type || undefined) || undefined,
+        Contact_Type: normalizedType,
         Title: payload.role || undefined,
+        Territory: payload.territory || undefined,
+        Description: payload.notes || undefined,
       },
     ],
     trigger: [],
   };
 
   const response = await zohoRequest<{
-    data?: { details?: { id: string } }[];
+    data?: { 
+      code?: string;
+      details?: { id: string; api_name?: string }; 
+      message?: string;
+      status?: string;
+    }[];
   }>('/crm/v2/Contacts', {
     method: 'POST',
     body: JSON.stringify(body),
   });
 
-  const createdId = response.data?.[0]?.details?.id;
+  const result = response.data?.[0];
+  
+  // Check for duplicate or error status
+  if (result?.code === 'DUPLICATE_DATA' || (result?.status === 'error' && result?.code === 'MANDATORY_NOT_FOUND')) {
+    throw new Error(result.message || 'Contact already exists or data is invalid');
+  }
+
+  const createdId = result?.details?.id;
+  
   if (!createdId) {
-    throw new Error('Zoho did not return an ID for the new contact');
+    // If successful but no ID (should not happen for create)
+    if (result?.status === 'success') {
+       throw new Error('Zoho reported success but did not return an ID');
+    }
+    // Fallback error
+    throw new Error(result?.message || 'Zoho did not return an ID for the new contact');
   }
 
   const contact = await getContact(createdId);
@@ -286,6 +333,7 @@ async function updateContact(id: string, payload: Partial<UpdateContactPayload>)
   if (payload.role !== undefined) updateData.Title = payload.role || null;
   if (payload.territory !== undefined) updateData.Territory = payload.territory || null;
   if (payload.relationshipHealth !== undefined) updateData.Relationship_Health = payload.relationshipHealth || null;
+  if (payload.notes !== undefined) updateData.Description = payload.notes || null;
 
   const body = {
     data: [
@@ -372,7 +420,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (req.method === 'POST') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
-      const { firstName, lastName, email, phone, company, companyCity, accountId, type, role } = body ?? {};
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        mobile,
+        company,
+        companyCity,
+        accountId,
+        type,
+        role,
+        territory,
+        notes,
+      } = body ?? {};
 
       if (!lastName || !email) {
         return res.status(400).json({
@@ -385,11 +446,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         lastName,
         email,
         phone,
+        mobile,
         company,
         companyCity,
         accountId,
         type,
         role,
+        territory,
+        notes,
       });
 
       return res.status(201).json(contact);

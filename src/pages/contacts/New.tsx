@@ -31,7 +31,9 @@ export function ContactNew() {
     phone: '',
     mobile: '',
     company: '',
-    type: 'internal' as ContactType,
+    companyCity: '',
+    accountId: '',
+    type: 'flex-broker' as ContactType,
     role: '',
     territory: '',
     notes: '',
@@ -47,12 +49,23 @@ export function ContactNew() {
       }, 500);
     } catch (error) {
       console.error('Error creating contact:', error);
-      showToast('Failed to create contact', 'error');
+      // Show the specific error message from the API if available
+      const message = error instanceof Error ? error.message : 'Failed to create contact';
+      showToast(message, 'error');
     }
   };
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCompanyChange = (value: string, meta?: { accountId?: string | null; city?: string | null }) => {
+    setFormData((prev) => ({
+      ...prev,
+      company: value,
+      accountId: meta?.accountId ?? '',
+      companyCity: meta?.city ?? prev.companyCity,
+    }));
   };
 
   return (
@@ -120,7 +133,8 @@ export function ContactNew() {
           <CompanyLookup
             label="Company Name"
             value={formData.company}
-            onChange={(value) => handleChange('company', value)}
+            initialAccountId={formData.accountId}
+            onChange={handleCompanyChange}
             required
           />
           <Select
@@ -158,4 +172,3 @@ export function ContactNew() {
     </SlideOver>
   );
 }
-

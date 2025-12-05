@@ -243,11 +243,13 @@ export const contactsHandlers = [
       phone: body.phone,
       mobile: body.mobile,
       company: body.company,
+      companyId: body.companyId,
       type: body.type || 'internal',
       role: body.role,
       territory: body.territory,
       submarkets: body.submarkets,
       specialisms: body.specialisms,
+      notes: body.notes,
       relationshipHealth: 'good',
       relationshipHealthScore: 70,
       openDeals: 0,
@@ -288,4 +290,3 @@ export const contactsHandlers = [
     return HttpResponse.json({ success: true });
   }),
 ];
-

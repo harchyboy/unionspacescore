@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="union-logo.svg" />
+  <title>Company Details</title>
+  <script src='https://cdn.tailwindcss.com'></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            border: "var(--border)",
+            input: "var(--input)",
+            ring: "var(--ring)",
+            background: "var(--background)",
+            foreground: "var(--foreground)",
+            primary: {
+              DEFAULT: "var(--primary)",
+              foreground: "var(--primary-foreground)",
+            },
+            secondary: {
+              DEFAULT: "var(--secondary)",
+              foreground: "var(--secondary-foreground)",
+            },
+            destructive: {
+              DEFAULT: "var(--destructive)",
+              foreground: "var(--destructive-foreground)",
+            },
+            muted: {
+              DEFAULT: "var(--muted)",
+              foreground: "var(--muted-foreground)",
+            },
+            accent: {
+              DEFAULT: "var(--accent)",
+              foreground: "var(--accent-foreground)",
+            },
+            card: {
+              DEFAULT: "var(--card)",
+              foreground: "var(--card-foreground)",
+            },
+          },
+          borderRadius: {
+            lg: "var(--radius)",
+            md: "calc(var(--radius) - 2px)",
+            sm: "calc(var(--radius) - 4px)",
+          },
+          fontFamily: {
+            sans: ["var(--font-sans)"],
+            serif: ["var(--font-serif)"],
+            mono: ["var(--font-mono)"],
+          },
+          boxShadow: {
+            DEFAULT: "var(--shadow)",
+          },
+        },
+      }
+    }
+  </script>
+  <script>
+    window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #FAFAFA;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --primary: #252525;
+      --primary-foreground: #ffffff;
+      --secondary: #8E8E8E;
+      --secondary-foreground: #ffffff;
+      --muted: #FAFAFA;
+      --muted-foreground: #0f172a;
+      --accent: #8E8E8E;
+      --accent-foreground: #ffffff;
+      --destructive: #ef4444;
+      --destructive-foreground: #ffffff;
+      --border: #E6E6E6;
+      --input: #FFFFFF;
+      --ring: #94a3b8;
+      --font-sans: Inter, sans-serif;
+      --font-serif: Georgia, serif;
+      --font-mono: JetBrains Mono, monospace;
+      --radius: 10px;
+      --shadow: -2px 4px 12px 4px rgba(51,51,51,0.05);
+    }
+    ::-webkit-scrollbar { display: none;}
+    body {
+      font-family: var(--font-sans);
+      background-color: #F0F0F0;
+      color: #252525;
+    }
+    .transition-all-smooth { transition: all 0.2s ease-in-out; }
+    .hover-lift:hover { transform: translateY(-2px); }
+  </style>
+  <script src="sidebar.js" defer></script>
+</head>
+<body class="antialiased" data-nav-section="companies">
+  <div id="app-shell" class="flex h-screen overflow-hidden">
+    <aside id="sidebar" class="w-64 bg-white border-r border-[#E6E6E6] flex flex-col" data-sidebar-placeholder data-active="companies"></aside>
+
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <header class="bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-wider text-secondary mb-1">Companies</p>
+          <h1 class="text-2xl font-semibold text-primary">Company Details</h1>
+        </div>
+        <div class="space-x-3">
+          <button class="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-secondary hover:text-primary hover:border-primary transition-all-smooth">
+            Edit
+          </button>
+          <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm shadow hover:shadow-md transition-all-smooth">
+            Add Contact
+          </button>
+        </div>
+      </header>
+
+      <section class="flex-1 overflow-y-auto p-8 space-y-6">
+        <div class="grid grid-cols-3 gap-6">
+          <div class="col-span-2 space-y-6">
+            <div class="bg-white border border-[#E6E6E6] rounded-lg p-6 shadow">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 mb-2">
+                    <h2 class="text-xl font-semibold text-primary">Acme Real Estate Holdings</h2>
+                    <span class="text-xs px-2 py-1 rounded-full bg-[#F5F5F5] text-secondary">Account</span>
+                  </div>
+                  <p class="text-sm text-secondary">www.acme.com</p>
+                  <p class="text-sm text-secondary mt-1">London, UK</p>
+                </div>
+                <div class="text-right space-y-1">
+                  <p class="text-xs text-secondary uppercase tracking-wide">Primary Contact</p>
+                  <p class="text-sm text-primary font-medium">Jane Doe</p>
+                  <p class="text-xs text-secondary">jane.doe@acme.com</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-4 mt-6">
+                <div class="p-4 bg-[#FAFAFA] rounded-lg border border-[#E6E6E6]">
+                  <p class="text-xs uppercase text-secondary mb-1">Open Deals</p>
+                  <p class="text-lg font-semibold text-primary">3</p>
+                </div>
+                <div class="p-4 bg-[#FAFAFA] rounded-lg border border-[#E6E6E6]">
+                  <p class="text-xs uppercase text-secondary mb-1">Active Contacts</p>
+                  <p class="text-lg font-semibold text-primary">5</p>
+                </div>
+                <div class="p-4 bg-[#FAFAFA] rounded-lg border border-[#E6E6E6]">
+                  <p class="text-xs uppercase text-secondary mb-1">Last Activity</p>
+                  <p class="text-lg font-semibold text-primary">2d ago</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white border border-[#E6E6E6] rounded-lg p-6 shadow">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-primary">Contacts</h3>
+                <button class="text-sm text-primary hover:underline">View all</button>
+              </div>
+              <div class="divide-y divide-[#E6E6E6]">
+                <div class="py-3 flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-medium text-primary">Jane Doe</p>
+                    <p class="text-xs text-secondary">Head of Real Estate · jane.doe@acme.com</p>
+                  </div>
+                  <span class="text-xs text-secondary">Primary</span>
+                </div>
+                <div class="py-3 flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-medium text-primary">Mark Taylor</p>
+                    <p class="text-xs text-secondary">Finance Lead · mark.taylor@acme.com</p>
+                  </div>
+                  <button class="text-xs text-primary hover:underline">View</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="bg-white border border-[#E6E6E6] rounded-lg p-6 shadow">
+              <h4 class="text-sm font-semibold text-primary mb-3">Key Info</h4>
+              <dl class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                  <dt class="text-secondary">City</dt>
+                  <dd class="text-primary">London</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-secondary">Industry</dt>
+                  <dd class="text-primary">Real Estate</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-secondary">Account Owner</dt>
+                  <dd class="text-primary">Tom Townsend</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-secondary">Health</dt>
+                  <dd class="text-primary">Good</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="bg-white border border-[#E6E6E6] rounded-lg p-6 shadow">
+              <h4 class="text-sm font-semibold text-primary mb-3">Recent Activity</h4>
+              <ul class="space-y-3 text-sm text-primary">
+                <li class="flex items-start space-x-2">
+                  <i class="fa-solid fa-envelope text-secondary mt-1"></i>
+                  <div>
+                    <p>Email: Proposal follow-up sent</p>
+                    <p class="text-xs text-secondary">2 days ago</p>
+                  </div>
+                </li>
+                <li class="flex items-start space-x-2">
+                  <i class="fa-solid fa-phone text-secondary mt-1"></i>
+                  <div>
+                    <p>Call: Discussed renewal timeline</p>
+                    <p class="text-xs text-secondary">5 days ago</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+

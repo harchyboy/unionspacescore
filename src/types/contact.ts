@@ -84,6 +84,8 @@ export interface CreateContactInput {
   phone?: string;
   mobile?: string;
   company?: string;
+  companyCity?: string;
+  accountId?: string;
   type: ContactType;
   role?: string;
   territory?: string;

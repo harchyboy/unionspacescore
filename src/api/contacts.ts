@@ -23,9 +23,11 @@ function transformContact(data: Record<string, unknown>): Contact {
     phone: data.phone as string | undefined,
     mobile: data.mobile as string | undefined,
     company: data.company as string | undefined,
+    companyId: data.accountId as string | undefined,
     type: (data.type as Contact['type']) || 'flex-broker',
     role: data.role as string | undefined,
     territory: data.territory as string | undefined,
+    notes: data.notes as string | undefined,
     relationshipHealth: (data.health as Contact['relationshipHealth']) || 'good',
     relationshipHealthScore: data.relationshipHealthScore as number | undefined,
     lastActivity: data.lastActivity as string | undefined,
@@ -78,7 +80,7 @@ async function fetchContact(id: string): Promise<Contact> {
 }
 
 // Create contact
-async function createContact(input: CreateContactInput): Promise<Contact> {
+export async function createContact(input: CreateContactInput): Promise<Contact> {
   const response = await fetch(API_BASE, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -87,9 +89,14 @@ async function createContact(input: CreateContactInput): Promise<Contact> {
       lastName: input.lastName,
       email: input.email,
       phone: input.phone,
+      mobile: input.mobile,
       company: input.company,
+      companyCity: input.companyCity,
+      accountId: input.accountId,
       type: input.type,
       role: input.role,
+      territory: input.territory,
+      notes: input.notes,
     }),
   });
 
@@ -103,7 +110,7 @@ async function createContact(input: CreateContactInput): Promise<Contact> {
 }
 
 // Update contact
-async function updateContact(input: UpdateContactInput): Promise<Contact> {
+export async function updateContact(input: UpdateContactInput): Promise<Contact> {
   const response = await fetch(`${API_BASE}/${input.id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },

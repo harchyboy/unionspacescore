@@ -16,7 +16,7 @@ interface ZohoContactRecord {
   Title?: string;
   Contact_Type?: string;
   Last_Activity_Time?: string;
-  Account_Name?: { name?: string };
+  Account_Name?: { id?: string; name?: string };
   [key: string]: unknown;
 }
 
@@ -29,11 +29,14 @@ interface ContactDto {
   phone?: string | null;
   mobile?: string | null;
   company?: string | null;
+  accountId?: string | null;
   type?: string | null;
   role?: string | null;
   health?: string | null;
   lastActivityHours?: number | null;
   submarket?: string | null;
+  territory?: string | null;
+  notes?: string | null;
   referralVolume?: number | null;
   revenueAttribution?: number | null;
   conversionRate?: number | null;
@@ -48,10 +51,12 @@ interface UpdateContactPayload {
   phone?: string | null;
   mobile?: string | null;
   company?: string | null;
+  accountId?: string | null;
   type?: string | null;
   role?: string | null;
   territory?: string | null;
   relationshipHealth?: string | null;
+  notes?: string | null;
 }
 
 const requiredEnvVars = [
@@ -119,12 +124,27 @@ async function zohoRequest<T>(path: string, init: FetchOptions = {}): Promise<T>
     headers,
   });
 
+  // Handle 204 No Content (often used for success with no body)
+  if (response.status === 204) {
+    return {} as T;
+  }
+
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`Zoho API error (${response.status}): ${text}`);
   }
 
-  return response.json() as Promise<T>;
+  // Handle potentially empty or non-JSON responses for 200 OK
+  const text = await response.text();
+  if (!text) {
+    return {} as T;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch (e) {
+    throw new Error(`Invalid JSON response from Zoho: ${text.substring(0, 100)}...`);
+  }
 }
 
 function hoursSince(dateString?: string) {
@@ -173,10 +193,13 @@ function mapContact(record: ZohoContactRecord): ContactDto {
     phone: record.Phone ?? null,
     mobile: record.Mobile ?? null,
     company: record.Company ?? record.Account_Name?.name ?? null,
+    accountId: (record.Account_Name as { id?: string } | undefined)?.id ?? null,
     type: normaliseType(record.Contact_Type),
     role: record.Title ?? null,
     lastActivityHours: hoursSince(record.Last_Activity_Time),
     submarket: (r.Submarket as string) ?? null,
+    territory: (r.Territory as string) ?? null,
+    notes: (r.Description as string) ?? null,
     health: (r.Relationship_Health as string) ?? null,
     referralVolume: typeof r.Referral_Volume === 'number' ? r.Referral_Volume : null,
     revenueAttribution: typeof r.Revenue_Attribution === 'number' ? r.Revenue_Attribution : null,
@@ -201,10 +224,14 @@ async function updateContact(id: string, payload: UpdateContactPayload) {
   if (payload.phone !== undefined) updateData.Phone = payload.phone || null;
   if (payload.mobile !== undefined) updateData.Mobile = payload.mobile || null;
   if (payload.company !== undefined) updateData.Company = payload.company || null;
+  if (payload.accountId !== undefined) {
+    updateData.Account_Name = payload.accountId ? { id: payload.accountId } : null;
+  }
   if (payload.type !== undefined) updateData.Contact_Type = normaliseType(payload.type) || null;
   if (payload.role !== undefined) updateData.Title = payload.role || null;
   if (payload.territory !== undefined) updateData.Territory = payload.territory || null;
   if (payload.relationshipHealth !== undefined) updateData.Relationship_Health = payload.relationshipHealth || null;
+  if (payload.notes !== undefined) updateData.Description = payload.notes || null;
 
   const body = {
     data: [
@@ -280,7 +307,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // PUT or PATCH /api/contacts/[id] - Update contact
     if (req.method === 'PUT' || req.method === 'PATCH') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
-      const { firstName, lastName, email, phone, mobile, company, type, role, territory, relationshipHealth } = body ?? {};
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        mobile,
+        company,
+        accountId,
+        type,
+        role,
+        territory,
+        relationshipHealth,
+        notes,
+      } = body ?? {};
 
       const contact = await updateContact(contactId, {
         firstName,
@@ -289,10 +329,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         phone,
         mobile,
         company,
+        accountId,
         type,
         role,
         territory,
         relationshipHealth,
+        notes,
       });
 
       return res.status(200).json(contact);
@@ -311,4 +353,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ message });
   }
 }
-
