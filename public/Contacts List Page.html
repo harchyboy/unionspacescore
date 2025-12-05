@@ -2132,6 +2132,15 @@ window.addEventListener('load', function() {
                     }, 2000);
                 }
                 closeContactModal();
+                
+                // Show updating state
+                if (isEditingContact && editingContactId) {
+                    const panel = document.getElementById('contact-details-panel');
+                    if (panel && panel.classList.contains('open') && panel.dataset.currentContactId === editingContactId) {
+                        // Optional: Show a loading indicator inside the panel?
+                    }
+                }
+
                 await fetchContacts(true);
             } catch (error) {
                 alert(error.message || 'Failed to save contact. Please try again.');
@@ -2516,7 +2525,8 @@ window.addEventListener('load', function() {
         const tbody = document.getElementById('contacts-table-body');
         isFetchingContacts = true;
         
-        if (tbody && contactsData.length === 0) {
+        // Only show loading if no data and not a background refresh
+        if (tbody && contactsData.length === 0 && !forceRefresh) {
              tbody.innerHTML = `
                 <tr>
                     <td colspan="10" class="px-6 py-12 text-center text-secondary text-sm">
@@ -2527,6 +2537,11 @@ window.addEventListener('load', function() {
         }
 
         try {
+            // Add a small delay if forcing refresh to allow Zoho API to catch up
+            if (forceRefresh) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
             const response = await fetch(`${CONTACTS_API_URL}?page=1&pageSize=100`);
             if (!response.ok) throw new Error('Failed to fetch contacts');
             
