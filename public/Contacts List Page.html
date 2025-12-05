@@ -1312,6 +1312,10 @@ function showContactDetails(contactOrRow) {
         contactData = contactOrRow;
         // Map object properties if they differ from display expectations
         if (!contactData.health) contactData.health = 'Good';
+        // Ensure name is populated if missing (e.g. direct API fetch might not have it at top level if structure differs)
+        if (!contactData.name && (contactData.firstName || contactData.lastName)) {
+             contactData.name = `${contactData.firstName || ''} ${contactData.lastName || ''}`.trim();
+        }
     }
 
     const { 
@@ -1340,7 +1344,8 @@ function showContactDetails(contactOrRow) {
     };
     
     // Generate initials for avatar fallback
-    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    const displayName = name || 'Unnamed Contact';
+    const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
     
     document.getElementById('contact-details-content').innerHTML = `
         <div class="bg-white border-b border-[#E6E6E6] px-8 py-6 mb-0">
