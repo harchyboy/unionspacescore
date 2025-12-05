@@ -939,7 +939,7 @@ function selectContactType(value) {
 }
 
 async function fetchContactById(id) {
-    const response = await fetch(`${CONTACTS_API_URL}/${id}`);
+    const response = await fetch(`${CONTACTS_API_URL}/${id}?_t=${new Date().getTime()}`);
     if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new Error(error.message || 'Failed to load contact');
@@ -2569,15 +2569,15 @@ window.addEventListener('load', function() {
                         if (updatedFromList) {
                             console.log('Found updated contact in list, refreshing panel:', updatedFromList);
                             showContactDetails(updatedFromList);
+                        } else {
+                            // 2. Only fetch directly if not in the current list view
+                            fetchContactById(currentId).then(directContact => {
+                                if (directContact) {
+                                    console.log('Fetched fresh contact directly:', directContact);
+                                    showContactDetails(directContact);
+                                }
+                            });
                         }
-                        
-                        // 2. AND fetch directly to be absolutely sure (race condition safety)
-                        fetchContactById(currentId).then(directContact => {
-                            if (directContact) {
-                                console.log('Fetched fresh contact directly:', directContact);
-                                showContactDetails(directContact);
-                            }
-                        });
                     }
                 }
             }
