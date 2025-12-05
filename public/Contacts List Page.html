@@ -1847,7 +1847,10 @@ function showContactDetails(row) {
         editButton.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
-            openEditContact(row.dataset.contactId);
+            const contactId = row.dataset.contactId;
+            if (contactId) {
+                 openEditContact(contactId);
+            }
         });
     }
     
@@ -2383,7 +2386,21 @@ window.addEventListener('load', function() {
             
             return `
             <tr class="hover:bg-muted transition-all-smooth cursor-pointer contact-row" 
-                onclick="window.location.href='/contacts/${contact.id}'">
+                onclick="showContactDetails(this)"
+                data-contact-id="${contact.id}"
+                data-contact-name="${escapeHtml(contact.name)}"
+                data-contact-email="${escapeHtml(contact.email)}"
+                data-contact-phone="${escapeHtml(contact.phone)}"
+                data-contact-mobile="${escapeHtml(contact.mobile)}"
+                data-contact-company="${escapeHtml(contact.company)}"
+                data-contact-type="${escapeHtml(contact.type)}"
+                data-contact-role="${escapeHtml(contact.role)}"
+                data-contact-territory="${escapeHtml(contact.territory)}"
+                data-contact-health="${escapeHtml(contact.health)}"
+                data-contact-last-activity="${formatLastActivity(contact.lastActivity)}"
+                data-contact-avatar="${contact.avatar || ''}"
+                data-contact-notes="${escapeHtml(contact.notes || '')}"
+            >
                 <td class="px-6 py-4" onclick="event.stopPropagation()">
                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                 </td>
