@@ -1842,6 +1842,8 @@ function showContactDetails(row) {
         </div>
     `;
 
+    // Event listener for Edit button is now handled inline by onclick attribute in HTML generation
+    /*
     const editButton = document.querySelector('#contact-details-content [data-action="edit-contact"]');
     if (editButton) {
         editButton.addEventListener('click', function(event) {
@@ -1853,6 +1855,7 @@ function showContactDetails(row) {
             }
         });
     }
+    */
     
     document.getElementById('contact-details-overlay').classList.remove('hidden');
     document.getElementById('contact-details-panel').classList.add('open');
