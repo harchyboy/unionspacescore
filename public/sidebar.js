@@ -6,7 +6,8 @@ async function loadSharedSidebar() {
 
   let sidebarHTML;
   try {
-    const response = await fetch('shared-sidebar.html', { cache: 'no-store' });
+    // Cache-bust with a version query to ensure latest sidebar markup (e.g., Companies link) is loaded
+    const response = await fetch('shared-sidebar.html?v=2', { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Failed to fetch shared sidebar: ${response.status}`);
     }
