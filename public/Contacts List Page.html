@@ -2254,21 +2254,8 @@ window.addEventListener('load', function() {
 
 
 <script>
-    // CONTACTS_API_URL is defined in the earlier script block
-    let contactsData = [];
-    let isFetchingContacts = false;
-    
-    // TYPE MAPPING (Zoho Value -> Display Logic)
-    const TYPE_VALUE_MAP = {
-        'Tenant': 'Tenant',
-        'Landlord': 'Landlord', 
-        'Flex Broker': 'Flex Broker',
-        'Agent': 'Agent',
-        'Investor': 'Investor',
-        'Developer': 'Developer',
-        'Solicitor': 'Solicitor',
-        'Architect': 'Architect'
-    };
+    // All shared variables (CONTACTS_API_URL, contactsData, isFetchingContacts, TYPE_VALUE_MAP) 
+    // are defined in the earlier script block
 
     function escapeHtml(text) {
         if (!text) return '';
