@@ -216,11 +216,6 @@
                 <div class="relative">
                     <select id="filter-firm" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
                         <option value="all">All Firms</option>
-                        <option value="Knight Frank">Knight Frank</option>
-                        <option value="CBRE">CBRE</option>
-                        <option value="JLL">JLL</option>
-                        <option value="Savills">Savills</option>
-                        <option value="Cushman & Wakefield">Cushman & Wakefield</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
@@ -2491,8 +2486,37 @@ window.addEventListener('load', function() {
         }
     }
 
+    async function fetchCompaniesForFilter() {
+        try {
+            const response = await fetch('/api/accounts');
+            if (!response.ok) return;
+            const data = await response.json();
+            const items = data.items || [];
+            
+            const select = document.getElementById('filter-firm');
+            if (!select) return;
+            
+            // Keep "All Firms"
+            select.innerHTML = '<option value="all">All Firms</option>';
+            
+            // Sort by name
+            items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            
+            items.forEach(item => {
+                if (!item.name) return;
+                const option = document.createElement('option');
+                option.value = item.name;
+                option.textContent = item.name;
+                select.appendChild(option);
+            });
+        } catch (err) {
+            console.error('Failed to load companies for filter', err);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         fetchContacts();
+        fetchCompaniesForFilter();
         
         const form = document.getElementById('add-contact-form');
         const successToast = document.getElementById('success-toast'); // Ensure this ID matches or is generic
