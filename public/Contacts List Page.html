@@ -1168,7 +1168,7 @@ function renderContactsTable(contacts) {
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full bg-muted border border-[#E6E6E6] flex items-center justify-center text-primary font-semibold">
+                        <div class="w-10 h-10 rounded-full bg-[#3d3d3d] flex items-center justify-center text-white font-semibold">
                             ${initials}
                         </div>
                         <div>
@@ -1810,15 +1810,12 @@ function closeContactDetails() {
 let currentTypeFilter = 'Brokers';
 
 function filterContacts() {
-    console.log('filterContacts called');
     const firmFilter = document.getElementById('filter-firm').value;
-    console.log('firmFilter:', firmFilter);
     const submarketFilter = document.getElementById('filter-submarket').value;
     const activityFilter = document.getElementById('filter-activity').value;
     const healthFilter = document.getElementById('filter-health').value;
     
     const contactRows = document.querySelectorAll('.contact-row');
-    console.log('Found contact rows:', contactRows.length);
     let visibleCount = 0;
     
     // Map type filter button text to data attribute values
@@ -2359,7 +2356,7 @@ window.addEventListener('load', function() {
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm">
+                        <div class="w-10 h-10 rounded-full bg-[#3d3d3d] flex items-center justify-center text-white font-semibold text-sm">
                             ${initials}
                         </div>
                         <div>
