@@ -215,7 +215,7 @@
             <div class="flex items-center space-x-3 flex-wrap gap-2">
                 <div class="relative">
                     <select id="filter-firm" class="appearance-none bg-muted border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="all">All Firms</option>
+                        <option value="all">All Companies</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
                 </div>
@@ -2504,8 +2504,8 @@ window.addEventListener('load', function() {
                 return;
             }
             
-            // Keep "All Firms"
-            select.innerHTML = '<option value="all">All Firms</option>';
+            // Keep "All Companies"
+            select.innerHTML = '<option value="all">All Companies</option>';
             
             // Sort by name
             items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
