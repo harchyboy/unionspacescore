@@ -533,7 +533,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <label class="relative flex flex-col items-center justify-center px-6 py-6 border-2 border-[#E6E6E6] rounded-lg cursor-pointer hover:border-primary transition-all-smooth bg-muted">
-                                <input type="radio" name="type" value="flex-broker" class="sr-only peer" required>
+                                <input type="radio" name="type" value="broker" class="sr-only peer" required>
                                 <i class="fa-solid fa-handshake text-3xl text-secondary peer-checked:text-primary mb-3"></i>
                                 <span class="text-sm font-semibold text-secondary peer-checked:text-primary">Brokers</span>
                                 <span class="text-xs text-secondary mt-1">Tenant representative</span>
@@ -852,7 +852,7 @@ const HEALTH_BADGES = {
 };
 
 const TYPE_VALUE_MAP = {
-    'flex-broker': 'Broker',
+    'broker': 'Broker',
     'disposal-agent': 'Disposal Agent',
     tenant: 'Tenant',
     supplier: 'Supplier',
@@ -860,7 +860,7 @@ const TYPE_VALUE_MAP = {
 
 const TYPE_LABEL_TO_VALUE = {
     'Broker': 'broker',
-    Broker: 'flex-broker',
+    Broker: 'broker',
     'Disposal Agent': 'disposal-agent',
     Tenant: 'tenant',
     Supplier: 'supplier',
@@ -915,7 +915,7 @@ function setTypeSections(value) {
     if (disposalSection) disposalSection.classList.add('hidden');
     if (supplierSection) supplierSection.classList.add('hidden');
 
-    if (value === 'flex-broker' && brokerSection) {
+    if (value === 'broker' && brokerSection) {
         brokerSection.classList.remove('hidden');
     } else if (value === 'disposal-agent' && disposalSection) {
         disposalSection.classList.remove('hidden');
@@ -990,7 +990,7 @@ function populateContactForm(contactData) {
     if (companyIdInput) companyIdInput.value = contactData.accountId || '';
     if (roleInput) roleInput.value = contactData.role || '';
 
-    const typeValue = TYPE_LABEL_TO_VALUE[contactData.type] || 'flex-broker';
+    const typeValue = TYPE_LABEL_TO_VALUE[contactData.type] || 'broker';
     selectContactType(typeValue);
 }
 
