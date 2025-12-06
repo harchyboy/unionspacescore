@@ -2330,9 +2330,9 @@ window.addEventListener('load', function() {
     let contactsData = [];
     let isFetchingContacts = false;
     
-    // Name filtering
-    window.applyNameFilter = function(filter) {
+    function applyFilters() {
         let filtered = contactsData;
+        const filter = window.currentNameFilter || 'All';
         if (filter && filter !== 'All') {
             filtered = contactsData.filter(function(c) {
                 const name = c.name || c.firstName || '';
@@ -2340,7 +2340,9 @@ window.addEventListener('load', function() {
             });
         }
         renderContactsTable(filtered);
-    };
+    }
+
+    window.applyNameFilter = applyFilters;
     
     // TYPE MAPPING (Zoho Value -> Display Logic)
     const TYPE_VALUE_MAP2 = {
@@ -2528,7 +2530,11 @@ window.addEventListener('load', function() {
             contactsData = items;
             // Apply current name filter if set
             const currentFilter = window.currentNameFilter || 'All';
-            window.applyNameFilter(currentFilter);
+            if (typeof window.applyNameFilter === 'function') {
+                window.applyNameFilter(currentFilter);
+            } else {
+                renderContactsTable(items);
+            }
             
             if (forceRefresh) {
                 const panel = document.getElementById('contact-details-panel');
@@ -2589,7 +2595,7 @@ window.addEventListener('load', function() {
                     email: formData.get('email')?.toString() || '',
                     phone: formData.get('phone')?.toString() || null,
                     company: formData.get('company')?.toString() || null,
-                    type: TYPE_VALUE_MAP[(formData.get('type') || '').toString()] || null,
+                    type: TYPE_VALUE_MAP2[(formData.get('type') || '').toString()] || null,
                     role: formData.get('role')?.toString() || null,
                 };
 
