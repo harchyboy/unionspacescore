@@ -265,25 +265,15 @@
         </div>
         
         <div id="contacts-list" class="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
-            <div class="bg-white rounded-lg border border-[#E6E6E6]">
-                <div class="overflow-x-visible">
+            <div class="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+                <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-muted border-b border-[#E6E6E6]">
                             <tr>
                                 <th class="px-6 py-3 text-left">
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider relative" style="overflow: visible;">
-                                    <div id="name-filter-trigger" class="flex items-center cursor-pointer" onclick="window.toggleNameFilterMenu(event)">
-                                        <span>Contact Name</span>
-                                        <div class="flex items-center bg-white border border-[#E6E6E6] rounded px-2 py-0.5 ml-2 hover:border-primary transition-all-smooth">
-                                            <span id="current-name-filter-label" class="text-primary font-bold mr-1">All</span>
-                                            <i class="fa-solid fa-chevron-down text-[10px] text-secondary"></i>
-                                        </div>
-                                    </div>
-                                    <div id="name-filter-menu" style="display: none;" class="absolute left-0 top-full mt-1 z-[9999] w-20 max-h-60 overflow-y-auto bg-white border border-[#E6E6E6] rounded-lg shadow-lg py-1">
-                                    </div>
-                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Name</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Type</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Company</th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Email</th>
@@ -846,68 +836,11 @@
 </div>
 
 <script>
-// Name filter dropdown - defined first to ensure availability
-window.toggleNameFilterMenu = function(e) {
-    if (e) {
-        e.stopPropagation();
-        e.preventDefault();
-    }
-    var menu = document.getElementById('name-filter-menu');
-    if (!menu) {
-        console.error('name-filter-menu not found');
-        return;
-    }
-    var isHidden = menu.style.display === 'none' || menu.style.display === '';
-    if (isHidden) {
-        // Generate options if empty
-        if (!menu.innerHTML.trim() || menu.children.length === 0) {
-            var html = '<button onclick="window.setNameFilter(\'All\')" class="w-full text-left px-3 py-1.5 text-sm text-primary hover:bg-gray-100 font-semibold">All</button>';
-            for (var i = 65; i <= 90; i++) {
-                var letter = String.fromCharCode(i);
-                html += '<button onclick="window.setNameFilter(\'' + letter + '\')" class="w-full text-left px-3 py-1.5 text-sm text-primary hover:bg-gray-100">' + letter + '</button>';
-            }
-            menu.innerHTML = html;
-        }
-        menu.style.display = 'block';
-        menu.classList.remove('hidden');
-    } else {
-        menu.style.display = 'none';
-        menu.classList.add('hidden');
-    }
-};
-
-window.setNameFilter = function(filter) {
-    var label = document.getElementById('current-name-filter-label');
-    if (label) label.textContent = filter;
-    
-    var menu = document.getElementById('name-filter-menu');
-    if (menu) {
-        menu.style.display = 'none';
-        menu.classList.add('hidden');
-    }
-    
-    // Store filter globally and trigger filtering (second script block will define applyNameFilter)
-    window.currentNameFilter = filter;
-    if (typeof window.applyNameFilter === 'function') {
-        window.applyNameFilter(filter);
-    }
-};
-
-// Close menu when clicking outside
-document.addEventListener('click', function(e) {
-    var menu = document.getElementById('name-filter-menu');
-    var trigger = document.getElementById('name-filter-trigger');
-    if (menu && menu.style.display === 'block') {
-        if (trigger && !trigger.contains(e.target) && !menu.contains(e.target)) {
-            menu.style.display = 'none';
-            menu.classList.add('hidden');
-        }
-    }
-});
-</script>
-
-<script>
 const CONTACTS_API_URL = '/api/contacts';
+let contactsData = [];
+let isFetchingContacts = false;
+
+const CONTACT_TYPE_META = {
     'Flex Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-handshake', badgeClass: 'bg-primary text-white' },
     'Disposal Agent': { label: 'Disposal Agents', icon: 'fa-building', badgeClass: 'bg-secondary text-white' },
     Tenant: { label: 'Traditional Tenant Reps', icon: 'fa-user-tie', badgeClass: 'bg-accent text-white' },
@@ -2326,26 +2259,12 @@ window.addEventListener('load', function() {
 
 
 <script>
-    // Second script block - contacts table and filtering
+    const CONTACTS_API_URL = '/api/contacts';
     let contactsData = [];
     let isFetchingContacts = false;
     
-    function applyFilters() {
-        let filtered = contactsData;
-        const filter = window.currentNameFilter || 'All';
-        if (filter && filter !== 'All') {
-            filtered = contactsData.filter(function(c) {
-                const name = c.name || c.firstName || '';
-                return name.trim().toUpperCase().charAt(0) === filter;
-            });
-        }
-        renderContactsTable(filtered);
-    }
-
-    window.applyNameFilter = applyFilters;
-    
     // TYPE MAPPING (Zoho Value -> Display Logic)
-    const TYPE_VALUE_MAP2 = {
+    const TYPE_VALUE_MAP = {
         'Tenant': 'Tenant',
         'Landlord': 'Landlord', 
         'Flex Broker': 'Flex Broker',
@@ -2528,13 +2447,7 @@ window.addEventListener('load', function() {
             const items = Array.isArray(data) ? data : (data.items || []);
             
             contactsData = items;
-            // Apply current name filter if set
-            const currentFilter = window.currentNameFilter || 'All';
-            if (typeof window.applyNameFilter === 'function') {
-                window.applyNameFilter(currentFilter);
-            } else {
-                renderContactsTable(items);
-            }
+            renderContactsTable(contactsData);
             
             if (forceRefresh) {
                 const panel = document.getElementById('contact-details-panel');
@@ -2580,7 +2493,7 @@ window.addEventListener('load', function() {
 
     document.addEventListener('DOMContentLoaded', () => {
         fetchContacts();
-
+        
         const form = document.getElementById('add-contact-form');
         const successToast = document.getElementById('success-toast'); // Ensure this ID matches or is generic
         const modal = document.getElementById('add-contact-modal');
@@ -2595,7 +2508,7 @@ window.addEventListener('load', function() {
                     email: formData.get('email')?.toString() || '',
                     phone: formData.get('phone')?.toString() || null,
                     company: formData.get('company')?.toString() || null,
-                    type: TYPE_VALUE_MAP2[(formData.get('type') || '').toString()] || null,
+                    type: TYPE_VALUE_MAP[(formData.get('type') || '').toString()] || null,
                     role: formData.get('role')?.toString() || null,
                 };
 
