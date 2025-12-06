@@ -2488,13 +2488,21 @@ window.addEventListener('load', function() {
 
     async function fetchCompaniesForFilter() {
         try {
+            console.log('Fetching companies for filter...');
             const response = await fetch('/api/accounts');
-            if (!response.ok) return;
+            if (!response.ok) {
+                console.error('Companies fetch failed:', response.status, await response.text());
+                return;
+            }
             const data = await response.json();
+            console.log('Companies data:', data);
             const items = data.items || [];
             
             const select = document.getElementById('filter-firm');
-            if (!select) return;
+            if (!select) {
+                console.error('Filter select not found');
+                return;
+            }
             
             // Keep "All Firms"
             select.innerHTML = '<option value="all">All Firms</option>';
