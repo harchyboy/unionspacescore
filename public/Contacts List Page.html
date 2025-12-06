@@ -2314,8 +2314,10 @@ window.addEventListener('load', function() {
 
     function renderContactsTable2(contacts) {
         console.log('renderContactsTable2 called with', contacts.length, 'contacts');
-        if (contacts.length > 0) {
-            console.log('First contact company:', contacts[0].company);
+        const withCompany = contacts.filter(c => c.company);
+        console.log('Contacts WITH company:', withCompany.length);
+        if (withCompany.length > 0) {
+            console.log('Sample companies:', withCompany.slice(0, 5).map(c => c.company));
         }
         const tbody = document.getElementById('contacts-table-body');
         if (!tbody) return;
