@@ -2312,7 +2312,11 @@ window.addEventListener('load', function() {
         return types[type] || types['Other'];
     }
 
-    function renderContactsTable(contacts) {
+    function renderContactsTable2(contacts) {
+        console.log('renderContactsTable2 called with', contacts.length, 'contacts');
+        if (contacts.length > 0) {
+            console.log('First contact company:', contacts[0].company);
+        }
         const tbody = document.getElementById('contacts-table-body');
         if (!tbody) return;
 
@@ -2339,7 +2343,7 @@ window.addEventListener('load', function() {
                 data-contact-email="${escapeHtml(contact.email)}"
                 data-contact-phone="${escapeHtml(contact.phone)}"
                 data-contact-mobile="${escapeHtml(contact.mobile)}"
-                data-contact-company="${escapeHtml(contact.company)}"
+                data-contact-company="${escapeHtml(contact.company || '')}"
                 data-contact-type="${escapeHtml(contact.type)}"
                 data-contact-role="${escapeHtml(contact.role)}"
                 data-contact-territory="${escapeHtml(contact.territory)}"
@@ -2438,7 +2442,7 @@ window.addEventListener('load', function() {
             const items = Array.isArray(data) ? data : (data.items || []);
             
             contactsData = items;
-            renderContactsTable(contactsData);
+            renderContactsTable2(contactsData);
             
             if (forceRefresh) {
                 const panel = document.getElementById('contact-details-panel');
