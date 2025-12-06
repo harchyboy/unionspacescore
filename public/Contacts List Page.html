@@ -836,7 +836,7 @@ let contactsData = [];
 let isFetchingContacts = false;
 
 const CONTACT_TYPE_META = {
-    'Flex Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-handshake', badgeClass: 'bg-primary text-white' },
+    'Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-handshake', badgeClass: 'bg-primary text-white' },
     'Disposal Agent': { label: 'Disposal Agents', icon: 'fa-building', badgeClass: 'bg-secondary text-white' },
     Tenant: { label: 'Traditional Tenant Reps', icon: 'fa-user-tie', badgeClass: 'bg-accent text-white' },
     Supplier: { label: 'Supplier', icon: 'fa-wrench', badgeClass: 'bg-muted text-primary' },
@@ -852,14 +852,14 @@ const HEALTH_BADGES = {
 };
 
 const TYPE_VALUE_MAP = {
-    'flex-broker': 'Flex Broker',
+    'flex-broker': 'Broker',
     'disposal-agent': 'Disposal Agent',
     tenant: 'Tenant',
     supplier: 'Supplier',
 };
 
 const TYPE_LABEL_TO_VALUE = {
-    'Flex Broker': 'flex-broker',
+    'Broker': 'broker',
     Broker: 'flex-broker',
     'Disposal Agent': 'disposal-agent',
     Tenant: 'tenant',
@@ -1125,7 +1125,7 @@ function renderContactsTable(contacts) {
         .map((contact) => {
             const rawName = contact.name || 'Unnamed Contact';
             const safeName = escapeHtml(rawName);
-            const isBroker = contact.type === 'Flex Broker' || contact.type === 'flex-broker' || contact.type === 'Broker';
+            const isBroker = contact.type === 'Broker' || contact.type === 'broker';
             const safeRole = isBroker ? '—' : escapeHtml(contact.role || '—');
             const safeCompany = escapeHtml(contact.company || '—');
             const safeEmail = escapeHtml(contact.email || '—');
@@ -1316,12 +1316,12 @@ function showContactDetails(contactOrRow) {
         phone, mobile, avatar, confidential, health 
     } = contactData;
 
-    const isBroker = rawType === 'Flex Broker' || rawType === 'flex-broker' || rawType === 'Broker';
+    const isBroker = rawType === 'Broker' || rawType === 'broker';
     const type = isBroker ? 'Broker' : rawType;
     
     const typeColors = {
         'Broker': 'bg-primary text-white',
-        'Flex Broker': 'bg-primary text-white',
+        'Broker': 'bg-primary text-white',
         'Disposal Agent': 'bg-secondary text-white',
         'Tenant': 'bg-accent text-white',
         'Landlord': 'bg-muted text-primary',
@@ -1329,7 +1329,7 @@ function showContactDetails(contactOrRow) {
     };
     
     const typeIcon = {
-        'Flex Broker': 'fa-handshake',
+        'Broker': 'fa-handshake',
         'Disposal Agent': 'fa-building',
         'Tenant': 'fa-user-tie',
         'Landlord': 'fa-landmark',
@@ -1821,7 +1821,7 @@ function filterContacts() {
     // Map type filter button text to data attribute values
     const typeFilterMap = {
         'all': 'all',
-        'Brokers': 'Flex Broker',
+        'Brokers': 'Broker',
         'Disposal Agents': 'Disposal Agent',
         'Traditional Tenant Reps': 'Tenant',
         'Suppliers': 'Supplier'
@@ -2298,7 +2298,7 @@ window.addEventListener('load', function() {
         const types = {
             'Tenant': { icon: 'fa-user', bg: 'bg-blue-100', text: 'text-blue-800' },
             'Landlord': { icon: 'fa-building', bg: 'bg-purple-100', text: 'text-purple-800' },
-            'Flex Broker': { icon: 'fa-handshake', bg: 'bg-green-100', text: 'text-green-800' },
+            'Broker': { icon: 'fa-handshake', bg: 'bg-green-100', text: 'text-green-800' },
             'Agent': { icon: 'fa-user-tie', bg: 'bg-orange-100', text: 'text-orange-800' },
             'Investor': { icon: 'fa-chart-line', bg: 'bg-indigo-100', text: 'text-indigo-800' },
             'Developer': { icon: 'fa-hard-hat', bg: 'bg-yellow-100', text: 'text-yellow-800' },

@@ -176,10 +176,10 @@ function normaliseType(value?: string | null) {
   if (!value) return null;
   const lower = value.toLowerCase();
   const map: Record<string, string> = {
-    'flex broker': 'Flex Broker',
-    'flex-broker': 'Flex Broker',
-    broker: 'Flex Broker',
-    brokers: 'Flex Broker',
+    'flex broker': 'Broker',
+    'flex-broker': 'Broker',
+    broker: 'Broker',
+    brokers: 'Broker',
     'disposal agent': 'Disposal Agent',
     'disposal-agent': 'Disposal Agent',
     agent: 'Disposal Agent',
