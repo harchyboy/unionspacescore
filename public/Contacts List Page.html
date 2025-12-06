@@ -1832,12 +1832,17 @@ function filterContacts() {
     
     const typeFilterValue = typeFilterMap[currentTypeFilter] || 'all';
     
-    contactRows.forEach(function(row) {
+    contactRows.forEach(function(row, index) {
         const contactType = row.dataset.contactType;
         const contactCompany = row.dataset.contactCompany;
         const contactHealth = row.dataset.contactHealth;
         const contactSubmarket = row.dataset.contactSubmarket || '';
         const contactActivityHours = parseInt(row.dataset.contactActivityHours) || 0;
+        
+        // Log first few rows for debugging
+        if (index < 3) {
+            console.log('Row', index, 'company:', contactCompany, 'comparing to:', firmFilter);
+        }
         
         let shouldShow = true;
         
@@ -1849,6 +1854,7 @@ function filterContacts() {
         // Filter by firm/company
         if (firmFilter !== 'all' && contactCompany !== firmFilter) {
             shouldShow = false;
+            if (index < 3) console.log('Row', index, 'hidden by company filter');
         }
         
         // Filter by submarket
