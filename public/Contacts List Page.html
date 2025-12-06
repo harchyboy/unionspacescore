@@ -836,7 +836,7 @@ let contactsData = [];
 let isFetchingContacts = false;
 
 const CONTACT_TYPE_META = {
-    'Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-handshake', badgeClass: 'bg-primary text-white' },
+    'Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-handshake', badgeClass: 'bg-black text-white' },
     'Disposal Agent': { label: 'Disposal Agents', icon: 'fa-building', badgeClass: 'bg-secondary text-white' },
     Tenant: { label: 'Traditional Tenant Reps', icon: 'fa-user-tie', badgeClass: 'bg-accent text-white' },
     Supplier: { label: 'Supplier', icon: 'fa-wrench', badgeClass: 'bg-muted text-primary' },
@@ -1320,8 +1320,7 @@ function showContactDetails(contactOrRow) {
     const type = isBroker ? 'Broker' : rawType;
     
     const typeColors = {
-        'Broker': 'bg-primary text-white',
-        'Broker': 'bg-primary text-white',
+        'Broker': 'bg-black text-white',
         'Disposal Agent': 'bg-secondary text-white',
         'Tenant': 'bg-accent text-white',
         'Landlord': 'bg-muted text-primary',
@@ -2298,7 +2297,7 @@ window.addEventListener('load', function() {
         const types = {
             'Tenant': { icon: 'fa-user', bg: 'bg-blue-100', text: 'text-blue-800' },
             'Landlord': { icon: 'fa-building', bg: 'bg-purple-100', text: 'text-purple-800' },
-            'Broker': { icon: 'fa-handshake', bg: 'bg-green-100', text: 'text-green-800' },
+            'Broker': { icon: 'fa-handshake', bg: 'bg-black', text: 'text-white' },
             'Agent': { icon: 'fa-user-tie', bg: 'bg-orange-100', text: 'text-orange-800' },
             'Investor': { icon: 'fa-chart-line', bg: 'bg-indigo-100', text: 'text-indigo-800' },
             'Developer': { icon: 'fa-hard-hat', bg: 'bg-yellow-100', text: 'text-yellow-800' },
