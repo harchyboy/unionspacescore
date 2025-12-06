@@ -274,7 +274,7 @@
                                     <input type="checkbox" class="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary">
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider group relative" style="overflow: visible;">
-                                    <div id="name-filter-trigger" class="flex items-center cursor-pointer">
+                                    <div id="name-filter-trigger" class="flex items-center cursor-pointer" onclick="toggleNameFilterMenu(event)">
                                         <span>Contact Name</span>
                                         <div class="flex items-center bg-white border border-[#E6E6E6] rounded px-2 py-0.5 ml-2 hover:border-primary transition-all-smooth">
                                             <span id="current-name-filter-label" class="text-primary font-bold mr-1">All</span>
@@ -2282,8 +2282,12 @@ window.addEventListener('load', function() {
         }
         const menu = document.getElementById('name-filter-menu');
         if (!menu) return;
+        const willShow = menu.classList.contains('hidden');
         menu.classList.toggle('hidden');
-        menu.style.display = menu.classList.contains('hidden') ? 'none' : 'block';
+        menu.style.display = willShow ? 'block' : 'none';
+        if (willShow && (!menu.children || menu.children.length === 0)) {
+            generateNameFilterOptions();
+        }
     }
 
     window.setNameFilter = function(filter) {
