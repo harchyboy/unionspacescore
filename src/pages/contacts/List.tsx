@@ -206,53 +206,67 @@ export function ContactsList() {
 
       {/* Filters */}
       <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
-        <div className="flex items-center space-x-3 flex-wrap gap-2">
-          <Select
-            options={[
-              { value: 'all', label: 'All Firms' },
-              { value: 'knight-frank', label: 'Knight Frank' },
-              { value: 'cbre', label: 'CBRE' },
-              { value: 'jll', label: 'JLL' },
-              { value: 'savills', label: 'Savills' },
-              { value: 'cushman', label: 'Cushman & Wakefield' },
-            ]}
-            value={firmFilter}
-            onChange={(e) => setFirmFilter(e.target.value)}
-            className="w-48"
-          />
-          <Select
-            options={[
-              { value: 'all', label: 'All Submarkets' },
-              { value: 'city-core', label: 'City Core' },
-              { value: 'shoreditch', label: 'Shoreditch' },
-              { value: 'mayfair', label: 'Mayfair' },
-              { value: 'canary-wharf', label: 'Canary Wharf' },
-            ]}
-            value={submarketFilter}
-            onChange={(e) => setSubmarketFilter(e.target.value)}
-            className="w-48"
-          />
-          <Select
-            options={[
-              { value: 'all', label: 'All Activity' },
-              { value: '7d', label: 'Last 7 days' },
-              { value: '30d', label: 'Last 30 days' },
-              { value: '90d', label: 'Last 90 days' },
-              { value: '1y', label: 'Last year' },
-            ]}
-            value={activityFilter}
-            onChange={(e) => setActivityFilter(e.target.value)}
-            className="w-48"
-          />
-          <Select
-            options={healthOptions}
-            value={healthFilter}
-            onChange={(e) => handleHealthFilter(e.target.value)}
-            className="w-56"
-          />
+        <div className="space-y-3">
+          <div className="relative">
+            <select
+              value={firmFilter}
+              onChange={(e) => setFirmFilter(e.target.value)}
+              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="all">All Firms</option>
+              <option value="knight-frank">Knight Frank</option>
+              <option value="cbre">CBRE</option>
+              <option value="jll">JLL</option>
+              <option value="savills">Savills</option>
+              <option value="cushman">Cushman & Wakefield</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          <div className="relative">
+            <select
+              value={submarketFilter}
+              onChange={(e) => setSubmarketFilter(e.target.value)}
+              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="all">All Submarkets</option>
+              <option value="city-core">City Core</option>
+              <option value="shoreditch">Shoreditch</option>
+              <option value="mayfair">Mayfair</option>
+              <option value="canary-wharf">Canary Wharf</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          <div className="relative">
+            <select
+              value={activityFilter}
+              onChange={(e) => setActivityFilter(e.target.value)}
+              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="all">All Activity</option>
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+              <option value="1y">Last year</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          <div className="relative">
+            <select
+              value={healthFilter}
+              onChange={(e) => handleHealthFilter(e.target.value)}
+              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="all">All Relationship Health</option>
+              <option value="excellent">Excellent</option>
+              <option value="good">Good</option>
+              <option value="fair">Fair</option>
+              <option value="needs-attention">Needs Attention</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
           <button
             onClick={handleClearFilters}
-            className="text-secondary hover:text-primary text-sm ml-2"
+            className="text-secondary hover:text-primary text-sm"
           >
             Clear all
           </button>
