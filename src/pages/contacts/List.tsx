@@ -11,6 +11,7 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Tabs, TabsList, TabsTrigger } from '../../components/ui/Tabs';
+import { ContactDetails } from './Details';
 import type { ContactType, RelationshipHealth, Contact } from '../../types/contact';
 
 // Tab values that map to ContactType
@@ -84,6 +85,20 @@ export function ContactsList() {
     (searchParams.get('health') as RelationshipHealth | 'all') || 'all'
   );
   const { toasts, removeToast } = useToast();
+  
+  // Slide-over state for contact details
+  const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+  const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
+  
+  const handleContactSelect = (contact: Contact) => {
+    setSelectedContactId(contact.id);
+    setIsSlideOverOpen(true);
+  };
+  
+  const handleCloseSlideOver = () => {
+    setIsSlideOverOpen(false);
+    setSelectedContactId(null);
+  };
 
   // Get the contact type filter based on active tab
   const getTypeFilterForTab = (): ContactType | undefined => {
@@ -320,7 +335,7 @@ export function ContactsList() {
                       <ContactRow
                         key={contact.id}
                         contact={contact}
-                        onSelect={() => navigate(`/contacts/${contact.id}`)}
+                        onSelect={() => handleContactSelect(contact)}
                       />
                     ))}
                   </TableBody>
@@ -561,6 +576,41 @@ export function ContactsList() {
           </>
         )}
       </div>
+      
+      {/* Contact Details Slide-Over Panel */}
+      {isSlideOverOpen && (
+        <>
+          {/* Overlay */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity"
+            onClick={handleCloseSlideOver}
+          />
+          {/* Slide-over panel */}
+          <div className="fixed right-0 top-0 bottom-0 w-5/6 max-w-7xl bg-white shadow-2xl z-50 overflow-y-auto transform transition-transform">
+            {/* Close button */}
+            <div className="sticky top-0 bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between z-10">
+              <button 
+                onClick={handleCloseSlideOver}
+                className="flex items-center space-x-2 text-secondary hover:text-primary transition-all"
+              >
+                <i className="fa-solid fa-arrow-left"></i>
+                <span className="text-sm font-medium">Back to Contacts</span>
+              </button>
+              <button 
+                onClick={handleCloseSlideOver}
+                className="text-secondary hover:text-primary p-2"
+              >
+                <i className="fa-solid fa-times text-xl"></i>
+              </button>
+            </div>
+            {/* Contact Details Content */}
+            {selectedContactId && (
+              <ContactDetails id={selectedContactId} />
+            )}
+          </div>
+        </>
+      )}
+      
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
