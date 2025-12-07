@@ -4,7 +4,6 @@ import { useContacts } from '../../api/contacts';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
 import { Button } from '../../components/ui/Button';
-import { Select } from '../../components/ui/Select';
 import { Table, TableHeader, TableHeaderCell, TableBody } from '../../components/ui/Table';
 import { ContactRow } from '../../components/contacts/ContactRow';
 import { EmptyState } from '../../components/ui/EmptyState';
@@ -55,14 +54,6 @@ function getContactTypeForTab(tab: string): ContactType | null {
   return null;
 }
 
-const healthOptions: { value: RelationshipHealth | 'all'; label: string }[] = [
-  { value: 'all', label: 'All Relationship Health' },
-  { value: 'excellent', label: 'Excellent' },
-  { value: 'good', label: 'Good' },
-  { value: 'fair', label: 'Fair' },
-  { value: 'needs-attention', label: 'Needs Attention' },
-];
-
 export function ContactsList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -87,17 +78,17 @@ export function ContactsList() {
   const { toasts, removeToast } = useToast();
   
   // Slide-over state for contact details
-  const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
   
   const handleContactSelect = (contact: Contact) => {
-    setSelectedContactId(contact.id);
+    setSelectedContact(contact);
     setIsSlideOverOpen(true);
   };
   
   const handleCloseSlideOver = () => {
     setIsSlideOverOpen(false);
-    setSelectedContactId(null);
+    setSelectedContact(null);
   };
 
   // Get the contact type filter based on active tab
@@ -604,8 +595,8 @@ export function ContactsList() {
               </button>
             </div>
             {/* Contact Details Content */}
-            {selectedContactId && (
-              <ContactDetails id={selectedContactId} />
+            {selectedContact && (
+              <ContactDetails contact={selectedContact} />
             )}
           </div>
         </>

@@ -1,10 +1,9 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useContact, useDeleteContact } from '../../api/contacts';
+import { useDeleteContact } from '../../api/contacts';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { KeyValue } from '../../components/ui/KeyValue';
-import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/Tabs';
 import { ConfirmModal } from '../../components/ui/Modal';
@@ -12,26 +11,61 @@ import { CopyButton } from '../../components/contacts/CopyButton';
 import { CommunicationLog, type Communication } from '../../components/contacts/CommunicationLog';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
+import type { Contact } from '../../types/contact';
 
 const typeLabels: Record<string, string> = {
   'flex-broker': 'Broker',
   'Flex Broker': 'Broker',
+  'Broker': 'Broker',
+  'broker': 'Broker',
   'disposal-agent': 'Disposal Agent',
+  'Disposal Agent': 'Disposal Agent',
   tenant: 'Tenant',
+  Tenant: 'Tenant',
   landlord: 'Landlord',
+  Landlord: 'Landlord',
   supplier: 'Supplier',
+  Supplier: 'Supplier',
   internal: 'Internal',
+  Internal: 'Internal',
+};
+
+const typeColors: Record<string, string> = {
+  'flex-broker': 'bg-black text-white',
+  'Flex Broker': 'bg-black text-white',
+  'Broker': 'bg-black text-white',
+  'broker': 'bg-black text-white',
+  'disposal-agent': 'bg-secondary text-white',
+  'Disposal Agent': 'bg-secondary text-white',
+  tenant: 'bg-accent text-white',
+  Tenant: 'bg-accent text-white',
+  landlord: 'bg-muted text-primary',
+  Landlord: 'bg-muted text-primary',
+  supplier: 'bg-muted text-primary',
+  Supplier: 'bg-muted text-primary',
+};
+
+const typeIcons: Record<string, string> = {
+  'flex-broker': 'fa-briefcase',
+  'Flex Broker': 'fa-briefcase',
+  'Broker': 'fa-briefcase',
+  'broker': 'fa-briefcase',
+  'disposal-agent': 'fa-building',
+  'Disposal Agent': 'fa-building',
+  tenant: 'fa-user-tie',
+  Tenant: 'fa-user-tie',
+  landlord: 'fa-landmark',
+  Landlord: 'fa-landmark',
+  supplier: 'fa-wrench',
+  Supplier: 'fa-wrench',
 };
 
 interface ContactDetailsProps {
-  id?: string;
+  contact: Contact;
 }
 
-export function ContactDetails({ id: idProp }: ContactDetailsProps) {
-  const params = useParams<{ id: string }>();
+export function ContactDetails({ contact }: ContactDetailsProps) {
   const navigate = useNavigate();
-  const id = idProp || params.id || '';
-  const { data: contact, isLoading, error } = useContact(id);
   const deleteContact = useDeleteContact();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { toasts, showToast, removeToast } = useToast();
@@ -40,9 +74,9 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
   const communications: Communication[] = [];
 
   const handleDelete = async () => {
-    if (!id) return;
+    if (!contact.id) return;
     try {
-      await deleteContact.mutateAsync(id);
+      await deleteContact.mutateAsync(contact.id);
       showToast('Contact deleted successfully', 'success');
       setTimeout(() => {
         navigate('/contacts');
@@ -53,15 +87,7 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <LoadingSpinner size="lg" text="Loading contact..." />
-      </div>
-    );
-  }
-
-  if (error || !contact) {
+  if (!contact) {
     return (
       <div className="p-8">
         <EmptyState
@@ -73,8 +99,14 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
     );
   }
 
-  const initials = `${contact.firstName[0]}${contact.lastName[0]}`.toUpperCase();
+  // Generate display values
+  const displayName = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || 'Unnamed Contact';
+  const initials = displayName.split(' ').map(n => n?.[0] || '').join('').toUpperCase().slice(0, 2);
   const healthScore = contact.relationshipHealthScore || 0;
+  const contactType = contact.type || 'internal';
+  const typeLabel = typeLabels[contactType] || contactType;
+  const typeColor = typeColors[contactType] || 'bg-muted text-primary';
+  const typeIcon = typeIcons[contactType] || '';
 
   return (
     <div className="p-8">
@@ -84,19 +116,20 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
           {contact.avatar ? (
             <img
               src={contact.avatar}
-              alt={contact.fullName}
+              alt={displayName}
               className="w-16 h-16 rounded-full object-cover"
             />
           ) : (
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-semibold">
+            <div className="w-16 h-16 bg-muted border border-[#E6E6E6] rounded-full flex items-center justify-center text-primary text-2xl font-semibold">
               {initials}
             </div>
           )}
           <div className="flex-1">
             <div className="flex items-center space-x-3 mb-1">
-              <h1 className="text-2xl font-semibold text-primary">{contact.fullName}</h1>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border border-[#E6E6E6] bg-white text-primary">
-                {typeLabels[contact.type] || contact.type}
+              <h1 className="text-2xl font-semibold text-primary">{displayName}</h1>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${typeColor}`}>
+                {typeIcon && <i className={`fa-solid ${typeIcon} text-[10px]`}></i>}
+                {typeLabel}
               </span>
             </div>
             <div className="flex items-center space-x-4 text-sm text-secondary">
@@ -108,7 +141,7 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
               )}
               {contact.territory && (
                 <span className="flex items-center space-x-1">
-                  <i className="fa-solid fa-map-marker-alt"></i>
+                  <i className="fa-solid fa-location-dot"></i>
                   <span>{contact.territory}</span>
                 </span>
               )}
@@ -178,7 +211,7 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
                         variant="ghost"
                         size="sm"
                         icon="fa-pencil"
-                        onClick={() => navigate(`/contacts/${id}/edit`)}
+                        onClick={() => navigate(`/contacts/${contact.id}/edit`)}
                       >
                         Edit
                       </Button>
@@ -236,7 +269,7 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
                         </div>
                       </div>
                     )}
-                    {contact.role && contact.type !== 'flex-broker' && contact.type !== 'Flex Broker' && (
+                    {contact.role && contact.type !== 'flex-broker' && (
                       <KeyValue label="Role" value={contact.role} />
                     )}
                     {contact.territory && <KeyValue label="Territory" value={contact.territory} />}
