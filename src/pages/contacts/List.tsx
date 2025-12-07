@@ -12,39 +12,15 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Ca
 import { Tabs, TabsList, TabsTrigger } from '../../components/ui/Tabs';
 import { ContactDetails } from './Details';
 import type { ContactType, RelationshipHealth, Contact } from '../../types/contact';
-
-// Tab values that map to ContactType
-export const CONTACT_TAB_BROKERS = 'flex-broker' as const;
-export const CONTACT_TAB_DISPOSAL_AGENTS = 'disposal-agent' as const;
-export const CONTACT_TAB_TENANT_REPS = 'tenant' as const;
-export const CONTACT_TAB_SUPPLIERS = 'supplier' as const;
-
-// Tab configuration matching ContactType enum
-export const CONTACT_TABS = [
-  { value: CONTACT_TAB_BROKERS, label: 'Brokers' },
-  { value: CONTACT_TAB_DISPOSAL_AGENTS, label: 'Disposal Agents' },
-  { value: CONTACT_TAB_TENANT_REPS, label: 'Traditional Tenant Reps' },
-  { value: CONTACT_TAB_SUPPLIERS, label: 'Suppliers' },
-] as const;
-
-export type ContactTabValue = typeof CONTACT_TABS[number]['value'];
-
-// Helper function to determine contact category
-export function getContactCategory(contact: Contact): ContactTabValue | null {
-  if (contact.type === CONTACT_TAB_BROKERS) {
-    return CONTACT_TAB_BROKERS;
-  }
-  if (contact.type === CONTACT_TAB_DISPOSAL_AGENTS) {
-    return CONTACT_TAB_DISPOSAL_AGENTS;
-  }
-  if (contact.type === CONTACT_TAB_TENANT_REPS) {
-    return CONTACT_TAB_TENANT_REPS;
-  }
-  if (contact.type === CONTACT_TAB_SUPPLIERS) {
-    return CONTACT_TAB_SUPPLIERS;
-  }
-  return null;
-}
+import {
+  CONTACT_TAB_BROKERS,
+  CONTACT_TAB_DISPOSAL_AGENTS,
+  CONTACT_TAB_TENANT_REPS,
+  CONTACT_TAB_SUPPLIERS,
+  CONTACT_TABS,
+  ContactTabValue,
+  getContactTypeForTab as getContactTypeForTabHelper
+} from '../../constants/contacts';
 
 // Map tab value to contact type (direct mapping since tabs use ContactType values)
 function getContactTypeForTab(tab: string): ContactType | null {
@@ -88,7 +64,7 @@ export function ContactsList() {
   
   const handleCloseSlideOver = () => {
     setIsSlideOverOpen(false);
-    setSelectedContact(null);
+    // Don't clear selectedContact immediately to preserve content during close animation
   };
 
   // Get the contact type filter based on active tab
@@ -569,38 +545,34 @@ export function ContactsList() {
       </div>
       
       {/* Contact Details Slide-Over Panel */}
-      {isSlideOverOpen && (
-        <>
-          {/* Overlay */}
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity"
-            onClick={handleCloseSlideOver}
-          />
-          {/* Slide-over panel */}
-          <div className="fixed right-0 top-0 bottom-0 w-5/6 max-w-7xl bg-white shadow-2xl z-50 overflow-y-auto transform transition-transform">
-            {/* Close button */}
-            <div className="sticky top-0 bg-white border-b border-[#E6E6E6] px-8 py-4 flex items-center justify-between z-10">
-              <button 
-                onClick={handleCloseSlideOver}
-                className="flex items-center space-x-2 text-secondary hover:text-primary transition-all"
+      <div className={`relative z-50 ${isSlideOverOpen ? 'z-50' : '-z-10'}`} aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+        {/* Background backdrop */}
+        <div 
+          className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-500 ease-in-out ${isSlideOverOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+          onClick={handleCloseSlideOver}
+        />
+
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+              <div 
+                className={`pointer-events-auto w-screen max-w-7xl transform transition ease-in-out duration-500 sm:duration-700 bg-white shadow-xl ${isSlideOverOpen ? 'translate-x-0' : 'translate-x-full'}`}
               >
-                <i className="fa-solid fa-arrow-left"></i>
-                <span className="text-sm font-medium">Back to Contacts</span>
-              </button>
-              <button 
-                onClick={handleCloseSlideOver}
-                className="text-secondary hover:text-primary p-2"
-              >
-                <i className="fa-solid fa-times text-xl"></i>
-              </button>
+                
+                {/* Contact Details Content */}
+                <div className="h-full overflow-y-auto">
+                  {selectedContact && (
+                    <ContactDetails 
+                      contact={selectedContact} 
+                      onBack={handleCloseSlideOver}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
-            {/* Contact Details Content */}
-            {selectedContact && (
-              <ContactDetails contact={selectedContact} />
-            )}
           </div>
-        </>
-      )}
+        </div>
+      </div>
       
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>

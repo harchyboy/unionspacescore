@@ -37,7 +37,7 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
       try {
         await deleteContact.mutateAsync(contact.id);
         showToast('Contact deleted', 'success');
-      } catch (error) {
+      } catch {
         showToast('Failed to delete contact', 'error');
       }
     }
