@@ -836,7 +836,7 @@ let contactsData = [];
 let isFetchingContacts = false;
 
 const CONTACT_TYPE_META = {
-    'Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-handshake', badgeClass: 'bg-black text-white' },
+    'Broker': { label: 'Brokers', displayLabel: 'Broker', icon: 'fa-briefcase', badgeClass: 'bg-black text-white' },
     'Disposal Agent': { label: 'Disposal Agents', icon: 'fa-building', badgeClass: 'bg-secondary text-white' },
     Tenant: { label: 'Traditional Tenant Reps', icon: 'fa-user-tie', badgeClass: 'bg-accent text-white' },
     Supplier: { label: 'Supplier', icon: 'fa-wrench', badgeClass: 'bg-muted text-primary' },
@@ -1328,7 +1328,7 @@ function showContactDetails(contactOrRow) {
     };
     
     const typeIcon = {
-        'Broker': 'fa-handshake',
+        'Broker': 'fa-briefcase',
         'Disposal Agent': 'fa-building',
         'Tenant': 'fa-user-tie',
         'Landlord': 'fa-landmark',
@@ -1356,8 +1356,8 @@ function showContactDetails(contactOrRow) {
                     <div>
                         <div class="flex items-center space-x-3 mb-1">
                             <h1 class="text-2xl font-semibold text-primary">${name}</h1>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${typeColors[type] || 'bg-muted text-primary'}">
-                                ${type}
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${typeColors[type] || 'bg-muted text-primary'}">
+                                ${typeIcon[type] ? `<i class="fa-solid ${typeIcon[type]} text-[10px]"></i>` : ''}${type}
                             </span>
                             ${confidential ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><i class="fa-solid fa-lock mr-1"></i>Confidential</span>' : ''}
                         </div>
@@ -2297,7 +2297,7 @@ window.addEventListener('load', function() {
         const types = {
             'Tenant': { icon: 'fa-user', bg: 'bg-blue-100', text: 'text-blue-800' },
             'Landlord': { icon: 'fa-building', bg: 'bg-purple-100', text: 'text-purple-800' },
-            'Broker': { icon: 'fa-handshake', bg: 'bg-black', text: 'text-white' },
+            'Broker': { icon: 'fa-briefcase', bg: 'bg-black', text: 'text-white' },
             'Agent': { icon: 'fa-user-tie', bg: 'bg-orange-100', text: 'text-orange-800' },
             'Investor': { icon: 'fa-chart-line', bg: 'bg-indigo-100', text: 'text-indigo-800' },
             'Developer': { icon: 'fa-hard-hat', bg: 'bg-yellow-100', text: 'text-yellow-800' },
