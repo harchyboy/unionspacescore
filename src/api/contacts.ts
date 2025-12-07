@@ -151,11 +151,12 @@ export function useContacts(params?: ContactListParams) {
   });
 }
 
-export function useContact(id: string) {
+export function useContact(id: string, initialData?: Contact) {
   return useQuery({
     queryKey: ['contact', id],
     queryFn: () => fetchContact(id),
     enabled: !!id,
+    initialData,
   });
 }
 

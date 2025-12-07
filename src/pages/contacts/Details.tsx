@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useDeleteContact } from '../../api/contacts';
+import { useDeleteContact, useContact } from '../../api/contacts';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { KeyValue } from '../../components/ui/KeyValue';
@@ -64,9 +64,10 @@ interface ContactDetailsProps {
   contact: Contact;
 }
 
-export function ContactDetails({ contact }: ContactDetailsProps) {
+export function ContactDetails({ contact: initialContact }: ContactDetailsProps) {
   const navigate = useNavigate();
   const deleteContact = useDeleteContact();
+  const { data: contact = initialContact, isLoading } = useContact(initialContact.id, initialContact);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { toasts, showToast, removeToast } = useToast();
 
