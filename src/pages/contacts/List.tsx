@@ -206,8 +206,8 @@ export function ContactsList() {
 
       {/* Filters */}
       <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
-        <div className="flex items-center space-x-3 flex-wrap gap-2">
-          <div className="relative">
+        <div className="flex items-center space-x-3">
+          <div className="relative flex-shrink-0">
             <select
               value={firmFilter}
               onChange={(e) => setFirmFilter(e.target.value)}
@@ -222,7 +222,7 @@ export function ContactsList() {
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
               value={submarketFilter}
               onChange={(e) => setSubmarketFilter(e.target.value)}
@@ -236,7 +236,7 @@ export function ContactsList() {
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
               value={activityFilter}
               onChange={(e) => setActivityFilter(e.target.value)}
@@ -250,7 +250,7 @@ export function ContactsList() {
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
               value={healthFilter}
               onChange={(e) => handleHealthFilter(e.target.value)}
@@ -266,9 +266,10 @@ export function ContactsList() {
           </div>
           <button
             onClick={handleClearFilters}
-            className="text-secondary hover:text-primary text-sm ml-2"
+            className="text-secondary hover:text-primary text-sm ml-2 flex-shrink-0 flex items-center space-x-1"
           >
-            Clear all
+            <i className="fa-solid fa-rotate-left text-xs"></i>
+            <span>Clear all</span>
           </button>
         </div>
       </div>

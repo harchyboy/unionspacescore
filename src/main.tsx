@@ -4,8 +4,8 @@ import './index.css';
 import App from './App.tsx';
 
 async function enableMocking() {
-  // Only enable MSW in local development
-  if (import.meta.env.VITE_ENV !== 'local' || import.meta.env.PROD) {
+  // Only enable MSW in development (not in production builds)
+  if (import.meta.env.PROD) {
     return;
   }
 
