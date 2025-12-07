@@ -206,27 +206,27 @@ export function ContactsList() {
 
       {/* Filters */}
       <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
-        <div className="space-y-3">
+        <div className="flex items-center space-x-3 flex-wrap gap-2">
           <div className="relative">
             <select
               value={firmFilter}
               onChange={(e) => setFirmFilter(e.target.value)}
-              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="all">All Firms</option>
+              <option value="all">All Companies</option>
               <option value="knight-frank">Knight Frank</option>
               <option value="cbre">CBRE</option>
               <option value="jll">JLL</option>
               <option value="savills">Savills</option>
               <option value="cushman">Cushman & Wakefield</option>
             </select>
-            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
           <div className="relative">
             <select
               value={submarketFilter}
               onChange={(e) => setSubmarketFilter(e.target.value)}
-              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="all">All Submarkets</option>
               <option value="city-core">City Core</option>
@@ -234,13 +234,13 @@ export function ContactsList() {
               <option value="mayfair">Mayfair</option>
               <option value="canary-wharf">Canary Wharf</option>
             </select>
-            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
           <div className="relative">
             <select
               value={activityFilter}
               onChange={(e) => setActivityFilter(e.target.value)}
-              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="all">All Activity</option>
               <option value="7d">Last 7 days</option>
@@ -248,13 +248,13 @@ export function ContactsList() {
               <option value="90d">Last 90 days</option>
               <option value="1y">Last year</option>
             </select>
-            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
           <div className="relative">
             <select
               value={healthFilter}
               onChange={(e) => handleHealthFilter(e.target.value)}
-              className="appearance-none w-full bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2.5 pr-10 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="all">All Relationship Health</option>
               <option value="excellent">Excellent</option>
@@ -262,11 +262,11 @@ export function ContactsList() {
               <option value="fair">Fair</option>
               <option value="needs-attention">Needs Attention</option>
             </select>
-            <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
           <button
             onClick={handleClearFilters}
-            className="text-secondary hover:text-primary text-sm"
+            className="text-secondary hover:text-primary text-sm ml-2"
           >
             Clear all
           </button>

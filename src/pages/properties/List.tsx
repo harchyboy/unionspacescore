@@ -1,133 +1,39 @@
 import { useState } from 'react';
-import { useProperties, useBulkUpdateProperties, useBulkPushToBrokerSet } from '../../api/properties';
-import { PropertyCard } from '../../components/properties/PropertyCard';
-import { EmptyState } from '../../components/ui/EmptyState';
-import { Button } from '../../components/ui/Button';
-import { useToast } from '../../hooks/useToast';
 import { Link } from 'react-router-dom';
-import type { PropertyId } from '../../types/property';
+import { useProperties } from '../../api/properties';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+
+const tabs = [
+  { id: 'all', label: 'All Properties' },
+  { id: 'missing', label: 'Missing Assets' },
+  { id: 'ready', label: 'Ready to Publish' },
+  { id: 'healthy', label: 'Data Health > 85%' },
+];
 
 export function PropertiesList() {
-  const [search, setSearch] = useState('');
-  const [marketingStatus, setMarketingStatus] = useState('');
-  const [visibility, setVisibility] = useState('');
-  const [brokerSet, setBrokerSet] = useState('');
-  const [missingMedia, setMissingMedia] = useState(false);
-  const [brokerReadyThisWeek, setBrokerReadyThisWeek] = useState(false);
-  const [selectedProperties, setSelectedProperties] = useState<Set<PropertyId>>(new Set());
-  const [showBulkActions, setShowBulkActions] = useState(false);
-  const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState<'updatedAt' | 'name'>('updatedAt');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  
-  const { showToast } = useToast();
-  const bulkUpdateMutation = useBulkUpdateProperties();
-  const bulkPushMutation = useBulkPushToBrokerSet();
+  const [activeTab, setActiveTab] = useState('all');
+  const [submarketFilter, setSubmarketFilter] = useState('');
+  const [visibilityFilter, setVisibilityFilter] = useState('');
+  const [agentFilter, setAgentFilter] = useState('');
+  const [ownerFilter, setOwnerFilter] = useState('');
+  const [networkFilter, setNetworkFilter] = useState('');
+  const [healthFilter, setHealthFilter] = useState('');
+  const [sortBy, setSortBy] = useState('last-updated');
 
   const { data, isLoading, error } = useProperties({
-    search,
-    marketingStatus: marketingStatus || undefined,
-    visibility: visibility || undefined,
-    brokerSet: brokerSet || undefined,
-    missingMedia: missingMedia || undefined,
-    brokerReadyThisWeek: brokerReadyThisWeek || undefined,
-    page,
-    limit: 10,
-    sortBy,
-    sortOrder,
+    page: 1,
+    limit: 50,
+    sortBy: 'updatedAt',
+    sortOrder: 'desc',
   });
 
   const properties = data?.properties || [];
-  const total = data?.total || 0;
-  const totalPages = Math.ceil(total / 10);
-
-  const handleSelectAll = () => {
-    if (selectedProperties.size === properties.length) {
-      setSelectedProperties(new Set());
-    } else {
-      setSelectedProperties(new Set(properties.map((p) => p.id)));
-    }
-  };
-
-  const handleSelectProperty = (propertyId: PropertyId) => {
-    const newSelected = new Set(selectedProperties);
-    if (newSelected.has(propertyId)) {
-      newSelected.delete(propertyId);
-    } else {
-      newSelected.add(propertyId);
-    }
-    setSelectedProperties(newSelected);
-    setShowBulkActions(newSelected.size > 0);
-  };
-
-  const handleBulkUpdateVisibility = (newVisibility: 'Private' | 'Public') => {
-    if (selectedProperties.size === 0) return;
-    bulkUpdateMutation.mutate(
-      {
-        propertyIds: Array.from(selectedProperties),
-        updates: { visibility: newVisibility },
-      },
-      {
-        onSuccess: (data) => {
-          showToast(`Updated ${data.updated} properties`, 'success');
-          setSelectedProperties(new Set());
-          setShowBulkActions(false);
-        },
-        onError: (error: Error) => {
-          showToast(error.message, 'error');
-        },
-      }
-    );
-  };
-
-  const handleBulkUpdateMarketingStatus = (newStatus: 'Draft' | 'Broker-Ready' | 'On Market') => {
-    if (selectedProperties.size === 0) return;
-    bulkUpdateMutation.mutate(
-      {
-        propertyIds: Array.from(selectedProperties),
-        updates: { marketingStatus: newStatus },
-      },
-      {
-        onSuccess: (data) => {
-          showToast(`Updated ${data.updated} properties`, 'success');
-          setSelectedProperties(new Set());
-          setShowBulkActions(false);
-        },
-        onError: (error: Error) => {
-          showToast(error.message, 'error');
-        },
-      }
-    );
-  };
-
-  const handleBulkPushToBrokerSet = (brokerSetValue: string) => {
-    if (selectedProperties.size === 0) return;
-    bulkPushMutation.mutate(
-      {
-        propertyIds: Array.from(selectedProperties),
-        brokerSet: brokerSetValue,
-      },
-      {
-        onSuccess: (data) => {
-          showToast(`Pushed ${data.updated} properties to broker set`, 'success');
-          setSelectedProperties(new Set());
-          setShowBulkActions(false);
-        },
-        onError: (error: Error) => {
-          showToast(error.message, 'error');
-        },
-      }
-    );
-  };
 
   if (isLoading) {
     return (
-      <div className="px-8 py-6">
-        <div className="animate-pulse space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-32 bg-gray-200 rounded-lg" />
-          ))}
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -136,256 +42,293 @@ export function PropertiesList() {
     return (
       <div className="px-8 py-6">
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          Error loading properties: {error instanceof Error ? error.message : 'Unknown error'}
+          Error loading properties
         </div>
       </div>
     );
   }
 
   return (
-    <div className="px-8 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-[#252525]">Properties</h1>
-        <Link
-          to="/properties/new"
-          className="bg-[#252525] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          <span>Add Property</span>
-        </Link>
-      </div>
-
-      <div className="bg-white rounded-lg border border-[#E6E6E6] p-6 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
-          <div className="md:col-span-2 lg:col-span-2">
-            <input
-              type="text"
-              placeholder="Search properties..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="w-full px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-            />
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Page Header */}
+      <div className="bg-white border-b border-[#E6E6E6] px-8 py-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold text-primary mb-2">Properties</h1>
+            <p className="text-secondary text-sm">Portfolio control centre. Every building, readiness, and health in one place.</p>
           </div>
-          <select
-            value={marketingStatus}
-            onChange={(e) => {
-              setMarketingStatus(e.target.value);
-              setPage(1);
-            }}
-            className="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-          >
-            <option value="">All Status</option>
-            <option value="Draft">Draft</option>
-            <option value="Broker-Ready">Broker-Ready</option>
-            <option value="On Market">On Market</option>
-          </select>
-          <select
-            value={visibility}
-            onChange={(e) => {
-              setVisibility(e.target.value);
-              setPage(1);
-            }}
-            className="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-          >
-            <option value="">All Visibility</option>
-            <option value="Private">Private</option>
-            <option value="Public">Public</option>
-          </select>
-          <select
-            value={brokerSet}
-            onChange={(e) => {
-              setBrokerSet(e.target.value);
-              setPage(1);
-            }}
-            className="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-          >
-            <option value="">All Broker Sets</option>
-            <option value="premium">Premium Set</option>
-            <option value="standard">Standard Set</option>
-            <option value="budget">Budget Set</option>
-          </select>
-          <div className="flex items-center space-x-2">
-            <label className="flex items-center space-x-2 text-sm text-[#8e8e8e] cursor-pointer">
-              <input
-                type="checkbox"
-                checked={missingMedia}
-                onChange={(e) => {
-                  setMissingMedia(e.target.checked);
-                  setPage(1);
-                }}
-                className="w-4 h-4 border border-[#E6E6E6] rounded"
-              />
-              <span>Missing Media</span>
-            </label>
+          <div className="flex items-center space-x-3">
+            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+              <i className="fa-solid fa-save"></i>
+              <span>Save View</span>
+            </button>
+            <Link
+              to="/properties/new"
+              className="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
+            >
+              <i className="fa-solid fa-plus"></i>
+              <span>Add Property</span>
+            </Link>
           </div>
         </div>
+        
+        {/* Tabs */}
+        <div className="flex items-center space-x-4 mt-6">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all ${
+                activeTab === tab.id
+                  ? 'text-primary border-primary'
+                  : 'text-secondary hover:text-primary border-transparent hover:border-secondary'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
+        <div className="flex items-center space-x-3 flex-wrap gap-2">
+          <div className="relative">
+            <select
+              value={submarketFilter}
+              onChange={(e) => setSubmarketFilter(e.target.value)}
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">All Submarkets</option>
+              <option value="city-core">City Core</option>
+              <option value="shoreditch">Shoreditch</option>
+              <option value="mayfair">Mayfair</option>
+              <option value="canary-wharf">Canary Wharf</option>
+              <option value="kings-cross">King's Cross</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          
+          <div className="relative">
+            <select
+              value={visibilityFilter}
+              onChange={(e) => setVisibilityFilter(e.target.value)}
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">All Visibility</option>
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          
+          <div className="relative">
+            <select
+              value={agentFilter}
+              onChange={(e) => setAgentFilter(e.target.value)}
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">All Disposal Agents</option>
+              <option value="knight-frank">Knight Frank</option>
+              <option value="cbre">CBRE</option>
+              <option value="jll">JLL</option>
+              <option value="savills">Savills</option>
+              <option value="cushman">Cushman & Wakefield</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          
+          <div className="relative">
+            <select
+              value={ownerFilter}
+              onChange={(e) => setOwnerFilter(e.target.value)}
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">All Owners</option>
+              <option value="tom">Tom Townsend</option>
+              <option value="max">Max Chen</option>
+              <option value="dani">Dani Roberts</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          
+          <div className="relative">
+            <select
+              value={networkFilter}
+              onChange={(e) => setNetworkFilter(e.target.value)}
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">All Broker Networks</option>
+              <option value="public">Public Network</option>
+              <option value="private-10">Private · 10 brokers</option>
+              <option value="private-5">Private · 5 brokers</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          
+          <div className="relative">
+            <select
+              value={healthFilter}
+              onChange={(e) => setHealthFilter(e.target.value)}
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="">Data Health</option>
+              <option value="lt50">&lt; 50%</option>
+              <option value="50-75">50-75%</option>
+              <option value="75-85">75-85%</option>
+              <option value="gt85">&gt; 85%</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
+          
+          <button className="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1">
+            <i className="fa-solid fa-rotate-left text-xs"></i>
+            <span>Clear all</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Bulk Actions Bar */}
+      <div className="bg-[#FAFAFA] border-b border-[#E6E6E6] px-8 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <label className="flex items-center space-x-2 text-sm text-[#8e8e8e] cursor-pointer">
-            <input
-              type="checkbox"
-              checked={brokerReadyThisWeek}
-              onChange={(e) => {
-                setBrokerReadyThisWeek(e.target.checked);
-                setPage(1);
-              }}
-              className="w-4 h-4 border border-[#E6E6E6] rounded"
-            />
-            <span>Broker-Ready This Week</span>
-          </label>
-          <select
-            value={`${sortBy}-${sortOrder}`}
-            onChange={(e) => {
-              const [field, order] = e.target.value.split('-');
-              setSortBy(field as 'updatedAt' | 'name');
-              setSortOrder(order as 'asc' | 'desc');
-            }}
-            className="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-          >
-            <option value="updatedAt-desc">Updated (Newest)</option>
-            <option value="updatedAt-asc">Updated (Oldest)</option>
-            <option value="name-asc">Name (A-Z)</option>
-            <option value="name-desc">Name (Z-A)</option>
-          </select>
+          <div className="flex items-center space-x-2">
+            <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
+            <label className="text-sm text-secondary">Select All</label>
+          </div>
+          <span className="text-sm text-secondary">{properties.length} properties</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <i className="fa-solid fa-eye-slash"></i>
+            <span>Change Visibility</span>
+          </button>
+          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <i className="fa-solid fa-user-tie"></i>
+            <span>Assign Agent</span>
+          </button>
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="appearance-none bg-white border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="last-updated">Sort by: Last Updated</option>
+              <option value="name-asc">Sort by: Name A-Z</option>
+              <option value="name-desc">Sort by: Name Z-A</option>
+              <option value="occupancy">Sort by: Occupancy High-Low</option>
+              <option value="health">Sort by: Data Health</option>
+            </select>
+            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+          </div>
         </div>
       </div>
 
-      {showBulkActions && selectedProperties.size > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <span className="text-sm font-medium text-[#252525]">
-                {selectedProperties.size} property{selectedProperties.size !== 1 ? 'ies' : ''} selected
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectedProperties(new Set());
-                  setShowBulkActions(false);
-                }}
-              >
-                Clear Selection
-              </Button>
-            </div>
-            <div className="flex items-center space-x-2">
-              <select
-                onChange={(e) => {
-                  if (e.target.value) {
-                    handleBulkPushToBrokerSet(e.target.value);
-                    e.target.value = '';
-                  }
-                }}
-                className="px-3 py-1.5 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-              >
-                <option value="">Push to Broker Set...</option>
-                <option value="premium">Premium Set</option>
-                <option value="standard">Standard Set</option>
-                <option value="budget">Budget Set</option>
-              </select>
-              <select
-                onChange={(e) => {
-                  if (e.target.value) {
-                    handleBulkUpdateVisibility(e.target.value as 'Private' | 'Public');
-                    e.target.value = '';
-                  }
-                }}
-                className="px-3 py-1.5 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-              >
-                <option value="">Update Visibility...</option>
-                <option value="Private">Private</option>
-                <option value="Public">Public</option>
-              </select>
-              <select
-                onChange={(e) => {
-                  if (e.target.value) {
-                    handleBulkUpdateMarketingStatus(e.target.value as 'Draft' | 'Broker-Ready' | 'On Market');
-                    e.target.value = '';
-                  }
-                }}
-                className="px-3 py-1.5 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
-              >
-                <option value="">Update Marketing Status...</option>
-                <option value="Draft">Draft</option>
-                <option value="Broker-Ready">Broker-Ready</option>
-                <option value="On Market">On Market</option>
-              </select>
+      {/* Properties Table */}
+      <div className="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
+        {properties.length === 0 ? (
+          <EmptyState
+            title="No properties found"
+            description="Get started by adding your first property."
+            icon="fa-building"
+          />
+        ) : (
+          <div className="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-[#FAFAFA] border-b border-[#E6E6E6]">
+                  <tr>
+                    <th className="px-6 py-3 text-left">
+                      <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Property</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Submarket</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Units</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Occupancy</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Data Health</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Visibility</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E6E6E6]">
+                  {properties.map((property) => (
+                    <tr key={property.id} className="hover:bg-[#FAFAFA] transition-colors">
+                      <td className="px-6 py-4">
+                        <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
+                      </td>
+                      <td className="px-6 py-4">
+                        <Link to={`/properties/${property.id}`} className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-[#F0F0F0] rounded-lg overflow-hidden">
+                            {property.images?.[0] ? (
+                              <img src={property.images[0]} alt={property.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <i className="fa-solid fa-building text-secondary"></i>
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-medium text-primary">{property.name}</div>
+                            <div className="text-xs text-secondary">{property.addressLine}</div>
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-primary">{property.submarket || '—'}</td>
+                      <td className="px-6 py-4 text-sm text-primary">{property.totalUnits || 0}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex-1 bg-[#E6E6E6] rounded-full h-2 w-20">
+                            <div
+                              className="bg-primary h-2 rounded-full"
+                              style={{ width: `${property.occupancy || 0}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm text-primary">{property.occupancy || 0}%</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex-1 bg-[#E6E6E6] rounded-full h-2 w-20">
+                            <div
+                              className={`h-2 rounded-full ${
+                                (property.dataHealth || 0) >= 85 ? 'bg-green-500' :
+                                (property.dataHealth || 0) >= 50 ? 'bg-amber-500' : 'bg-red-500'
+                              }`}
+                              style={{ width: `${property.dataHealth || 0}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm text-primary">{property.dataHealth || 0}%</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          property.visibility === 'Public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {property.visibility || 'Private'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          property.marketingStatus === 'On Market' ? 'bg-primary text-white' :
+                          property.marketingStatus === 'Broker-Ready' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {property.marketingStatus || 'Draft'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button className="text-secondary hover:text-primary p-1">
+                          <i className="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      )}
-
-      {properties.length === 0 ? (
-        <EmptyState
-          title="No properties found"
-          description="Get started by adding your first property."
-          action={{
-            label: 'Add Property',
-            onClick: () => {
-              window.location.href = '/properties/new';
-            },
-          }}
-        />
-      ) : (
-        <>
-          <div className="mb-4 flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={selectedProperties.size === properties.length && properties.length > 0}
-              onChange={handleSelectAll}
-              className="w-4 h-4 border border-[#E6E6E6] rounded"
-            />
-            <span className="text-sm text-[#8e8e8e]">Select All</span>
-          </div>
-          <div className="grid grid-cols-1 gap-4 mb-6">
-            {properties.map((property) => (
-              <div key={property.id} className="flex items-start space-x-3">
-                <input
-                  type="checkbox"
-                  checked={selectedProperties.has(property.id)}
-                  onChange={() => handleSelectProperty(property.id)}
-                  className="mt-6 w-4 h-4 border border-[#E6E6E6] rounded"
-                />
-                <div className="flex-1">
-                  <PropertyCard property={property} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between bg-white rounded-lg border border-[#E6E6E6] p-4">
-              <div className="text-sm text-[#8e8e8e]">
-                Showing {(page - 1) * 10 + 1} to {Math.min(page * 10, total)} of {total} properties
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="px-3 py-1 text-sm border border-[#E6E6E6] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#fafafa]"
-                >
-                  Previous
-                </button>
-                <span className="text-sm text-[#252525]">
-                  Page {page} of {totalPages}
-                </span>
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages}
-                  className="px-3 py-1 text-sm border border-[#E6E6E6] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#fafafa]"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          )}
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 }
-
