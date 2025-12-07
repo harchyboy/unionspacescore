@@ -108,8 +108,11 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
         </div>
       </TableCell>
       <TableCell>
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-            {getTypeLabel(contact.type)}
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          contact.type === 'flex-broker' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'
+        }`}>
+          {contact.type === 'flex-broker' && <i className="fa-solid fa-briefcase text-[10px]"></i>}
+          {getTypeLabel(contact.type)}
         </span>
       </TableCell>
       <TableCell>{contact.company || '—'}</TableCell>

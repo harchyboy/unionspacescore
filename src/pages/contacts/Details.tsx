@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useContact, useDeleteContact } from '../../api/contacts';
 import { Button } from '../../components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
 import { KeyValue } from '../../components/ui/KeyValue';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { EmptyState } from '../../components/ui/EmptyState';
@@ -96,7 +95,10 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
           <div className="flex-1">
             <div className="flex items-center space-x-3 mb-1">
               <h1 className="text-2xl font-semibold text-primary">{contact.fullName}</h1>
-              <Badge variant="primary">{typeLabels[contact.type] || contact.type}</Badge>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-900 text-white">
+                <i className="fa-solid fa-briefcase text-[10px]"></i>
+                {typeLabels[contact.type] || contact.type}
+              </span>
             </div>
             <div className="flex items-center space-x-4 text-sm text-secondary">
               {contact.company && (
@@ -246,9 +248,9 @@ export function ContactDetails({ id: idProp }: ContactDetailsProps) {
                         </label>
                         <div className="flex flex-wrap gap-2">
                           {contact.specialisms.map((spec, idx) => (
-                            <Badge key={idx} variant="outline" size="sm">
+                            <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
                               {spec}
-                            </Badge>
+                            </span>
                           ))}
                         </div>
                       </div>
