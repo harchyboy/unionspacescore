@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Property } from '../../../src/types/property';
+import type { Property } from '../_lib/types';
 
 // Import the same seed data
 const seedProperties: Property[] = [

@@ -311,7 +311,6 @@ export function ContactsList() {
                     <TableHeaderCell>Company</TableHeaderCell>
                     <TableHeaderCell>Email</TableHeaderCell>
                     <TableHeaderCell>Phone</TableHeaderCell>
-                    <TableHeaderCell>Last Activity</TableHeaderCell>
                     <TableHeaderCell>Open Items</TableHeaderCell>
                     <TableHeaderCell>Health</TableHeaderCell>
                     <TableHeaderCell align="right">Actions</TableHeaderCell>

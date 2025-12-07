@@ -57,30 +57,44 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
     setIsMenuOpen(false);
   };
 
-  const getTypeLabel = (type: string) => {
+  // Type metadata matching HTML version
+  const getTypeMeta = (type: string) => {
     switch (type) {
-      case 'flex-broker': return 'Broker';
-      case 'disposal-agent': return 'Disposal Agent';
-      case 'tenant': return 'Tenant';
-      case 'landlord': return 'Landlord';
-      case 'supplier': return 'Supplier';
-      case 'internal': return 'Internal';
-      default: return type;
+      case 'flex-broker':
+      case 'Broker':
+        return { label: 'Broker', icon: 'fa-briefcase', badgeClass: 'bg-black text-white' };
+      case 'disposal-agent':
+      case 'Disposal Agent':
+        return { label: 'Disposal Agent', icon: 'fa-building', badgeClass: 'bg-secondary text-white' };
+      case 'tenant':
+      case 'Tenant':
+        return { label: 'Tenant', icon: 'fa-user-tie', badgeClass: 'bg-accent text-white' };
+      case 'landlord':
+      case 'Landlord':
+        return { label: 'Landlord', icon: 'fa-landmark', badgeClass: 'bg-muted text-primary' };
+      case 'supplier':
+      case 'Supplier':
+        return { label: 'Supplier', icon: 'fa-wrench', badgeClass: 'bg-muted text-primary' };
+      default:
+        return { label: type || 'Contact', icon: 'fa-user', badgeClass: 'bg-muted text-primary' };
     }
   };
 
   const getHealthBadgeColor = (health: string) => {
     switch (health) {
       case 'excellent': return 'bg-green-100 text-green-800';
-      case 'good': return 'bg-blue-100 text-blue-800';
+      case 'good': return 'bg-green-100 text-green-800';
       case 'fair': return 'bg-yellow-100 text-yellow-800';
       case 'needs-attention': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
+  const typeMeta = getTypeMeta(contact.type);
+
   return (
     <TableRow onClick={onSelect} className="group">
+      {/* Checkbox */}
       <TableCell>
         <input
           type="checkbox"
@@ -88,44 +102,64 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
           onClick={(e) => e.stopPropagation()}
         />
       </TableCell>
+      
+      {/* Name + Last Activity (under name, not separate column) */}
       <TableCell>
         <div className="flex items-center space-x-3">
           {contact.avatar ? (
             <img
               src={contact.avatar}
               alt={contact.fullName}
-              className="w-8 h-8 rounded-full object-cover"
+              className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs font-semibold">
+            <div className="w-10 h-10 rounded-full bg-[#3d3d3d] flex items-center justify-center text-white font-semibold">
               {contact.firstName?.[0]}
               {contact.lastName?.[0]}
             </div>
           )}
           <div>
-            <div className="font-medium text-primary">{contact.fullName}</div>
+            <div className="font-semibold text-primary text-sm">{contact.fullName}</div>
+            <div className="text-xs text-secondary">{contact.lastActivity || 'Never'}</div>
           </div>
         </div>
       </TableCell>
+      
+      {/* Type badge - rounded-full with icon and colored background */}
       <TableCell>
-        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border border-[#E6E6E6] bg-white text-primary">
-          {getTypeLabel(contact.type)}
+        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${typeMeta.badgeClass}`}>
+          <i className={`fa-solid ${typeMeta.icon} mr-1.5`}></i>
+          {typeMeta.label}
         </span>
       </TableCell>
+      
+      {/* Company */}
       <TableCell>{contact.company || '—'}</TableCell>
+      
+      {/* Email */}
       <TableCell>{contact.email}</TableCell>
-      <TableCell>{contact.phone || contact.mobile || '—'}</TableCell>
-      <TableCell>{contact.lastActivity || 'Never'}</TableCell>
+      
+      {/* Phone */}
+      <TableCell className="text-secondary">{contact.phone || contact.mobile || '—'}</TableCell>
+      
+      {/* Open Items - "Not tracked" badge style */}
       <TableCell>
-        <div className="flex items-center space-x-2">
-           <span>{contact.openDeals || 0} deals</span>
-        </div>
-      </TableCell>
-      <TableCell>
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getHealthBadgeColor(contact.relationshipHealth)} capitalize`}>
-          {contact.relationshipHealth.replace('-', ' ')}
+        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-primary">
+          <i className="fa-solid fa-chart-line mr-1"></i>
+          Not tracked
         </span>
       </TableCell>
+      
+      {/* Health badge with circle indicator */}
+      <TableCell>
+        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getHealthBadgeColor(contact.relationshipHealth)}`}>
+          <i className="fa-solid fa-circle mr-1.5 text-[6px]"></i>
+          {contact.relationshipHealth === 'needs-attention' ? 'Needs Attention' : 
+           contact.relationshipHealth.charAt(0).toUpperCase() + contact.relationshipHealth.slice(1)}
+        </span>
+      </TableCell>
+      
+      {/* Actions menu */}
       <TableCell align="right">
         <div className="relative" ref={menuRef}>
           <button
@@ -133,7 +167,7 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
               e.stopPropagation();
               setIsMenuOpen(!isMenuOpen);
             }}
-            className="text-secondary hover:text-primary p-1 rounded-md hover:bg-gray-100"
+            className="text-secondary hover:text-primary"
           >
             <i className="fa-solid fa-ellipsis-vertical"></i>
           </button>
