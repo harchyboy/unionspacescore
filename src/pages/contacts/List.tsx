@@ -333,10 +333,7 @@ export function ContactsList() {
             </div>
 
             {/* Pagination & Bulk Actions Bar */}
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-secondary">
-                Showing {startItem}-{endItem} of {data.total || data.items.length} contacts
-              </div>
+            <div className="mt-6 flex items-center justify-end">
               <div className="flex items-center space-x-4">
                 {/* Pagination Controls */}
                 <div className="flex items-center space-x-2">
@@ -385,8 +382,8 @@ export function ContactsList() {
                     <div className="text-secondary text-sm font-medium">Total Contacts</div>
                     <i className="fa-solid fa-users text-primary"></i>
                   </div>
-                  <div className="text-3xl font-semibold text-primary">{data.total || 142}</div>
-                  <div className="text-xs text-secondary mt-2">+8 this month</div>
+                  <div className="text-3xl font-semibold text-primary">{data.total || '-'}</div>
+                  <div className="text-xs text-secondary mt-2">-</div>
                 </CardContent>
               </Card>
 
@@ -396,8 +393,8 @@ export function ContactsList() {
                     <div className="text-secondary text-sm font-medium">Active Brokers</div>
                     <i className="fa-solid fa-handshake text-primary"></i>
                   </div>
-                  <div className="text-3xl font-semibold text-primary">34</div>
-                  <div className="text-xs text-secondary mt-2">18 preferred</div>
+                  <div className="text-3xl font-semibold text-primary">-</div>
+                  <div className="text-xs text-secondary mt-2">-</div>
                 </CardContent>
               </Card>
 
@@ -407,8 +404,8 @@ export function ContactsList() {
                     <div className="text-secondary text-sm font-medium">Active Tenants</div>
                     <i className="fa-solid fa-user-tie text-primary"></i>
                   </div>
-                  <div className="text-3xl font-semibold text-primary">28</div>
-                  <div className="text-xs text-secondary mt-2">12 in onboarding</div>
+                  <div className="text-3xl font-semibold text-primary">-</div>
+                  <div className="text-xs text-secondary mt-2">-</div>
                 </CardContent>
               </Card>
 
@@ -418,8 +415,8 @@ export function ContactsList() {
                     <div className="text-secondary text-sm font-medium">Avg Response Time</div>
                     <i className="fa-solid fa-clock text-primary"></i>
                   </div>
-                  <div className="text-3xl font-semibold text-primary">4.2h</div>
-                  <div className="text-xs text-secondary mt-2">-0.8h vs last month</div>
+                  <div className="text-3xl font-semibold text-primary">-</div>
+                  <div className="text-xs text-secondary mt-2">-</div>
                 </CardContent>
               </Card>
             </div>

@@ -197,49 +197,57 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Mobile</label>
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-primary">{contact.mobile || '+44 7700 900 123'}</span>
-                    <button className="text-secondary hover:text-primary transition-colors">
-                      <i className="fa-solid fa-copy text-xs"></i>
-                    </button>
+                    <span className="text-sm text-primary">{contact.mobile || '-'}</span>
+                    {contact.mobile && (
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(contact.mobile!);
+                          showToast('Mobile copied to clipboard');
+                        }}
+                        className="text-secondary hover:text-primary transition-colors"
+                      >
+                        <i className="fa-solid fa-copy text-xs"></i>
+                      </button>
+                    )}
                   </div>
                 </div>
                 
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Role</label>
-                  <span className="text-sm text-primary">{contact.role || 'Senior Partner, Flexible Office Solutions'}</span>
+                  <span className="text-sm text-primary">{contact.role || '-'}</span>
                 </div>
                 
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Territory</label>
-                  <span className="text-sm text-primary">{contact.territory || 'Central London, City Core'}</span>
+                  <span className="text-sm text-primary">{contact.territory || '-'}</span>
                 </div>
                 
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Specialisms</label>
                   <div className="flex flex-wrap gap-2">
-                    {(contact.specialisms?.length ? contact.specialisms : ['Tech Sector', 'Scale-ups', '10-50 desks']).map((spec, i) => (
+                    {contact.specialisms?.length ? contact.specialisms.map((spec, i) => (
                       <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">
                         {spec}
                       </span>
-                    ))}
+                    )) : <span className="text-sm text-primary">-</span>}
                   </div>
                 </div>
                 
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Preferred Submarkets</label>
                   <span className="text-sm text-primary">
-                    {contact.preferredSubmarkets?.join(', ') || 'City Core, Shoreditch, Clerkenwell'}
+                    {contact.preferredSubmarkets?.join(', ') || '-'}
                   </span>
                 </div>
                 
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Referral Source</label>
-                  <span className="text-sm text-primary">{contact.referralSource || 'Industry Event - PropTech Summit 2023'}</span>
+                  <span className="text-sm text-primary">{contact.referralSource || '-'}</span>
                 </div>
                 
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Commission Structure</label>
-                  <span className="text-sm text-primary">{contact.commissionStructure || 'Standard - 10% first year rent'}</span>
+                  <span className="text-sm text-primary">{contact.commissionStructure || '-'}</span>
                 </div>
                 
                 <div>
@@ -254,14 +262,14 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Last Contacted</label>
-                  <span className="text-sm text-primary">{contact.lastContacted || '2 days ago'}</span>
+                  <span className="text-sm text-primary">{contact.lastActivity || '-'}</span>
                 </div>
               </div>
               
               <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
                 <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Notes</label>
                 <p className="text-sm text-primary leading-relaxed">
-                  {contact.notes || "Marcus is a key broker contact specializing in tech scale-ups. Many of his requirements are confidential until later stages. Prefers email communication over calls. Responsive within 2-4 hours during business hours. Strong track record with quality referrals."}
+                  {contact.notes || '-'}
                 </p>
               </div>
               
@@ -300,71 +308,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 </button>
               </div>
               
-              <div className="space-y-4">
-                {/* Item 1 */}
-                <div className="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all duration-200 cursor-pointer">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="font-medium text-primary mb-1">Tech Scale-up - Series B</div>
-                      <div className="text-xs text-secondary">Tenant identity withheld until shortlist stage</div>
-                    </div>
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary text-white">Active</span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <div className="text-xs text-secondary mb-1">Size Required</div>
-                      <div className="text-primary font-medium">8,000-10,000 sq ft</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-secondary mb-1">Desks</div>
-                      <div className="text-primary font-medium">45-55</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-secondary mb-1">Budget</div>
-                      <div className="text-primary font-medium">£65-75 psf</div>
-                    </div>
-                  </div>
-                  <div className="mt-3 pt-3 border-t border-[#E6E6E6] flex items-center justify-between">
-                    <div className="text-xs text-secondary">Created 3 days ago</div>
-                    <div className="flex items-center space-x-2">
-                      <button className="text-xs text-primary hover:underline">View Details</button>
-                      <button className="text-xs text-primary hover:underline">Match Properties</button>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Item 2 */}
-                <div className="border border-[#E6E6E6] rounded-lg p-4 hover:border-primary transition-all duration-200 cursor-pointer">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="font-medium text-primary mb-1">Financial Services Firm - Expansion</div>
-                      <div className="text-xs text-secondary">Limited disclosure until HoTs stage</div>
-                    </div>
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary text-white">Viewing Stage</span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <div className="text-xs text-secondary mb-1">Size Required</div>
-                      <div className="text-primary font-medium">12,000-15,000 sq ft</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-secondary mb-1">Desks</div>
-                      <div className="text-primary font-medium">70-85</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-secondary mb-1">Budget</div>
-                      <div className="text-primary font-medium">£70-85 psf</div>
-                    </div>
-                  </div>
-                  <div className="mt-3 pt-3 border-t border-[#E6E6E6] flex items-center justify-between">
-                    <div className="text-xs text-secondary">Created 2 weeks ago</div>
-                    <div className="flex items-center space-x-2">
-                      <button className="text-xs text-primary hover:underline">View Details</button>
-                      <button className="text-xs text-primary hover:underline">Match Properties</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div className="text-sm text-secondary">-</div>
             </div>
             
             {/* Communications History Card */}
@@ -386,58 +330,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 </div>
               </div>
               
-              <div className="space-y-4">
-                {/* Comms 1 */}
-                <div className="flex space-x-4 pb-4 border-b border-[#E6E6E6]">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                      <i className="fa-solid fa-envelope text-white text-sm"></i>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <div className="font-medium text-primary text-sm mb-1">Email: Property Shortlist for Tech Client</div>
-                        <div className="text-xs text-secondary">From: marcus.reynolds@savills.com</div>
-                      </div>
-                      <div className="text-xs text-secondary">2 days ago</div>
-                    </div>
-                    <p className="text-sm text-primary leading-relaxed mb-3">Hi Tom, Following our call yesterday, I've narrowed down the options for our confidential tech client. They're particularly interested in 99 Bishopsgate and The Leadenhall Building. Could we arrange viewings for next week?</p>
-                    <div className="flex items-center space-x-3">
-                      <button className="text-xs text-primary hover:underline">View Full Email</button>
-                      <button className="text-xs text-primary hover:underline">Reply</button>
-                      <button className="text-xs text-primary hover:underline">Forward</button>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Comms 2 */}
-                <div className="flex space-x-4 pb-4 border-b border-[#E6E6E6]">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                      <i className="fa-solid fa-phone text-white text-sm"></i>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <div className="font-medium text-primary text-sm mb-1">Call: New Requirement Discussion</div>
-                        <div className="text-xs text-secondary">Duration: 18 minutes</div>
-                      </div>
-                      <div className="text-xs text-secondary">5 days ago</div>
-                    </div>
-                    <p className="text-sm text-primary leading-relaxed mb-3">Discussed new confidential requirement for Series B tech scale-up. Client needs 8-10k sq ft, 45-55 desks, budget £65-75 psf. Preferred areas: City Core, Shoreditch. Identity to be disclosed at shortlist stage. Marcus mentioned client is on tight timeline - needs to move within 8 weeks.</p>
-                    <div className="flex items-center space-x-3">
-                      <button className="text-xs text-primary hover:underline">View Call Notes</button>
-                      <button className="text-xs text-primary hover:underline">Schedule Follow-up</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-6 border-t border-[#E6E6E6] text-center">
-                <button className="text-sm text-primary hover:underline font-medium">Load More Communications</button>
-              </div>
+              <div className="text-sm text-secondary">-</div>
             </div>
             
             {/* Documents Card */}
@@ -450,47 +343,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 </button>
               </div>
               
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all duration-200 cursor-pointer">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-destructive bg-opacity-10 rounded flex items-center justify-center">
-                      <i className="fa-solid fa-file-pdf text-destructive"></i>
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium text-primary">NDA - Savills & UNION</div>
-                      <div className="text-xs text-secondary">Signed 12 Jan 2024 • 245 KB</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button className="text-secondary hover:text-primary p-2">
-                      <i className="fa-solid fa-download"></i>
-                    </button>
-                    <button className="text-secondary hover:text-primary p-2">
-                      <i className="fa-solid fa-eye"></i>
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 border border-[#E6E6E6] rounded-lg hover:border-primary transition-all duration-200 cursor-pointer">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-primary bg-opacity-10 rounded flex items-center justify-center">
-                      <i className="fa-solid fa-file-contract text-primary"></i>
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium text-primary">Broker Agreement 2024</div>
-                      <div className="text-xs text-secondary">Executed 5 Jan 2024 • 892 KB</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <button className="text-secondary hover:text-primary p-2">
-                      <i className="fa-solid fa-download"></i>
-                    </button>
-                    <button className="text-secondary hover:text-primary p-2">
-                      <i className="fa-solid fa-eye"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <div className="text-sm text-secondary">-</div>
             </div>
           </div>
           
@@ -533,56 +386,60 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-secondary uppercase tracking-wider">Referral Volume</span>
-                    <span className="text-lg font-semibold text-primary">{contact.referralVolume || '24'}</span>
+                    <span className="text-lg font-semibold text-primary">{contact.referralVolume ?? '-'}</span>
                   </div>
-                  <div className="text-xs text-secondary">+8 vs previous period</div>
+                  <div className="text-xs text-secondary">-</div>
                 </div>
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-secondary uppercase tracking-wider">Conversion Rate</span>
-                    <span className="text-lg font-semibold text-primary">{contact.conversionRate || '37.5'}%</span>
+                    <span className="text-lg font-semibold text-primary">{contact.conversionRate != null ? `${contact.conversionRate}%` : '-'}</span>
                   </div>
-                  <div className="flex-1 bg-muted rounded-full h-2 mb-1">
-                    <div className="bg-primary h-2 rounded-full" style={{ width: `${contact.conversionRate || 37.5}%` }}></div>
-                  </div>
-                  <div className="text-xs text-secondary">9 of 24 referrals converted</div>
+                  {contact.conversionRate != null && (
+                    <div className="flex-1 bg-muted rounded-full h-2 mb-1">
+                      <div className="bg-primary h-2 rounded-full" style={{ width: `${contact.conversionRate}%` }}></div>
+                    </div>
+                  )}
+                  <div className="text-xs text-secondary">-</div>
                 </div>
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-secondary uppercase tracking-wider">Revenue Attribution</span>
-                    <span className="text-lg font-semibold text-primary">£{contact.revenueAttribution?.toLocaleString() || '487,000'}</span>
+                    <span className="text-lg font-semibold text-primary">{contact.revenueAttribution != null ? `£${contact.revenueAttribution.toLocaleString()}` : '-'}</span>
                   </div>
-                  <div className="text-xs text-secondary">Annual contract value from deals</div>
+                  <div className="text-xs text-secondary">-</div>
                 </div>
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-secondary uppercase tracking-wider">Commission Paid</span>
-                    <span className="text-lg font-semibold text-primary">£{contact.commissionPaid?.toLocaleString() || '48,700'}</span>
+                    <span className="text-lg font-semibold text-primary">{contact.commissionPaid != null ? `£${contact.commissionPaid.toLocaleString()}` : '-'}</span>
                   </div>
-                  <div className="text-xs text-secondary">10% of first year rent</div>
+                  <div className="text-xs text-secondary">-</div>
                 </div>
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-secondary uppercase tracking-wider">Avg Deal Size</span>
-                    <span className="text-lg font-semibold text-primary">8,200 sq ft</span>
+                    <span className="text-lg font-semibold text-primary">-</span>
                   </div>
-                  <div className="text-xs text-secondary">Across 9 closed deals</div>
+                  <div className="text-xs text-secondary">-</div>
                 </div>
                 
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-secondary uppercase tracking-wider">Quality Score</span>
-                    <span className="text-lg font-semibold text-primary">{contact.qualityScore || '4.7'}/5.0</span>
+                    <span className="text-lg font-semibold text-primary">{contact.qualityScore != null ? `${contact.qualityScore}/5.0` : '-'}</span>
                   </div>
-                  <div className="flex items-center space-x-1 mb-1">
-                    {[1, 2, 3, 4].map(i => <i key={i} className="fa-solid fa-star text-primary text-xs"></i>)}
-                    <i className="fa-solid fa-star-half-stroke text-primary text-xs"></i>
-                  </div>
-                  <div className="text-xs text-secondary">Based on referral quality assessment</div>
+                  {contact.qualityScore != null && (
+                    <div className="flex items-center space-x-1 mb-1">
+                      {[1, 2, 3, 4].map(i => <i key={i} className="fa-solid fa-star text-primary text-xs"></i>)}
+                      <i className="fa-solid fa-star-half-stroke text-primary text-xs"></i>
+                    </div>
+                  )}
+                  <div className="text-xs text-secondary">-</div>
                 </div>
               </div>
               
@@ -599,33 +456,17 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-xs text-secondary uppercase tracking-wider">Properties</div>
-                    <span className="text-xs font-semibold text-primary">12</span>
+                    <span className="text-xs font-semibold text-primary">-</span>
                   </div>
-                  <div className="space-y-2">
-                    <a href="#" className="flex items-center justify-between p-2 border border-[#E6E6E6] rounded hover:border-primary transition-all duration-200">
-                      <span className="text-sm text-primary">99 Bishopsgate</span>
-                      <i className="fa-solid fa-chevron-right text-secondary text-xs"></i>
-                    </a>
-                    <a href="#" className="flex items-center justify-between p-2 border border-[#E6E6E6] rounded hover:border-primary transition-all duration-200">
-                      <span className="text-sm text-primary">The Leadenhall Building</span>
-                      <i className="fa-solid fa-chevron-right text-secondary text-xs"></i>
-                    </a>
-                    <button className="w-full text-xs text-primary hover:underline text-left">View all 12 properties</button>
-                  </div>
+                  <div className="text-sm text-secondary">-</div>
                 </div>
                 
                 <div className="pt-4 border-t border-[#E6E6E6]">
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-xs text-secondary uppercase tracking-wider">Units</div>
-                    <span className="text-xs font-semibold text-primary">28</span>
+                    <span className="text-xs font-semibold text-primary">-</span>
                   </div>
-                  <div className="space-y-2">
-                    <a href="#" className="flex items-center justify-between p-2 border border-[#E6E6E6] rounded hover:border-primary transition-all duration-200">
-                      <span className="text-sm text-primary">99 Bishopsgate - Floor 8</span>
-                      <i className="fa-solid fa-chevron-right text-secondary text-xs"></i>
-                    </a>
-                    <button className="w-full text-xs text-primary hover:underline text-left">View all 28 units</button>
-                  </div>
+                  <div className="text-sm text-secondary">-</div>
                 </div>
               </div>
             </div>
@@ -634,57 +475,14 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
             <div id="upcoming-actions-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Upcoming Actions</h3>
               
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3 p-3 bg-muted rounded-lg">
-                  <div className="w-8 h-8 bg-primary rounded flex items-center justify-center flex-shrink-0">
-                    <i className="fa-solid fa-calendar text-white text-xs"></i>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-primary mb-1">Viewing Scheduled</div>
-                    <div className="text-xs text-secondary mb-2">99 Bishopsgate - Floor 8</div>
-                    <div className="text-xs text-primary font-medium">Tomorrow at 10:00 AM</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3 p-3 bg-muted rounded-lg">
-                  <div className="w-8 h-8 bg-primary rounded flex items-center justify-center flex-shrink-0">
-                    <i className="fa-solid fa-phone text-white text-xs"></i>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-primary mb-1">Follow-up Call</div>
-                    <div className="text-xs text-secondary mb-2">Discuss shortlist feedback</div>
-                    <div className="text-xs text-primary font-medium">Friday at 2:00 PM</div>
-                  </div>
-                </div>
-              </div>
-              
-              <button className="w-full mt-4 text-sm text-primary hover:underline font-medium">
-                View All Actions
-              </button>
+              <div className="text-sm text-secondary">-</div>
             </div>
             
             {/* Relationship Timeline Card */}
             <div id="relationship-timeline-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Relationship Timeline</h3>
               
-              <div className="space-y-4">
-                {[
-                  { date: 'May 2024', title: 'New Requirement Added', subtitle: 'Tech Scale-up - Series B', type: 'primary' },
-                  { date: 'Apr 2024', title: 'Commission Paid', subtitle: 'Q1 2024 - £42,500', type: 'primary' },
-                  { date: 'Mar 2024', title: 'Deal Closed', subtitle: 'Principal Place - Suite 4B', type: 'primary' },
-                  { date: 'Jan 2024', title: 'Agreement Renewed', subtitle: 'Broker Agreement 2024', type: 'primary' },
-                  { date: 'Dec 2023', title: 'Relationship Established', subtitle: 'PropTech Summit introduction', type: 'secondary' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start space-x-3">
-                    <div className={`w-2 h-2 ${item.type === 'primary' ? 'bg-primary' : 'bg-secondary'} rounded-full mt-2 flex-shrink-0`}></div>
-                    <div className="flex-1">
-                      <div className="text-xs text-secondary mb-1">{item.date}</div>
-                      <div className="text-sm text-primary font-medium mb-1">{item.title}</div>
-                      <div className="text-xs text-secondary">{item.subtitle}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <div className="text-sm text-secondary">-</div>
             </div>
             
           </div>
