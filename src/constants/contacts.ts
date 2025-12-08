@@ -1,10 +1,10 @@
 import type { ContactType, Contact } from '../types/contact';
 
-// Tab values that map to ContactType
-export const CONTACT_TAB_BROKERS = 'flex-broker' as const;
-export const CONTACT_TAB_DISPOSAL_AGENTS = 'disposal-agent' as const;
-export const CONTACT_TAB_TENANT_REPS = 'tenant' as const;
-export const CONTACT_TAB_SUPPLIERS = 'supplier' as const;
+// Tab values that map to ContactType (matching Zoho CRM values)
+export const CONTACT_TAB_BROKERS = 'Broker' as const;
+export const CONTACT_TAB_DISPOSAL_AGENTS = 'Disposal Agent' as const;
+export const CONTACT_TAB_TENANT_REPS = 'Tenant' as const;
+export const CONTACT_TAB_SUPPLIERS = 'Supplier' as const;
 
 // Tab configuration matching ContactType enum
 export const CONTACT_TABS = [

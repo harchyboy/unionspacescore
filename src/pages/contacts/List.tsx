@@ -424,7 +424,7 @@ export function ContactsList() {
                 <CardContent>
                   <div className="space-y-4">
                     {data.items
-                      .filter((c) => c.type === 'flex-broker')
+                      .filter((c) => c.type === 'Broker')
                       .slice(0, 4)
                       .map((contact, idx) => (
                         <div

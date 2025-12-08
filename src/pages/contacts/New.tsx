@@ -12,12 +12,12 @@ import { CompanyLookup } from '../../components/contacts/CompanyLookup';
 import type { ContactType } from '../../types/contact';
 
 const contactTypes: { value: ContactType; label: string }[] = [
-  { value: 'flex-broker', label: 'Broker' },
-  { value: 'disposal-agent', label: 'Disposal Agent' },
-  { value: 'tenant', label: 'Tenant/Prospect' },
-  { value: 'landlord', label: 'Landlord' },
-  { value: 'supplier', label: 'Supplier' },
-  { value: 'internal', label: 'Internal' },
+  { value: 'Broker', label: 'Broker' },
+  { value: 'Disposal Agent', label: 'Disposal Agent' },
+  { value: 'Tenant', label: 'Tenant/Prospect' },
+  { value: 'Landlord', label: 'Landlord' },
+  { value: 'Supplier', label: 'Supplier' },
+  { value: 'Internal', label: 'Internal' },
 ];
 
 export function ContactNew() {
@@ -33,7 +33,7 @@ export function ContactNew() {
     company: '',
     companyCity: '',
     accountId: '',
-    type: 'flex-broker' as ContactType,
+    type: 'Broker' as ContactType,
     role: '',
     territory: '',
     notes: '',

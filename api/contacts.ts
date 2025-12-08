@@ -229,7 +229,43 @@ function mapContact(record: ZohoContactRecord): ContactDto {
   };
 }
 
-async function listContacts(page = 1, perPage = 200) {
+async function listContacts(page = 1, perPage = 50, typeFilter?: string) {
+  // If we have a type filter, use COQL to get accurate counts
+  if (typeFilter) {
+    const normalizedType = normaliseType(typeFilter);
+    if (normalizedType) {
+      // Use COQL to filter by Contact_Type
+      const offset = (page - 1) * perPage;
+      const query = `select id, Full_Name, First_Name, Last_Name, Email, Phone, Mobile, Company, Title, Contact_Type, Last_Activity_Time, Account_Name, Territory, Description, Relationship_Health from Contacts where Contact_Type = '${normalizedType}' order by Modified_Time desc limit ${perPage} offset ${offset}`;
+      
+      const response = await zohoRequest<{
+        data?: ZohoContactRecord[];
+        info?: { more_records?: boolean; count?: number };
+      }>('/crm/v5/coql', {
+        method: 'POST',
+        body: JSON.stringify({ select_query: query }),
+      });
+
+      // Also get total count
+      const countQuery = `select count(id) as total from Contacts where Contact_Type = '${normalizedType}'`;
+      const countResponse = await zohoRequest<{
+        data?: { total?: number }[];
+      }>('/crm/v5/coql', {
+        method: 'POST',
+        body: JSON.stringify({ select_query: countQuery }),
+      });
+
+      const records = response.data ?? [];
+      const total = countResponse.data?.[0]?.total ?? records.length;
+
+      return {
+        items: records.map(mapContact),
+        info: { count: total, more_records: offset + records.length < total },
+      };
+    }
+  }
+
+  // No filter - use standard API
   const params = new URLSearchParams({
     page: page.toString(),
     per_page: perPage.toString(),
@@ -406,24 +442,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     if (req.method === 'GET') {
       const page = parseNumber(req.query.page, 1);
-      const pageSize = parseNumber(req.query.pageSize, 200);
+      const pageSize = parseNumber(req.query.pageSize, 50);
       const typeFilter = req.query.type as string | undefined;
 
-      let { items, info } = await listContacts(page, pageSize);
-
-      if (typeFilter) {
-        const normalizedFilter = normaliseType(typeFilter);
-        if (normalizedFilter) {
-          items = items.filter((item) => item.type === normalizedFilter);
-        }
-      }
+      const { items, info } = await listContacts(page, pageSize, typeFilter);
 
       return res.status(200).json({
         items,
         page,
         pageSize,
-        total: typeFilter ? items.length : (info.count ?? items.length),
-        moreRecords: typeFilter ? false : (info.more_records ?? false),
+        total: info.count ?? items.length,
+        moreRecords: info.more_records ?? false,
       });
     }
 

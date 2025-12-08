@@ -60,19 +60,14 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
   // Type metadata matching HTML version
   const getTypeMeta = (type: string) => {
     switch (type) {
-      case 'flex-broker':
       case 'Broker':
         return { label: 'Broker', icon: 'fa-briefcase', badgeClass: 'bg-black text-white' };
-      case 'disposal-agent':
       case 'Disposal Agent':
         return { label: 'Disposal Agent', icon: 'fa-building', badgeClass: 'bg-secondary text-white' };
-      case 'tenant':
       case 'Tenant':
         return { label: 'Tenant', icon: 'fa-user-tie', badgeClass: 'bg-accent text-white' };
-      case 'landlord':
       case 'Landlord':
         return { label: 'Landlord', icon: 'fa-landmark', badgeClass: 'bg-muted text-primary' };
-      case 'supplier':
       case 'Supplier':
         return { label: 'Supplier', icon: 'fa-wrench', badgeClass: 'bg-muted text-primary' };
       default:

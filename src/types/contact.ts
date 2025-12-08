@@ -1,10 +1,10 @@
 export type ContactType =
-  | 'flex-broker'
-  | 'disposal-agent'
-  | 'tenant'
-  | 'landlord'
-  | 'supplier'
-  | 'internal';
+  | 'Broker'
+  | 'Disposal Agent'
+  | 'Tenant'
+  | 'Landlord'
+  | 'Supplier'
+  | 'Internal';
 
 export type RelationshipHealth = 'excellent' | 'good' | 'fair' | 'needs-attention';
 

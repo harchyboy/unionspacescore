@@ -74,7 +74,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
               <div className="flex items-center space-x-3 mb-1">
                 <h1 className="text-2xl font-semibold text-primary">{displayName}</h1>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
-                  {contact.type === 'flex-broker' ? 'Broker' : contact.type.charAt(0).toUpperCase() + contact.type.slice(1)}
+                  {contact.type === 'Broker' ? 'Broker' : contact.type}
                 </span>
               </div>
               <div className="flex items-center space-x-4 text-sm text-secondary">

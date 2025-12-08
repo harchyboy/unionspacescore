@@ -24,7 +24,7 @@ function transformContact(data: Record<string, unknown>): Contact {
     mobile: data.mobile as string | undefined,
     company: data.company as string | undefined,
     companyId: data.accountId as string | undefined,
-    type: (data.type as Contact['type']) || 'flex-broker',
+    type: (data.type as Contact['type']) || 'Broker',
     role: data.role as string | undefined,
     territory: data.territory as string | undefined,
     notes: data.notes as string | undefined,
