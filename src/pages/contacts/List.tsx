@@ -12,14 +12,13 @@ import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Ca
 import { Tabs, TabsList, TabsTrigger } from '../../components/ui/Tabs';
 import { ContactDetails } from './Details';
 import type { ContactType, RelationshipHealth, Contact } from '../../types/contact';
+import type { ContactTabValue } from '../../constants/contacts';
 import {
   CONTACT_TAB_BROKERS,
   CONTACT_TAB_DISPOSAL_AGENTS,
   CONTACT_TAB_TENANT_REPS,
   CONTACT_TAB_SUPPLIERS,
   CONTACT_TABS,
-  ContactTabValue,
-  getContactTypeForTab as getContactTypeForTabHelper
 } from '../../constants/contacts';
 
 // Map tab value to contact type (direct mapping since tabs use ContactType values)
@@ -91,7 +90,7 @@ export function ContactsList() {
 
   const { data, isLoading, error } = useContacts({
     page: 1,
-    pageSize: 50,
+    pageSize: 200,
     filters: {
       type: getTypeFilterForTab(),
       health: healthFilter !== 'all' ? healthFilter : undefined,

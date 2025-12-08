@@ -1,4 +1,4 @@
-import { ContactType, Contact } from '../types/contact';
+import type { ContactType, Contact } from '../types/contact';
 
 // Tab values that map to ContactType
 export const CONTACT_TAB_BROKERS = 'flex-broker' as const;

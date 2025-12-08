@@ -407,14 +407,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
       const page = parseNumber(req.query.page, 1);
       const pageSize = parseNumber(req.query.pageSize, 200);
-      const { items, info } = await listContacts(page, pageSize);
+      const typeFilter = req.query.type as string | undefined;
+
+      let { items, info } = await listContacts(page, pageSize);
+
+      if (typeFilter) {
+        const normalizedFilter = normaliseType(typeFilter);
+        if (normalizedFilter) {
+          items = items.filter((item) => item.type === normalizedFilter);
+        }
+      }
 
       return res.status(200).json({
         items,
         page,
         pageSize,
-        total: info.count ?? items.length,
-        moreRecords: info.more_records ?? false,
+        total: typeFilter ? items.length : (info.count ?? items.length),
+        moreRecords: typeFilter ? false : (info.more_records ?? false),
       });
     }
 

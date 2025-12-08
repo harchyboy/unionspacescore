@@ -9,16 +9,25 @@ async function enableMocking() {
     return;
   }
 
-  const { worker } = await import('./mocks/browser');
-  return worker.start({
-    onUnhandledRequest: 'bypass',
-  });
+  try {
+    const { worker } = await import('./mocks/browser');
+    return worker.start({
+      onUnhandledRequest: 'bypass',
+    });
+  } catch (error) {
+    console.error('Failed to start MSW:', error);
+    // Continue even if MSW fails
+    return Promise.resolve();
+  }
 }
 
-enableMocking().then(() => {
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  );
+enableMocking().finally(() => {
+  const root = document.getElementById('root');
+  if (root) {
+    createRoot(root).render(
+      <StrictMode>
+        <App />
+      </StrictMode>,
+    );
+  }
 });
