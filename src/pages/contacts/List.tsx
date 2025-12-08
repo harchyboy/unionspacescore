@@ -43,6 +43,8 @@ export function ContactsList() {
   };
 
   const [activeTab, setActiveTab] = useState<ContactTabValue>(getInitialTab());
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 50;
   const [searchQuery, setSearchQuery] = useState(searchParams.get('query') || '');
   const [firmFilter, setFirmFilter] = useState<string>('all');
   const [submarketFilter, setSubmarketFilter] = useState<string>('all');
@@ -89,8 +91,8 @@ export function ContactsList() {
   }, [searchParams]);
 
   const { data, isLoading, error } = useContacts({
-    page: 1,
-    pageSize: 200,
+    page: currentPage,
+    pageSize: pageSize,
     filters: {
       type: getTypeFilterForTab(),
       health: healthFilter !== 'all' ? healthFilter : undefined,
@@ -99,6 +101,15 @@ export function ContactsList() {
     sortBy: 'name',
     sortOrder: 'asc',
   });
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, healthFilter, searchQuery]);
+
+  const totalPages = data ? Math.ceil(data.total / pageSize) : 1;
+  const startItem = data ? (currentPage - 1) * pageSize + 1 : 0;
+  const endItem = data ? Math.min(currentPage * pageSize, data.total) : 0;
 
   const handleHealthFilter = (value: string) => {
     const newHealth = value as RelationshipHealth | 'all';
@@ -309,21 +320,48 @@ export function ContactsList() {
               </div>
             </div>
 
-            {/* Bulk Actions Bar */}
+            {/* Pagination & Bulk Actions Bar */}
             <div className="mt-6 flex items-center justify-between">
               <div className="text-sm text-secondary">
-                Showing {data.items.length} of {data.total || data.items.length} contacts
+                Showing {startItem}-{endItem} of {data.total || data.items.length} contacts
               </div>
-              <div className="flex items-center space-x-2">
-                <Button variant="outline" size="sm" icon="fa-envelope">
-                  Send Email
-                </Button>
-                <Button variant="outline" size="sm" icon="fa-tag">
-                  Add Tags
-                </Button>
-                <Button variant="outline" size="sm" icon="fa-file-export">
-                  Export Selected
-                </Button>
+              <div className="flex items-center space-x-4">
+                {/* Pagination Controls */}
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <i className="fa-solid fa-chevron-left"></i>
+                    <span className="ml-1">Previous</span>
+                  </Button>
+                  <span className="text-sm text-secondary px-2">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage >= totalPages}
+                  >
+                    <span className="mr-1">Next</span>
+                    <i className="fa-solid fa-chevron-right"></i>
+                  </Button>
+                </div>
+                {/* Bulk Actions */}
+                <div className="flex items-center space-x-2 border-l border-[#E6E6E6] pl-4">
+                  <Button variant="outline" size="sm" icon="fa-envelope">
+                    Send Email
+                  </Button>
+                  <Button variant="outline" size="sm" icon="fa-tag">
+                    Add Tags
+                  </Button>
+                  <Button variant="outline" size="sm" icon="fa-file-export">
+                    Export Selected
+                  </Button>
+                </div>
               </div>
             </div>
 
