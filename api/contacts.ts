@@ -229,6 +229,45 @@ function mapContact(record: ZohoContactRecord): ContactDto {
   };
 }
 
+async function getTotalCount(typeFilter?: string): Promise<number> {
+  // Paginate through all pages to get accurate total count
+  // Use per_page=200 (max) with minimal fields for speed
+  let total = 0;
+  let page = 1;
+  let hasMore = true;
+  
+  while (hasMore) {
+    let apiPath: string;
+    
+    if (typeFilter) {
+      const normalizedType = normaliseType(typeFilter);
+      if (normalizedType) {
+        const criteria = `(Contact_Type:equals:${normalizedType})`;
+        apiPath = `/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=200`;
+      } else {
+        apiPath = `/crm/v2/Contacts?page=${page}&per_page=200`;
+      }
+    } else {
+      apiPath = `/crm/v2/Contacts?page=${page}&per_page=200`;
+    }
+    
+    const response = await zohoRequest<{
+      data?: { id: string }[];
+      info?: { more_records?: boolean; count?: number };
+    }>(apiPath);
+    
+    const count = response.data?.length ?? 0;
+    total += count;
+    hasMore = response.info?.more_records ?? false;
+    page++;
+    
+    // Safety limit to prevent infinite loops
+    if (page > 50) break;
+  }
+  
+  return total;
+}
+
 async function listContacts(page = 1, perPage = 50, typeFilter?: string) {
   // Build the API URL with optional type filter using Zoho's criteria
   const params = new URLSearchParams({
@@ -256,9 +295,14 @@ async function listContacts(page = 1, perPage = 50, typeFilter?: string) {
   }>(apiPath);
 
   const records = response.data ?? [];
+  const moreRecords = response.info?.more_records ?? false;
+  
+  // Get accurate total count
+  const total = await getTotalCount(typeFilter);
+  
   return {
     items: records.map(mapContact),
-    info: response.info ?? {},
+    info: { count: total, more_records: moreRecords },
   };
 }
 
