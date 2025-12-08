@@ -230,42 +230,7 @@ function mapContact(record: ZohoContactRecord): ContactDto {
 }
 
 async function listContacts(page = 1, perPage = 50, typeFilter?: string) {
-  // If we have a type filter, use COQL to get accurate counts
-  if (typeFilter) {
-    const normalizedType = normaliseType(typeFilter);
-    if (normalizedType) {
-      // Use COQL to filter by Contact_Type
-      const offset = (page - 1) * perPage;
-      const query = `select id, Full_Name, First_Name, Last_Name, Email, Phone, Mobile, Company, Title, Contact_Type, Last_Activity_Time, Account_Name, Territory, Description, Relationship_Health from Contacts where Contact_Type = '${normalizedType}' order by Modified_Time desc limit ${perPage} offset ${offset}`;
-      
-      const response = await zohoRequest<{
-        data?: ZohoContactRecord[];
-        info?: { more_records?: boolean; count?: number };
-      }>('/crm/v5/coql', {
-        method: 'POST',
-        body: JSON.stringify({ select_query: query }),
-      });
-
-      // Also get total count
-      const countQuery = `select count(id) as total from Contacts where Contact_Type = '${normalizedType}'`;
-      const countResponse = await zohoRequest<{
-        data?: { total?: number }[];
-      }>('/crm/v5/coql', {
-        method: 'POST',
-        body: JSON.stringify({ select_query: countQuery }),
-      });
-
-      const records = response.data ?? [];
-      const total = countResponse.data?.[0]?.total ?? records.length;
-
-      return {
-        items: records.map(mapContact),
-        info: { count: total, more_records: offset + records.length < total },
-      };
-    }
-  }
-
-  // No filter - use standard API
+  // Build the API URL with optional type filter using Zoho's criteria
   const params = new URLSearchParams({
     page: page.toString(),
     per_page: perPage.toString(),
@@ -273,10 +238,22 @@ async function listContacts(page = 1, perPage = 50, typeFilter?: string) {
     sort_by: 'Modified_Time',
   });
 
+  let apiPath = `/crm/v2/Contacts?${params.toString()}`;
+  
+  // If we have a type filter, use search API with criteria
+  if (typeFilter) {
+    const normalizedType = normaliseType(typeFilter);
+    if (normalizedType) {
+      // Use Zoho search API with criteria
+      const criteria = `(Contact_Type:equals:${normalizedType})`;
+      apiPath = `/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
+    }
+  }
+
   const response = await zohoRequest<{
     data?: ZohoContactRecord[];
     info?: { more_records?: boolean; count?: number };
-  }>(`/crm/v2/Contacts?${params.toString()}`);
+  }>(apiPath);
 
   const records = response.data ?? [];
   return {
