@@ -289,6 +289,12 @@ export function ContactsList() {
         ) : (
           <>
             <div className="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+              {/* Top pagination info */}
+              <div className="px-4 py-3 border-b border-[#E6E6E6] bg-[#FAFAFA]">
+                <div className="text-sm text-secondary">
+                  Showing {startItem}-{endItem} of {data.total || data.items.length} contacts
+                </div>
+              </div>
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -317,6 +323,12 @@ export function ContactsList() {
                     ))}
                   </TableBody>
                 </Table>
+              </div>
+              {/* Bottom pagination info */}
+              <div className="px-4 py-3 border-t border-[#E6E6E6] bg-[#FAFAFA]">
+                <div className="text-sm text-secondary">
+                  Showing {startItem}-{endItem} of {data.total || data.items.length} contacts
+                </div>
               </div>
             </div>
 
