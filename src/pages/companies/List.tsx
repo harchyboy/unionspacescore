@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCompanies } from '../../api/companies';
+import { useContact } from '../../api/contacts';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
 import { Button } from '../../components/ui/Button';
@@ -10,6 +11,7 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Tabs, TabsList, TabsTrigger } from '../../components/ui/Tabs';
+import { ContactDetails } from '../contacts/Details';
 import type { CompanyType, Company } from '../../types/company';
 
 // Tab configuration
@@ -48,14 +50,28 @@ export function CompaniesList() {
   // Slide-over state for company details
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
+  const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+  
+  // Fetch contact details when a contact is selected
+  const { data: selectedContact, isLoading: contactLoading } = useContact(selectedContactId || '');
   
   const handleCompanySelect = (company: Company) => {
     setSelectedCompany(company);
+    setSelectedContactId(null); // Reset contact selection
     setIsSlideOverOpen(true);
+  };
+  
+  const handleContactSelect = (contactId: string) => {
+    setSelectedContactId(contactId);
+  };
+  
+  const handleBackToCompany = () => {
+    setSelectedContactId(null);
   };
   
   const handleCloseSlideOver = () => {
     setIsSlideOverOpen(false);
+    setSelectedContactId(null);
   };
 
   // Get the type filter based on active tab
@@ -395,9 +411,19 @@ export function CompaniesList() {
               <div 
                 className={`pointer-events-auto w-screen max-w-2xl transform transition ease-in-out duration-500 sm:duration-700 bg-white shadow-xl ${isSlideOverOpen ? 'translate-x-0' : 'translate-x-full'}`}
               >
-                {/* Company Details Content */}
+                {/* Slide-over Content */}
                 <div className="h-full overflow-y-auto">
-                  {selectedCompany && (
+                  {/* Show Contact Details when a contact is selected */}
+                  {selectedContactId && selectedContact ? (
+                    <ContactDetails 
+                      contact={selectedContact} 
+                      onBack={handleBackToCompany}
+                    />
+                  ) : selectedContactId && contactLoading ? (
+                    <div className="flex items-center justify-center h-full">
+                      <LoadingSpinner size="lg" />
+                    </div>
+                  ) : selectedCompany && (
                     <div>
                       {/* Header */}
                       <div className="bg-white border-b border-[#E6E6E6] px-6 py-4 sticky top-0 z-10">
@@ -488,7 +514,7 @@ export function CompaniesList() {
                                 <div 
                                   key={contact.id} 
                                   className="bg-white border border-[#E6E6E6] rounded-lg p-4 hover:border-primary hover:shadow-sm transition-all cursor-pointer"
-                                  onClick={() => navigate(`/contacts/${contact.id}`)}
+                                  onClick={() => handleContactSelect(contact.id)}
                                 >
                                   <div className="flex items-start justify-between">
                                     <div className="flex items-center space-x-3">
