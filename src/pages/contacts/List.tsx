@@ -412,7 +412,15 @@ export function ContactsList() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="text-secondary text-sm font-medium">Total Contacts</div>
+                    <div className="text-secondary text-sm font-medium">
+                      Total {
+                        activeTab === 'Broker' ? 'Brokers' :
+                        activeTab === 'Disposal Agent' ? 'Disposal Agents' :
+                        activeTab === 'Tenant' ? 'Tenant Reps' :
+                        activeTab === 'Supplier' ? 'Suppliers' :
+                        'Contacts'
+                      }
+                    </div>
                     <i className="fa-solid fa-users text-primary"></i>
                   </div>
                   <div className="text-3xl font-semibold text-primary">{data.total || '-'}</div>

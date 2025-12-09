@@ -73,25 +73,40 @@ async function syncContacts() {
     console.log(`Fetched ${zohoContacts.length} contacts from Zoho`);
 
     // Upsert contacts into database
-    const contactsToUpsert = zohoContacts.map((c) => ({
-      zoho_id: c.id,
-      first_name: c.First_Name || '',
-      last_name: c.Last_Name || '',
-      full_name: c.Full_Name || `${c.First_Name || ''} ${c.Last_Name || ''}`.trim() || 'Unnamed Contact',
-      email: c.Email || '',
-      phone: c.Phone || null,
-      mobile: c.Mobile || null,
-      role: c.Title || null,
-      company_name: c.Account_Name?.name || null,
-      account_id: c.Account_Name?.id || null,
-      contact_type: c.Contact_Type || 'Broker',
-      territory: c.Territory || c.Mailing_City || null,
-      relationship_health: c.Relationship_Health || 'good',
-      relationship_health_score: c.Relationship_Health_Score || null,
-      description: c.Description || null,
-      zoho_created_at: c.Created_Time || null,
-      zoho_modified_at: c.Modified_Time || null,
-    }));
+    const contactsToUpsert = zohoContacts.map((c) => {
+      // Determine type: prefer Contact_Type field, fallback to Tag, default to Broker
+      let type = c.Contact_Type;
+      if (!type && Array.isArray(c.Tag)) {
+        const tags = c.Tag as { name: string }[];
+        // Check for known types in tags
+        const typeTag = tags.find(t => 
+          ['Broker', 'Disposal Agent', 'Tenant', 'Landlord', 'Supplier'].includes(t.name)
+        );
+        if (typeTag) {
+          type = typeTag.name;
+        }
+      }
+
+      return {
+        zoho_id: c.id,
+        first_name: c.First_Name || '',
+        last_name: c.Last_Name || '',
+        full_name: c.Full_Name || `${c.First_Name || ''} ${c.Last_Name || ''}`.trim() || 'Unnamed Contact',
+        email: c.Email || '',
+        phone: c.Phone || null,
+        mobile: c.Mobile || null,
+        role: c.Title || null,
+        company_name: c.Account_Name?.name || null,
+        account_id: c.Account_Name?.id || null,
+        contact_type: type || 'Broker',
+        territory: c.Territory || c.Mailing_City || null,
+        relationship_health: c.Relationship_Health || 'good',
+        relationship_health_score: c.Relationship_Health_Score || null,
+        description: c.Description || null,
+        zoho_created_at: c.Created_Time || null,
+        zoho_modified_at: c.Modified_Time || null,
+      };
+    });
 
     // Batch upsert in chunks of 100
     const chunkSize = 100;
