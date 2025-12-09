@@ -11,8 +11,8 @@
   ],
   "crons": [
     {
-      "path": "/api/sync",
-      "schedule": "0 6 * * *"
+      "path": "/api/sync?apiKey=${SYNC_API_KEY}",
+      "schedule": "0 * * * *"
     }
   ]
 }

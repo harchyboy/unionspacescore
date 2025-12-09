@@ -183,6 +183,23 @@ export function ContactsList() {
           >
             Add Contact
           </Button>
+          <Button
+            variant="outline"
+            icon="fa-refresh"
+            onClick={async () => {
+              try {
+                // Call the sync endpoint
+                await fetch('/api/sync?apiKey=' + (import.meta.env.VITE_SYNC_API_KEY || ''), { method: 'POST' });
+                // Force a refresh of the contacts list
+                window.location.reload();
+              } catch (error) {
+                console.error('Sync failed', error);
+              }
+            }}
+            className="ml-2"
+          >
+            Sync from CRM
+          </Button>
         </div>
 
         {/* Tabs */}
