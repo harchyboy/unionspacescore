@@ -2,20 +2,20 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from '../lib/supabase.js';
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
-const RAPIDAPI_HOST = 'linkedin-api8.p.rapidapi.com';
+const RAPIDAPI_HOST = 'linkedin-data-api.p.rapidapi.com';
 
 interface LinkedInSearchResult {
   items?: Array<{
-    urn?: string;
-    username?: string;
-    fullName?: string;
-    firstName?: string;
-    lastName?: string;
-    headline?: string;
-    profilePicture?: string;
+    urn_id?: string;
     url?: string;
-    profileURL?: string;
+    name?: string;
+    first_name?: string;
+    last_name?: string;
+    headline?: string;
+    location?: string;
   }>;
+  success?: boolean;
+  message?: string;
 }
 
 function setCors(res: VercelResponse) {
@@ -34,7 +34,8 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
     ? `${firstName} ${lastName} ${company}`
     : `${firstName} ${lastName}`;
 
-  const url = `https://${RAPIDAPI_HOST}/search-people?keywords=${encodeURIComponent(keywords)}&start=0`;
+  // Use the search-people endpoint from Real-Time LinkedIn Scraper API
+  const url = `https://${RAPIDAPI_HOST}/search-people?keywords=${encodeURIComponent(keywords)}&start=0&geo=92000000`;
 
   const response = await fetch(url, {
     method: 'GET',
@@ -46,10 +47,13 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
 
   if (!response.ok) {
     const text = await response.text();
+    console.error('LinkedIn API response:', text);
     throw new Error(`LinkedIn API error: ${response.status} - ${text}`);
   }
 
   const data = await response.json() as LinkedInSearchResult;
+  
+  console.log('LinkedIn search results:', JSON.stringify(data, null, 2));
   
   // Find best match
   const items = data.items || [];
@@ -60,20 +64,20 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
 
   // Try to find exact name match
   const exactMatch = items.find(item => {
-    const itemFirstName = (item.firstName || '').toLowerCase();
-    const itemLastName = (item.lastName || '').toLowerCase();
+    const itemFirstName = (item.first_name || item.name?.split(' ')[0] || '').toLowerCase();
+    const itemLastName = (item.last_name || item.name?.split(' ').slice(1).join(' ') || '').toLowerCase();
     return itemFirstName === firstName.toLowerCase() && 
            itemLastName === lastName.toLowerCase();
   });
 
-  if (exactMatch) {
-    return exactMatch.profileURL || exactMatch.url || `https://www.linkedin.com/in/${exactMatch.username}`;
+  if (exactMatch && exactMatch.url) {
+    return exactMatch.url;
   }
 
   // Return first result if no exact match
   const firstResult = items[0];
-  if (firstResult.profileURL || firstResult.url || firstResult.username) {
-    return firstResult.profileURL || firstResult.url || `https://www.linkedin.com/in/${firstResult.username}`;
+  if (firstResult.url) {
+    return firstResult.url;
   }
 
   return null;
