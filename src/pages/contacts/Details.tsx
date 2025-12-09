@@ -28,7 +28,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
       } else if (result.status === 'already_enriched') {
         showToast('LinkedIn already linked', 'info');
       } else {
-        showToast('No LinkedIn profile found', 'warning');
+        showToast('No LinkedIn profile found', 'error');
       }
     } catch (error) {
       console.error('Enrichment error:', error);
@@ -106,7 +106,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 </span>
                 <span className="flex items-center space-x-1">
                   <i className="fa-solid fa-map-marker-alt"></i>
-                  <span>{contact.territory || contact.companyCity || 'Location not set'}</span>
+                  <span>{contact.territory || contact.company || 'Location not set'}</span>
                 </span>
               </div>
             </div>
@@ -161,210 +161,283 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         </div>
       </div>
 
+
       {/* Main Content Area */}
       <div id="contact-details-container" className="flex-1 overflow-y-auto bg-[#F0F0F0]">
-        <div className="grid grid-cols-3 gap-6 p-8">
-          
-          {/* Left Column */}
-          <div id="left-column" className="col-span-2 space-y-6">
+        {activeTab === 'Overview' && (
+          <div className="grid grid-cols-3 gap-6 p-8">
             
-            {/* Contact Info Card */}
-            <div id="contact-info-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-primary">Contact Information</h2>
-                <button 
-                  onClick={() => navigate(`/contacts/${contact.id}/edit`)}
-                  className="text-secondary hover:text-primary text-sm transition-colors"
-                >
-                  <i className="fa-solid fa-pencil mr-1"></i>
-                  Edit
-                </button>
-              </div>
+            {/* Left Column */}
+            <div id="left-column" className="col-span-2 space-y-6">
               
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Email</label>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-primary">{contact.email}</span>
-                    <button 
-                      onClick={() => {
-                        navigator.clipboard.writeText(contact.email);
-                        showToast('Email copied to clipboard');
-                      }}
-                      className="text-secondary hover:text-primary transition-colors"
-                    >
-                      <i className="fa-solid fa-copy text-xs"></i>
-                    </button>
-                  </div>
+              {/* Contact Info Card */}
+              <div id="contact-info-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-semibold text-primary">Contact Information</h2>
+                  <button 
+                    onClick={() => navigate(`/contacts/${contact.id}/edit`)}
+                    className="text-secondary hover:text-primary text-sm transition-colors"
+                  >
+                    <i className="fa-solid fa-pencil mr-1"></i>
+                    Edit
+                  </button>
                 </div>
                 
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Mobile</label>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-primary">{contact.mobile || '-'}</span>
-                    {contact.mobile && (
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Email</label>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-primary">{contact.email}</span>
                       <button 
                         onClick={() => {
-                          navigator.clipboard.writeText(contact.mobile!);
-                          showToast('Mobile copied to clipboard');
+                          navigator.clipboard.writeText(contact.email);
+                          showToast('Email copied to clipboard');
                         }}
                         className="text-secondary hover:text-primary transition-colors"
                       >
                         <i className="fa-solid fa-copy text-xs"></i>
                       </button>
-                    )}
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Commission Structure</label>
-                  <span className="text-sm text-primary">{contact.commissionStructure || '-'}</span>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Health</label>
-                  <div className="flex items-center space-x-2">
-                    <div className="flex-1 bg-muted rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: `${healthScore}%` }}></div>
                     </div>
-                    <span className="text-xs text-secondary">{contact.relationshipHealth === 'excellent' ? 'Excellent' : 'Good'}</span>
                   </div>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Last Contacted</label>
-                  <span className="text-sm text-primary">{contact.lastActivity || '-'}</span>
-                </div>
-                
-                <div className="col-span-2">
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">LinkedIn</label>
-                  <div className="flex items-center space-x-3">
-                    {contact.linkedinUrl ? (
-                      <>
-                        <a 
-                          href={contact.linkedinUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-sm text-[#0077B5] hover:underline flex items-center space-x-2"
-                        >
-                          <i className="fa-brands fa-linkedin text-lg"></i>
-                          <span>View Profile</span>
-                        </a>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Mobile</label>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-primary">{contact.mobile || '-'}</span>
+                      {contact.mobile && (
                         <button 
                           onClick={() => {
-                            navigator.clipboard.writeText(contact.linkedinUrl!);
-                            showToast('LinkedIn URL copied');
+                            navigator.clipboard.writeText(contact.mobile!);
+                            showToast('Mobile copied to clipboard');
                           }}
                           className="text-secondary hover:text-primary transition-colors"
                         >
                           <i className="fa-solid fa-copy text-xs"></i>
                         </button>
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-sm text-secondary">Not linked</span>
-                        <button
-                          onClick={handleEnrichLinkedIn}
-                          disabled={enrichContact.isPending}
-                          className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {enrichContact.isPending ? (
-                            <>
-                              <i className="fa-solid fa-spinner fa-spin mr-1.5"></i>
-                              Searching...
-                            </>
-                          ) : (
-                            <>
-                              <i className="fa-brands fa-linkedin mr-1.5"></i>
-                              Find LinkedIn
-                            </>
-                          )}
-                        </button>
-                      </>
-                    )}
-                    {contact.enrichmentStatus === 'not_found' && !contact.linkedinUrl && (
-                      <span className="text-xs text-secondary italic">Previously searched - not found</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
-                <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Notes</label>
-                <p className="text-sm text-primary leading-relaxed">
-                  {contact.notes || '-'}
-                </p>
-              </div>
-              
-              <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
-                <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-3">Comms Preferences</label>
-                <div className="flex items-center space-x-6">
-                  <label className="flex items-center space-x-2">
-                    <input type="checkbox" checked={contact.commsPreferences?.email ?? true} readOnly className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
-                    <span className="text-sm text-primary">Email logging consent</span>
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-secondary">Updates cadence:</span>
-                    <select className="text-sm border border-[#E6E6E6] rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                      <option>Weekly</option>
-                      <option>Bi-weekly</option>
-                      <option>Monthly</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Communications History Card */}
-            <div id="communications-history-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-primary">Communications History</h2>
-                <div className="flex items-center space-x-2">
-                  <div className="relative">
-                    <i className="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary text-sm"></i>
-                    <input type="text" placeholder="Search communications..." className="pl-9 pr-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                  </div>
-                  <select className="border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                    <option>All Types</option>
-                    <option>Email</option>
-                    <option>Call</option>
-                    <option>Meeting</option>
-                    <option>Note</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div className="text-sm text-secondary">-</div>
-            </div>
-            
-          </div>
-          
-          {/* Right Column */}
-          <div id="right-column" className="space-y-6">
-            
-            {/* Quick Actions Card */}
-            <div id="quick-actions-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Quick Actions</h3>
-              <div className="space-y-2">
-                {[
-                  { icon: 'fa-calendar-plus', label: 'Book Viewing' },
-                  { icon: 'fa-handshake', label: 'Create Deal' },
-                  { icon: 'fa-file-invoice-dollar', label: 'Generate Commission' },
-                  { icon: 'fa-share-nodes', label: 'Share Properties' },
-                ].map((action, i) => (
-                  <button key={i} className="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all duration-200 group">
-                    <div className="flex items-center space-x-3">
-                      <i className={`fa-solid ${action.icon} text-primary`}></i>
-                      <span className="text-sm text-primary">{action.label}</span>
+                      )}
                     </div>
-                    <i className="fa-solid fa-chevron-right text-secondary text-xs group-hover:text-primary transition-colors"></i>
-                  </button>
-                ))}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Commission Structure</label>
+                    <span className="text-sm text-primary">{contact.commissionStructure || '-'}</span>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Health</label>
+                    <div className="flex items-center space-x-2">
+                      <div className="flex-1 bg-muted rounded-full h-2">
+                        <div className="bg-primary h-2 rounded-full" style={{ width: `${healthScore}%` }}></div>
+                      </div>
+                      <span className="text-xs text-secondary">{contact.relationshipHealth === 'excellent' ? 'Excellent' : 'Good'}</span>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Last Contacted</label>
+                    <span className="text-sm text-primary">{contact.lastActivity || '-'}</span>
+                  </div>
+                  
+                  <div className="col-span-2">
+                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">LinkedIn</label>
+                    <div className="flex items-center space-x-3">
+                      {contact.linkedinUrl ? (
+                        <>
+                          <a 
+                            href={contact.linkedinUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm text-[#0077B5] hover:underline flex items-center space-x-2"
+                          >
+                            <i className="fa-brands fa-linkedin text-lg"></i>
+                            <span>View Profile</span>
+                          </a>
+                          <button 
+                            onClick={() => {
+                              navigator.clipboard.writeText(contact.linkedinUrl!);
+                              showToast('LinkedIn URL copied');
+                            }}
+                            className="text-secondary hover:text-primary transition-colors"
+                          >
+                            <i className="fa-solid fa-copy text-xs"></i>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-sm text-secondary">Not linked</span>
+                          <button
+                            onClick={handleEnrichLinkedIn}
+                            disabled={enrichContact.isPending}
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {enrichContact.isPending ? (
+                              <>
+                                <i className="fa-solid fa-spinner fa-spin mr-1.5"></i>
+                                Searching...
+                              </>
+                            ) : (
+                              <>
+                                <i className="fa-brands fa-linkedin mr-1.5"></i>
+                                Find LinkedIn
+                              </>
+                            )}
+                          </button>
+                        </>
+                      )}
+                      {contact.enrichmentStatus === 'not_found' && !contact.linkedinUrl && (
+                        <span className="text-xs text-secondary italic">Previously searched - not found</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Notes</label>
+                  <p className="text-sm text-primary leading-relaxed">
+                    {contact.notes || '-'}
+                  </p>
+                </div>
+                
+                <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-3">Comms Preferences</label>
+                  <div className="flex items-center space-x-6">
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" checked={contact.commsPreferences?.email ?? true} readOnly className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
+                      <span className="text-sm text-primary">Email logging consent</span>
+                    </label>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-secondary">Updates cadence:</span>
+                      <select className="text-sm border border-[#E6E6E6] rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary bg-white">
+                        <option>Weekly</option>
+                        <option>Bi-weekly</option>
+                        <option>Monthly</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
+              
             </div>
             
-            {/* Performance Metrics Card */}
-            <div id="performance-metrics-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+            {/* Right Column */}
+            <div id="right-column" className="space-y-6">
+              
+              {/* Quick Actions Card */}
+              <div id="quick-actions-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Quick Actions</h3>
+                <div className="space-y-2">
+                  {[
+                    { icon: 'fa-calendar-plus', label: 'Book Viewing' },
+                    { icon: 'fa-handshake', label: 'Create Deal' },
+                    { icon: 'fa-file-invoice-dollar', label: 'Generate Commission' },
+                    { icon: 'fa-share-nodes', label: 'Share Properties' },
+                  ].map((action, i) => (
+                    <button key={i} className="w-full flex items-center justify-between px-4 py-3 border border-[#E6E6E6] rounded-lg hover:border-primary hover:bg-muted transition-all duration-200 group">
+                      <div className="flex items-center space-x-3">
+                        <i className={`fa-solid ${action.icon} text-primary`}></i>
+                        <span className="text-sm text-primary">{action.label}</span>
+                      </div>
+                      <i className="fa-solid fa-chevron-right text-secondary text-xs group-hover:text-primary transition-colors"></i>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Upcoming Actions Card */}
+              <div id="upcoming-actions-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Upcoming Actions</h3>
+                <div className="text-sm text-secondary">-</div>
+              </div>
+              
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'Relationship Graph' && (
+          <div className="p-8">
+            <div className="grid grid-cols-3 gap-6">
+              {/* Active Deals Column */}
+              <div className="col-span-1 space-y-4">
+                <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Active Deals</h3>
+                <div className="bg-white rounded-lg border border-[#E6E6E6] p-4 shadow-sm">
+                   <div className="flex items-center space-x-3 mb-3 pb-3 border-b border-[#E6E6E6]">
+                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                       <i className="fa-solid fa-building"></i>
+                     </div>
+                     <div>
+                       <div className="text-sm font-medium text-primary">100 Bishopsgate</div>
+                       <div className="text-xs text-secondary">Broker</div>
+                     </div>
+                   </div>
+                   <div className="flex items-center space-x-3">
+                     <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                       <i className="fa-solid fa-building"></i>
+                     </div>
+                     <div>
+                       <div className="text-sm font-medium text-primary">22 Bishopsgate</div>
+                       <div className="text-xs text-secondary">Tenant Rep</div>
+                     </div>
+                   </div>
+                </div>
+              </div>
+
+              {/* Past Clients Column */}
+              <div className="col-span-1 space-y-4">
+                <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Past Clients</h3>
+                <div className="bg-white rounded-lg border border-[#E6E6E6] p-4 shadow-sm">
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
+                        <i className="fa-solid fa-briefcase"></i>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-primary">Acme Corp</div>
+                        <div className="text-xs text-secondary">Tenant Rep (2023)</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
+                        <i className="fa-solid fa-briefcase"></i>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-primary">Globex Inc.</div>
+                        <div className="text-xs text-secondary">Landlord Agent (2022)</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Colleagues Column */}
+              <div className="col-span-1 space-y-4">
+                <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Colleagues at {contact.company || 'Company'}</h3>
+                <div className="bg-white rounded-lg border border-[#E6E6E6] p-4 shadow-sm">
+                   <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs">SJ</div>
+                      <div>
+                        <div className="text-sm font-medium text-primary">Sarah Jones</div>
+                        <div className="text-xs text-secondary">Director</div>
+                      </div>
+                    </div>
+                     <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs">MJ</div>
+                      <div>
+                        <div className="text-sm font-medium text-primary">Mike Johnson</div>
+                        <div className="text-xs text-secondary">Associate</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'Performance' && (
+          <div className="p-8">
+             {/* Performance Metrics Card */}
+            <div id="performance-metrics-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm max-w-2xl">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">Performance Metrics</h3>
                 <select className="text-xs border border-[#E6E6E6] rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary bg-white">
@@ -439,46 +512,59 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 View Detailed Performance Report
               </button>
             </div>
-            
-            {/* Linked Entities Card */}
-            <div id="linked-entities-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Linked Entities</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-xs text-secondary uppercase tracking-wider">Properties</div>
-                    <span className="text-xs font-semibold text-primary">-</span>
+          </div>
+        )}
+
+        {activeTab === 'Communications' && (
+          <div className="p-8">
+            {/* Communications History Card */}
+            <div id="communications-history-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-primary">Communications History</h2>
+                <div className="flex items-center space-x-2">
+                  <div className="relative">
+                    <i className="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary text-sm"></i>
+                    <input type="text" placeholder="Search communications..." className="pl-9 pr-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
                   </div>
-                  <div className="text-sm text-secondary">-</div>
-                </div>
-                
-                <div className="pt-4 border-t border-[#E6E6E6]">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-xs text-secondary uppercase tracking-wider">Units</div>
-                    <span className="text-xs font-semibold text-primary">-</span>
-                  </div>
-                  <div className="text-sm text-secondary">-</div>
+                  <select className="border border-[#E6E6E6] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white">
+                    <option>All Types</option>
+                    <option>Email</option>
+                    <option>Call</option>
+                    <option>Meeting</option>
+                    <option>Note</option>
+                  </select>
                 </div>
               </div>
-            </div>
-            
-            {/* Upcoming Actions Card */}
-            <div id="upcoming-actions-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Upcoming Actions</h3>
               
               <div className="text-sm text-secondary">-</div>
             </div>
             
-            {/* Relationship Timeline Card */}
-            <div id="relationship-timeline-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+             {/* Relationship Timeline Card */}
+            <div id="relationship-timeline-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm mt-6">
               <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Relationship Timeline</h3>
               
               <div className="text-sm text-secondary">-</div>
             </div>
-            
           </div>
-        </div>
+        )}
+
+        {activeTab === 'Documents' && (
+          <div className="p-8">
+             {/* Documents Card */}
+            <div id="documents-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-primary">Documents</h2>
+                <button className="text-secondary hover:text-primary text-sm transition-colors">
+                  <i className="fa-solid fa-upload mr-1"></i>
+                  Upload Document
+                </button>
+              </div>
+              
+              <div className="text-sm text-secondary">-</div>
+            </div>
+          </div>
+        )}
+
       </div>
       
       <ConfirmModal
