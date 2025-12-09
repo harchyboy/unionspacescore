@@ -396,43 +396,164 @@ export function CompaniesList() {
                 className={`pointer-events-auto w-screen max-w-2xl transform transition ease-in-out duration-500 sm:duration-700 bg-white shadow-xl ${isSlideOverOpen ? 'translate-x-0' : 'translate-x-full'}`}
               >
                 {/* Company Details Content */}
-                <div className="h-full overflow-y-auto p-6">
+                <div className="h-full overflow-y-auto">
                   {selectedCompany && (
                     <div>
-                      <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-semibold text-primary">{selectedCompany.name}</h2>
-                        <button 
-                          onClick={handleCloseSlideOver}
-                          className="text-secondary hover:text-primary"
-                        >
-                          <i className="fa-solid fa-times"></i>
-                        </button>
+                      {/* Header */}
+                      <div className="bg-white border-b border-[#E6E6E6] px-6 py-4 sticky top-0 z-10">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center text-white text-lg font-semibold">
+                              {selectedCompany.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                            </div>
+                            <div>
+                              <h2 className="text-xl font-semibold text-primary">{selectedCompany.name}</h2>
+                              {selectedCompany.type && (
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${
+                                  selectedCompany.type === 'Brokerage' ? 'bg-black text-white' :
+                                  selectedCompany.type === 'Landlord' ? 'bg-secondary text-white' :
+                                  selectedCompany.type === 'Tenant' ? 'bg-accent text-white' :
+                                  'bg-muted text-primary'
+                                }`}>
+                                  {selectedCompany.type}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <button 
+                            onClick={handleCloseSlideOver}
+                            className="text-secondary hover:text-primary p-2 rounded-lg hover:bg-muted transition-colors"
+                          >
+                            <i className="fa-solid fa-times text-lg"></i>
+                          </button>
+                        </div>
                       </div>
                       
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Type</label>
-                          <p className="text-sm text-primary">{selectedCompany.type || '-'}</p>
+                      <div className="p-6 space-y-6">
+                        {/* Company Info */}
+                        <div className="bg-[#FAFAFA] rounded-lg p-4">
+                          <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Company Information</h3>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Industry</label>
+                              <p className="text-sm text-primary">{selectedCompany.industry || '-'}</p>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Location</label>
+                              <p className="text-sm text-primary">{selectedCompany.city || '-'}</p>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Website</label>
+                              {selectedCompany.website ? (
+                                <a 
+                                  href={selectedCompany.website.startsWith('http') ? selectedCompany.website : `https://${selectedCompany.website}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-sm text-primary hover:underline"
+                                >
+                                  {selectedCompany.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                                </a>
+                              ) : (
+                                <p className="text-sm text-primary">-</p>
+                              )}
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Phone</label>
+                              <p className="text-sm text-primary">{selectedCompany.phone || '-'}</p>
+                            </div>
+                          </div>
+                          {selectedCompany.description && (
+                            <div className="mt-4 pt-4 border-t border-[#E6E6E6]">
+                              <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Description</label>
+                              <p className="text-sm text-primary">{selectedCompany.description}</p>
+                            </div>
+                          )}
                         </div>
+
+                        {/* Contacts Section */}
                         <div>
-                          <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Industry</label>
-                          <p className="text-sm text-primary">{selectedCompany.industry || '-'}</p>
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">
+                              Contacts ({selectedCompany.contacts?.length || selectedCompany.contactCount || 0})
+                            </h3>
+                            <button className="text-sm text-primary hover:underline flex items-center space-x-1">
+                              <i className="fa-solid fa-plus text-xs"></i>
+                              <span>Add Contact</span>
+                            </button>
+                          </div>
+                          
+                          {selectedCompany.contacts && selectedCompany.contacts.length > 0 ? (
+                            <div className="space-y-3">
+                              {selectedCompany.contacts.map((contact) => (
+                                <div 
+                                  key={contact.id} 
+                                  className="bg-white border border-[#E6E6E6] rounded-lg p-4 hover:border-primary hover:shadow-sm transition-all cursor-pointer"
+                                  onClick={() => navigate(`/contacts/${contact.id}`)}
+                                >
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex items-center space-x-3">
+                                      <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                        {contact.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                                      </div>
+                                      <div>
+                                        <div className="font-medium text-primary">{contact.name}</div>
+                                        {contact.role && (
+                                          <div className="text-xs text-secondary">{contact.role}</div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <i className="fa-solid fa-chevron-right text-secondary text-xs mt-3"></i>
+                                  </div>
+                                  {contact.email && (
+                                    <div className="mt-3 pt-3 border-t border-[#E6E6E6] flex items-center space-x-4">
+                                      <a 
+                                        href={`mailto:${contact.email}`}
+                                        className="text-sm text-secondary hover:text-primary flex items-center space-x-2"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        <i className="fa-solid fa-envelope text-xs"></i>
+                                        <span>{contact.email}</span>
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="bg-[#FAFAFA] rounded-lg p-8 text-center">
+                              <i className="fa-solid fa-users text-3xl text-secondary mb-3"></i>
+                              <p className="text-sm text-secondary">No contacts associated with this company</p>
+                              <button className="mt-3 text-sm text-primary hover:underline">
+                                Add first contact
+                              </button>
+                            </div>
+                          )}
                         </div>
-                        <div>
-                          <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Location</label>
-                          <p className="text-sm text-primary">{selectedCompany.city || '-'}</p>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Website</label>
-                          <p className="text-sm text-primary">{selectedCompany.website || '-'}</p>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Phone</label>
-                          <p className="text-sm text-primary">{selectedCompany.phone || '-'}</p>
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-1">Description</label>
-                          <p className="text-sm text-primary">{selectedCompany.description || '-'}</p>
+
+                        {/* Quick Actions */}
+                        <div className="pt-4 border-t border-[#E6E6E6]">
+                          <h3 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">Quick Actions</h3>
+                          <div className="grid grid-cols-2 gap-3">
+                            <button 
+                              onClick={() => navigate(`/companies/${selectedCompany.id}`)}
+                              className="flex items-center justify-center space-x-2 px-4 py-3 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors"
+                            >
+                              <i className="fa-solid fa-eye"></i>
+                              <span>View Full Profile</span>
+                            </button>
+                            <button className="flex items-center justify-center space-x-2 px-4 py-3 border border-[#E6E6E6] text-primary rounded-lg hover:bg-muted transition-colors">
+                              <i className="fa-solid fa-envelope"></i>
+                              <span>Send Email</span>
+                            </button>
+                            <button className="flex items-center justify-center space-x-2 px-4 py-3 border border-[#E6E6E6] text-primary rounded-lg hover:bg-muted transition-colors">
+                              <i className="fa-solid fa-phone"></i>
+                              <span>Log Call</span>
+                            </button>
+                            <button className="flex items-center justify-center space-x-2 px-4 py-3 border border-[#E6E6E6] text-primary rounded-lg hover:bg-muted transition-colors">
+                              <i className="fa-solid fa-handshake"></i>
+                              <span>Create Deal</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
