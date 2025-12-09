@@ -188,12 +188,19 @@ export function ContactsList() {
             icon="fa-refresh"
             onClick={async () => {
               try {
-                // Call the sync endpoint
-                await fetch('/api/sync?apiKey=' + (import.meta.env.VITE_SYNC_API_KEY || ''), { method: 'POST' });
-                // Force a refresh of the contacts list
-                window.location.reload();
+                // Call the sync endpoint (no API key needed for manual sync)
+                const response = await fetch('/api/sync', { method: 'POST' });
+                const result = await response.json();
+                if (response.ok) {
+                  alert(`Sync complete! ${result.results?.contacts?.synced || 0} contacts synced from Zoho CRM.`);
+                  // Force a refresh of the contacts list
+                  window.location.reload();
+                } else {
+                  alert(`Sync failed: ${result.message || result.error || 'Unknown error'}`);
+                }
               } catch (error) {
                 console.error('Sync failed', error);
+                alert('Sync failed. Check the console for details.');
               }
             }}
             className="ml-2"
@@ -325,7 +332,13 @@ export function ContactsList() {
               {/* Top pagination info */}
               <div className="px-4 py-3 border-b border-[#E6E6E6] bg-[#FAFAFA]">
                 <div className="text-sm text-secondary">
-                  Showing {startItem}-{endItem} of {data.total || data.items.length} contacts
+                  Showing {startItem}-{endItem} of {data.total || data.items.length} {
+                    activeTab === 'Broker' ? 'brokers' :
+                    activeTab === 'Disposal Agent' ? 'disposal agents' :
+                    activeTab === 'Tenant' ? 'tenant reps' :
+                    activeTab === 'Supplier' ? 'suppliers' :
+                    'contacts'
+                  }
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -360,7 +373,13 @@ export function ContactsList() {
               {/* Bottom pagination info */}
               <div className="px-4 py-3 border-t border-[#E6E6E6] bg-[#FAFAFA]">
                 <div className="text-sm text-secondary">
-                  Showing {startItem}-{endItem} of {data.total || data.items.length} contacts
+                  Showing {startItem}-{endItem} of {data.total || data.items.length} {
+                    activeTab === 'Broker' ? 'brokers' :
+                    activeTab === 'Disposal Agent' ? 'disposal agents' :
+                    activeTab === 'Tenant' ? 'tenant reps' :
+                    activeTab === 'Supplier' ? 'suppliers' :
+                    'contacts'
+                  }
                 </div>
               </div>
             </div>

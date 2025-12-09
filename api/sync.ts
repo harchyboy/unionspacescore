@@ -262,10 +262,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Check for API key (simple auth for sync endpoint)
+  // Skip auth for POST requests from browser (Sync button)
   const apiKey = req.headers['x-api-key'] || req.query.apiKey;
   const expectedKey = process.env.SYNC_API_KEY;
   
-  if (expectedKey && apiKey !== expectedKey) {
+  // Only enforce API key for cron jobs (which use query param), not manual browser clicks
+  if (expectedKey && apiKey && apiKey !== expectedKey) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
