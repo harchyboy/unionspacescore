@@ -207,7 +207,7 @@ interface EnrichmentResult {
 }
 
 async function enrichContact(id: string): Promise<EnrichmentResult> {
-  const response = await fetch(`${API_BASE}/${id}/enrich`, {
+  const response = await fetch(`/api/enrich/${id}`, {
     method: 'POST',
   });
 

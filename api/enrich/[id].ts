@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getSupabase, isSupabaseConfigured } from '../../lib/supabase.js';
-import { zohoRequest } from '../../lib/zoho.js';
+import { getSupabase, isSupabaseConfigured } from '../lib/supabase.js';
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 const RAPIDAPI_HOST = 'linkedin-api8.p.rapidapi.com';
@@ -98,21 +97,6 @@ async function updateContactLinkedIn(
       })
       .eq('zoho_id', zohoId);
   }
-
-  // Update in Zoho CRM (if you have a LinkedIn field there)
-  // Uncomment if you've added a LinkedIn_URL field in Zoho CRM:
-  /*
-  try {
-    await zohoRequest(`/crm/v2/Contacts/${zohoId}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        data: [{ LinkedIn_URL: linkedinUrl }],
-      }),
-    });
-  } catch (error) {
-    console.error('Failed to update Zoho:', error);
-  }
-  */
 }
 
 async function getContactFromDb(zohoId: string) {
