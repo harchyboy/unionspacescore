@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getSupabase, isSupabaseConfigured } from '../lib/supabase';
-import { zohoRequest, ZohoContactRecord, ZohoAccountRecord } from '../lib/zoho';
+import { getSupabase, isSupabaseConfigured } from '../lib/supabase.js';
+import { zohoRequest, ZohoContactRecord, ZohoAccountRecord } from '../lib/zoho.js';
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');

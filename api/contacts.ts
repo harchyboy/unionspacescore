@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getSupabase, isSupabaseConfigured, DbContact } from './lib/supabase';
-import { zohoRequest, ZohoContactRecord } from './lib/zoho';
+import { getSupabase, isSupabaseConfigured, DbContact } from './lib/supabase.js';
+import { zohoRequest, ZohoContactRecord } from './lib/zoho.js';
 
 interface ContactDto {
   id: string;

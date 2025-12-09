@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { isSupabaseConfigured } from '../lib/supabase';
+import { isSupabaseConfigured } from '../lib/supabase.js';
 import { updateContact, deleteContactById, getContactFromDb, getContactFromZoho } from '../contacts';
 
 function setCors(res: VercelResponse) {
