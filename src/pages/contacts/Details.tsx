@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useDeleteContact, useContact } from '../../api/contacts';
+import { useDeleteContact, useContact, useEnrichContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
@@ -14,10 +14,27 @@ interface ContactDetailsProps {
 export function ContactDetails({ contact: initialContact, onBack }: ContactDetailsProps) {
   const navigate = useNavigate();
   const deleteContact = useDeleteContact();
+  const enrichContact = useEnrichContact();
   const { data: contact = initialContact } = useContact(initialContact.id, initialContact);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { showToast, removeToast, toasts } = useToast();
   const [activeTab, setActiveTab] = useState('Overview');
+
+  const handleEnrichLinkedIn = async () => {
+    try {
+      const result = await enrichContact.mutateAsync(contact.id);
+      if (result.success && result.linkedinUrl) {
+        showToast('LinkedIn profile found!', 'success');
+      } else if (result.status === 'already_enriched') {
+        showToast('LinkedIn already linked', 'info');
+      } else {
+        showToast('No LinkedIn profile found', 'warning');
+      }
+    } catch (error) {
+      console.error('Enrichment error:', error);
+      showToast('Failed to find LinkedIn profile', 'error');
+    }
+  };
 
   // Generate display values
   const displayName = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || 'Unnamed Contact';
@@ -268,6 +285,58 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Last Contacted</label>
                   <span className="text-sm text-primary">{contact.lastActivity || '-'}</span>
+                </div>
+                
+                <div className="col-span-2">
+                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">LinkedIn</label>
+                  <div className="flex items-center space-x-3">
+                    {contact.linkedinUrl ? (
+                      <>
+                        <a 
+                          href={contact.linkedinUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm text-[#0077B5] hover:underline flex items-center space-x-2"
+                        >
+                          <i className="fa-brands fa-linkedin text-lg"></i>
+                          <span>View Profile</span>
+                        </a>
+                        <button 
+                          onClick={() => {
+                            navigator.clipboard.writeText(contact.linkedinUrl!);
+                            showToast('LinkedIn URL copied');
+                          }}
+                          className="text-secondary hover:text-primary transition-colors"
+                        >
+                          <i className="fa-solid fa-copy text-xs"></i>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-sm text-secondary">Not linked</span>
+                        <button
+                          onClick={handleEnrichLinkedIn}
+                          disabled={enrichContact.isPending}
+                          className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {enrichContact.isPending ? (
+                            <>
+                              <i className="fa-solid fa-spinner fa-spin mr-1.5"></i>
+                              Searching...
+                            </>
+                          ) : (
+                            <>
+                              <i className="fa-brands fa-linkedin mr-1.5"></i>
+                              Find LinkedIn
+                            </>
+                          )}
+                        </button>
+                      </>
+                    )}
+                    {contact.enrichmentStatus === 'not_found' && !contact.linkedinUrl && (
+                      <span className="text-xs text-secondary italic">Previously searched - not found</span>
+                    )}
+                  </div>
                 </div>
               </div>
               

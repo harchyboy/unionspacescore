@@ -22,6 +22,9 @@ export interface Contact {
   role?: string;
   avatar?: string;
   territory?: string;
+  linkedinUrl?: string;
+  enrichmentStatus?: 'pending' | 'enriched' | 'not_found' | 'error';
+  enrichedAt?: string;
   submarkets?: string[];
   specialisms?: string[];
   preferredSubmarkets?: string[];

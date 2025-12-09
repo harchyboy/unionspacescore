@@ -18,6 +18,9 @@ interface ContactDto {
   health?: string | null;
   relationshipHealthScore?: number | null;
   lastActivity?: string | null;
+  linkedinUrl?: string | null;
+  enrichmentStatus?: string | null;
+  enrichedAt?: string | null;
   createdAt?: string | null;
   updatedAt?: string | null;
 }
@@ -40,6 +43,9 @@ function mapDbContact(record: DbContact): ContactDto {
     health: record.relationship_health,
     relationshipHealthScore: record.relationship_health_score,
     lastActivity: record.zoho_modified_at,
+    linkedinUrl: record.linkedin_url,
+    enrichmentStatus: record.enrichment_status,
+    enrichedAt: record.enriched_at,
     createdAt: record.zoho_created_at,
     updatedAt: record.zoho_modified_at,
   };

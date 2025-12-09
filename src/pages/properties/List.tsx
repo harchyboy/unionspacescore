@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useProperties } from '../../api/properties';
-import { EmptyState } from '../../components/ui/EmptyState';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 
 const tabs = [
@@ -20,6 +19,7 @@ export function PropertiesList() {
   const [networkFilter, setNetworkFilter] = useState('');
   const [healthFilter, setHealthFilter] = useState('');
   const [sortBy, setSortBy] = useState('last-updated');
+  const [selectAll, setSelectAll] = useState(false);
 
   const { data, isLoading, error } = useProperties({
     page: 1,
@@ -29,6 +29,15 @@ export function PropertiesList() {
   });
 
   const properties = data?.properties || [];
+
+  const clearFilters = () => {
+    setSubmarketFilter('');
+    setVisibilityFilter('');
+    setAgentFilter('');
+    setOwnerFilter('');
+    setNetworkFilter('');
+    setHealthFilter('');
+  };
 
   if (isLoading) {
     return (
@@ -100,11 +109,11 @@ export function PropertiesList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Submarkets</option>
-              <option value="city-core">City Core</option>
-              <option value="shoreditch">Shoreditch</option>
-              <option value="mayfair">Mayfair</option>
-              <option value="canary-wharf">Canary Wharf</option>
-              <option value="kings-cross">King's Cross</option>
+              <option value="City Core">City Core</option>
+              <option value="Shoreditch">Shoreditch</option>
+              <option value="Mayfair">Mayfair</option>
+              <option value="Canary Wharf">Canary Wharf</option>
+              <option value="King's Cross">King's Cross</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -116,8 +125,8 @@ export function PropertiesList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Visibility</option>
-              <option value="public">Public</option>
-              <option value="private">Private</option>
+              <option value="Public">Public</option>
+              <option value="Private">Private</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -129,11 +138,11 @@ export function PropertiesList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Disposal Agents</option>
-              <option value="knight-frank">Knight Frank</option>
-              <option value="cbre">CBRE</option>
-              <option value="jll">JLL</option>
-              <option value="savills">Savills</option>
-              <option value="cushman">Cushman & Wakefield</option>
+              <option value="Knight Frank">Knight Frank</option>
+              <option value="CBRE">CBRE</option>
+              <option value="JLL">JLL</option>
+              <option value="Savills">Savills</option>
+              <option value="Cushman & Wakefield">Cushman & Wakefield</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -145,9 +154,10 @@ export function PropertiesList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Owners</option>
-              <option value="tom">Tom Townsend</option>
-              <option value="max">Max Chen</option>
-              <option value="dani">Dani Roberts</option>
+              <option value="Tom">Tom</option>
+              <option value="Tom Townsend">Tom Townsend</option>
+              <option value="Max Chen">Max Chen</option>
+              <option value="Dani Roberts">Dani Roberts</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -159,9 +169,9 @@ export function PropertiesList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Broker Networks</option>
-              <option value="public">Public Network</option>
-              <option value="private-10">Private · 10 brokers</option>
-              <option value="private-5">Private · 5 brokers</option>
+              <option value="Public Network">Public Network</option>
+              <option value="Private · 10 brokers">Private · 10 brokers</option>
+              <option value="Private · 5 brokers">Private · 5 brokers</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -173,15 +183,18 @@ export function PropertiesList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">Data Health</option>
-              <option value="lt50">&lt; 50%</option>
+              <option value="<50">&lt; 50%</option>
               <option value="50-75">50-75%</option>
               <option value="75-85">75-85%</option>
-              <option value="gt85">&gt; 85%</option>
+              <option value=">85">&gt; 85%</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
           
-          <button className="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1">
+          <button 
+            onClick={clearFilters}
+            className="text-secondary hover:text-primary text-sm ml-2 flex items-center space-x-1"
+          >
             <i className="fa-solid fa-rotate-left text-xs"></i>
             <span>Clear all</span>
           </button>
@@ -192,7 +205,12 @@ export function PropertiesList() {
       <div className="bg-[#FAFAFA] border-b border-[#E6E6E6] px-8 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
+            <input 
+              type="checkbox" 
+              checked={selectAll}
+              onChange={(e) => setSelectAll(e.target.checked)}
+              className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" 
+            />
             <label className="text-sm text-secondary">Select All</label>
           </div>
           <span className="text-sm text-secondary">{properties.length} properties</span>
@@ -215,118 +233,374 @@ export function PropertiesList() {
               <option value="last-updated">Sort by: Last Updated</option>
               <option value="name-asc">Sort by: Name A-Z</option>
               <option value="name-desc">Sort by: Name Z-A</option>
-              <option value="occupancy">Sort by: Occupancy High-Low</option>
-              <option value="health">Sort by: Data Health</option>
+              <option value="occupancy-desc">Sort by: Occupancy High-Low</option>
+              <option value="health-desc">Sort by: Data Health</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
         </div>
       </div>
 
-      {/* Properties Table */}
+      {/* Properties Table & Content */}
       <div className="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
         {properties.length === 0 ? (
-          <EmptyState
-            title="No properties found"
-            description="Get started by adding your first property."
-            icon="fa-building"
-          />
+          <div className="bg-white rounded-lg border border-[#E6E6E6] p-12 text-center">
+            <div className="w-16 h-16 bg-[#FAFAFA] rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="fa-solid fa-building text-secondary text-2xl"></i>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-2">No properties yet</h3>
+            <p className="text-sm text-secondary mb-6">Add a building to start matching spaces</p>
+            <Link
+              to="/properties/new"
+              className="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all inline-block"
+            >
+              Add Your First Property
+            </Link>
+          </div>
         ) : (
-          <div className="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-[#FAFAFA] border-b border-[#E6E6E6]">
-                  <tr>
-                    <th className="px-6 py-3 text-left">
-                      <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Property</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Submarket</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Units</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Occupancy</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Data Health</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Visibility</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#E6E6E6]">
-                  {properties.map((property) => (
-                    <tr key={property.id} className="hover:bg-[#FAFAFA] transition-colors">
-                      <td className="px-6 py-4">
+          <>
+            {/* Properties Table */}
+            <div className="bg-white rounded-lg border border-[#E6E6E6] overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-[#FAFAFA] border-b border-[#E6E6E6]">
+                    <tr>
+                      <th className="px-6 py-3 text-left">
                         <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
-                      </td>
-                      <td className="px-6 py-4">
-                        <Link to={`/properties/${property.id}`} className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-[#F0F0F0] rounded-lg overflow-hidden">
-                            {property.images?.[0] ? (
-                              <img src={property.images[0]} alt={property.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <i className="fa-solid fa-building text-secondary"></i>
-                              </div>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Property</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Submarket</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Units</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Occupancy</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Visibility</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Broker Network</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Landlord</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Owner</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Assets</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Data Health</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                      <th className="px-6 py-3 text-left">
+                        <button className="flex items-center space-x-1 text-xs font-semibold text-secondary uppercase tracking-wider hover:text-primary">
+                          <span>Updated By</span>
+                          <i className="fa-solid fa-sort text-xs"></i>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E6E6E6]">
+                    {properties.map((property) => (
+                      <tr 
+                        key={property.id} 
+                        className="hover:bg-[#FAFAFA] transition-all cursor-pointer"
+                      >
+                        <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                          <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
+                        </td>
+                        <td className="px-6 py-4">
+                          <Link to={`/properties/${property.id}`} className="flex items-center space-x-3 group">
+                            <div className="w-12 h-12 bg-[#FAFAFA] rounded overflow-hidden flex-shrink-0">
+                              {property.images?.[0] ? (
+                                <img src={property.images[0]} alt={property.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                  <i className="fa-solid fa-building text-secondary"></i>
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <div className="font-semibold text-primary text-sm group-hover:underline">{property.name}</div>
+                              <div className="text-xs text-secondary">{property.addressLine}</div>
+                            </div>
+                          </Link>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-primary">{property.submarket || '—'}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-1 text-sm">
+                            <span className="font-semibold text-primary">{property.stats?.available || 0}</span>
+                            <span className="text-secondary">/</span>
+                            <span className="text-secondary">{property.stats?.totalUnits || property.units?.length || 0}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-2">
+                            <div className="flex-1 bg-[#FAFAFA] rounded-full h-2 w-20">
+                              <div 
+                                className="bg-primary h-2 rounded-full" 
+                                style={{ width: `${property.stats?.occupancyPct || 0}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-xs text-secondary font-medium">{property.stats?.occupancyPct || 0}%</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary border border-[#E6E6E6]">
+                            {property.marketing?.visibility || 'Private'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-secondary">
+                          {property.marketing?.brokerSet || 'Public Network'}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-primary">
+                          {property.contacts?.landlord?.name || '—'}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-2">
+                            <img 
+                              src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg" 
+                              alt="Tom" 
+                              className="w-6 h-6 rounded-full object-cover"
+                            />
+                            <span className="text-sm text-primary">Tom</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-2 text-xs">
+                            <span className="text-secondary">{property.images?.length || 0} imgs</span>
+                            {(property.images?.length || 0) > 0 && (
+                              <i className="fa-solid fa-check text-primary"></i>
                             )}
                           </div>
-                          <div>
-                            <div className="font-medium text-primary">{property.name}</div>
-                            <div className="text-xs text-secondary">{property.addressLine}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-2">
+                            <div className="flex-1 bg-[#FAFAFA] rounded-full h-2 w-16">
+                              <div 
+                                className="bg-primary h-2 rounded-full" 
+                                style={{ width: `${property.dataHealth || 85}%` }}
+                              ></div>
+                            </div>
+                            <span className="text-xs text-primary font-medium">{property.dataHealth || 85}%</span>
                           </div>
-                        </Link>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-primary">{property.submarket || '—'}</td>
-                      <td className="px-6 py-4 text-sm text-primary">{property.totalUnits || 0}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
-                          <div className="flex-1 bg-[#E6E6E6] rounded-full h-2 w-20">
-                            <div
-                              className="bg-primary h-2 rounded-full"
-                              style={{ width: `${property.occupancy || 0}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm text-primary">{property.occupancy || 0}%</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
-                          <div className="flex-1 bg-[#E6E6E6] rounded-full h-2 w-20">
-                            <div
-                              className={`h-2 rounded-full ${
-                                (property.dataHealth || 0) >= 85 ? 'bg-green-500' :
-                                (property.dataHealth || 0) >= 50 ? 'bg-amber-500' : 'bg-red-500'
-                              }`}
-                              style={{ width: `${property.dataHealth || 0}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm text-primary">{property.dataHealth || 0}%</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          property.visibility === 'Public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {property.visibility || 'Private'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          property.marketingStatus === 'On Market' ? 'bg-primary text-white' :
-                          property.marketingStatus === 'Broker-Ready' ? 'bg-blue-100 text-blue-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {property.marketingStatus || 'Draft'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="text-secondary hover:text-primary p-1">
-                          <i className="fa-solid fa-ellipsis-vertical"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-primary">Tom</div>
+                          <div className="text-xs text-secondary">2h ago</div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+
+            {/* Pagination */}
+            <div className="mt-6 flex items-center justify-between">
+              <div className="text-sm text-secondary">
+                Showing 1-{properties.length} of {properties.length} properties
+              </div>
+              <div className="flex items-center space-x-2">
+                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-secondary hover:bg-[#FAFAFA] transition-all disabled:opacity-50" disabled>
+                  <i className="fa-solid fa-chevron-left"></i>
+                </button>
+                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm bg-primary text-white">1</button>
+                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">2</button>
+                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">3</button>
+                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">4</button>
+                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">
+                  <i className="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            {/* Portfolio Overview */}
+            <div className="mt-8">
+              <h2 className="text-lg font-semibold text-primary mb-4">Portfolio Overview</h2>
+              <div className="grid grid-cols-4 gap-6">
+                <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Total Properties</div>
+                    <div className="w-10 h-10 bg-[#FAFAFA] rounded-lg flex items-center justify-center">
+                      <i className="fa-solid fa-building text-primary"></i>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary mb-1">{properties.length}</div>
+                  <div className="flex items-center space-x-1 text-xs">
+                    <i className="fa-solid fa-arrow-up text-primary"></i>
+                    <span className="text-primary font-medium">+2</span>
+                    <span className="text-secondary">this month</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Available Units</div>
+                    <div className="w-10 h-10 bg-[#FAFAFA] rounded-lg flex items-center justify-center">
+                      <i className="fa-solid fa-door-open text-primary"></i>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary mb-1">58</div>
+                  <div className="text-xs text-secondary">Across all properties</div>
+                </div>
+                
+                <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Avg Occupancy</div>
+                    <div className="w-10 h-10 bg-[#FAFAFA] rounded-lg flex items-center justify-center">
+                      <i className="fa-solid fa-chart-line text-primary"></i>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary mb-1">48%</div>
+                  <div className="flex items-center space-x-1 text-xs">
+                    <i className="fa-solid fa-arrow-up text-primary"></i>
+                    <span className="text-primary font-medium">+5%</span>
+                    <span className="text-secondary">vs last quarter</span>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-secondary text-sm font-medium">Avg Data Health</div>
+                    <div className="w-10 h-10 bg-[#FAFAFA] rounded-lg flex items-center justify-center">
+                      <i className="fa-solid fa-heart-pulse text-primary"></i>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-semibold text-primary mb-1">82%</div>
+                  <div className="flex items-center space-x-1 text-xs">
+                    <i className="fa-solid fa-arrow-up text-primary"></i>
+                    <span className="text-primary font-medium">+8%</span>
+                    <span className="text-secondary">this month</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Submarket Breakdown & Recent Activity */}
+            <div className="grid grid-cols-2 gap-6 mt-8">
+              <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                <h3 className="text-lg font-semibold text-primary mb-6">Submarket Breakdown</h3>
+                <div className="space-y-4">
+                  {[
+                    { name: 'City Core', count: 8, pct: 33 },
+                    { name: 'Shoreditch', count: 6, pct: 25 },
+                    { name: 'Canary Wharf', count: 5, pct: 21 },
+                    { name: 'Mayfair', count: 3, pct: 12.5 },
+                    { name: "King's Cross", count: 2, pct: 8.5 },
+                  ].map((submarket) => (
+                    <div key={submarket.name}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-primary font-medium">{submarket.name}</span>
+                        <span className="text-sm text-secondary">{submarket.count} properties</span>
+                      </div>
+                      <div className="w-full bg-[#FAFAFA] rounded-full h-2">
+                        <div className="bg-primary h-2 rounded-full" style={{ width: `${submarket.pct}%` }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                <h3 className="text-lg font-semibold text-primary mb-6">Recent Activity</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fa-solid fa-plus text-white text-xs"></i>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-primary font-medium">New property added</div>
+                      <div className="text-xs text-secondary mt-1">99 Bishopsgate added to portfolio</div>
+                      <div className="text-xs text-secondary mt-1">2 hours ago</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fa-solid fa-file-pdf text-white text-xs"></i>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-primary font-medium">Floorplan uploaded</div>
+                      <div className="text-xs text-secondary mt-1">New floorplan added to Principal Place</div>
+                      <div className="text-xs text-secondary mt-1">1 day ago</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <i className="fa-solid fa-pencil text-white text-xs"></i>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm text-primary font-medium">Property updated</div>
+                      <div className="text-xs text-secondary mt-1">Occupancy data refreshed for One Canada Square</div>
+                      <div className="text-xs text-secondary mt-1">3 days ago</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Disposal Agent Performance */}
+            <div className="mt-8">
+              <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
+                <h3 className="text-lg font-semibold text-primary mb-6">Disposal Agent Performance</h3>
+                <div className="grid grid-cols-5 gap-4">
+                  {[
+                    { name: 'Knight Frank', count: 6 },
+                    { name: 'CBRE', count: 5 },
+                    { name: 'JLL', count: 5 },
+                    { name: 'Savills', count: 4 },
+                    { name: 'Cushman', count: 4 },
+                  ].map((agent) => (
+                    <div key={agent.name} className="text-center">
+                      <div className="w-16 h-16 bg-[#FAFAFA] rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i className="fa-solid fa-building text-primary text-2xl"></i>
+                      </div>
+                      <div className="text-sm font-semibold text-primary">{agent.name}</div>
+                      <div className="text-xs text-secondary mt-1">{agent.count} properties</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>

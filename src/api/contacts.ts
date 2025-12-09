@@ -31,6 +31,9 @@ function transformContact(data: Record<string, unknown>): Contact {
     relationshipHealth: (data.health as Contact['relationshipHealth']) || 'good',
     relationshipHealthScore: data.relationshipHealthScore as number | undefined,
     lastActivity: data.lastActivity as string | undefined,
+    linkedinUrl: data.linkedinUrl as string | undefined,
+    enrichmentStatus: data.enrichmentStatus as Contact['enrichmentStatus'],
+    enrichedAt: data.enrichedAt as string | undefined,
     // Performance Metrics
     referralVolume: data.referralVolume as number | null | undefined,
     revenueAttribution: data.revenueAttribution as number | null | undefined,
@@ -190,6 +193,39 @@ export function useDeleteContact() {
   return useMutation({
     mutationFn: deleteContact,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+    },
+  });
+}
+
+// Enrich contact with LinkedIn data
+interface EnrichmentResult {
+  success: boolean;
+  linkedinUrl: string | null;
+  status: 'enriched' | 'not_found' | 'error' | 'already_enriched';
+  message: string;
+}
+
+async function enrichContact(id: string): Promise<EnrichmentResult> {
+  const response = await fetch(`${API_BASE}/${id}/enrich`, {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Enrichment failed' }));
+    throw new Error(error.message || 'Failed to enrich contact');
+  }
+
+  return response.json();
+}
+
+export function useEnrichContact() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: enrichContact,
+    onSuccess: (data, contactId) => {
+      queryClient.invalidateQueries({ queryKey: ['contact', contactId] });
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
     },
   });

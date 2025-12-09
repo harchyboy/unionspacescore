@@ -30,6 +30,8 @@ export interface Property {
   refurbishedYear?: number;
   parking?: string;
   amenities: string[];
+  images?: string[];
+  dataHealth?: number;
   marketing: {
     visibility: 'Private' | 'Public';
     status: 'Draft' | 'Broker-Ready' | 'On Market';

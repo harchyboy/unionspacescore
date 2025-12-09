@@ -18,6 +18,9 @@ export interface DbContact {
   relationship_health: string | null;
   relationship_health_score: number | null;
   description: string | null;
+  linkedin_url: string | null;
+  enrichment_status: string | null;
+  enriched_at: string | null;
   zoho_created_at: string | null;
   zoho_modified_at: string | null;
   created_at: string;

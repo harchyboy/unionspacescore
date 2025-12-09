@@ -27,6 +27,8 @@ import { ContactDetailsPage } from './pages/contacts/ContactDetailsPage';
 import { ContactNew } from './pages/contacts/New';
 import { ContactEdit } from './pages/contacts/Edit';
 import { CompaniesList } from './pages/companies/List';
+import { UnitsList } from './pages/units/List';
+import { UnitDetails } from './pages/units/Details';
 import { isFeatureEnabled, FEATURES, isContactsOnlyMode } from './config/features';
 
 // Placeholder pages for modules not yet implemented
@@ -128,10 +130,10 @@ function App() {
 
               {/* Units */}
               {isFeatureEnabled(FEATURES.UNITS) && (
-                <Route
-                  path="/units"
-                  element={<PlaceholderPage title="Units" description="Manage all units across properties" />}
-                />
+                <>
+                  <Route path="/units" element={<UnitsList />} />
+                  <Route path="/units/:id" element={<UnitDetails />} />
+                </>
               )}
 
               {/* Operations */}

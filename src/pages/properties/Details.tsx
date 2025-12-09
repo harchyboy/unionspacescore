@@ -1,4 +1,5 @@
 import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useProperty } from '../../api/properties';
 import { PropertyHeader } from '../../components/properties/PropertyHeader';
 import { OverviewTab } from './tabs/OverviewTab';
@@ -33,11 +34,22 @@ export function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = (searchParams.get('tab') || 'overview') as TabId;
+  const [animationKey, setAnimationKey] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
 
   const { data: property, isLoading, error } = useProperty(id);
 
+  useEffect(() => {
+    // Trigger animation on ID change
+    setAnimationKey(prev => prev + 1);
+  }, [id]);
+
   const handleTabChange = (tabId: TabId) => {
     setSearchParams({ tab: tabId });
+  };
+
+  const handleBackClick = () => {
+    setIsExiting(true);
   };
 
   if (isLoading) {
@@ -65,8 +77,38 @@ export function PropertyDetails() {
   }
 
   return (
-    <div>
-      <PropertyHeader property={property} />
+    <div 
+      key={animationKey}
+      style={{
+        animation: isExiting ? 'slideOut 0.3s ease-out forwards' : 'slideIn 0.3s ease-out'
+      }}
+    >
+      <style>
+        {`
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          @keyframes slideOut {
+            from {
+              transform: translateX(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+          }
+        `}
+      </style>
+      
+      <PropertyHeader property={property} onBackClick={handleBackClick} />
 
       <div className="px-8 py-6">
         <div
