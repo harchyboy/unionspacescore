@@ -113,10 +113,11 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
               {contact.lastName?.[0]}
             </div>
           )}
-          <div>
-            <div className="font-semibold text-primary text-sm">{contact.fullName}</div>
-            <div className="text-xs text-secondary">{contact.lastActivity || 'Never'}</div>
-          </div>
+            <div>
+              <div className="font-semibold text-primary text-sm">{contact.fullName}</div>
+              {/* Hide timestamp; show dash */}
+              <div className="text-xs text-secondary">—</div>
+            </div>
         </div>
       </TableCell>
       
