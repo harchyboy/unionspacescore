@@ -57,6 +57,19 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
   const lastName = record.Last_Name || '';
   const fullName = record.Full_Name || `${firstName} ${lastName}`.trim() || 'Unnamed Contact';
   
+  // Determine type: prefer Contact_Type field, fallback to Tag, default to Broker
+  let type = record.Contact_Type;
+  if (!type && Array.isArray(record.Tag)) {
+    const tags = record.Tag as { name: string }[];
+    // Check for known types in tags
+    const typeTag = tags.find(t => 
+      ['Broker', 'Disposal Agent', 'Tenant', 'Landlord', 'Supplier'].includes(t.name)
+    );
+    if (typeTag) {
+      type = typeTag.name;
+    }
+  }
+
   return {
     id: record.id,
     firstName,
@@ -68,7 +81,7 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
     role: record.Title ?? null,
     company: record.Account_Name?.name ?? null,
     accountId: record.Account_Name?.id ?? null,
-    type: record.Contact_Type ?? 'Broker',
+    type: type ?? 'Broker',
     territory: record.Territory ?? record.Mailing_City ?? null,
     health: record.Relationship_Health ?? 'good',
     relationshipHealthScore: record.Relationship_Health_Score ?? null,
@@ -157,7 +170,18 @@ function buildCriteria(typeFilter?: string, healthFilter?: string, query?: strin
   const conditions: string[] = [];
   
   if (typeFilter) {
-    conditions.push(`(Contact_Type:equals:${typeFilter})`);
+    const orConditions: string[] = [];
+    orConditions.push(`(Contact_Type:equals:${typeFilter})`);
+    
+    // Also try plural form (e.g. "Disposal Agents")
+    if (!typeFilter.endsWith('s')) {
+      orConditions.push(`(Contact_Type:equals:${typeFilter}s)`);
+    }
+
+    // Also try matching Tags (if user used tags instead of field)
+    orConditions.push(`(Tag:equals:${typeFilter})`);
+    
+    conditions.push(`(${orConditions.join('or')})`);
   }
   if (healthFilter) {
     conditions.push(`(Relationship_Health:equals:${healthFilter})`);
