@@ -52,6 +52,7 @@ async function fetchContacts(params?: ContactListParams): Promise<ContactListRes
   if (params?.filters?.type) searchParams.set('type', params.filters.type);
   if (params?.filters?.health) searchParams.set('health', params.filters.health);
   if (params?.filters?.query) searchParams.set('query', params.filters.query);
+  if (params?.filters?.company) searchParams.set('company', params.filters.company);
   if (params?.sortBy) searchParams.set('sortBy', params.sortBy);
   if (params?.sortOrder) searchParams.set('sortOrder', params.sortOrder);
 

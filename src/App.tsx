@@ -26,6 +26,7 @@ import { ContactsList } from './pages/contacts/List';
 import { ContactDetailsPage } from './pages/contacts/ContactDetailsPage';
 import { ContactNew } from './pages/contacts/New';
 import { ContactEdit } from './pages/contacts/Edit';
+import { CompaniesList } from './pages/companies/List';
 import { isFeatureEnabled, FEATURES, isContactsOnlyMode } from './config/features';
 
 // Placeholder pages for modules not yet implemented
@@ -172,6 +173,11 @@ function App() {
                   <Route path="/contacts/new" element={<ContactNew />} />
                   <Route path="/contacts/:id/edit" element={<ContactEdit />} />
                   <Route path="/contacts/:id" element={<ContactDetailsPage />} />
+                </>
+              )}
+              {isFeatureEnabled(FEATURES.COMPANIES) && (
+                <>
+                  <Route path="/companies" element={<CompaniesList />} />
                 </>
               )}
               {isFeatureEnabled(FEATURES.ANALYTICS) && (

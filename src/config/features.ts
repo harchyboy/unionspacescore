@@ -12,6 +12,7 @@ export const FEATURES = {
   TICKETS: 'tickets',
   SUPPLIERS: 'suppliers',
   CONTACTS: 'contacts',
+  COMPANIES: 'companies',
   ANALYTICS: 'analytics',
   SETTINGS: 'settings',
 } as const;

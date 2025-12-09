@@ -3,16 +3,48 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 interface ZohoAccountRecord {
   id: string;
   Account_Name?: string;
+  Account_Type?: string;
+  Industry?: string;
+  Billing_Street?: string;
   Billing_City?: string;
+  Billing_Code?: string;
+  Billing_Country?: string;
   Website?: string;
+  Phone?: string;
+  Fax?: string;
+  Employees?: number;
+  Annual_Revenue?: number;
+  Description?: string;
+  Modified_Time?: string;
+  Created_Time?: string;
   [key: string]: unknown;
+}
+
+interface ContactDto {
+  id: string;
+  name: string;
+  email?: string | null;
+  role?: string | null;
 }
 
 interface AccountDto {
   id: string;
   name: string;
+  type?: string | null;
+  industry?: string | null;
+  address?: string | null;
   city?: string | null;
+  postcode?: string | null;
+  country?: string | null;
   website?: string | null;
+  phone?: string | null;
+  employeeCount?: number | null;
+  annualRevenue?: number | null;
+  description?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+  contacts?: ContactDto[];
+  contactCount?: number | null;
 }
 
 const requiredEnvVars = ['ZOHO_CLIENT_ID', 'ZOHO_CLIENT_SECRET', 'ZOHO_REFRESH_TOKEN'] as const;
@@ -98,32 +130,136 @@ async function zohoRequest<T>(path: string, init: FetchOptions = {}): Promise<T>
   }
 }
 
-function mapAccount(record: ZohoAccountRecord): AccountDto {
+function mapAccount(record: ZohoAccountRecord, contacts?: ContactDto[]): AccountDto {
   return {
     id: record.id,
     name: record.Account_Name || 'Unnamed Account',
+    type: record.Account_Type ?? null,
+    industry: record.Industry ?? null,
+    address: record.Billing_Street ?? null,
     city: record.Billing_City ?? null,
+    postcode: record.Billing_Code ?? null,
+    country: record.Billing_Country ?? null,
     website: record.Website ?? null,
+    phone: record.Phone ?? null,
+    employeeCount: record.Employees ?? null,
+    annualRevenue: record.Annual_Revenue ?? null,
+    description: record.Description ?? null,
+    createdAt: record.Created_Time ?? null,
+    updatedAt: record.Modified_Time ?? null,
+    contacts: contacts ?? [],
+    contactCount: contacts?.length ?? null,
   };
 }
 
-async function listAccounts(search?: string, limit = 20) {
+// Fetch contacts for a list of account IDs
+async function getContactsForAccounts(accountIds: string[]): Promise<Map<string, ContactDto[]>> {
+  const contactsMap = new Map<string, ContactDto[]>();
+  
+  if (accountIds.length === 0) return contactsMap;
+  
+  // Initialize empty arrays for all account IDs
+  accountIds.forEach(id => contactsMap.set(id, []));
+  
+  try {
+    // Fetch contacts that belong to these accounts
+    // Use search to find contacts with Account_Name.id in our list
+    for (const accountId of accountIds) {
+      const criteria = `(Account_Name:equals:${accountId})`;
+      const response = await zohoRequest<{
+        data?: { id: string; Full_Name?: string; First_Name?: string; Last_Name?: string; Email?: string; Title?: string; Account_Name?: { id?: string } }[];
+      }>(`/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&per_page=5`);
+      
+      if (response.data) {
+        const contacts = response.data.map(c => ({
+          id: c.id,
+          name: c.Full_Name || `${c.First_Name ?? ''} ${c.Last_Name ?? ''}`.trim() || 'Unnamed',
+          email: c.Email ?? null,
+          role: c.Title ?? null,
+        }));
+        contactsMap.set(accountId, contacts);
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching contacts for accounts:', error);
+  }
+  
+  return contactsMap;
+}
+
+async function getTotalCount(typeFilter?: string, search?: string): Promise<number> {
+  let total = 0;
+  let page = 1;
+  let hasMore = true;
+  
+  while (hasMore) {
+    let apiPath: string;
+    
+    if (search && search.trim().length >= 2) {
+      let criteria = `(Account_Name:contains:${search.trim()})`;
+      if (typeFilter) {
+        criteria = `((Account_Name:contains:${search.trim()})and(Account_Type:equals:${typeFilter}))`;
+      }
+      apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=200`;
+    } else if (typeFilter) {
+      const criteria = `(Account_Type:equals:${typeFilter})`;
+      apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=200`;
+    } else {
+      apiPath = `/crm/v2/Accounts?page=${page}&per_page=200`;
+    }
+    
+    const response = await zohoRequest<{
+      data?: { id: string }[];
+      info?: { more_records?: boolean };
+    }>(apiPath);
+    
+    const count = response.data?.length ?? 0;
+    total += count;
+    hasMore = response.info?.more_records ?? false;
+    page++;
+    
+    if (page > 50) break;
+  }
+  
+  return total;
+}
+
+async function listAccounts(page = 1, perPage = 50, typeFilter?: string, search?: string) {
+  let apiPath: string;
+  
   const trimmed = search?.trim();
   if (trimmed && trimmed.length >= 2) {
-    const criteria = encodeURIComponent(`(Account_Name:starts_with:${trimmed})`);
-    const response = await zohoRequest<{ data?: ZohoAccountRecord[] }>(
-      `/crm/v2/Accounts/search?criteria=${criteria}&per_page=${limit}`,
-    );
-    return (response.data ?? []).map(mapAccount);
+    let criteria = `(Account_Name:contains:${trimmed})`;
+    if (typeFilter) {
+      criteria = `((Account_Name:contains:${trimmed})and(Account_Type:equals:${typeFilter}))`;
+    }
+    apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
+  } else if (typeFilter) {
+    const criteria = `(Account_Type:equals:${typeFilter})`;
+    apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
+  } else {
+    apiPath = `/crm/v2/Accounts?page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
   }
 
-  // If search param is provided but too short, return empty list to avoid showing unrelated accounts
-  if (search !== undefined && trimmed !== undefined && trimmed.length > 0) {
-    return [];
-  }
+  const response = await zohoRequest<{
+    data?: ZohoAccountRecord[];
+    info?: { more_records?: boolean; count?: number };
+  }>(apiPath);
 
-  const response = await zohoRequest<{ data?: ZohoAccountRecord[] }>(`/crm/v2/Accounts?per_page=${limit}`);
-  return (response.data ?? []).map(mapAccount);
+  const records = response.data ?? [];
+  const moreRecords = response.info?.more_records ?? false;
+  
+  // Get accurate total count
+  const total = await getTotalCount(typeFilter, search);
+  
+  // Fetch contacts for each account
+  const accountIds = records.map(r => r.id);
+  const contactsMap = await getContactsForAccounts(accountIds);
+
+  return {
+    items: records.map(record => mapAccount(record, contactsMap.get(record.id))),
+    info: { count: total, more_records: moreRecords },
+  };
 }
 
 async function createAccount(payload: { name: string; city?: string | null }) {
@@ -164,6 +300,11 @@ function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
+function parseNumber(value: unknown, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setCors(res);
 
@@ -173,9 +314,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     if (req.method === 'GET') {
+      const page = parseNumber(req.query.page, 1);
+      const pageSize = parseNumber(req.query.pageSize, 50);
+      const typeFilter = typeof req.query.type === 'string' ? req.query.type : undefined;
       const search = typeof req.query.search === 'string' ? req.query.search : undefined;
-      const items = await listAccounts(search, 50);
-      return res.status(200).json({ items });
+      
+      const { items, info } = await listAccounts(page, pageSize, typeFilter, search);
+      
+      return res.status(200).json({
+        items,
+        page,
+        pageSize,
+        total: info.count ?? items.length,
+        moreRecords: info.more_records ?? false,
+      });
     }
 
     if (req.method === 'POST') {

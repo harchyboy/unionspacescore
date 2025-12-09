@@ -73,8 +73,13 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
             <div>
               <div className="flex items-center space-x-3 mb-1">
                 <h1 className="text-2xl font-semibold text-primary">{displayName}</h1>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary text-white">
-                  {contact.type === 'Broker' ? 'Broker' : contact.type}
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                  contact.type === 'Broker' ? 'bg-black text-white' :
+                  contact.type === 'Disposal Agent' ? 'bg-secondary text-white' :
+                  contact.type === 'Tenant' ? 'bg-accent text-white' :
+                  'bg-muted text-primary'
+                }`}>
+                  {contact.type || 'Contact'}
                 </span>
               </div>
               <div className="flex items-center space-x-4 text-sm text-secondary">

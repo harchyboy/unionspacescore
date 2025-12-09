@@ -45,6 +45,8 @@ async function fetchCompanies(params: UseCompaniesParams): Promise<CompanyListRe
       description: item.description as string | null,
       createdAt: item.createdAt as string | null,
       updatedAt: item.updatedAt as string | null,
+      contacts: item.contacts as { id: string; name: string; email?: string | null; role?: string | null }[] | undefined,
+      contactCount: item.contactCount as number | null,
     })) as Company[],
     total: data.total || data.items.length,
     page: data.page || 1,

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useContacts } from '../../api/contacts';
+import { useCompanies } from '../../api/companies';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
 import { Button } from '../../components/ui/Button';
@@ -54,6 +55,11 @@ export function ContactsList() {
   );
   const { toasts, removeToast } = useToast();
   
+  // Fetch companies for the filter dropdown (synced from Zoho CRM)
+  const { data: companiesData, isLoading: companiesLoading } = useCompanies({
+    pageSize: 200, // Fetch up to 200 companies for the filter dropdown
+  });
+  
   // Slide-over state for contact details
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
@@ -97,6 +103,7 @@ export function ContactsList() {
       type: getTypeFilterForTab(),
       health: healthFilter !== 'all' ? healthFilter : undefined,
       query: searchQuery || undefined,
+      company: firmFilter !== 'all' ? firmFilter : undefined,
     },
     sortBy: 'name',
     sortOrder: 'asc',
@@ -105,7 +112,15 @@ export function ContactsList() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeTab, healthFilter, searchQuery]);
+  }, [activeTab, healthFilter, searchQuery, firmFilter]);
+  
+  // Sort companies alphabetically for the dropdown
+  const sortedCompanies = useMemo(() => {
+    if (!companiesData?.items) return [];
+    return [...companiesData.items].sort((a, b) => 
+      a.name.localeCompare(b.name)
+    );
+  }, [companiesData]);
 
   const totalPages = data ? Math.ceil(data.total / pageSize) : 1;
   const startItem = data ? (currentPage - 1) * pageSize + 1 : 0;
@@ -204,13 +219,14 @@ export function ContactsList() {
               value={firmFilter}
               onChange={(e) => setFirmFilter(e.target.value)}
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              disabled={companiesLoading}
             >
               <option value="all">All Companies</option>
-              <option value="knight-frank">Knight Frank</option>
-              <option value="cbre">CBRE</option>
-              <option value="jll">JLL</option>
-              <option value="savills">Savills</option>
-              <option value="cushman">Cushman & Wakefield</option>
+              {sortedCompanies.map((company) => (
+                <option key={company.id} value={company.name}>
+                  {company.name}
+                </option>
+              ))}
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
