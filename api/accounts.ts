@@ -1,24 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-interface ZohoAccountRecord {
-  id: string;
-  Account_Name?: string;
-  Account_Type?: string;
-  Industry?: string;
-  Billing_Street?: string;
-  Billing_City?: string;
-  Billing_Code?: string;
-  Billing_Country?: string;
-  Website?: string;
-  Phone?: string;
-  Fax?: string;
-  Employees?: number;
-  Annual_Revenue?: number;
-  Description?: string;
-  Modified_Time?: string;
-  Created_Time?: string;
-  [key: string]: unknown;
-}
+import { getSupabase, isSupabaseConfigured, DbAccount } from './_lib/supabase';
+import { zohoRequest, ZohoAccountRecord } from './_lib/zoho';
 
 interface ContactDto {
   id: string;
@@ -47,90 +29,31 @@ interface AccountDto {
   contactCount?: number | null;
 }
 
-const requiredEnvVars = ['ZOHO_CLIENT_ID', 'ZOHO_CLIENT_SECRET', 'ZOHO_REFRESH_TOKEN'] as const;
-
-function ensureEnv() {
-  for (const key of requiredEnvVars) {
-    if (!process.env[key]) {
-      throw new Error(`Missing required env var ${key}`);
-    }
-  }
-}
-
-const ZOHO_DC = process.env.ZOHO_DC || 'eu';
-const TOKEN_URL = `https://accounts.zoho.${ZOHO_DC}/oauth/v2/token`;
-const API_BASE = `https://www.zohoapis.${ZOHO_DC}`;
-
-let cachedToken: { token: string; expiresAt: number } | null = null;
-
-async function getAccessToken() {
-  ensureEnv();
-  if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) {
-    return cachedToken.token;
-  }
-
-  const params = new URLSearchParams({
-    refresh_token: process.env.ZOHO_REFRESH_TOKEN!,
-    client_id: process.env.ZOHO_CLIENT_ID!,
-    client_secret: process.env.ZOHO_CLIENT_SECRET!,
-    grant_type: 'refresh_token',
-  });
-
-  const response = await fetch(`${TOKEN_URL}?${params.toString()}`, {
-    method: 'POST',
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Zoho OAuth error: ${text}`);
-  }
-
-  const data = (await response.json()) as { access_token: string; expires_in: number };
-  cachedToken = {
-    token: data.access_token,
-    expiresAt: Date.now() + data.expires_in * 1000,
+// Map database record to DTO
+function mapDbAccount(record: DbAccount, contacts?: ContactDto[]): AccountDto {
+  return {
+    id: record.zoho_id,
+    name: record.name,
+    type: record.account_type,
+    industry: record.industry,
+    address: record.address,
+    city: record.city,
+    postcode: record.postcode,
+    country: record.country,
+    website: record.website,
+    phone: record.phone,
+    employeeCount: record.employee_count,
+    annualRevenue: record.annual_revenue,
+    description: record.description,
+    createdAt: record.zoho_created_at,
+    updatedAt: record.zoho_modified_at,
+    contacts: contacts ?? [],
+    contactCount: contacts?.length ?? null,
   };
-  return cachedToken.token;
 }
 
-type FetchOptions = Parameters<typeof fetch>[1];
-
-async function zohoRequest<T>(path: string, init: FetchOptions = {}): Promise<T> {
-  const token = await getAccessToken();
-  const headers = new Headers(init.headers);
-  headers.set('Authorization', `Zoho-oauthtoken ${token}`);
-  if (init.body && !headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json');
-  }
-
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers,
-  });
-
-  // Some Zoho endpoints can legitimately return 204 No Content
-  if (response.status === 204) {
-    return { data: [] } as T;
-  }
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Zoho API error (${response.status}): ${text}`);
-  }
-
-  const text = await response.text();
-  if (!text) {
-    return { data: [] } as T;
-  }
-
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    throw new Error(`Invalid JSON response from Zoho: ${text.substring(0, 120)}...`);
-  }
-}
-
-function mapAccount(record: ZohoAccountRecord, contacts?: ContactDto[]): AccountDto {
+// Map Zoho record to DTO
+function mapZohoAccount(record: ZohoAccountRecord, contacts?: ContactDto[]): AccountDto {
   return {
     id: record.id,
     name: record.Account_Name || 'Unnamed Account',
@@ -152,22 +75,111 @@ function mapAccount(record: ZohoAccountRecord, contacts?: ContactDto[]): Account
   };
 }
 
-// Fetch contacts for a list of account IDs
-async function getContactsForAccounts(accountIds: string[]): Promise<Map<string, ContactDto[]>> {
+// =====================================================
+// DATABASE OPERATIONS
+// =====================================================
+
+async function getContactsForAccountFromDb(accountZohoId: string): Promise<ContactDto[]> {
+  const supabase = getSupabase();
+  if (!supabase) return [];
+
+  const { data } = await supabase
+    .from('contacts')
+    .select('zoho_id, full_name, email, role')
+    .eq('account_id', accountZohoId)
+    .limit(5);
+
+  if (!data) return [];
+  
+  return data.map(c => ({
+    id: c.zoho_id,
+    name: c.full_name,
+    email: c.email,
+    role: c.role,
+  }));
+}
+
+async function listAccountsFromDb(
+  page: number,
+  perPage: number,
+  typeFilter?: string,
+  search?: string
+) {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+
+  let dbQuery = supabase.from('accounts').select('*', { count: 'exact' });
+
+  // Apply filters
+  if (typeFilter) {
+    dbQuery = dbQuery.eq('account_type', typeFilter);
+  }
+  if (search && search.trim().length >= 2) {
+    dbQuery = dbQuery.ilike('name', `%${search}%`);
+  }
+
+  // Apply sorting
+  dbQuery = dbQuery.order('zoho_modified_at', { ascending: false });
+
+  // Apply pagination
+  const from = (page - 1) * perPage;
+  const to = from + perPage - 1;
+  dbQuery = dbQuery.range(from, to);
+
+  const { data, count, error } = await dbQuery;
+
+  if (error) {
+    console.error('Database query error:', error);
+    return null;
+  }
+
+  // Fetch contacts for each account
+  const accounts = data as DbAccount[];
+  const accountsWithContacts = await Promise.all(
+    accounts.map(async (account) => {
+      const contacts = await getContactsForAccountFromDb(account.zoho_id);
+      return mapDbAccount(account, contacts);
+    })
+  );
+
+  return {
+    items: accountsWithContacts,
+    total: count ?? 0,
+  };
+}
+
+async function getAccountFromDb(zohoId: string): Promise<AccountDto | null> {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from('accounts')
+    .select('*')
+    .eq('zoho_id', zohoId)
+    .single();
+
+  if (error || !data) return null;
+  
+  const contacts = await getContactsForAccountFromDb(zohoId);
+  return mapDbAccount(data as DbAccount, contacts);
+}
+
+// =====================================================
+// ZOHO OPERATIONS (FALLBACK)
+// =====================================================
+
+async function getContactsForAccountsFromZoho(accountIds: string[]): Promise<Map<string, ContactDto[]>> {
   const contactsMap = new Map<string, ContactDto[]>();
   
   if (accountIds.length === 0) return contactsMap;
   
-  // Initialize empty arrays for all account IDs
   accountIds.forEach(id => contactsMap.set(id, []));
   
   try {
-    // Fetch contacts that belong to these accounts
-    // Use search to find contacts with Account_Name.id in our list
     for (const accountId of accountIds) {
       const criteria = `(Account_Name:equals:${accountId})`;
       const response = await zohoRequest<{
-        data?: { id: string; Full_Name?: string; First_Name?: string; Last_Name?: string; Email?: string; Title?: string; Account_Name?: { id?: string } }[];
+        data?: { id: string; Full_Name?: string; First_Name?: string; Last_Name?: string; Email?: string; Title?: string }[];
       }>(`/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&per_page=5`);
       
       if (response.data) {
@@ -187,7 +199,7 @@ async function getContactsForAccounts(accountIds: string[]): Promise<Map<string,
   return contactsMap;
 }
 
-async function getTotalCount(typeFilter?: string, search?: string): Promise<number> {
+async function getTotalCountFromZoho(typeFilter?: string, search?: string): Promise<number> {
   let total = 0;
   let page = 1;
   let hasMore = true;
@@ -213,18 +225,16 @@ async function getTotalCount(typeFilter?: string, search?: string): Promise<numb
       info?: { more_records?: boolean };
     }>(apiPath);
     
-    const count = response.data?.length ?? 0;
-    total += count;
+    total += response.data?.length ?? 0;
     hasMore = response.info?.more_records ?? false;
     page++;
-    
     if (page > 50) break;
   }
   
   return total;
 }
 
-async function listAccounts(page = 1, perPage = 50, typeFilter?: string, search?: string) {
+async function listAccountsFromZoho(page: number, perPage: number, typeFilter?: string, search?: string) {
   let apiPath: string;
   
   const trimmed = search?.trim();
@@ -243,33 +253,48 @@ async function listAccounts(page = 1, perPage = 50, typeFilter?: string, search?
 
   const response = await zohoRequest<{
     data?: ZohoAccountRecord[];
-    info?: { more_records?: boolean; count?: number };
+    info?: { more_records?: boolean };
   }>(apiPath);
 
   const records = response.data ?? [];
   const moreRecords = response.info?.more_records ?? false;
+  const total = await getTotalCountFromZoho(typeFilter, search);
   
-  // Get accurate total count
-  const total = await getTotalCount(typeFilter, search);
-  
-  // Fetch contacts for each account
   const accountIds = records.map(r => r.id);
-  const contactsMap = await getContactsForAccounts(accountIds);
+  const contactsMap = await getContactsForAccountsFromZoho(accountIds);
 
   return {
-    items: records.map(record => mapAccount(record, contactsMap.get(record.id))),
-    info: { count: total, more_records: moreRecords },
+    items: records.map(record => mapZohoAccount(record, contactsMap.get(record.id))),
+    total,
+    moreRecords,
   };
 }
 
+async function getAccountFromZoho(id: string): Promise<AccountDto | null> {
+  try {
+    const response = await zohoRequest<{ data?: ZohoAccountRecord[] }>(
+      `/crm/v2/Accounts/${id}`
+    );
+    const record = response.data?.[0];
+    if (!record) return null;
+    
+    const contactsMap = await getContactsForAccountsFromZoho([id]);
+    return mapZohoAccount(record, contactsMap.get(id));
+  } catch {
+    return null;
+  }
+}
+
+// =====================================================
+// WRITE OPERATIONS (Zoho + Database)
+// =====================================================
+
 async function createAccount(payload: { name: string; city?: string | null }) {
   const body = {
-    data: [
-      {
-        Account_Name: payload.name,
-        Billing_City: payload.city || undefined,
-      },
-    ],
+    data: [{
+      Account_Name: payload.name,
+      Billing_City: payload.city || undefined,
+    }],
     trigger: [],
   };
 
@@ -290,13 +315,82 @@ async function createAccount(payload: { name: string; city?: string | null }) {
     throw new Error('Zoho did not return an Account ID');
   }
 
-  // Return a normalised DTO
-  return mapAccount({ id, Account_Name: payload.name, Billing_City: payload.city ?? undefined });
+  // Also insert into database if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    await supabase.from('accounts').insert({
+      zoho_id: id,
+      name: payload.name,
+      city: payload.city || null,
+    });
+  }
+
+  return mapZohoAccount({ id, Account_Name: payload.name, Billing_City: payload.city ?? undefined });
 }
+
+async function updateAccount(id: string, payload: Record<string, unknown>) {
+  const zohoPayload: Record<string, unknown> = {};
+  
+  if (payload.name !== undefined) zohoPayload.Account_Name = payload.name;
+  if (payload.type !== undefined) zohoPayload.Account_Type = payload.type;
+  if (payload.industry !== undefined) zohoPayload.Industry = payload.industry;
+  if (payload.city !== undefined) zohoPayload.Billing_City = payload.city;
+  if (payload.address !== undefined) zohoPayload.Billing_Street = payload.address;
+  if (payload.postcode !== undefined) zohoPayload.Billing_Code = payload.postcode;
+  if (payload.country !== undefined) zohoPayload.Billing_Country = payload.country;
+  if (payload.website !== undefined) zohoPayload.Website = payload.website;
+  if (payload.phone !== undefined) zohoPayload.Phone = payload.phone;
+
+  const body = { data: [zohoPayload], trigger: [] };
+
+  const response = await zohoRequest<{
+    data?: { details?: { id: string }; status?: string; message?: string }[];
+  }>(`/crm/v2/Accounts/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+
+  const details = response.data?.[0];
+  if (details?.status === 'error') {
+    throw new Error(details.message || 'Failed to update account in Zoho');
+  }
+
+  // Also update in database if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    const dbPayload: Record<string, unknown> = {};
+    if (payload.name !== undefined) dbPayload.name = payload.name;
+    if (payload.type !== undefined) dbPayload.account_type = payload.type;
+    if (payload.industry !== undefined) dbPayload.industry = payload.industry;
+    if (payload.city !== undefined) dbPayload.city = payload.city;
+    if (payload.address !== undefined) dbPayload.address = payload.address;
+    if (payload.postcode !== undefined) dbPayload.postcode = payload.postcode;
+    if (payload.country !== undefined) dbPayload.country = payload.country;
+    if (payload.website !== undefined) dbPayload.website = payload.website;
+    if (payload.phone !== undefined) dbPayload.phone = payload.phone;
+
+    await supabase.from('accounts').update(dbPayload).eq('zoho_id', id);
+  }
+
+  return getAccountFromZoho(id);
+}
+
+async function deleteAccountById(id: string) {
+  await zohoRequest(`/crm/v2/Accounts/${id}`, { method: 'DELETE' });
+
+  const supabase = getSupabase();
+  if (supabase) {
+    await supabase.from('accounts').delete().eq('zoho_id', id);
+  }
+}
+
+// =====================================================
+// API HANDLER
+// =====================================================
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
@@ -318,15 +412,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const pageSize = parseNumber(req.query.pageSize, 50);
       const typeFilter = typeof req.query.type === 'string' ? req.query.type : undefined;
       const search = typeof req.query.search === 'string' ? req.query.search : undefined;
-      
-      const { items, info } = await listAccounts(page, pageSize, typeFilter, search);
+
+      // Try database first if configured
+      if (isSupabaseConfigured()) {
+        const dbResult = await listAccountsFromDb(page, pageSize, typeFilter, search);
+        if (dbResult && dbResult.items.length > 0) {
+          return res.status(200).json({
+            items: dbResult.items,
+            page,
+            pageSize,
+            total: dbResult.total,
+            moreRecords: (page * pageSize) < dbResult.total,
+            source: 'database',
+          });
+        }
+      }
+
+      // Fallback to Zoho API
+      const zohoResult = await listAccountsFromZoho(page, pageSize, typeFilter, search);
       
       return res.status(200).json({
-        items,
+        items: zohoResult.items,
         page,
         pageSize,
-        total: info.count ?? items.length,
-        moreRecords: info.more_records ?? false,
+        total: zohoResult.total,
+        moreRecords: zohoResult.moreRecords,
+        source: 'zoho',
       });
     }
 
@@ -349,4 +460,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 }
 
-
+// Export for potential use by accounts/[id].ts
+export { updateAccount, deleteAccountById, getAccountFromDb, getAccountFromZoho };
