@@ -91,7 +91,7 @@ async function getContactsForAccountFromDb(accountZohoId: string): Promise<Conta
 
   if (!data) return [];
   
-  return data.map(c => ({
+  return data.map((c: { zoho_id: string; full_name: string; email: string | null; role: string | null }) => ({
     id: c.zoho_id,
     name: c.full_name,
     email: c.email,
