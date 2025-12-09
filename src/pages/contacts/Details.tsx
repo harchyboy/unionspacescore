@@ -199,24 +199,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 </div>
                 
                 <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Phone</label>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-primary">{contact.phone || '-'}</span>
-                    {contact.phone && (
-                      <button 
-                        onClick={() => {
-                          navigator.clipboard.writeText(contact.phone!);
-                          showToast('Phone copied to clipboard');
-                        }}
-                        className="text-secondary hover:text-primary transition-colors"
-                      >
-                        <i className="fa-solid fa-copy text-xs"></i>
-                      </button>
-                    )}
-                  </div>
-                </div>
-                
-                <div>
                   <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Mobile</label>
                   <div className="flex items-center space-x-2">
                     <span className="text-sm text-primary">{contact.mobile || '-'}</span>
@@ -232,39 +214,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                       </button>
                     )}
                   </div>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Role</label>
-                  <span className="text-sm text-primary">{contact.role || '-'}</span>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Territory</label>
-                  <span className="text-sm text-primary">{contact.territory || '-'}</span>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Specialisms</label>
-                  <div className="flex flex-wrap gap-2">
-                    {contact.specialisms?.length ? contact.specialisms.map((spec, i) => (
-                      <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-primary">
-                        {spec}
-                      </span>
-                    )) : <span className="text-sm text-primary">-</span>}
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Preferred Submarkets</label>
-                  <span className="text-sm text-primary">
-                    {contact.preferredSubmarkets?.join(', ') || '-'}
-                  </span>
-                </div>
-                
-                <div>
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Referral Source</label>
-                  <span className="text-sm text-primary">{contact.referralSource || '-'}</span>
                 </div>
                 
                 <div>
@@ -366,25 +315,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
               </div>
             </div>
             
-            {/* Confidential Requirements Card */}
-            <div id="confidential-requirements-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <h2 className="text-lg font-semibold text-primary">Confidential Requirements</h2>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-destructive text-white">
-                    <i className="fa-solid fa-lock mr-1"></i>
-                    Confidential
-                  </span>
-                </div>
-                <button className="text-secondary hover:text-primary text-sm transition-colors">
-                  <i className="fa-solid fa-plus mr-1"></i>
-                  Add Requirement
-                </button>
-              </div>
-              
-              <div className="text-sm text-secondary">-</div>
-            </div>
-            
             {/* Communications History Card */}
             <div id="communications-history-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">
@@ -407,18 +337,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
               <div className="text-sm text-secondary">-</div>
             </div>
             
-            {/* Documents Card */}
-            <div id="documents-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-primary">Documents</h2>
-                <button className="text-secondary hover:text-primary text-sm transition-colors">
-                  <i className="fa-solid fa-upload mr-1"></i>
-                  Upload Document
-                </button>
-              </div>
-              
-              <div className="text-sm text-secondary">-</div>
-            </div>
           </div>
           
           {/* Right Column */}
