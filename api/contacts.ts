@@ -1,32 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-interface ZohoContactRecord {
-  id: string;
-  First_Name?: string;
-  Last_Name?: string;
-  Full_Name?: string;
-  Email?: string;
-  Phone?: string;
-  Mobile?: string;
-  Title?: string;
-  Department?: string;
-  Account_Name?: { id?: string; name?: string };
-  Mailing_Street?: string;
-  Mailing_City?: string;
-  Mailing_State?: string;
-  Mailing_Zip?: string;
-  Mailing_Country?: string;
-  Description?: string;
-  Lead_Source?: string;
-  Modified_Time?: string;
-  Created_Time?: string;
-  // Custom fields for UNION
-  Contact_Type?: string;
-  Territory?: string;
-  Relationship_Health?: string;
-  Relationship_Health_Score?: number;
-  [key: string]: unknown;
-}
+import { getSupabase, isSupabaseConfigured, DbContact } from './_lib/supabase';
+import { zohoRequest, ZohoContactRecord } from './_lib/zoho';
 
 interface ContactDto {
   id: string;
@@ -48,90 +22,31 @@ interface ContactDto {
   updatedAt?: string | null;
 }
 
-const requiredEnvVars = ['ZOHO_CLIENT_ID', 'ZOHO_CLIENT_SECRET', 'ZOHO_REFRESH_TOKEN'] as const;
-
-function ensureEnv() {
-  for (const key of requiredEnvVars) {
-    if (!process.env[key]) {
-      throw new Error(`Missing required env var ${key}`);
-    }
-  }
-}
-
-const ZOHO_DC = process.env.ZOHO_DC || 'eu';
-const TOKEN_URL = `https://accounts.zoho.${ZOHO_DC}/oauth/v2/token`;
-const API_BASE = `https://www.zohoapis.${ZOHO_DC}`;
-
-let cachedToken: { token: string; expiresAt: number } | null = null;
-
-async function getAccessToken() {
-  ensureEnv();
-  if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) {
-    return cachedToken.token;
-  }
-
-  const params = new URLSearchParams({
-    refresh_token: process.env.ZOHO_REFRESH_TOKEN!,
-    client_id: process.env.ZOHO_CLIENT_ID!,
-    client_secret: process.env.ZOHO_CLIENT_SECRET!,
-    grant_type: 'refresh_token',
-  });
-
-  const response = await fetch(`${TOKEN_URL}?${params.toString()}`, {
-    method: 'POST',
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Zoho OAuth error: ${text}`);
-  }
-
-  const data = (await response.json()) as { access_token: string; expires_in: number };
-  cachedToken = {
-    token: data.access_token,
-    expiresAt: Date.now() + data.expires_in * 1000,
+// Map database record to DTO
+function mapDbContact(record: DbContact): ContactDto {
+  return {
+    id: record.zoho_id,
+    firstName: record.first_name,
+    lastName: record.last_name,
+    name: record.full_name,
+    email: record.email,
+    phone: record.phone,
+    mobile: record.mobile,
+    role: record.role,
+    company: record.company_name,
+    accountId: record.account_id,
+    type: record.contact_type,
+    territory: record.territory,
+    health: record.relationship_health,
+    relationshipHealthScore: record.relationship_health_score,
+    lastActivity: record.zoho_modified_at,
+    createdAt: record.zoho_created_at,
+    updatedAt: record.zoho_modified_at,
   };
-  return cachedToken.token;
 }
 
-type FetchOptions = Parameters<typeof fetch>[1];
-
-async function zohoRequest<T>(path: string, init: FetchOptions = {}): Promise<T> {
-  const token = await getAccessToken();
-  const headers = new Headers(init.headers);
-  headers.set('Authorization', `Zoho-oauthtoken ${token}`);
-  if (init.body && !headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json');
-  }
-
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers,
-  });
-
-  // Some Zoho endpoints can legitimately return 204 No Content
-  if (response.status === 204) {
-    return { data: [] } as T;
-  }
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Zoho API error (${response.status}): ${text}`);
-  }
-
-  const text = await response.text();
-  if (!text) {
-    return { data: [] } as T;
-  }
-
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    throw new Error(`Invalid JSON response from Zoho: ${text.substring(0, 120)}...`);
-  }
-}
-
-function mapContact(record: ZohoContactRecord): ContactDto {
+// Map Zoho record to DTO (fallback)
+function mapZohoContact(record: ZohoContactRecord): ContactDto {
   const firstName = record.First_Name || '';
   const lastName = record.Last_Name || '';
   const fullName = record.Full_Name || `${firstName} ${lastName}`.trim() || 'Unnamed Contact';
@@ -157,36 +72,80 @@ function mapContact(record: ZohoContactRecord): ContactDto {
   };
 }
 
-async function getTotalCount(typeFilter?: string, healthFilter?: string, query?: string, companyFilter?: string): Promise<number> {
-  let total = 0;
-  let page = 1;
-  let hasMore = true;
-  
-  while (hasMore) {
-    let apiPath: string;
-    const criteria = buildCriteria(typeFilter, healthFilter, query, companyFilter);
-    
-    if (criteria) {
-      apiPath = `/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=200`;
-    } else {
-      apiPath = `/crm/v2/Contacts?page=${page}&per_page=200`;
-    }
-    
-    const response = await zohoRequest<{
-      data?: { id: string }[];
-      info?: { more_records?: boolean };
-    }>(apiPath);
-    
-    const count = response.data?.length ?? 0;
-    total += count;
-    hasMore = response.info?.more_records ?? false;
-    page++;
-    
-    if (page > 50) break;
+// =====================================================
+// DATABASE OPERATIONS
+// =====================================================
+
+async function listContactsFromDb(
+  page: number,
+  perPage: number,
+  typeFilter?: string,
+  healthFilter?: string,
+  query?: string,
+  companyFilter?: string,
+  sortBy?: string,
+  sortOrder?: string
+) {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+
+  let dbQuery = supabase.from('contacts').select('*', { count: 'exact' });
+
+  // Apply filters
+  if (typeFilter) {
+    dbQuery = dbQuery.eq('contact_type', typeFilter);
   }
-  
-  return total;
+  if (healthFilter) {
+    dbQuery = dbQuery.eq('relationship_health', healthFilter);
+  }
+  if (query && query.trim().length >= 2) {
+    dbQuery = dbQuery.or(`full_name.ilike.%${query}%,email.ilike.%${query}%`);
+  }
+  if (companyFilter) {
+    dbQuery = dbQuery.eq('account_id', companyFilter);
+  }
+
+  // Apply sorting
+  const sortColumn = sortBy === 'name' ? 'full_name' : 
+                     sortBy === 'lastActivity' ? 'zoho_modified_at' :
+                     sortBy === 'company' ? 'company_name' : 'full_name';
+  dbQuery = dbQuery.order(sortColumn, { ascending: sortOrder !== 'desc' });
+
+  // Apply pagination
+  const from = (page - 1) * perPage;
+  const to = from + perPage - 1;
+  dbQuery = dbQuery.range(from, to);
+
+  const { data, count, error } = await dbQuery;
+
+  if (error) {
+    console.error('Database query error:', error);
+    return null;
+  }
+
+  return {
+    items: (data as DbContact[]).map(mapDbContact),
+    total: count ?? 0,
+  };
 }
+
+async function getContactFromDb(zohoId: string) {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .eq('zoho_id', zohoId)
+    .single();
+
+  if (error || !data) return null;
+  return mapDbContact(data as DbContact);
+}
+
+// =====================================================
+// ZOHO OPERATIONS (FALLBACK)
+// =====================================================
 
 function buildCriteria(typeFilter?: string, healthFilter?: string, query?: string, companyFilter?: string): string | null {
   const conditions: string[] = [];
@@ -194,68 +153,92 @@ function buildCriteria(typeFilter?: string, healthFilter?: string, query?: strin
   if (typeFilter) {
     conditions.push(`(Contact_Type:equals:${typeFilter})`);
   }
-  
   if (healthFilter) {
     conditions.push(`(Relationship_Health:equals:${healthFilter})`);
   }
-  
   if (query && query.trim().length >= 2) {
-    // Search by name or email
     conditions.push(`((Full_Name:contains:${query.trim()})or(Email:contains:${query.trim()}))`);
   }
-  
   if (companyFilter) {
-    // Filter by company name
     conditions.push(`(Account_Name:equals:${companyFilter})`);
   }
   
   if (conditions.length === 0) return null;
   if (conditions.length === 1) return conditions[0];
-  
   return `(${conditions.join('and')})`;
 }
 
-async function listContacts(
-  page = 1, 
-  perPage = 50, 
-  typeFilter?: string, 
-  healthFilter?: string, 
+async function getTotalCountFromZoho(typeFilter?: string, healthFilter?: string, query?: string, companyFilter?: string): Promise<number> {
+  let total = 0;
+  let page = 1;
+  let hasMore = true;
+  
+  while (hasMore) {
+    const criteria = buildCriteria(typeFilter, healthFilter, query, companyFilter);
+    const apiPath = criteria
+      ? `/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=200`
+      : `/crm/v2/Contacts?page=${page}&per_page=200`;
+    
+    const response = await zohoRequest<{
+      data?: { id: string }[];
+      info?: { more_records?: boolean };
+    }>(apiPath);
+    
+    total += response.data?.length ?? 0;
+    hasMore = response.info?.more_records ?? false;
+    page++;
+    if (page > 50) break;
+  }
+  
+  return total;
+}
+
+async function listContactsFromZoho(
+  page: number,
+  perPage: number,
+  typeFilter?: string,
+  healthFilter?: string,
   query?: string,
   companyFilter?: string,
-  sortBy = 'name',
-  sortOrder = 'asc'
+  sortBy?: string,
+  sortOrder?: string
 ) {
-  let apiPath: string;
   const criteria = buildCriteria(typeFilter, healthFilter, query, companyFilter);
-  
-  // Map our sort field to Zoho field
   const zohoSortField = sortBy === 'name' ? 'Full_Name' : 
                         sortBy === 'lastActivity' ? 'Modified_Time' :
                         sortBy === 'company' ? 'Account_Name' : 'Full_Name';
   const zohoSortOrder = sortOrder === 'desc' ? 'desc' : 'asc';
   
-  if (criteria) {
-    apiPath = `/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=${perPage}&sort_order=${zohoSortOrder}&sort_by=${zohoSortField}`;
-  } else {
-    apiPath = `/crm/v2/Contacts?page=${page}&per_page=${perPage}&sort_order=${zohoSortOrder}&sort_by=${zohoSortField}`;
-  }
+  const apiPath = criteria
+    ? `/crm/v2/Contacts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=${perPage}&sort_order=${zohoSortOrder}&sort_by=${zohoSortField}`
+    : `/crm/v2/Contacts?page=${page}&per_page=${perPage}&sort_order=${zohoSortOrder}&sort_by=${zohoSortField}`;
 
   const response = await zohoRequest<{
     data?: ZohoContactRecord[];
-    info?: { more_records?: boolean; count?: number };
+    info?: { more_records?: boolean };
   }>(apiPath);
 
   const records = response.data ?? [];
-  const moreRecords = response.info?.more_records ?? false;
-  
-  // Get accurate total count
-  const total = await getTotalCount(typeFilter, healthFilter, query, companyFilter);
+  const total = await getTotalCountFromZoho(typeFilter, healthFilter, query, companyFilter);
 
   return {
-    items: records.map(mapContact),
-    info: { count: total, more_records: moreRecords },
+    items: records.map(mapZohoContact),
+    total,
+    moreRecords: response.info?.more_records ?? false,
   };
 }
+
+async function getContactFromZoho(id: string) {
+  const response = await zohoRequest<{ data?: ZohoContactRecord[] }>(
+    `/crm/v2/Contacts/${id}`
+  );
+  const record = response.data?.[0];
+  return record ? mapZohoContact(record) : null;
+}
+
+// =====================================================
+// WRITE OPERATIONS (Zoho + Database)
+// =====================================================
 
 async function createContact(payload: {
   firstName: string;
@@ -269,21 +252,20 @@ async function createContact(payload: {
   territory?: string;
   notes?: string;
 }) {
+  // Create in Zoho first
   const body = {
-    data: [
-      {
-        First_Name: payload.firstName,
-        Last_Name: payload.lastName,
-        Email: payload.email,
-        Phone: payload.phone || undefined,
-        Mobile: payload.mobile || undefined,
-        Account_Name: payload.accountId ? { id: payload.accountId } : undefined,
-        Contact_Type: payload.type || 'Broker',
-        Title: payload.role || undefined,
-        Territory: payload.territory || undefined,
-        Description: payload.notes || undefined,
-      },
-    ],
+    data: [{
+      First_Name: payload.firstName,
+      Last_Name: payload.lastName,
+      Email: payload.email,
+      Phone: payload.phone || undefined,
+      Mobile: payload.mobile || undefined,
+      Account_Name: payload.accountId ? { id: payload.accountId } : undefined,
+      Contact_Type: payload.type || 'Broker',
+      Title: payload.role || undefined,
+      Territory: payload.territory || undefined,
+      Description: payload.notes || undefined,
+    }],
     trigger: [],
   };
 
@@ -304,8 +286,26 @@ async function createContact(payload: {
     throw new Error('Zoho did not return a Contact ID');
   }
 
-  // Return a normalised DTO
-  return mapContact({
+  // Also insert into database if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    await supabase.from('contacts').insert({
+      zoho_id: id,
+      first_name: payload.firstName,
+      last_name: payload.lastName,
+      full_name: `${payload.firstName} ${payload.lastName}`.trim(),
+      email: payload.email,
+      phone: payload.phone || null,
+      mobile: payload.mobile || null,
+      role: payload.role || null,
+      account_id: payload.accountId || null,
+      contact_type: payload.type || 'Broker',
+      territory: payload.territory || null,
+      description: payload.notes || null,
+    });
+  }
+
+  return mapZohoContact({
     id,
     First_Name: payload.firstName,
     Last_Name: payload.lastName,
@@ -317,6 +317,79 @@ async function createContact(payload: {
     Territory: payload.territory,
   });
 }
+
+async function updateContact(id: string, payload: Record<string, unknown>) {
+  // Update in Zoho first
+  const zohoPayload: Record<string, unknown> = {};
+  
+  if (payload.firstName !== undefined) zohoPayload.First_Name = payload.firstName;
+  if (payload.lastName !== undefined) zohoPayload.Last_Name = payload.lastName;
+  if (payload.email !== undefined) zohoPayload.Email = payload.email;
+  if (payload.phone !== undefined) zohoPayload.Phone = payload.phone;
+  if (payload.mobile !== undefined) zohoPayload.Mobile = payload.mobile;
+  if (payload.role !== undefined) zohoPayload.Title = payload.role;
+  if (payload.type !== undefined) zohoPayload.Contact_Type = payload.type;
+  if (payload.territory !== undefined) zohoPayload.Territory = payload.territory;
+  if (payload.notes !== undefined) zohoPayload.Description = payload.notes;
+  if (payload.accountId !== undefined) {
+    zohoPayload.Account_Name = payload.accountId ? { id: payload.accountId } : null;
+  }
+  if (payload.health !== undefined) zohoPayload.Relationship_Health = payload.health;
+
+  const body = { data: [zohoPayload], trigger: [] };
+
+  const response = await zohoRequest<{
+    data?: { details?: { id: string }; status?: string; message?: string }[];
+  }>(`/crm/v2/Contacts/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+
+  const details = response.data?.[0];
+  if (details?.status === 'error') {
+    throw new Error(details.message || 'Failed to update contact in Zoho');
+  }
+
+  // Also update in database if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    const dbPayload: Record<string, unknown> = {};
+    if (payload.firstName !== undefined) dbPayload.first_name = payload.firstName;
+    if (payload.lastName !== undefined) dbPayload.last_name = payload.lastName;
+    if (payload.firstName !== undefined || payload.lastName !== undefined) {
+      dbPayload.full_name = `${payload.firstName ?? ''} ${payload.lastName ?? ''}`.trim();
+    }
+    if (payload.email !== undefined) dbPayload.email = payload.email;
+    if (payload.phone !== undefined) dbPayload.phone = payload.phone;
+    if (payload.mobile !== undefined) dbPayload.mobile = payload.mobile;
+    if (payload.role !== undefined) dbPayload.role = payload.role;
+    if (payload.type !== undefined) dbPayload.contact_type = payload.type;
+    if (payload.territory !== undefined) dbPayload.territory = payload.territory;
+    if (payload.notes !== undefined) dbPayload.description = payload.notes;
+    if (payload.accountId !== undefined) dbPayload.account_id = payload.accountId;
+    if (payload.health !== undefined) dbPayload.relationship_health = payload.health;
+
+    await supabase.from('contacts').update(dbPayload).eq('zoho_id', id);
+  }
+
+  // Fetch and return the updated contact
+  return getContactFromZoho(id);
+}
+
+async function deleteContactById(id: string) {
+  // Delete from Zoho
+  await zohoRequest(`/crm/v2/Contacts/${id}`, { method: 'DELETE' });
+
+  // Also delete from database if configured
+  const supabase = getSupabase();
+  if (supabase) {
+    await supabase.from('contacts').delete().eq('zoho_id', id);
+  }
+}
+
+// =====================================================
+// API HANDLER
+// =====================================================
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -346,15 +419,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const companyFilter = typeof req.query.company === 'string' ? req.query.company : undefined;
       const sortBy = typeof req.query.sortBy === 'string' ? req.query.sortBy : 'name';
       const sortOrder = typeof req.query.sortOrder === 'string' ? req.query.sortOrder : 'asc';
-      
-      const { items, info } = await listContacts(page, pageSize, typeFilter, healthFilter, query, companyFilter, sortBy, sortOrder);
+
+      // Try database first if configured
+      if (isSupabaseConfigured()) {
+        const dbResult = await listContactsFromDb(page, pageSize, typeFilter, healthFilter, query, companyFilter, sortBy, sortOrder);
+        if (dbResult && dbResult.items.length > 0) {
+          return res.status(200).json({
+            items: dbResult.items,
+            page,
+            pageSize,
+            total: dbResult.total,
+            source: 'database',
+          });
+        }
+      }
+
+      // Fallback to Zoho API
+      const zohoResult = await listContactsFromZoho(page, pageSize, typeFilter, healthFilter, query, companyFilter, sortBy, sortOrder);
       
       return res.status(200).json({
-        items,
+        items: zohoResult.items,
         page,
         pageSize,
-        total: info.count ?? items.length,
-        moreRecords: info.more_records ?? false,
+        total: zohoResult.total,
+        moreRecords: zohoResult.moreRecords,
+        source: 'zoho',
       });
     }
 
@@ -396,3 +485,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 }
 
+// Export for use by [id].ts
+export { updateContact, deleteContactById, getContactFromDb, getContactFromZoho, mapZohoContact };
