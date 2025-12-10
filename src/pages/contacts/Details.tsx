@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useDeleteContact, useContact, useUpdateContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
@@ -122,6 +122,19 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const initials = displayName.split(' ').map(n => n?.[0] || '').join('').toUpperCase().slice(0, 2);
   const healthScore = contact.relationshipHealthScore || 85; // Default to 85 if missing for demo
   
+  // Fetch LinkedIn posts if URL is available
+  const { data: linkedinPosts, isLoading: isLoadingPosts } = useQuery({
+    queryKey: ['linkedin-posts', contact.linkedinUrl],
+    queryFn: async () => {
+      if (!contact.linkedinUrl) return null;
+      const res = await fetch(`${API_BASE}/api/linkedin-posts?url=${encodeURIComponent(contact.linkedinUrl)}`);
+      if (!res.ok) throw new Error('Failed to fetch posts');
+      return res.json();
+    },
+    enabled: !!contact.linkedinUrl && activeTab === 'Overview',
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
+
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -376,28 +389,90 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                   </p>
                 </div>
                 
-                <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-3">Comms Preferences</label>
-                  <div className="flex items-center space-x-6">
-                    <label className="flex items-center space-x-2">
-                      <input type="checkbox" checked={contact.commsPreferences?.email ?? true} readOnly className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
-                      <span className="text-sm text-primary">Email logging consent</span>
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-secondary">Updates cadence:</span>
-                      <select className="text-sm border border-[#E6E6E6] rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                        <option>Weekly</option>
-                        <option>Bi-weekly</option>
-                        <option>Monthly</option>
-                      </select>
+                    <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
+                      <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-3">Comms Preferences</label>
+                      <div className="flex items-center space-x-6">
+                        <label className="flex items-center space-x-2">
+                          <input type="checkbox" checked={contact.commsPreferences?.email ?? true} readOnly className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
+                          <span className="text-sm text-primary">Email logging consent</span>
+                        </label>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-secondary">Updates cadence:</span>
+                          <select className="text-sm border border-[#E6E6E6] rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary bg-white">
+                            <option>Weekly</option>
+                            <option>Bi-weekly</option>
+                            <option>Monthly</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Recent LinkedIn Activity */}
+                  {contact.linkedinUrl && (
+                    <div className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-2">
+                          <i className="fa-brands fa-linkedin text-[#0077B5] text-lg"></i>
+                          <h2 className="text-lg font-semibold text-primary">Recent LinkedIn Activity</h2>
+                        </div>
+                        <a 
+                          href={contact.linkedinUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xs text-secondary hover:text-primary flex items-center space-x-1"
+                        >
+                          <span>View on LinkedIn</span>
+                          <i className="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                      </div>
+
+                      {isLoadingPosts ? (
+                        <div className="flex justify-center py-6">
+                          <i className="fa-solid fa-circle-notch fa-spin text-secondary text-xl"></i>
+                        </div>
+                      ) : linkedinPosts?.data?.data ? (
+                        <div className="space-y-4">
+                          {linkedinPosts.data.data.slice(0, 3).map((post: any, i: number) => (
+                            <div key={i} className="border-b border-[#E6E6E6] last:border-0 pb-4 last:pb-0">
+                              <p className="text-sm text-primary line-clamp-3 mb-2">
+                                {post.text || post.commentary || post.description || 'Shared a post'}
+                              </p>
+                              <div className="flex items-center justify-between text-xs text-secondary">
+                                <span>{post.postedDate || post.date || 'Recently'}</span>
+                                <a 
+                                  href={post.articleUrl || post.url || post.link || contact.linkedinUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="text-[#0077B5] hover:underline"
+                                >
+                                  Read more
+                                </a>
+                              </div>
+                            </div>
+                          ))}
+                          {linkedinPosts.data.data.length === 0 && (
+                            <p className="text-sm text-secondary text-center py-4">No recent public posts found.</p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4">
+                          {linkedinPosts?.error ? (
+                            <div className="flex flex-col items-center text-secondary">
+                               <p className="text-sm mb-2">Unable to load posts</p>
+                               <p className="text-xs opacity-75">{typeof linkedinPosts.details === 'string' ? linkedinPosts.details.substring(0, 50) + '...' : ''}</p>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-secondary">No posts available.</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                 </div>
-              </div>
-              
-            </div>
-            
-            {/* Right Column */}
+
+                {/* Right Column */}
             <div id="right-column" className="space-y-6">
               
               {/* Quick Actions Card */}
