@@ -60,7 +60,16 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
   const responseData = await response.json() as LinkedInSearchResult;
   console.log('LinkedIn search results:', JSON.stringify(responseData, null, 2));
 
-  const items = responseData.data || responseData.results || responseData.items || [];
+  // Ensure items is always an array - handle unexpected API responses
+  let items: LinkedInPerson[] = [];
+  if (Array.isArray(responseData.data)) {
+    items = responseData.data;
+  } else if (Array.isArray(responseData.results)) {
+    items = responseData.results;
+  } else if (Array.isArray(responseData.items)) {
+    items = responseData.items;
+  }
+  
   if (items.length === 0) {
     console.log('No results found');
     return null;
