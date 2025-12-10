@@ -178,12 +178,6 @@ export function ContactsList() {
             </p>
           </div>
           <Button
-            icon="fa-plus"
-            onClick={() => navigate('/contacts/new')}
-          >
-            Add Contact
-          </Button>
-          <Button
             variant="outline"
             icon="fa-refresh"
             onClick={async () => {
@@ -203,9 +197,15 @@ export function ContactsList() {
                 alert('Sync failed. Check the console for details.');
               }
             }}
+          >
+            Update
+          </Button>
+          <Button
+            icon="fa-plus"
+            onClick={() => navigate('/contacts/new')}
             className="ml-2"
           >
-            Sync from CRM
+            Add Contact
           </Button>
         </div>
 
