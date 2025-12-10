@@ -244,6 +244,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const searchResults = await searchGoogleCSE(searchQuery);
     const debugQueries: string[] = [searchQuery];
+    let debugRawItems: any[] = searchResults.items ? searchResults.items.map(i => ({ title: i.title, link: i.link })) : [];
     
     let candidates: LinkedInCandidate[] = [];
     
@@ -264,6 +265,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            debugQueries.push(retryQuery);
            const retryResults = await searchGoogleCSE(retryQuery);
            
+           if (retryResults.items) {
+             debugRawItems = [...debugRawItems, ...retryResults.items.map(i => ({ title: i.title, link: i.link, query: 'retry_clean_company' }))];
+           }
+           
            if (retryResults.items && retryResults.items.length > 0) {
              candidates = retryResults.items
               .map(item => extractLinkedInProfile(item, firstName, lastName, cleanedCompany))
@@ -278,6 +283,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const fallbackQuery = `"${firstName} ${lastName}" site:linkedin.com/in/`;
         debugQueries.push(fallbackQuery);
         const fallbackResults = await searchGoogleCSE(fallbackQuery);
+        
+        if (fallbackResults.items) {
+             debugRawItems = [...debugRawItems, ...fallbackResults.items.map(i => ({ title: i.title, link: i.link, query: 'fallback_name_only' }))];
+        }
         
         if (fallbackResults.items && fallbackResults.items.length > 0) {
           candidates = fallbackResults.items
@@ -297,7 +306,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       success: true,
       candidates,
       searchedFor: { firstName, lastName, company },
-      debug: { queries: debugQueries }
+      debug: { queries: debugQueries, rawItems: debugRawItems }
     });
 
   } catch (error) {
