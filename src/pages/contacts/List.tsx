@@ -177,36 +177,37 @@ export function ContactsList() {
               Manage brokers, tenants, landlords, and supplier relationships
             </p>
           </div>
-          <Button
-            variant="outline"
-            icon="fa-refresh"
-            onClick={async () => {
-              try {
-                // Call the sync endpoint (no API key needed for manual sync)
-                const response = await fetch('/api/sync', { method: 'POST' });
-                const result = await response.json();
-                if (response.ok) {
-                  alert(`Sync complete! ${result.results?.contacts?.synced || 0} contacts synced from Zoho CRM.`);
-                  // Force a refresh of the contacts list
-                  window.location.reload();
-                } else {
-                  alert(`Sync failed: ${result.message || result.error || 'Unknown error'}`);
+          <div className="flex items-center space-x-2">
+            <Button
+              icon="fa-plus"
+              onClick={() => navigate('/contacts/new')}
+            >
+              Add Contact
+            </Button>
+            <Button
+              variant="outline"
+              icon="fa-refresh"
+              onClick={async () => {
+                try {
+                  // Call the sync endpoint (no API key needed for manual sync)
+                  const response = await fetch('/api/sync', { method: 'POST' });
+                  const result = await response.json();
+                  if (response.ok) {
+                    alert(`Sync complete! ${result.results?.contacts?.synced || 0} contacts synced from Zoho CRM.`);
+                    // Force a refresh of the contacts list
+                    window.location.reload();
+                  } else {
+                    alert(`Sync failed: ${result.message || result.error || 'Unknown error'}`);
+                  }
+                } catch (error) {
+                  console.error('Sync failed', error);
+                  alert('Sync failed. Check the console for details.');
                 }
-              } catch (error) {
-                console.error('Sync failed', error);
-                alert('Sync failed. Check the console for details.');
-              }
-            }}
-          >
-            Update
-          </Button>
-          <Button
-            icon="fa-plus"
-            onClick={() => navigate('/contacts/new')}
-            className="ml-2"
-          >
-            Add Contact
-          </Button>
+              }}
+            >
+              Update
+            </Button>
+          </div>
         </div>
 
         {/* Tabs */}
