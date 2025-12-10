@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useContacts } from '../../api/contacts';
+import { useContacts, useCreateContact } from '../../api/contacts';
 import { useCompanies } from '../../api/companies';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
@@ -11,6 +11,11 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/Card';
 import { Tabs, TabsList, TabsTrigger } from '../../components/ui/Tabs';
+import { SlideOver } from '../../components/ui/SlideOver';
+import { Input } from '../../components/ui/Input';
+import { Select } from '../../components/ui/Select';
+import { Textarea } from '../../components/ui/Textarea';
+import { CompanyLookup } from '../../components/contacts/CompanyLookup';
 import { ContactDetails } from './Details';
 import type { ContactType, RelationshipHealth, Contact } from '../../types/contact';
 import type { ContactTabValue } from '../../constants/contacts';
@@ -21,6 +26,15 @@ import {
   CONTACT_TAB_SUPPLIERS,
   CONTACT_TABS,
 } from '../../constants/contacts';
+
+const contactTypeOptions: { value: ContactType; label: string }[] = [
+  { value: 'Broker', label: 'Broker' },
+  { value: 'Disposal Agent', label: 'Disposal Agent' },
+  { value: 'Tenant', label: 'Tenant/Prospect' },
+  { value: 'Landlord', label: 'Landlord' },
+  { value: 'Supplier', label: 'Supplier' },
+  { value: 'Internal', label: 'Internal' },
+];
 
 // Map tab value to contact type (direct mapping since tabs use ContactType values)
 function getContactTypeForTab(tab: string): ContactType | null {
@@ -63,6 +77,69 @@ export function ContactsList() {
   // Slide-over state for contact details
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isSlideOverOpen, setIsSlideOverOpen] = useState(false);
+  
+  // Slide-over state for adding new contact
+  const [isAddContactOpen, setIsAddContactOpen] = useState(false);
+  const createContact = useCreateContact();
+  const { showToast } = useToast();
+  const [newContactForm, setNewContactForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    mobile: '',
+    company: '',
+    companyCity: '',
+    accountId: '',
+    type: 'Broker' as ContactType,
+    role: '',
+    territory: '',
+    notes: '',
+  });
+
+  const resetNewContactForm = () => {
+    setNewContactForm({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      mobile: '',
+      company: '',
+      companyCity: '',
+      accountId: '',
+      type: 'Broker' as ContactType,
+      role: '',
+      territory: '',
+      notes: '',
+    });
+  };
+
+  const handleNewContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createContact.mutateAsync(newContactForm);
+      showToast('Contact created successfully', 'success');
+      setIsAddContactOpen(false);
+      resetNewContactForm();
+    } catch (error) {
+      console.error('Error creating contact:', error);
+      const message = error instanceof Error ? error.message : 'Failed to create contact';
+      showToast(message, 'error');
+    }
+  };
+
+  const handleNewContactChange = (field: string, value: string) => {
+    setNewContactForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleNewContactCompanyChange = (value: string, meta?: { accountId?: string | null; city?: string | null }) => {
+    setNewContactForm((prev) => ({
+      ...prev,
+      company: value,
+      accountId: meta?.accountId ?? '',
+      companyCity: meta?.city ?? prev.companyCity,
+    }));
+  };
   
   const handleContactSelect = (contact: Contact) => {
     setSelectedContact(contact);
@@ -180,7 +257,7 @@ export function ContactsList() {
           <div className="flex items-center space-x-2">
             <Button
               icon="fa-plus"
-              onClick={() => navigate('/contacts/new')}
+              onClick={() => setIsAddContactOpen(true)}
             >
               Add Contact
             </Button>
@@ -680,6 +757,113 @@ export function ContactsList() {
           </div>
         </div>
       </div>
+      
+      {/* Add Contact Slide-Over */}
+      <SlideOver
+        isOpen={isAddContactOpen}
+        title="Add Contact"
+        onClose={() => {
+          setIsAddContactOpen(false);
+          resetNewContactForm();
+        }}
+        size="lg"
+        footer={
+          <div className="flex items-center space-x-3">
+            <Button variant="outline" onClick={() => {
+              setIsAddContactOpen(false);
+              resetNewContactForm();
+            }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleNewContactSubmit}
+              disabled={createContact.isPending || !newContactForm.firstName || !newContactForm.lastName || !newContactForm.email}
+            >
+              {createContact.isPending ? 'Saving...' : 'Save Contact'}
+            </Button>
+          </div>
+        }
+      >
+        <form onSubmit={handleNewContactSubmit} className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="First Name"
+              value={newContactForm.firstName}
+              onChange={(e) => handleNewContactChange('firstName', e.target.value)}
+              required
+            />
+            <Input
+              label="Last Name"
+              value={newContactForm.lastName}
+              onChange={(e) => handleNewContactChange('lastName', e.target.value)}
+              required
+            />
+          </div>
+
+          <Input
+            label="Email"
+            type="email"
+            value={newContactForm.email}
+            onChange={(e) => handleNewContactChange('email', e.target.value)}
+            required
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Phone"
+              type="tel"
+              value={newContactForm.phone}
+              onChange={(e) => handleNewContactChange('phone', e.target.value)}
+            />
+            <Input
+              label="Mobile"
+              type="tel"
+              value={newContactForm.mobile}
+              onChange={(e) => handleNewContactChange('mobile', e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <CompanyLookup
+              label="Company Name"
+              value={newContactForm.company}
+              initialAccountId={newContactForm.accountId}
+              onChange={handleNewContactCompanyChange}
+              required
+            />
+            <Select
+              label="Type"
+              options={contactTypeOptions}
+              value={newContactForm.type}
+              onChange={(e) => handleNewContactChange('type', e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Role/Title"
+              value={newContactForm.role}
+              onChange={(e) => handleNewContactChange('role', e.target.value)}
+              required
+            />
+            <Input
+              label="City/Region"
+              value={newContactForm.territory}
+              onChange={(e) => handleNewContactChange('territory', e.target.value)}
+              placeholder="e.g., London"
+            />
+          </div>
+
+          <Textarea
+            label="Relationship Notes"
+            rows={4}
+            value={newContactForm.notes}
+            onChange={(e) => handleNewContactChange('notes', e.target.value)}
+            placeholder="Add any relevant notes about this contact..."
+          />
+        </form>
+      </SlideOver>
       
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
