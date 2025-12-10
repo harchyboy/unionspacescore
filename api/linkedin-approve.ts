@@ -37,39 +37,69 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const supabase = getSupabase();
+    let zohoId = id;
+    
+    // Check if ID is a UUID (Supabase ID)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
     
     // Update in Supabase
     if (supabase) {
-      const { error: dbError } = await supabase
-        .from('contacts')
-        .update({
-          linkedin_url: linkedinUrl,
-          enrichment_status: 'enriched',
-          enriched_at: new Date().toISOString(),
-        })
-        .eq('zoho_id', id);
+      const updateData = {
+        linkedin_url: linkedinUrl,
+        enrichment_status: 'enriched',
+        enriched_at: new Date().toISOString(),
+      };
+
+      let query = supabase.from('contacts').update(updateData);
+
+      if (isUuid) {
+        query = query.eq('id', id);
+        // If it's a UUID, we need to fetch the Zoho ID for the CRM update
+        const { data: contact } = await supabase
+          .from('contacts')
+          .select('zoho_id')
+          .eq('id', id)
+          .single();
+          
+        if (contact?.zoho_id) {
+          zohoId = contact.zoho_id;
+        } else {
+          // If no zoho_id found, we can't update Zoho, but we continue
+          console.log(`No Zoho ID found for contact ${id}, skipping Zoho update`);
+          zohoId = undefined; 
+        }
+      } else {
+        // If it's not a UUID, assume it's a Zoho ID
+        query = query.eq('zoho_id', id);
+      }
+
+      const { error: dbError } = await query;
 
       if (dbError) {
         console.error('Supabase update error:', dbError);
+        // We don't throw here to attempt Zoho update if possible, or return partial success?
+        // But if DB update fails, we probably should report it.
       }
     }
 
-    // Also update in Zoho CRM (if LinkedIn_URL field exists)
-    try {
-      await zohoRequest(
-        `/crm/v2/Contacts/${id}`,
-        'PUT',
-        {
-          data: [{
-            id,
-            LinkedIn_URL: linkedinUrl,
-          }]
-        }
-      );
-      console.log(`Updated LinkedIn URL in Zoho CRM for contact ${id}`);
-    } catch (zohoError) {
-      // Zoho update is nice-to-have, don't fail if it doesn't work
-      console.log('Could not update Zoho CRM (field may not exist):', zohoError);
+    // Also update in Zoho CRM (if we have a valid Zoho ID)
+    if (zohoId) {
+      try {
+        await zohoRequest(
+          `/crm/v2/Contacts/${zohoId}`,
+          'PUT',
+          {
+            data: [{
+              id: zohoId,
+              LinkedIn_URL: linkedinUrl,
+            }]
+          }
+        );
+        console.log(`Updated LinkedIn URL in Zoho CRM for contact ${zohoId}`);
+      } catch (zohoError) {
+        // Zoho update is nice-to-have, don't fail if it doesn't work
+        console.log('Could not update Zoho CRM (field may not exist):', zohoError);
+      }
     }
 
     return res.status(200).json({
