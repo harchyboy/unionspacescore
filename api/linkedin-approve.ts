@@ -1,0 +1,89 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { getSupabase } from './lib/supabase.js';
+import { zohoRequest } from './lib/zoho.js';
+
+function setCors(res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  setCors(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const id = typeof req.query.id === 'string' ? req.query.id : undefined;
+  const { linkedinUrl } = req.body as { linkedinUrl?: string };
+
+  if (!id) {
+    return res.status(400).json({ error: 'Contact ID required' });
+  }
+
+  if (!linkedinUrl) {
+    return res.status(400).json({ error: 'LinkedIn URL required' });
+  }
+
+  // Validate URL
+  if (!linkedinUrl.includes('linkedin.com/in/')) {
+    return res.status(400).json({ error: 'Invalid LinkedIn profile URL' });
+  }
+
+  try {
+    const supabase = getSupabase();
+    
+    // Update in Supabase
+    if (supabase) {
+      const { error: dbError } = await supabase
+        .from('contacts')
+        .update({
+          linkedin_url: linkedinUrl,
+          enrichment_status: 'enriched',
+          enriched_at: new Date().toISOString(),
+        })
+        .eq('zoho_id', id);
+
+      if (dbError) {
+        console.error('Supabase update error:', dbError);
+      }
+    }
+
+    // Also update in Zoho CRM (if LinkedIn_URL field exists)
+    try {
+      await zohoRequest(
+        `/crm/v2/Contacts/${id}`,
+        'PUT',
+        {
+          data: [{
+            id,
+            LinkedIn_URL: linkedinUrl,
+          }]
+        }
+      );
+      console.log(`Updated LinkedIn URL in Zoho CRM for contact ${id}`);
+    } catch (zohoError) {
+      // Zoho update is nice-to-have, don't fail if it doesn't work
+      console.log('Could not update Zoho CRM (field may not exist):', zohoError);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'LinkedIn URL saved',
+      linkedinUrl
+    });
+
+  } catch (error) {
+    console.error('Error saving LinkedIn URL:', error);
+    return res.status(500).json({
+      error: 'Failed to save LinkedIn URL',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+}
+

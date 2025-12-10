@@ -1,10 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useDeleteContact, useContact } from '../../api/contacts';
+import { useDeleteContact, useContact, useUpdateContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
 import type { Contact } from '../../types/contact';
+
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+interface LinkedInCandidate {
+  name: string;
+  headline: string;
+  url: string;
+  imageUrl?: string;
+  matchScore: number;
+}
 
 interface ContactDetailsProps {
   contact: Contact;
@@ -14,18 +24,96 @@ interface ContactDetailsProps {
 export function ContactDetails({ contact: initialContact, onBack }: ContactDetailsProps) {
   const navigate = useNavigate();
   const deleteContact = useDeleteContact();
-  const { data: contact = initialContact } = useContact(initialContact.id, initialContact);
+  const updateContact = useUpdateContact();
+  const { data: contact = initialContact, refetch: refetchContact } = useContact(initialContact.id, initialContact);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { showToast, removeToast, toasts } = useToast();
   const [activeTab, setActiveTab] = useState('Overview');
+  
+  // LinkedIn search state
+  const [isSearchingLinkedIn, setIsSearchingLinkedIn] = useState(false);
+  const [linkedInCandidates, setLinkedInCandidates] = useState<LinkedInCandidate[]>([]);
+  const [showLinkedInModal, setShowLinkedInModal] = useState(false);
+  const [approvingUrl, setApprovingUrl] = useState<string | null>(null);
 
-  // Opens Google search to find LinkedIn profile
-  const handleFindLinkedIn = () => {
+  // Search for LinkedIn profiles using Google CSE
+  const handleFindLinkedIn = async () => {
+    setIsSearchingLinkedIn(true);
+    setLinkedInCandidates([]);
+    
+    try {
+      const response = await fetch(`${API_BASE}/api/linkedin-search?id=${contact.zohoId || contact.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (data.alreadyLinked) {
+        showToast('Contact already has LinkedIn URL', 'info');
+        refetchContact();
+        return;
+      }
+      
+      if (data.candidates && data.candidates.length > 0) {
+        setLinkedInCandidates(data.candidates);
+        setShowLinkedInModal(true);
+      } else {
+        showToast('No LinkedIn profiles found. Try searching manually.', 'warning');
+        // Open Google search as fallback
+        const name = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
+        const company = contact.company || '';
+        const searchQuery = `site:linkedin.com/in/ "${name}"${company ? ` "${company}"` : ''}`;
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, '_blank');
+      }
+    } catch (error) {
+      console.error('LinkedIn search error:', error);
+      showToast('Failed to search LinkedIn. Try again.', 'error');
+    } finally {
+      setIsSearchingLinkedIn(false);
+    }
+  };
+
+  // Approve a LinkedIn candidate
+  const handleApproveLinkedIn = async (url: string) => {
+    setApprovingUrl(url);
+    
+    try {
+      const response = await fetch(`${API_BASE}/api/linkedin-approve?id=${contact.zohoId || contact.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ linkedinUrl: url })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        showToast('LinkedIn profile saved!', 'success');
+        setShowLinkedInModal(false);
+        setLinkedInCandidates([]);
+        // Update local contact state
+        updateContact.mutate({ id: contact.id, linkedinUrl: url });
+        refetchContact();
+      } else {
+        showToast(data.error || 'Failed to save LinkedIn URL', 'error');
+      }
+    } catch (error) {
+      console.error('Error approving LinkedIn:', error);
+      showToast('Failed to save LinkedIn URL', 'error');
+    } finally {
+      setApprovingUrl(null);
+    }
+  };
+
+  // Reject all candidates and search manually
+  const handleRejectAll = () => {
+    setShowLinkedInModal(false);
+    setLinkedInCandidates([]);
+    // Open Google search
     const name = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
     const company = contact.company || '';
     const searchQuery = `site:linkedin.com/in/ "${name}"${company ? ` "${company}"` : ''}`;
-    const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
-    window.open(googleUrl, '_blank');
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, '_blank');
   };
 
   // Generate display values
@@ -259,10 +347,20 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                           <span className="text-sm text-secondary">Not linked</span>
                           <button
                             onClick={handleFindLinkedIn}
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] rounded-lg transition-colors"
+                            disabled={isSearchingLinkedIn}
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
                           >
-                            <i className="fa-brands fa-linkedin mr-1.5"></i>
-                            Find on Google
+                            {isSearchingLinkedIn ? (
+                              <>
+                                <i className="fa-solid fa-spinner fa-spin mr-1.5"></i>
+                                <span>Searching...</span>
+                              </>
+                            ) : (
+                              <>
+                                <i className="fa-brands fa-linkedin mr-1.5"></i>
+                                <span>Find LinkedIn</span>
+                              </>
+                            )}
                           </button>
                         </>
                       )}
@@ -556,6 +654,121 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         onCancel={() => setShowDeleteModal(false)}
         variant="destructive"
       />
+      
+      {/* LinkedIn Candidates Modal */}
+      {showLinkedInModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 bg-black/50 transition-opacity"
+              onClick={() => setShowLinkedInModal(false)}
+            />
+            
+            {/* Modal */}
+            <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all">
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-[#E6E6E6]">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-primary">Select LinkedIn Profile</h3>
+                    <p className="text-sm text-secondary mt-1">
+                      Choose the correct profile for {contact.firstName} {contact.lastName}
+                    </p>
+                  </div>
+                  <button 
+                    onClick={() => setShowLinkedInModal(false)}
+                    className="text-secondary hover:text-primary transition-colors"
+                  >
+                    <i className="fa-solid fa-times text-lg"></i>
+                  </button>
+                </div>
+              </div>
+              
+              {/* Candidates List */}
+              <div className="px-6 py-4 max-h-[400px] overflow-y-auto">
+                <div className="space-y-3">
+                  {linkedInCandidates.map((candidate, index) => (
+                    <div 
+                      key={index}
+                      className="border border-[#E6E6E6] rounded-lg p-4 hover:border-[#0077B5] hover:bg-blue-50/30 transition-all"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-3 flex-1 min-w-0">
+                          {candidate.imageUrl ? (
+                            <img 
+                              src={candidate.imageUrl} 
+                              alt={candidate.name}
+                              className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-full bg-[#0077B5] flex items-center justify-center flex-shrink-0">
+                              <i className="fa-brands fa-linkedin text-white text-xl"></i>
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-medium text-primary truncate">{candidate.name}</h4>
+                            <p className="text-sm text-secondary line-clamp-2 mt-0.5">{candidate.headline || 'No headline'}</p>
+                            <a 
+                              href={candidate.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-xs text-[#0077B5] hover:underline mt-1 inline-block truncate max-w-full"
+                            >
+                              {candidate.url.replace('https://www.', '').replace('https://', '')}
+                            </a>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end space-y-2 ml-3">
+                          {candidate.matchScore >= 70 && (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                              Best Match
+                            </span>
+                          )}
+                          <button
+                            onClick={() => handleApproveLinkedIn(candidate.url)}
+                            disabled={approvingUrl !== null}
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 rounded-lg transition-colors"
+                          >
+                            {approvingUrl === candidate.url ? (
+                              <i className="fa-solid fa-spinner fa-spin"></i>
+                            ) : (
+                              <>
+                                <i className="fa-solid fa-check mr-1"></i>
+                                Approve
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Footer */}
+              <div className="px-6 py-4 border-t border-[#E6E6E6] bg-muted/30 rounded-b-xl">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-secondary">
+                    Not the right profile? Search manually on Google.
+                  </p>
+                  <button
+                    onClick={handleRejectAll}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-secondary hover:text-primary border border-[#E6E6E6] rounded-lg hover:bg-white transition-colors"
+                  >
+                    <i className="fa-solid fa-search mr-1.5"></i>
+                    Search Manually
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
