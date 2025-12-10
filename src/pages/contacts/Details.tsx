@@ -8,6 +8,14 @@ import type { Contact } from '../../types/contact';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
+interface LinkedInCandidate {
+  name: string;
+  headline: string;
+  url: string;
+  imageUrl?: string;
+  matchScore: number;
+}
+
 interface ContactDetailsProps {
   contact: Contact;
   onBack?: () => void;
@@ -23,39 +31,47 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const [activeTab, setActiveTab] = useState('Overview');
   
   // LinkedIn search state
+  const [isSearchingLinkedIn, setIsSearchingLinkedIn] = useState(false);
+  const [linkedInCandidates, setLinkedInCandidates] = useState<LinkedInCandidate[]>([]);
   const [showLinkedInModal, setShowLinkedInModal] = useState(false);
-  const [linkedInUrlInput, setLinkedInUrlInput] = useState('');
-  const [isSavingLinkedIn, setIsSavingLinkedIn] = useState(false);
+  const [approvingUrl, setApprovingUrl] = useState<string | null>(null);
 
-  // Open Google search and show approval modal
-  const handleFindLinkedIn = () => {
-    // Open Google search in new tab
-    const name = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
-    const company = contact.company || '';
-    const searchQuery = `site:linkedin.com/in/ "${name}"${company ? ` "${company}"` : ''}`;
-    window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, '_blank');
+  // Search for LinkedIn profiles using Google Custom Search
+  const handleFindLinkedIn = async () => {
+    setIsSearchingLinkedIn(true);
+    setLinkedInCandidates([]);
     
-    // Show modal for user to paste URL
-    setLinkedInUrlInput('');
-    setShowLinkedInModal(true);
+    try {
+      const response = await fetch(`${API_BASE}/api/linkedin-search?id=${contact.zohoId || contact.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (data.alreadyLinked) {
+        showToast('Contact already has LinkedIn URL', 'info');
+        refetchContact();
+        return;
+      }
+      
+      if (data.candidates && data.candidates.length > 0) {
+        setLinkedInCandidates(data.candidates);
+        setShowLinkedInModal(true);
+      } else {
+        showToast('No LinkedIn profiles found', 'warning');
+      }
+    } catch (error) {
+      console.error('LinkedIn search error:', error);
+      showToast('Failed to search LinkedIn. Please try again.', 'error');
+    } finally {
+      setIsSearchingLinkedIn(false);
+    }
   };
 
-  // Approve and save LinkedIn URL
-  const handleApproveLinkedIn = async () => {
-    const url = linkedInUrlInput.trim();
-    
-    // Validate URL
-    if (!url) {
-      showToast('Please paste a LinkedIn URL', 'warning');
-      return;
-    }
-    
-    if (!url.includes('linkedin.com/in/')) {
-      showToast('Please enter a valid LinkedIn profile URL', 'error');
-      return;
-    }
-    
-    setIsSavingLinkedIn(true);
+  // Approve and save a LinkedIn candidate
+  const handleApproveLinkedIn = async (url: string) => {
+    setApprovingUrl(url);
     
     try {
       const response = await fetch(`${API_BASE}/api/linkedin-approve?id=${contact.zohoId || contact.id}`, {
@@ -69,25 +85,24 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
       if (data.success) {
         showToast('LinkedIn profile saved!', 'success');
         setShowLinkedInModal(false);
-        setLinkedInUrlInput('');
-        // Update local contact state
+        setLinkedInCandidates([]);
         updateContact.mutate({ id: contact.id, linkedinUrl: url });
         refetchContact();
       } else {
         showToast(data.error || 'Failed to save LinkedIn URL', 'error');
       }
     } catch (error) {
-      console.error('Error saving LinkedIn:', error);
+      console.error('Error approving LinkedIn:', error);
       showToast('Failed to save LinkedIn URL', 'error');
     } finally {
-      setIsSavingLinkedIn(false);
+      setApprovingUrl(null);
     }
   };
 
-  // Close modal without saving
-  const handleCancelLinkedIn = () => {
+  // Close modal
+  const handleCloseLinkedInModal = () => {
     setShowLinkedInModal(false);
-    setLinkedInUrlInput('');
+    setLinkedInCandidates([]);
   };
 
   // Generate display values
@@ -321,10 +336,20 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                           <span className="text-sm text-secondary">Not linked</span>
                           <button
                             onClick={handleFindLinkedIn}
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] rounded-lg transition-colors"
+                            disabled={isSearchingLinkedIn}
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
                           >
-                            <i className="fa-brands fa-linkedin mr-1.5"></i>
-                            <span>Find LinkedIn</span>
+                            {isSearchingLinkedIn ? (
+                              <>
+                                <i className="fa-solid fa-spinner fa-spin mr-1.5"></i>
+                                <span>Searching...</span>
+                              </>
+                            ) : (
+                              <>
+                                <i className="fa-brands fa-linkedin mr-1.5"></i>
+                                <span>Find LinkedIn</span>
+                              </>
+                            )}
                           </button>
                         </>
                       )}
@@ -619,18 +644,18 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         variant="destructive"
       />
       
-      {/* LinkedIn URL Input Modal */}
+      {/* LinkedIn Candidates Modal */}
       {showLinkedInModal && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
             {/* Backdrop */}
             <div 
               className="fixed inset-0 bg-black/50 transition-opacity"
-              onClick={handleCancelLinkedIn}
+              onClick={handleCloseLinkedInModal}
             />
             
             {/* Modal */}
-            <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+            <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg transform transition-all">
               {/* Header */}
               <div className="px-6 py-4 border-b border-[#E6E6E6]">
                 <div className="flex items-center justify-between">
@@ -639,14 +664,14 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                       <i className="fa-brands fa-linkedin text-white text-xl"></i>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-primary">Add LinkedIn Profile</h3>
+                      <h3 className="text-lg font-semibold text-primary">Select LinkedIn Profile</h3>
                       <p className="text-sm text-secondary">
-                        for {contact.firstName} {contact.lastName}
+                        Choose the correct profile for {contact.firstName} {contact.lastName}
                       </p>
                     </div>
                   </div>
                   <button 
-                    onClick={handleCancelLinkedIn}
+                    onClick={handleCloseLinkedInModal}
                     className="text-secondary hover:text-primary transition-colors"
                   >
                     <i className="fa-solid fa-times text-lg"></i>
@@ -654,78 +679,89 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 </div>
               </div>
               
-              {/* Content */}
-              <div className="px-6 py-5">
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-4">
-                  <div className="flex items-start space-x-3">
-                    <i className="fa-solid fa-lightbulb text-[#0077B5] mt-0.5"></i>
-                    <div className="text-sm text-gray-700">
-                      <p className="font-medium mb-1">A Google search has opened in a new tab</p>
-                      <p className="text-gray-600">Find the correct LinkedIn profile, copy the URL, and paste it below.</p>
-                    </div>
+              {/* Candidates List */}
+              <div className="px-6 py-4 max-h-[400px] overflow-y-auto">
+                {linkedInCandidates.length === 0 ? (
+                  <div className="text-center py-8 text-secondary">
+                    <i className="fa-solid fa-search text-3xl mb-3 opacity-50"></i>
+                    <p>No profiles found</p>
                   </div>
-                </div>
-                
-                <label className="block text-sm font-medium text-primary mb-2">
-                  LinkedIn Profile URL
-                </label>
-                <input
-                  type="url"
-                  value={linkedInUrlInput}
-                  onChange={(e) => setLinkedInUrlInput(e.target.value)}
-                  placeholder="https://www.linkedin.com/in/username"
-                  className="w-full px-4 py-3 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0077B5] focus:border-transparent"
-                  autoFocus
-                />
-                
-                {linkedInUrlInput && !linkedInUrlInput.includes('linkedin.com/in/') && (
-                  <p className="mt-2 text-xs text-red-500 flex items-center">
-                    <i className="fa-solid fa-exclamation-circle mr-1"></i>
-                    Please enter a valid LinkedIn profile URL
-                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {linkedInCandidates.map((candidate, index) => (
+                      <div 
+                        key={index}
+                        className="border border-[#E6E6E6] rounded-lg p-4 hover:border-[#0077B5] hover:bg-blue-50/30 transition-all"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-3 flex-1 min-w-0">
+                            {candidate.imageUrl ? (
+                              <img 
+                                src={candidate.imageUrl} 
+                                alt={candidate.name}
+                                className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <div className="w-12 h-12 rounded-full bg-[#0077B5] flex items-center justify-center flex-shrink-0">
+                                <i className="fa-brands fa-linkedin text-white text-xl"></i>
+                              </div>
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <h4 className="font-medium text-primary truncate">{candidate.name}</h4>
+                              <p className="text-sm text-secondary line-clamp-2 mt-0.5">{candidate.headline || 'No headline'}</p>
+                              <a 
+                                href={candidate.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-xs text-[#0077B5] hover:underline mt-1 inline-block truncate max-w-full"
+                              >
+                                {candidate.url.replace('https://www.', '').replace('https://', '')}
+                              </a>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end space-y-2 ml-3">
+                            {candidate.matchScore >= 70 && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                Best Match
+                              </span>
+                            )}
+                            <button
+                              onClick={() => handleApproveLinkedIn(candidate.url)}
+                              disabled={approvingUrl !== null}
+                              className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 rounded-lg transition-colors"
+                            >
+                              {approvingUrl === candidate.url ? (
+                                <i className="fa-solid fa-spinner fa-spin"></i>
+                              ) : (
+                                <>
+                                  <i className="fa-solid fa-check mr-1"></i>
+                                  Select
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
               
               {/* Footer */}
               <div className="px-6 py-4 border-t border-[#E6E6E6] bg-muted/30 rounded-b-xl">
                 <div className="flex items-center justify-between">
+                  <p className="text-xs text-secondary">
+                    {linkedInCandidates.length} profile{linkedInCandidates.length !== 1 ? 's' : ''} found
+                  </p>
                   <button
-                    onClick={() => {
-                      const name = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
-                      const company = contact.company || '';
-                      const searchQuery = `site:linkedin.com/in/ "${name}"${company ? ` "${company}"` : ''}`;
-                      window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, '_blank');
-                    }}
-                    className="text-sm text-[#0077B5] hover:underline flex items-center"
+                    onClick={handleCloseLinkedInModal}
+                    className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border border-[#E6E6E6] rounded-lg hover:bg-white transition-colors"
                   >
-                    <i className="fa-solid fa-external-link mr-1.5"></i>
-                    Search again
+                    Cancel
                   </button>
-                  <div className="flex items-center space-x-3">
-                    <button
-                      onClick={handleCancelLinkedIn}
-                      className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border border-[#E6E6E6] rounded-lg hover:bg-white transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleApproveLinkedIn}
-                      disabled={isSavingLinkedIn || !linkedInUrlInput.includes('linkedin.com/in/')}
-                      className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
-                    >
-                      {isSavingLinkedIn ? (
-                        <>
-                          <i className="fa-solid fa-spinner fa-spin mr-1.5"></i>
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fa-solid fa-check mr-1.5"></i>
-                          Approve & Save
-                        </>
-                      )}
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
