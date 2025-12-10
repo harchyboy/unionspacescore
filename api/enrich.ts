@@ -6,15 +6,19 @@ const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 const RAPIDAPI_HOST = 'professional-network-data.p.rapidapi.com';
 
 interface LinkedInPerson {
+  // Different APIs use different field names
   linkedin_url?: string;
   profile_url?: string;
+  profileURL?: string;
   url?: string;
   full_name?: string;
+  fullName?: string;
   first_name?: string;
   last_name?: string;
   headline?: string;
   location?: string;
   public_identifier?: string;
+  username?: string;
 }
 
 interface LinkedInSearchResult {
@@ -109,29 +113,48 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
 
 }
 
+function getLinkedInUrl(item: LinkedInPerson): string | null {
+  return item.linkedin_url || item.profile_url || item.profileURL || item.url ||
+    (item.public_identifier ? `https://www.linkedin.com/in/${item.public_identifier}` : null) ||
+    (item.username ? `https://www.linkedin.com/in/${item.username}` : null);
+}
+
+function getFullName(item: LinkedInPerson): { firstName: string; lastName: string } {
+  const fullName = item.fullName || item.full_name || '';
+  const parts = fullName.split(' ');
+  return {
+    firstName: item.first_name || parts[0] || '',
+    lastName: item.last_name || parts.slice(1).join(' ') || ''
+  };
+}
+
 function findBestMatch(items: LinkedInPerson[], firstName: string, lastName: string, rawResponse?: LinkedInSearchResult): SearchResult {
+  console.log(`Finding best match for: ${firstName} ${lastName} among ${items.length} results`);
+  
   const exactMatch = items.find(item => {
-    const itemFirstName = (item.first_name || item.full_name?.split(' ')[0] || '').toLowerCase();
-    const itemLastName = (item.last_name || item.full_name?.split(' ').slice(1).join(' ') || '').toLowerCase();
-    return itemFirstName === firstName.toLowerCase() &&
-           itemLastName === lastName.toLowerCase();
+    const { firstName: itemFirst, lastName: itemLast } = getFullName(item);
+    const matches = itemFirst.toLowerCase() === firstName.toLowerCase() &&
+                   itemLast.toLowerCase() === lastName.toLowerCase();
+    if (matches) {
+      console.log(`Exact match found: ${item.fullName || item.full_name}`);
+    }
+    return matches;
   });
 
   if (exactMatch) {
-    const linkedinUrl = exactMatch.linkedin_url || exactMatch.profile_url || exactMatch.url ||
-      (exactMatch.public_identifier ? `https://www.linkedin.com/in/${exactMatch.public_identifier}` : null);
+    const linkedinUrl = getLinkedInUrl(exactMatch);
     if (linkedinUrl) {
-      console.log('Found exact match:', linkedinUrl);
+      console.log('Found exact match URL:', linkedinUrl);
       return { linkedinUrl, rawResponse };
     }
   }
 
+  // If no exact match, use first result
   const firstResult = items[0];
-  const linkedinUrl = firstResult.linkedin_url || firstResult.profile_url || firstResult.url ||
-    (firstResult.public_identifier ? `https://www.linkedin.com/in/${firstResult.public_identifier}` : null);
+  const linkedinUrl = getLinkedInUrl(firstResult);
 
   if (linkedinUrl) {
-    console.log('Using first result:', linkedinUrl);
+    console.log('Using first result URL:', linkedinUrl);
     return { linkedinUrl, rawResponse };
   }
 
