@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from './lib/supabase.js';
+import { zohoRequest, ZohoContactRecord } from './lib/zoho.js';
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 const RAPIDAPI_HOST = 'professional-network-data.p.rapidapi.com';
@@ -125,6 +126,28 @@ async function getContactFromDb(zohoId: string) {
   return data;
 }
 
+// Fallback: fetch contact directly from Zoho CRM
+async function getContactFromZoho(zohoId: string) {
+  try {
+    const response = await zohoRequest<{ data?: ZohoContactRecord[] }>(
+      `/crm/v2/Contacts/${zohoId}`
+    );
+    const record = response.data?.[0];
+    if (!record) return null;
+    
+    return {
+      zoho_id: record.id,
+      first_name: record.First_Name || '',
+      last_name: record.Last_Name || '',
+      company_name: record.Account_Name?.name || null,
+      linkedin_url: null,
+    };
+  } catch (error) {
+    console.error('Error fetching contact from Zoho:', error);
+    return null;
+  }
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setCors(res);
 
@@ -149,18 +172,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
-  if (!isSupabaseConfigured()) {
-    return res.status(503).json({
-      error: 'Database not configured',
-      message: 'Set SUPABASE_URL and SUPABASE_SERVICE_KEY environment variables'
-    });
-  }
-
   try {
-    const contact = await getContactFromDb(id);
+    // Try database first, then fall back to Zoho CRM
+    let contact = await getContactFromDb(id);
+    
+    if (!contact) {
+      console.log(`Contact ${id} not in database, fetching from Zoho CRM...`);
+      contact = await getContactFromZoho(id);
+    }
 
     if (!contact) {
-      return res.status(404).json({ error: 'Contact not found' });
+      return res.status(404).json({ error: 'Contact not found in database or Zoho CRM' });
     }
 
     if (contact.linkedin_url) {
