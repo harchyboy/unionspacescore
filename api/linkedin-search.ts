@@ -201,17 +201,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Contact ID required' });
   }
 
-  if (id === 'test') {
-     const sanityQuery = "Google";
-     const results = await searchGoogleCSE(sanityQuery);
-     return res.status(200).json({
-         sanityCheck: true,
-         query: sanityQuery,
-         totalResults: results.searchInformation?.totalResults,
-         items: results.items ? results.items.length : 0
-     });
-  }
-
   if (!GOOGLE_CSE_API_KEY || !GOOGLE_CSE_ID) {
     return res.status(503).json({
       error: 'Google Custom Search not configured',
