@@ -71,7 +71,7 @@ function extractLinkedInProfile(item: GoogleSearchItem, targetFirstName: string,
   }
   
   // Extract name from title (usually "Name - Title | LinkedIn" or "Name | LinkedIn")
-  let name = item.title
+  const name = item.title
     .replace(/\s*\|\s*LinkedIn.*$/i, '')
     .replace(/\s*-\s*LinkedIn.*$/i, '')
     .trim();
@@ -230,41 +230,49 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const searchResults = await searchGoogleCSE(searchQuery);
     
-    if (!searchResults.items || searchResults.items.length === 0) {
-      // Try without company name
+    let candidates: LinkedInCandidate[] = [];
+    
+    if (searchResults.items && searchResults.items.length > 0) {
+      candidates = searchResults.items
+        .map(item => extractLinkedInProfile(item, firstName, lastName, company || undefined))
+        .filter((c): c is LinkedInCandidate => c !== null);
+    }
+
+    if (candidates.length === 0) {
+      // Try with cleaned company name if original had suffixes
       if (company) {
+        const cleanedCompany = company.replace(/,?\s*(inc\.?|ltd\.?|llc\.?|ip\.?|plc\.?|corp\.?|corporation)\b\.?$/i, '').trim();
+        
+        if (cleanedCompany !== company && cleanedCompany.length > 2) {
+           console.log(`Retrying with cleaned company name: ${cleanedCompany}`);
+           const retryQuery = `"${firstName} ${lastName}" "${cleanedCompany}" site:linkedin.com/in/`;
+           const retryResults = await searchGoogleCSE(retryQuery);
+           
+           if (retryResults.items && retryResults.items.length > 0) {
+             candidates = retryResults.items
+              .map(item => extractLinkedInProfile(item, firstName, lastName, cleanedCompany))
+              .filter((c): c is LinkedInCandidate => c !== null);
+           }
+        }
+      }
+
+      // If still no candidates, try without company name (fallback)
+      if (candidates.length === 0 && company) {
+        console.log('Retrying without company name...');
         const fallbackQuery = `"${firstName} ${lastName}" site:linkedin.com/in/`;
         const fallbackResults = await searchGoogleCSE(fallbackQuery);
         
         if (fallbackResults.items && fallbackResults.items.length > 0) {
-          const candidates = fallbackResults.items
-            .map(item => extractLinkedInProfile(item, firstName, lastName, company))
-            .filter((c): c is LinkedInCandidate => c !== null)
-            .sort((a, b) => b.matchScore - a.matchScore)
-            .slice(0, 5);
-
-          return res.status(200).json({
-            success: true,
-            candidates,
-            searchedFor: { firstName, lastName, company }
-          });
+          candidates = fallbackResults.items
+            .map(item => extractLinkedInProfile(item, firstName, lastName, company)) // Still pass company for scoring
+            .filter((c): c is LinkedInCandidate => c !== null);
         }
       }
-      
-      return res.status(200).json({
-        success: true,
-        candidates: [],
-        message: 'No LinkedIn profiles found',
-        searchedFor: { firstName, lastName, company }
-      });
     }
 
-    // Extract and score candidates
-    const candidates = searchResults.items
-      .map(item => extractLinkedInProfile(item, firstName, lastName, company || undefined))
-      .filter((c): c is LinkedInCandidate => c !== null)
-      .sort((a, b) => b.matchScore - a.matchScore)
-      .slice(0, 5); // Return top 5 matches
+    // Sort and slice
+    candidates.sort((a, b) => b.matchScore - a.matchScore);
+    candidates = candidates.slice(0, 5);
 
     console.log(`Found ${candidates.length} LinkedIn candidates`);
 
