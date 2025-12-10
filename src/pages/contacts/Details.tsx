@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDeleteContact, useContact, useUpdateContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
@@ -23,6 +24,7 @@ interface ContactDetailsProps {
 
 export function ContactDetails({ contact: initialContact, onBack }: ContactDetailsProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const deleteContact = useDeleteContact();
   const updateContact = useUpdateContact();
   const { data: contact = initialContact, refetch: refetchContact } = useContact(initialContact.id, initialContact);
@@ -86,7 +88,17 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         showToast('LinkedIn profile saved!', 'success');
         setShowLinkedInModal(false);
         setLinkedInCandidates([]);
-        updateContact.mutate({ id: contact.id, linkedinUrl: url });
+        
+        // Optimistically update cache
+        queryClient.setQueryData(['contact', contact.id], (old: Contact | undefined) => {
+            if (!old) return old;
+            return { ...old, linkedinUrl: url };
+        });
+
+        // Also invalidate contacts list
+        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+        
+        // Refetch current contact to be sure
         refetchContact();
       } else {
         showToast(data.error || 'Failed to save LinkedIn URL', 'error');
