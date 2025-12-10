@@ -244,7 +244,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const searchResults = await searchGoogleCSE(searchQuery);
     const debugQueries: string[] = [searchQuery];
-    let debugRawItems: any[] = searchResults.items ? searchResults.items.map(i => ({ title: i.title, link: i.link })) : [];
+    let debugRawItems: any[] = searchResults.items ? searchResults.items.map(i => ({ title: i.title, link: i.link, query: 'initial' })) : [];
+    const debugInfo: any[] = [{ query: searchQuery, info: searchResults.searchInformation }];
     
     let candidates: LinkedInCandidate[] = [];
     
@@ -264,6 +265,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            const retryQuery = `"${firstName} ${lastName}" "${cleanedCompany}" site:linkedin.com/in/`;
            debugQueries.push(retryQuery);
            const retryResults = await searchGoogleCSE(retryQuery);
+           debugInfo.push({ query: retryQuery, info: retryResults.searchInformation });
            
            if (retryResults.items) {
              debugRawItems = [...debugRawItems, ...retryResults.items.map(i => ({ title: i.title, link: i.link, query: 'retry_clean_company' }))];
@@ -283,6 +285,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const fallbackQuery = `"${firstName} ${lastName}" site:linkedin.com/in/`;
         debugQueries.push(fallbackQuery);
         const fallbackResults = await searchGoogleCSE(fallbackQuery);
+        debugInfo.push({ query: fallbackQuery, info: fallbackResults.searchInformation });
         
         if (fallbackResults.items) {
              debugRawItems = [...debugRawItems, ...fallbackResults.items.map(i => ({ title: i.title, link: i.link, query: 'fallback_name_only' }))];
@@ -291,6 +294,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (fallbackResults.items && fallbackResults.items.length > 0) {
           candidates = fallbackResults.items
             .map(item => extractLinkedInProfile(item, firstName, lastName, company)) // Still pass company for scoring
+            .filter((c): c is LinkedInCandidate => c !== null);
+        }
+      }
+
+      // Final fallback: Try broad search without site: operator
+      if (candidates.length === 0) {
+        console.log('Retrying broad search...');
+        const broadQuery = `"${firstName} ${lastName}" LinkedIn`;
+        debugQueries.push(broadQuery);
+        const broadResults = await searchGoogleCSE(broadQuery);
+        debugInfo.push({ query: broadQuery, info: broadResults.searchInformation });
+        
+        if (broadResults.items) {
+             debugRawItems = [...debugRawItems, ...broadResults.items.map(i => ({ title: i.title, link: i.link, query: 'broad_linkedin' }))];
+        }
+
+        if (broadResults.items && broadResults.items.length > 0) {
+          candidates = broadResults.items
+            .map(item => extractLinkedInProfile(item, firstName, lastName, company))
             .filter((c): c is LinkedInCandidate => c !== null);
         }
       }
@@ -306,7 +328,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       success: true,
       candidates,
       searchedFor: { firstName, lastName, company },
-      debug: { queries: debugQueries, rawItems: debugRawItems }
+      debug: { queries: debugQueries, rawItems: debugRawItems, info: debugInfo }
     });
 
   } catch (error) {
