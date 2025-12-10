@@ -31,7 +31,12 @@ function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
-async function searchLinkedIn(firstName: string, lastName: string, company?: string): Promise<string | null> {
+interface SearchResult {
+  linkedinUrl: string | null;
+  rawResponse?: unknown;
+}
+
+async function searchLinkedIn(firstName: string, lastName: string, company?: string, debug = false): Promise<SearchResult> {
   if (!RAPIDAPI_KEY) {
     throw new Error('RAPIDAPI_KEY not configured');
   }
@@ -85,7 +90,7 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
   
   if (items.length === 0) {
     console.log('No results found in data/results/items arrays');
-    return null;
+    return { linkedinUrl: null, rawResponse: debug ? responseData : undefined };
   }
 
   const exactMatch = items.find(item => {
@@ -100,7 +105,7 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
       (exactMatch.public_identifier ? `https://www.linkedin.com/in/${exactMatch.public_identifier}` : null);
     if (linkedinUrl) {
       console.log('Found exact match:', linkedinUrl);
-      return linkedinUrl;
+      return { linkedinUrl, rawResponse: debug ? responseData : undefined };
     }
   }
 
@@ -110,10 +115,10 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
 
   if (linkedinUrl) {
     console.log('Using first result:', linkedinUrl);
-    return linkedinUrl;
+    return { linkedinUrl, rawResponse: debug ? responseData : undefined };
   }
 
-  return null;
+  return { linkedinUrl: null, rawResponse: debug ? responseData : undefined };
 }
 
 async function updateContactLinkedIn(
@@ -218,20 +223,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     console.log(`Searching LinkedIn for: ${contact.first_name} ${contact.last_name}, ${contact.company_name}`);
 
-    const linkedinUrl = await searchLinkedIn(
+    // Check if debug mode requested
+    const debugMode = req.query.debug === 'true';
+
+    const result = await searchLinkedIn(
       contact.first_name,
       contact.last_name,
-      contact.company_name || undefined
+      contact.company_name || undefined,
+      debugMode
     );
 
-    if (linkedinUrl) {
-      await updateContactLinkedIn(id, linkedinUrl, 'enriched');
+    if (result.linkedinUrl) {
+      await updateContactLinkedIn(id, result.linkedinUrl, 'enriched');
 
       return res.status(200).json({
         success: true,
-        linkedinUrl,
+        linkedinUrl: result.linkedinUrl,
         status: 'enriched',
         message: 'LinkedIn profile found',
+        ...(debugMode && result.rawResponse ? { rawApiResponse: result.rawResponse } : {})
       });
     } else {
       await updateContactLinkedIn(id, null, 'not_found');
@@ -243,8 +253,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         message: 'No LinkedIn profile found',
         debug: {
           searchedFor: `${contact.first_name} ${contact.last_name} ${contact.company_name || ''}`.trim(),
-          note: 'Check Vercel function logs for RapidAPI response'
-        }
+        },
+        ...(debugMode && result.rawResponse ? { rawApiResponse: result.rawResponse } : {})
       });
     }
   } catch (error) {
