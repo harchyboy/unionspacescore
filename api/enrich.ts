@@ -36,22 +36,14 @@ interface SearchResult {
   rawResponse?: unknown;
 }
 
-async function searchLinkedIn(firstName: string, lastName: string, company?: string, debug = false): Promise<SearchResult> {
-  if (!RAPIDAPI_KEY) {
-    throw new Error('RAPIDAPI_KEY not configured');
-  }
-
-  const keywords = company
-    ? `${firstName} ${lastName} ${company}`
-    : `${firstName} ${lastName}`;
-
+async function searchLinkedInQuery(keywords: string): Promise<LinkedInSearchResult> {
   const url = `https://${RAPIDAPI_HOST}/search-people?keywords=${encodeURIComponent(keywords)}&start=0`;
   console.log('Searching LinkedIn with URL:', url);
 
   const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'x-rapidapi-key': RAPIDAPI_KEY,
+      'x-rapidapi-key': RAPIDAPI_KEY!,
       'x-rapidapi-host': RAPIDAPI_HOST,
     },
   });
@@ -65,34 +57,59 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
   const responseText = await response.text();
   console.log('LinkedIn RAW response:', responseText);
   
-  let responseData: LinkedInSearchResult;
   try {
-    responseData = JSON.parse(responseText) as LinkedInSearchResult;
+    return JSON.parse(responseText) as LinkedInSearchResult;
   } catch (e) {
     console.error('Failed to parse RapidAPI response:', responseText);
     throw new Error(`Invalid RapidAPI response: ${responseText.substring(0, 200)}`);
   }
-  
-  console.log('LinkedIn parsed results:', JSON.stringify(responseData, null, 2));
+}
 
-  // Ensure items is always an array - handle unexpected API responses
-  let items: LinkedInPerson[] = [];
-  if (Array.isArray(responseData.data)) {
-    items = responseData.data;
+function extractItems(responseData: LinkedInSearchResult): LinkedInPerson[] {
+  // Handle nested structure: { data: { items: [...] } }
+  const nestedData = responseData.data as { items?: LinkedInPerson[] } | LinkedInPerson[] | undefined;
+  if (nestedData && typeof nestedData === 'object' && !Array.isArray(nestedData) && Array.isArray(nestedData.items)) {
+    return nestedData.items;
+  } else if (Array.isArray(responseData.data)) {
+    return responseData.data;
   } else if (Array.isArray(responseData.results)) {
-    items = responseData.results;
+    return responseData.results;
   } else if (Array.isArray(responseData.items)) {
-    items = responseData.items;
+    return responseData.items;
   }
-  
-  // Log all keys in responseData to find where the results are
-  console.log('Response keys:', Object.keys(responseData));
-  
-  if (items.length === 0) {
-    console.log('No results found in data/results/items arrays');
-    return { linkedinUrl: null, rawResponse: debug ? responseData : undefined };
+  return [];
+}
+
+async function searchLinkedIn(firstName: string, lastName: string, company?: string, debug = false): Promise<SearchResult> {
+  if (!RAPIDAPI_KEY) {
+    throw new Error('RAPIDAPI_KEY not configured');
   }
 
+  // Strategy: Try name + company first, then just name if no results
+  const searchQueries = company 
+    ? [`${firstName} ${lastName} ${company}`, `${firstName} ${lastName}`]
+    : [`${firstName} ${lastName}`];
+  
+  let lastResponse: LinkedInSearchResult | null = null;
+  
+  for (const keywords of searchQueries) {
+    console.log(`Trying search: "${keywords}"`);
+    const responseData = await searchLinkedInQuery(keywords);
+    lastResponse = responseData;
+    
+    const items = extractItems(responseData);
+    if (items.length > 0) {
+      console.log(`Found ${items.length} results for "${keywords}"`);
+      return findBestMatch(items, firstName, lastName, debug ? responseData : undefined);
+    }
+  }
+  
+  console.log('No results found after trying all search queries');
+  return { linkedinUrl: null, rawResponse: debug ? lastResponse : undefined };
+
+}
+
+function findBestMatch(items: LinkedInPerson[], firstName: string, lastName: string, rawResponse?: LinkedInSearchResult): SearchResult {
   const exactMatch = items.find(item => {
     const itemFirstName = (item.first_name || item.full_name?.split(' ')[0] || '').toLowerCase();
     const itemLastName = (item.last_name || item.full_name?.split(' ').slice(1).join(' ') || '').toLowerCase();
@@ -105,7 +122,7 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
       (exactMatch.public_identifier ? `https://www.linkedin.com/in/${exactMatch.public_identifier}` : null);
     if (linkedinUrl) {
       console.log('Found exact match:', linkedinUrl);
-      return { linkedinUrl, rawResponse: debug ? responseData : undefined };
+      return { linkedinUrl, rawResponse };
     }
   }
 
@@ -115,10 +132,10 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
 
   if (linkedinUrl) {
     console.log('Using first result:', linkedinUrl);
-    return { linkedinUrl, rawResponse: debug ? responseData : undefined };
+    return { linkedinUrl, rawResponse };
   }
 
-  return { linkedinUrl: null, rawResponse: debug ? responseData : undefined };
+  return { linkedinUrl: null, rawResponse };
 }
 
 async function updateContactLinkedIn(
