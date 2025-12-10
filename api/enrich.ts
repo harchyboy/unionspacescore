@@ -57,8 +57,18 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
     throw new Error(`LinkedIn API error: ${response.status} - ${text}`);
   }
 
-  const responseData = await response.json() as LinkedInSearchResult;
-  console.log('LinkedIn search results:', JSON.stringify(responseData, null, 2));
+  const responseText = await response.text();
+  console.log('LinkedIn RAW response:', responseText);
+  
+  let responseData: LinkedInSearchResult;
+  try {
+    responseData = JSON.parse(responseText) as LinkedInSearchResult;
+  } catch (e) {
+    console.error('Failed to parse RapidAPI response:', responseText);
+    throw new Error(`Invalid RapidAPI response: ${responseText.substring(0, 200)}`);
+  }
+  
+  console.log('LinkedIn parsed results:', JSON.stringify(responseData, null, 2));
 
   // Ensure items is always an array - handle unexpected API responses
   let items: LinkedInPerson[] = [];
@@ -70,8 +80,11 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
     items = responseData.items;
   }
   
+  // Log all keys in responseData to find where the results are
+  console.log('Response keys:', Object.keys(responseData));
+  
   if (items.length === 0) {
-    console.log('No results found');
+    console.log('No results found in data/results/items arrays');
     return null;
   }
 
@@ -228,6 +241,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         linkedinUrl: null,
         status: 'not_found',
         message: 'No LinkedIn profile found',
+        debug: {
+          searchedFor: `${contact.first_name} ${contact.last_name} ${contact.company_name || ''}`.trim(),
+          note: 'Check Vercel function logs for RapidAPI response'
+        }
       });
     }
   } catch (error) {
