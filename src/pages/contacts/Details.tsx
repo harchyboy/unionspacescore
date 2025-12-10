@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { useDeleteContact, useContact, useEnrichContact } from '../../api/contacts';
+import { useDeleteContact, useContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
@@ -14,26 +14,18 @@ interface ContactDetailsProps {
 export function ContactDetails({ contact: initialContact, onBack }: ContactDetailsProps) {
   const navigate = useNavigate();
   const deleteContact = useDeleteContact();
-  const enrichContact = useEnrichContact();
   const { data: contact = initialContact } = useContact(initialContact.id, initialContact);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { showToast, removeToast, toasts } = useToast();
   const [activeTab, setActiveTab] = useState('Overview');
 
-  const handleEnrichLinkedIn = async () => {
-    try {
-      const result = await enrichContact.mutateAsync(contact.id);
-      if (result.success && result.linkedinUrl) {
-        showToast('LinkedIn profile found!', 'success');
-      } else if (result.status === 'already_enriched') {
-        showToast('LinkedIn already linked', 'info');
-      } else {
-        showToast('No LinkedIn profile found', 'error');
-      }
-    } catch (error) {
-      console.error('Enrichment error:', error);
-      showToast('Failed to find LinkedIn profile', 'error');
-    }
+  // Opens Google search to find LinkedIn profile
+  const handleFindLinkedIn = () => {
+    const name = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
+    const company = contact.company || '';
+    const searchQuery = `site:linkedin.com/in/ "${name}"${company ? ` "${company}"` : ''}`;
+    const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+    window.open(googleUrl, '_blank');
   };
 
   // Generate display values
@@ -266,26 +258,13 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                         <>
                           <span className="text-sm text-secondary">Not linked</span>
                           <button
-                            onClick={handleEnrichLinkedIn}
-                            disabled={enrichContact.isPending}
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={handleFindLinkedIn}
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] rounded-lg transition-colors"
                           >
-                            {enrichContact.isPending ? (
-                              <>
-                                <i className="fa-solid fa-spinner fa-spin mr-1.5"></i>
-                                Searching...
-                              </>
-                            ) : (
-                              <>
-                                <i className="fa-brands fa-linkedin mr-1.5"></i>
-                                Find LinkedIn
-                              </>
-                            )}
+                            <i className="fa-brands fa-linkedin mr-1.5"></i>
+                            Find on Google
                           </button>
                         </>
-                      )}
-                      {contact.enrichmentStatus === 'not_found' && !contact.linkedinUrl && (
-                        <span className="text-xs text-secondary italic">Previously searched - not found</span>
                       )}
                     </div>
                   </div>

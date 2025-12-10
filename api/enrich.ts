@@ -104,7 +104,7 @@ async function searchLinkedIn(firstName: string, lastName: string, company?: str
     const items = extractItems(responseData);
     if (items.length > 0) {
       console.log(`Found ${items.length} results for "${keywords}"`);
-      return findBestMatch(items, firstName, lastName, debug ? responseData : undefined);
+      return findBestMatch(items, firstName, lastName, company, debug ? responseData : undefined);
     }
   }
   
@@ -128,28 +128,52 @@ function getFullName(item: LinkedInPerson): { firstName: string; lastName: strin
   };
 }
 
-function findBestMatch(items: LinkedInPerson[], firstName: string, lastName: string, rawResponse?: LinkedInSearchResult): SearchResult {
-  console.log(`Finding best match for: ${firstName} ${lastName} among ${items.length} results`);
+function findBestMatch(items: LinkedInPerson[], firstName: string, lastName: string, company?: string, rawResponse?: LinkedInSearchResult): SearchResult {
+  console.log(`Finding best match for: ${firstName} ${lastName} (${company || 'no company'}) among ${items.length} results`);
   
-  const exactMatch = items.find(item => {
+  // First, find all name matches
+  const nameMatches = items.filter(item => {
     const { firstName: itemFirst, lastName: itemLast } = getFullName(item);
-    const matches = itemFirst.toLowerCase() === firstName.toLowerCase() &&
-                   itemLast.toLowerCase() === lastName.toLowerCase();
-    if (matches) {
-      console.log(`Exact match found: ${item.fullName || item.full_name}`);
-    }
-    return matches;
+    return itemFirst.toLowerCase() === firstName.toLowerCase() &&
+           itemLast.toLowerCase() === lastName.toLowerCase();
   });
 
-  if (exactMatch) {
-    const linkedinUrl = getLinkedInUrl(exactMatch);
+  console.log(`Found ${nameMatches.length} name matches`);
+
+  // If we have company info, try to find someone whose headline mentions it
+  if (company && nameMatches.length > 0) {
+    const companyLower = company.toLowerCase();
+    // Try different variations of company name
+    const companyVariations = [
+      companyLower,
+      companyLower.replace(/,?\s*(inc\.?|ltd\.?|llc\.?|ip\.?)$/i, '').trim(),
+      companyLower.split(' ')[0], // Just first word (e.g., "Jones" from "Jones Lang LaSalle")
+    ];
+    
+    const companyMatch = nameMatches.find(item => {
+      const headline = (item.headline || '').toLowerCase();
+      return companyVariations.some(variation => headline.includes(variation));
+    });
+
+    if (companyMatch) {
+      const linkedinUrl = getLinkedInUrl(companyMatch);
+      if (linkedinUrl) {
+        console.log('Found company match:', linkedinUrl, '- Headline:', companyMatch.headline);
+        return { linkedinUrl, rawResponse };
+      }
+    }
+  }
+
+  // If company match not found, use first name match
+  if (nameMatches.length > 0) {
+    const linkedinUrl = getLinkedInUrl(nameMatches[0]);
     if (linkedinUrl) {
-      console.log('Found exact match URL:', linkedinUrl);
+      console.log('Using first name match:', linkedinUrl);
       return { linkedinUrl, rawResponse };
     }
   }
 
-  // If no exact match, use first result
+  // Last resort: use very first result
   const firstResult = items[0];
   const linkedinUrl = getLinkedInUrl(firstResult);
 
