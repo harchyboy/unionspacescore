@@ -49,6 +49,20 @@ function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
+function cleanCompanyName(name: string): string {
+  let cleaned = name;
+  const suffixes = ['inc', 'ltd', 'llc', 'ip', 'plc', 'corp', 'corporation', 'limited', 'company'];
+  const regex = new RegExp(`,?\\s*(${suffixes.join('|')})\\.?$`, 'i');
+  
+  let prev;
+  do {
+    prev = cleaned;
+    cleaned = cleaned.replace(regex, '').trim();
+  } while (cleaned !== prev);
+  
+  return cleaned;
+}
+
 async function searchGoogleCSE(query: string): Promise<GoogleSearchResponse> {
   const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_CSE_API_KEY}&cx=${GOOGLE_CSE_ID}&q=${encodeURIComponent(query)}`;
   
@@ -229,6 +243,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log(`Searching Google CSE for: ${firstName} ${lastName} at ${company || 'unknown company'}`);
 
     const searchResults = await searchGoogleCSE(searchQuery);
+    const debugQueries: string[] = [searchQuery];
     
     let candidates: LinkedInCandidate[] = [];
     
@@ -241,11 +256,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (candidates.length === 0) {
       // Try with cleaned company name if original had suffixes
       if (company) {
-        const cleanedCompany = company.replace(/,?\s*(inc\.?|ltd\.?|llc\.?|ip\.?|plc\.?|corp\.?|corporation)\b\.?$/i, '').trim();
+        const cleanedCompany = cleanCompanyName(company);
         
         if (cleanedCompany !== company && cleanedCompany.length > 2) {
            console.log(`Retrying with cleaned company name: ${cleanedCompany}`);
            const retryQuery = `"${firstName} ${lastName}" "${cleanedCompany}" site:linkedin.com/in/`;
+           debugQueries.push(retryQuery);
            const retryResults = await searchGoogleCSE(retryQuery);
            
            if (retryResults.items && retryResults.items.length > 0) {
@@ -260,6 +276,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (candidates.length === 0 && company) {
         console.log('Retrying without company name...');
         const fallbackQuery = `"${firstName} ${lastName}" site:linkedin.com/in/`;
+        debugQueries.push(fallbackQuery);
         const fallbackResults = await searchGoogleCSE(fallbackQuery);
         
         if (fallbackResults.items && fallbackResults.items.length > 0) {
@@ -279,7 +296,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({
       success: true,
       candidates,
-      searchedFor: { firstName, lastName, company }
+      searchedFor: { firstName, lastName, company },
+      debug: { queries: debugQueries }
     });
 
   } catch (error) {
