@@ -731,6 +731,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                           <button
                             onClick={() => handleApproveLinkedIn(candidate.url)}
                             disabled={approvingUrl !== null}
+                            aria-label={`Approve ${candidate.name}`}
                             className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 rounded-lg transition-colors"
                           >
                             {approvingUrl === candidate.url ? (
