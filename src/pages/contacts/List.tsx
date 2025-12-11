@@ -268,18 +268,34 @@ export function ContactsList() {
               icon="fa-refresh"
               onClick={async () => {
                 try {
-                  // Call the sync endpoint (no API key needed for manual sync)
-                  const response = await fetch('/api/sync', { method: 'POST' });
-                  const result = await response.json();
-                  if (response.ok) {
-                    const contactsSynced = result.results?.contacts?.synced || 0;
-                    const accountsSynced = result.results?.accounts?.synced || 0;
-                    alert(`Sync complete! ${contactsSynced} contacts and ${accountsSynced} accounts synced from Zoho CRM.`);
-                    // Refresh the contacts list without reloading the page
-                    queryClient.invalidateQueries({ queryKey: ['contacts'] });
-                  } else {
-                    alert(`Sync failed: ${result.message || result.error || 'Unknown error'}`);
-                  }
+                      // Call the sync endpoint (no API key needed for manual sync)
+                      const response = await fetch('/api/sync', { method: 'POST' });
+
+                      // Try to parse JSON, fall back to plain text for better error visibility
+                      let result: any = null;
+                      try {
+                        result = await response.json();
+                      } catch {
+                        const text = await response.text();
+                        result = { message: text || undefined };
+                      }
+
+                      if (response.ok) {
+                        const contactsSynced = result?.results?.contacts?.synced || 0;
+                        const accountsSynced = result?.results?.accounts?.synced || 0;
+                        alert(
+                          `Sync complete! ${contactsSynced} contacts and ${accountsSynced} accounts synced from Zoho CRM.`
+                        );
+                        // Refresh the contacts list without reloading the page
+                        queryClient.invalidateQueries({ queryKey: ['contacts'] });
+                      } else {
+                        const fallbackMessage = [
+                          result?.message,
+                          result?.error,
+                          response.statusText,
+                        ].find(Boolean) || 'Unknown error';
+                        alert(`Sync failed (${response.status}): ${fallbackMessage}`);
+                      }
                 } catch (error) {
                   console.error('Sync failed', error);
                   alert('Sync failed. Check the console for details.');
