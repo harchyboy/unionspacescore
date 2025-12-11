@@ -8,25 +8,33 @@ function setCors(res: VercelResponse) {
 }
 
 async function fetchContactPhoto(id: string) {
-  const token = await getZohoAccessToken();
-  const response = await fetch(`${API_BASE}/crm/v2/Contacts/${id}/photo`, {
-    headers: {
-      Authorization: `Zoho-oauthtoken ${token}`,
-    },
-  });
+  try {
+    const token = await getZohoAccessToken();
+    const response = await fetch(`${API_BASE}/crm/v2/Contacts/${id}/photo`, {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${token}`,
+      },
+    });
 
-  // Zoho returns 204 when no photo is present
-  if (response.status === 204) {
-    return { status: 404 as const };
+    // Zoho returns 204 when no photo is present
+    if (response.status === 204) {
+      return { status: 404 as const };
+    }
+
+    if (!response.ok) {
+      return { status: response.status as const, error: await response.text() };
+    }
+
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    const buffer = Buffer.from(await response.arrayBuffer());
+    return { status: 200 as const, contentType, buffer };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.toLowerCase().includes('too many requests') || message.toLowerCase().includes('access denied')) {
+      return { status: 429 as const, error: 'Zoho rate limit: too many requests' };
+    }
+    throw error;
   }
-
-  if (!response.ok) {
-    return { status: response.status as const, error: await response.text() };
-  }
-
-  const contentType = response.headers.get('content-type') || 'image/jpeg';
-  const buffer = Buffer.from(await response.arrayBuffer());
-  return { status: 200 as const, contentType, buffer };
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -49,9 +57,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const result = await fetchContactPhoto(id);
 
     if (result.status !== 200) {
-      // Do not cache missing images; this ensures a new photo in Zoho will be fetched next time
+      // Do not cache errors/missing images; allows retry when rate limit clears or photo is added
       res.setHeader('Cache-Control', 'no-store');
-      return res.status(result.status).json({ message: 'Photo not found' });
+      const message =
+        result.status === 429
+          ? 'Photo temporarily unavailable (Zoho rate limit). Please retry shortly.'
+          : 'Photo not found';
+      return res.status(result.status).json({ message });
     }
 
     res.setHeader('Content-Type', result.contentType);
