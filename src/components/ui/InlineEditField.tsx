@@ -175,7 +175,7 @@ export function InlineEditField({
       </label>
       <div
         onClick={handleEdit}
-        className="group cursor-pointer relative flex items-center space-x-2 py-1 px-2 -mx-2 rounded hover:bg-muted transition-all"
+        className="group cursor-pointer relative flex items-center space-x-2 py-1 px-2 -mx-2 rounded hover:bg-gray-100 transition-all"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
@@ -205,11 +205,11 @@ export function InlineEditField({
               <i className="fa-solid fa-copy text-xs"></i>
             </button>
           )}
-          {isHovered && (
-            <div className="text-secondary">
-              <i className="fa-solid fa-pencil text-xs"></i>
-            </div>
-          )}
+          
+          {/* Edit icon - always render but hide with opacity */}
+          <div className="text-secondary opacity-0 group-hover:opacity-100 transition-opacity">
+            <i className="fa-solid fa-pencil text-xs"></i>
+          </div>
         </div>
       </div>
     </div>
