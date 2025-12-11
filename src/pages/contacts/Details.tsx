@@ -81,7 +81,14 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         body: JSON.stringify({ linkedinUrl: url })
       });
       
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error('Invalid JSON response:', text);
+        throw new Error(`Server error: ${text.substring(0, 100)}...`);
+      }
       
       if (data.success) {
         showToast('LinkedIn profile saved!', 'success');
@@ -104,11 +111,12 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         queryClient.invalidateQueries({ queryKey: ['linkedin-posts', url] });
         queryClient.invalidateQueries({ queryKey: ['linkedin-posts'] });
       } else {
-        showToast(data.error || 'Failed to save LinkedIn URL', 'error');
+        showToast(data.error || data.message || 'Failed to save LinkedIn URL', 'error');
       }
     } catch (error) {
       console.error('Error approving LinkedIn:', error);
-      showToast('Failed to save LinkedIn URL', 'error');
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      showToast(`Failed to save: ${message}`, 'error');
     } finally {
       setApprovingUrl(null);
     }

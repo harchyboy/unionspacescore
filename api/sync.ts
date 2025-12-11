@@ -102,6 +102,7 @@ async function syncContacts() {
         territory: c.Territory || c.Mailing_City || null,
         relationship_health: c.Relationship_Health || 'good',
         relationship_health_score: c.Relationship_Health_Score || null,
+        linkedin_url: c.LinkedIn_URL || null,
         description: c.Description || null,
         zoho_created_at: c.Created_Time || null,
         zoho_modified_at: c.Modified_Time || null,

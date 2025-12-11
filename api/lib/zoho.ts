@@ -108,6 +108,7 @@ export interface ZohoContactRecord {
   Territory?: string;
   Relationship_Health?: string;
   Relationship_Health_Score?: number;
+  LinkedIn_URL?: string;
   [key: string]: unknown;
 }
 

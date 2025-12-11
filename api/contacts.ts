@@ -88,6 +88,7 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
     territory: record.Territory ?? record.Mailing_City ?? null,
     health: record.Relationship_Health ?? 'good',
     relationshipHealthScore: record.Relationship_Health_Score ?? null,
+    linkedinUrl: record.LinkedIn_URL ?? null,
     lastActivity: record.Modified_Time ?? null,
     createdAt: record.Created_Time ?? null,
     updatedAt: record.Modified_Time ?? null,
