@@ -13,10 +13,18 @@ const API_BASE = '/api/contacts';
 function transformContact(data: Record<string, unknown>): Contact {
   const firstName = (data.firstName as string) || (data.name as string)?.split(' ')[0] || '';
   const lastName = (data.lastName as string) || (data.name as string)?.split(' ').slice(1).join(' ') || '';
+  const cacheBustSource =
+    (data.updatedAt as string) ||
+    (data.lastActivity as string) ||
+    (data.createdAt as string) ||
+    undefined;
+  const cacheBust = cacheBustSource ? Date.parse(cacheBustSource) : undefined;
   const avatar =
     (data.avatar as string) ||
     (data.avatarUrl as string) ||
-    (data.id ? `/api/contacts/${data.id as string}/photo?t=${new Date().getTime()}` : undefined);
+    (data.id
+      ? `/api/contacts/${data.id as string}/photo${Number.isFinite(cacheBust) ? `?t=${cacheBust}` : ''}`
+      : undefined);
   
   return {
     id: data.id as string,
@@ -36,6 +44,7 @@ function transformContact(data: Record<string, unknown>): Contact {
     relationshipHealth: (data.health as Contact['relationshipHealth']) || 'good',
     relationshipHealthScore: data.relationshipHealthScore as number | undefined,
     lastActivity: data.lastActivity as string | undefined,
+    lastContacted: (data.lastContacted as string | undefined) ?? (data.lastActivity as string | undefined),
     linkedinUrl: data.linkedinUrl as string | undefined,
     enrichmentStatus: data.enrichmentStatus as Contact['enrichmentStatus'],
     enrichedAt: data.enrichedAt as string | undefined,
