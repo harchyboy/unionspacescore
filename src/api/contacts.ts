@@ -16,7 +16,7 @@ function transformContact(data: Record<string, unknown>): Contact {
   const avatar =
     (data.avatar as string) ||
     (data.avatarUrl as string) ||
-    (data.id ? `/api/contacts/${data.id as string}/photo` : undefined);
+    (data.id ? `/api/contacts/${data.id as string}/photo?t=${new Date().getTime()}` : undefined);
   
   return {
     id: data.id as string,
