@@ -143,7 +143,8 @@ export async function updateContact(input: UpdateContactInput): Promise<Contact>
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update contact');
+    const error = await response.json().catch(() => ({ message: 'Failed to update contact' }));
+    throw new Error(error.message || 'Failed to update contact');
   }
 
   const data = await response.json();
