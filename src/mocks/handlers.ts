@@ -3,6 +3,7 @@ import { propertyHandlers } from './handlers/properties';
 import { contactsHandlers } from './handlers/contacts';
 import { matchingHandlers } from './handlers/matching';
 import { accountsHandlers } from './handlers/accounts';
+import { syncHandlers } from './handlers/sync';
 
 export const handlers = [
   http.get('/api/health', () => {
@@ -12,4 +13,5 @@ export const handlers = [
   ...contactsHandlers,
   ...matchingHandlers,
   ...accountsHandlers,
+  ...syncHandlers,
 ];

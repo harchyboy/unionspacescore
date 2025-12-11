@@ -8,6 +8,7 @@ interface ContactDto {
   lastName: string;
   name: string;
   email: string;
+  avatar?: string | null;
   phone?: string | null;
   mobile?: string | null;
   role?: string | null;
@@ -33,6 +34,7 @@ function mapDbContact(record: DbContact): ContactDto {
     lastName: record.last_name,
     name: record.full_name,
     email: record.email,
+    avatar: record.zoho_id ? `/api/contacts/${record.zoho_id}/photo` : null,
     phone: record.phone,
     mobile: record.mobile,
     role: record.role,
@@ -76,6 +78,7 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
     lastName,
     name: fullName,
     email: record.Email || '',
+    avatar: record.id ? `/api/contacts/${record.id}/photo` : null,
     phone: record.Phone ?? null,
     mobile: record.Mobile ?? null,
     role: record.Title ?? null,

@@ -1,0 +1,63 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { API_BASE, getZohoAccessToken } from '../../lib/zoho.js';
+
+function setCors(res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+async function fetchContactPhoto(id: string) {
+  const token = await getZohoAccessToken();
+  const response = await fetch(`${API_BASE}/crm/v2/Contacts/${id}/photo`, {
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`,
+    },
+  });
+
+  // Zoho returns 204 when no photo is present
+  if (response.status === 204) {
+    return { status: 404 as const };
+  }
+
+  if (!response.ok) {
+    return { status: response.status as const, error: await response.text() };
+  }
+
+  const contentType = response.headers.get('content-type') || 'image/jpeg';
+  const buffer = Buffer.from(await response.arrayBuffer());
+  return { status: 200 as const, contentType, buffer };
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  setCors(res);
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
+  }
+
+  const { id } = req.query;
+  if (!id || typeof id !== 'string') {
+    return res.status(400).json({ message: 'Contact ID is required' });
+  }
+
+  try {
+    const result = await fetchContactPhoto(id);
+
+    if (result.status !== 200) {
+      return res.status(result.status).json({ message: 'Photo not found' });
+    }
+
+    res.setHeader('Content-Type', result.contentType);
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    return res.status(200).send(result.buffer);
+  } catch (error) {
+    console.error('Contact photo fetch error', error);
+    const message = error instanceof Error ? error.message : 'Unexpected error';
+    return res.status(500).json({ message });
+  }
+}

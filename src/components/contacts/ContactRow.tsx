@@ -16,6 +16,7 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
   const { showToast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const initials = `${contact.firstName?.[0] ?? ''}${contact.lastName?.[0] ?? ''}`.trim() || contact.fullName?.[0] || '?';
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -101,18 +102,21 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
       {/* Name + Last Activity (under name, not separate column) */}
       <TableCell>
         <div className="flex items-center space-x-3">
-          {contact.avatar ? (
-            <img
-              src={contact.avatar}
-              alt={contact.fullName}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
+          <div className="relative w-10 h-10 flex-shrink-0">
             <div className="w-10 h-10 rounded-full bg-[#3d3d3d] flex items-center justify-center text-white font-semibold">
-              {contact.firstName?.[0]}
-              {contact.lastName?.[0]}
+              {initials}
             </div>
-          )}
+            {contact.avatar && (
+              <img
+                src={contact.avatar}
+                alt={contact.fullName}
+                className="absolute inset-0 w-10 h-10 rounded-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            )}
+          </div>
             <div>
               <div className="font-semibold text-primary text-sm">{contact.fullName}</div>
               {/* Hide timestamp; show dash */}

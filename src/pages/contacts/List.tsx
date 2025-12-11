@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useContacts, useCreateContact } from '../../api/contacts';
 import { useCompanies } from '../../api/companies';
 import { useToast } from '../../hooks/useToast';
@@ -47,6 +48,7 @@ function getContactTypeForTab(tab: string): ContactType | null {
 export function ContactsList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
   
   // Get initial active tab from URL or default to brokers
   const getInitialTab = (): ContactTabValue => {
@@ -270,9 +272,11 @@ export function ContactsList() {
                   const response = await fetch('/api/sync', { method: 'POST' });
                   const result = await response.json();
                   if (response.ok) {
-                    alert(`Sync complete! ${result.results?.contacts?.synced || 0} contacts synced from Zoho CRM.`);
-                    // Force a refresh of the contacts list
-                    window.location.reload();
+                    const contactsSynced = result.results?.contacts?.synced || 0;
+                    const accountsSynced = result.results?.accounts?.synced || 0;
+                    alert(`Sync complete! ${contactsSynced} contacts and ${accountsSynced} accounts synced from Zoho CRM.`);
+                    // Refresh the contacts list without reloading the page
+                    queryClient.invalidateQueries({ queryKey: ['contacts'] });
                   } else {
                     alert(`Sync failed: ${result.message || result.error || 'Unknown error'}`);
                   }
@@ -581,18 +585,21 @@ export function ContactsList() {
                           }`}
                         >
                           <div className="flex items-center space-x-3">
-                            {contact.avatar ? (
-                              <img
-                                src={contact.avatar}
-                                alt={contact.fullName}
-                                className="w-10 h-10 rounded-full object-cover"
-                              />
-                            ) : (
+                            <div className="relative w-10 h-10 flex-shrink-0">
                               <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                                {contact.firstName[0]}
-                                {contact.lastName[0]}
+                                {`${contact.firstName?.[0] ?? ''}${contact.lastName?.[0] ?? ''}`.trim() || contact.fullName?.[0] || '?'}
                               </div>
-                            )}
+                              {contact.avatar && (
+                                <img
+                                  src={contact.avatar}
+                                  alt={contact.fullName}
+                                  className="absolute inset-0 w-10 h-10 rounded-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                  }}
+                                />
+                              )}
+                            </div>
                             <div>
                               <div className="text-sm font-medium text-primary">
                                 {contact.fullName}

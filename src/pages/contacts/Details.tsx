@@ -190,17 +190,21 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
             <i className="fa-solid fa-arrow-left"></i>
           </button>
           <div className="flex items-center space-x-4 flex-1">
-            {contact.avatar ? (
-              <img 
-                src={contact.avatar} 
-                alt={displayName} 
-                className="w-16 h-16 rounded-full object-cover"
-              />
-            ) : (
+            <div className="relative w-16 h-16 flex-shrink-0">
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-semibold">
                 {initials}
               </div>
-            )}
+              {contact.avatar && (
+                <img 
+                  src={contact.avatar} 
+                  alt={displayName} 
+                  className="absolute inset-0 w-16 h-16 rounded-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              )}
+            </div>
             
             <div>
               <div className="flex items-center space-x-3 mb-1">

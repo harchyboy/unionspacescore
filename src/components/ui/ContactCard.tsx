@@ -24,16 +24,31 @@ export function ContactCard({
   // Email and phone are available for future use
   void _email;
   void _phone;
+  const initials = name
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || '?';
   return (
     <div className={`bg-white border border-[#E6E6E6] rounded-lg p-4 ${className}`}>
       <div className="flex items-center space-x-3 mb-3">
-        {avatar ? (
-          <img src={avatar} alt={name} className="w-10 h-10 rounded-full object-cover" />
-        ) : (
-          <div className="w-10 h-10 bg-[#252525] rounded flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-semibold text-sm">{name.charAt(0).toUpperCase()}</span>
+        <div className="relative w-10 h-10 flex-shrink-0">
+          <div className="w-10 h-10 bg-[#252525] rounded flex items-center justify-center">
+            <span className="text-white font-semibold text-sm">{initials}</span>
           </div>
-        )}
+          {avatar && (
+            <img
+              src={avatar}
+              alt={name}
+              className="absolute inset-0 w-10 h-10 rounded-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          )}
+        </div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold text-[#252525] truncate">{name}</div>
           {firm && <div className="text-xs text-[#8e8e8e] truncate">{firm}</div>}

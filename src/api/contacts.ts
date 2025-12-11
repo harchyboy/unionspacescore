@@ -13,6 +13,10 @@ const API_BASE = '/api/contacts';
 function transformContact(data: Record<string, unknown>): Contact {
   const firstName = (data.firstName as string) || (data.name as string)?.split(' ')[0] || '';
   const lastName = (data.lastName as string) || (data.name as string)?.split(' ').slice(1).join(' ') || '';
+  const avatar =
+    (data.avatar as string) ||
+    (data.avatarUrl as string) ||
+    (data.id ? `/api/contacts/${data.id as string}/photo` : undefined);
   
   return {
     id: data.id as string,
@@ -26,6 +30,7 @@ function transformContact(data: Record<string, unknown>): Contact {
     companyId: data.accountId as string | undefined,
     type: (data.type as Contact['type']) || 'Broker',
     role: data.role as string | undefined,
+    avatar,
     territory: data.territory as string | undefined,
     notes: data.notes as string | undefined,
     relationshipHealth: (data.health as Contact['relationshipHealth']) || 'good',
