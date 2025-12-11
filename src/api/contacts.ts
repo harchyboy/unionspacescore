@@ -239,7 +239,7 @@ export function useEnrichContact() {
 
   return useMutation({
     mutationFn: enrichContact,
-    onSuccess: (data, contactId) => {
+    onSuccess: (_data, contactId) => {
       queryClient.invalidateQueries({ queryKey: ['contact', contactId] });
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
     },
