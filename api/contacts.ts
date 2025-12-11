@@ -364,14 +364,14 @@ async function createContact(payload: {
 async function updateContact(id: string, payload: Record<string, unknown>) {
   // Update in Zoho first
   const zohoPayload: Record<string, unknown> = {};
-  
-  // Helper to only add non-empty values to Zoho
+
+  // Only send non-empty values to Zoho
   const addIfNotEmpty = (key: string, value: unknown) => {
     if (value !== undefined && value !== null && value !== '') {
       zohoPayload[key] = value;
     }
   };
-  
+
   addIfNotEmpty('First_Name', payload.firstName);
   addIfNotEmpty('Last_Name', payload.lastName);
   addIfNotEmpty('Email', payload.email);
@@ -381,18 +381,17 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
   addIfNotEmpty('Contact_Type', payload.type);
   addIfNotEmpty('Territory', payload.territory);
   addIfNotEmpty('Description', payload.notes);
-  
-  // Handle accountId - can be set to null to unlink
+
+  // Account link/unlink
   if (payload.accountId !== undefined) {
-    zohoPayload.Account_Name = payload.accountId && payload.accountId !== '' 
-      ? { id: String(payload.accountId) } 
-      : null;
+    zohoPayload.Account_Name =
+      payload.accountId && payload.accountId !== '' ? { id: String(payload.accountId) } : null;
   }
-  
-  // Handle both "health" and "relationshipHealth" field names
+
+  // Support both health and relationshipHealth fields
   const healthValue = payload.relationshipHealth ?? payload.health;
   addIfNotEmpty('Relationship_Health', healthValue);
-  
+
   if (payload.relationshipHealthScore !== undefined && payload.relationshipHealthScore !== null) {
     zohoPayload.Relationship_Health_Score = Number(payload.relationshipHealthScore);
   }
@@ -448,13 +447,11 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
     if (payload.notes !== undefined) dbPayload.description = payload.notes || null;
     if (payload.company !== undefined) dbPayload.company_name = payload.company || null;
     if (payload.accountId !== undefined) dbPayload.account_id = payload.accountId || null;
-    // Handle both "health" and "relationshipHealth" field names
     const dbHealthValue = payload.relationshipHealth ?? payload.health;
     if (dbHealthValue !== undefined) dbPayload.relationship_health = dbHealthValue || null;
     if (payload.relationshipHealthScore !== undefined) {
-      dbPayload.relationship_health_score = payload.relationshipHealthScore !== null 
-        ? Number(payload.relationshipHealthScore) 
-        : null;
+      dbPayload.relationship_health_score =
+        payload.relationshipHealthScore !== null ? Number(payload.relationshipHealthScore) : null;
     }
 
     await supabase.from('contacts').update(dbPayload).eq('zoho_id', id);
