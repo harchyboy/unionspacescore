@@ -529,4 +529,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 // Export for use by [id].ts
-export { updateContact, deleteContactById, getContactFromDb, getContactFromZoho, mapZohoContact };
+export {
+  updateContact,
+  deleteContactById,
+  getContactFromDb,
+  getContactFromZoho,
+  mapZohoContact,
+  fetchContactFromZohoAndCache,
+  upsertContactInDb,
+};
