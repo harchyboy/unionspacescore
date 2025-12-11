@@ -5,7 +5,6 @@ import {
   updateContact,
   deleteContactById,
   getContactFromDb,
-  getContactFromZoho,
   fetchContactFromZohoAndCache,
 } from '../contacts.js';
 
