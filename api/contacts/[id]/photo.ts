@@ -22,7 +22,7 @@ async function fetchContactPhoto(id: string) {
     }
 
     if (!response.ok) {
-      return { status: response.status as const, error: await response.text() };
+      return { status: response.status, error: await response.text() };
     }
 
     const contentType = response.headers.get('content-type') || 'image/jpeg';
@@ -56,13 +56,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const result = await fetchContactPhoto(id);
 
-    if (result.status !== 200) {
+    if (!('buffer' in result)) {
       // Do not cache errors/missing images; allows retry when rate limit clears or photo is added
       res.setHeader('Cache-Control', 'no-store');
-      const message =
-        result.status === 429
-          ? 'Photo temporarily unavailable (Zoho rate limit). Please retry shortly.'
-          : 'Photo not found';
+      let message = 'Photo not found';
+      
+      if (result.status === 429) {
+        message = 'Photo temporarily unavailable (Zoho rate limit). Please retry shortly.';
+      } else if ('error' in result && result.error) {
+         // If it's the dynamic error object
+         message = typeof result.error === 'string' ? result.error : 'Photo not found';
+      }
+
       return res.status(result.status).json({ message });
     }
 
