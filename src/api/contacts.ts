@@ -94,14 +94,35 @@ async function fetchContacts(params?: ContactListParams): Promise<ContactListRes
 
 // Fetch single contact
 async function fetchContact(id: string): Promise<Contact> {
+  console.log('[fetchContact] Fetching contact with ID:', id);
   const response = await fetch(`${API_BASE}/${id}`);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch contact');
+    const errorText = await response.text();
+    console.error('[fetchContact] Failed to fetch contact:', {
+      id,
+      status: response.status,
+      statusText: response.statusText,
+      error: errorText
+    });
+    throw new Error(`Failed to fetch contact: ${response.status} ${response.statusText}`);
   }
 
   const data = await response.json();
-  return transformContact(data);
+  console.log('[fetchContact] Contact data received:', {
+    id: data.id,
+    name: data.name,
+    type: data.type,
+    hasId: !!data.id
+  });
+  const transformed = transformContact(data);
+  console.log('[fetchContact] Contact transformed:', {
+    id: transformed.id,
+    fullName: transformed.fullName,
+    type: transformed.type,
+    hasId: !!transformed.id
+  });
+  return transformed;
 }
 
 // Force refresh contact from Zoho (bypasses cache on the server)

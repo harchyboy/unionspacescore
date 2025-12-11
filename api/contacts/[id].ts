@@ -15,14 +15,20 @@ function setCors(res: VercelResponse) {
 }
 
 async function getContact(id: string) {
+  console.log('[getContact] Fetching contact:', { id, isSupabaseConfigured: isSupabaseConfigured() });
+  
   // Try database first if configured
   if (isSupabaseConfigured()) {
     const dbContact = await getContactFromDb(id);
+    console.log('[getContact] Database result:', { id, found: !!dbContact, contactType: dbContact?.type });
     if (dbContact) return dbContact;
   }
   
   // Fallback to Zoho
-  return fetchContactFromZohoAndCache(id);
+  console.log('[getContact] Falling back to Zoho for:', id);
+  const zohoContact = await fetchContactFromZohoAndCache(id);
+  console.log('[getContact] Zoho result:', { id, found: !!zohoContact, contactType: zohoContact?.type });
+  return zohoContact;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

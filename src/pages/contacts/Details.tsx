@@ -26,7 +26,22 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const deleteContact = useDeleteContact();
-  const { data: contact = initialContact, refetch: refetchContact } = useContact(initialContact.id, initialContact);
+  
+  // Debug logging
+  console.log('[ContactDetails] Initial contact:', {
+    id: initialContact?.id,
+    name: initialContact?.fullName,
+    type: initialContact?.type,
+    hasId: !!initialContact?.id
+  });
+  
+  const { data: contact = initialContact, refetch: refetchContact, error: fetchError } = useContact(initialContact.id, initialContact);
+  
+  // Log any fetch errors
+  if (fetchError) {
+    console.error('[ContactDetails] Fetch error:', fetchError);
+  }
+  
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { showToast, removeToast, toasts } = useToast();
   const [activeTab, setActiveTab] = useState('Overview');
@@ -37,6 +52,19 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const [showLinkedInModal, setShowLinkedInModal] = useState(false);
   const [approvingUrl, setApprovingUrl] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Fetch LinkedIn posts if URL is available (must be before any conditional returns)
+  const { data: linkedinPosts, isLoading: isLoadingPosts } = useQuery({
+    queryKey: ['linkedin-posts', contact?.linkedinUrl],
+    queryFn: async () => {
+      if (!contact?.linkedinUrl) return null;
+      const res = await fetch(`${API_BASE}/api/linkedin-posts?url=${encodeURIComponent(contact.linkedinUrl)}`);
+      if (!res.ok) throw new Error('Failed to fetch posts');
+      return res.json();
+    },
+    enabled: !!contact?.linkedinUrl && activeTab === 'Overview',
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
   // Search for LinkedIn profiles using Google Custom Search
   const handleFindLinkedIn = async () => {
@@ -85,10 +113,10 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
       const text = await response.text();
       console.log('linkedin-approve raw response:', response.status, text);
 
-      let data: any = null;
+      let data: Record<string, unknown> | null = null;
       try {
         data = JSON.parse(text);
-      } catch (e) {
+      } catch {
         // Non-JSON response
         showToast(`Save failed (HTTP ${response.status}): ${text.substring(0, 200)}`, 'error');
         return;
@@ -132,6 +160,32 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
     setLinkedInCandidates([]);
   };
 
+  // Handle missing or invalid contact
+  if (!contact || !contact.id) {
+    return (
+      <div className="flex items-center justify-center h-full bg-[#F0F0F0] p-8">
+        <div className="bg-white rounded-lg border border-[#E6E6E6] p-8 text-center max-w-md">
+          <i className="fa-solid fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+          <h2 className="text-xl font-semibold text-primary mb-2">Error Loading Contact</h2>
+          <p className="text-secondary mb-4">
+            Unable to load contact details. The contact may not exist or there was an error fetching the data.
+          </p>
+          {fetchError && (
+            <p className="text-xs text-red-600 mb-4 font-mono">
+              {fetchError instanceof Error ? fetchError.message : String(fetchError)}
+            </p>
+          )}
+          <button 
+            onClick={onBack || (() => navigate('/contacts'))}
+            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors"
+          >
+            Back to Contacts
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
   // Generate display values
   const displayName = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || 'Unnamed Contact';
   const initials = displayName.split(' ').map(n => n?.[0] || '').join('').toUpperCase().slice(0, 2);
@@ -147,19 +201,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };
-
-  // Fetch LinkedIn posts if URL is available
-  const { data: linkedinPosts, isLoading: isLoadingPosts } = useQuery({
-    queryKey: ['linkedin-posts', contact.linkedinUrl],
-    queryFn: async () => {
-      if (!contact.linkedinUrl) return null;
-      const res = await fetch(`${API_BASE}/api/linkedin-posts?url=${encodeURIComponent(contact.linkedinUrl)}`);
-      if (!res.ok) throw new Error('Failed to fetch posts');
-      return res.json();
-    },
-    enabled: !!contact.linkedinUrl && activeTab === 'Overview',
-    staleTime: 1000 * 60 * 60, // 1 hour
-  });
 
   const handleBack = () => {
     if (onBack) {
@@ -501,15 +542,15 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                         </div>
                       ) : linkedinPosts?.data?.data ? (
                         <div className="space-y-4">
-                          {linkedinPosts.data.data.slice(0, 3).map((post: any, i: number) => (
+                          {(linkedinPosts.data.data as Array<Record<string, unknown>>).slice(0, 3).map((post, i: number) => (
                             <div key={i} className="border-b border-[#E6E6E6] last:border-0 pb-4 last:pb-0">
                               <p className="text-sm text-primary line-clamp-3 mb-2">
-                                {post.text || post.commentary || post.description || 'Shared a post'}
+                                {(post.text as string) || (post.commentary as string) || (post.description as string) || 'Shared a post'}
                               </p>
                               <div className="flex items-center justify-between text-xs text-secondary">
-                                <span>{formatDate(post.postedDate || post.date)}</span>
+                                <span>{formatDate((post.postedDate as string) || (post.date as string))}</span>
                                 <a 
-                                  href={post.articleUrl || post.url || post.link || contact.linkedinUrl} 
+                                  href={(post.articleUrl as string) || (post.url as string) || (post.link as string) || contact.linkedinUrl} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
                                   className="text-[#0077B5] hover:underline"

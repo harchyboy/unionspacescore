@@ -144,6 +144,13 @@ export function ContactsList() {
   };
   
   const handleContactSelect = (contact: Contact) => {
+    console.log('[ContactsList] Contact selected:', {
+      id: contact?.id,
+      name: contact?.fullName,
+      type: contact?.type,
+      hasId: !!contact?.id,
+      fullContact: contact
+    });
     setSelectedContact(contact);
     setIsSlideOverOpen(true);
   };
@@ -272,7 +279,7 @@ export function ContactsList() {
                       const response = await fetch('/api/sync', { method: 'POST' });
 
                       // Try to parse JSON, fall back to plain text for better error visibility
-                      let result: any = null;
+                      let result: Record<string, unknown> | null = null;
                       try {
                         result = await response.json();
                       } catch {
