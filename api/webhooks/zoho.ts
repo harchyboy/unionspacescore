@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from '../lib/supabase.js';
-import { zohoRequest, ZohoContactRecord, ZohoAccountRecord } from '../lib/zoho.js';
+import { zohoRequest, ZohoContactRecord, ZohoAccountRecord, ZohoPropertyRecord, ZohoUnitRecord } from '../lib/zoho.js';
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -41,6 +41,32 @@ async function fetchZohoAccount(id: string): Promise<ZohoAccountRecord | null> {
     return response.data?.[0] ?? null;
   } catch (error) {
     console.error(`Failed to fetch account ${id}:`, error);
+    return null;
+  }
+}
+
+// Fetch a single property from Zoho by ID
+async function fetchZohoProperty(id: string): Promise<ZohoPropertyRecord | null> {
+  try {
+    const response = await zohoRequest<{ data?: ZohoPropertyRecord[] }>(
+      `/crm/v2/Properties/${id}`
+    );
+    return response.data?.[0] ?? null;
+  } catch (error) {
+    console.error(`Failed to fetch property ${id}:`, error);
+    return null;
+  }
+}
+
+// Fetch a single unit from Zoho by ID
+async function fetchZohoUnit(id: string): Promise<ZohoUnitRecord | null> {
+  try {
+    const response = await zohoRequest<{ data?: ZohoUnitRecord[] }>(
+      `/crm/v2/Units/${id}`
+    );
+    return response.data?.[0] ?? null;
+  } catch (error) {
+    console.error(`Failed to fetch unit ${id}:`, error);
     return null;
   }
 }
@@ -109,6 +135,111 @@ async function upsertAccount(zohoAccount: ZohoAccountRecord) {
 
   if (error) {
     console.error('Error upserting account:', error);
+    throw error;
+  }
+}
+
+// Handle property create/update
+async function upsertProperty(zohoProperty: ZohoPropertyRecord) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+
+  const property = {
+    zoho_id: zohoProperty.id,
+    name: zohoProperty.Name || 'Unnamed Property',
+    address_line: zohoProperty.Address_Line || null,
+    postcode: zohoProperty.Postcode || null,
+    city: zohoProperty.City || null,
+    country: zohoProperty.Country || 'United Kingdom',
+    total_size_sqft: zohoProperty.Total_Size_Sq_Ft || null,
+    floor_count: zohoProperty.Floor_Count || null,
+    lifts: zohoProperty.Lifts || null,
+    built_year: zohoProperty.Built_Year || null,
+    refurbished_year: zohoProperty.Refurbished_Year || null,
+    parking: zohoProperty.Parking || null,
+    marketing_status: zohoProperty.Marketing_Status || 'Draft',
+    marketing_visibility: zohoProperty.Marketing_Visibility || 'Private',
+    marketing_fit_out: zohoProperty.Marketing_Fit_Out || null,
+    epc_rating: zohoProperty.EPC_Rating || null,
+    epc_ref: zohoProperty.EPC_Ref || null,
+    epc_expiry: zohoProperty.EPC_Expiry || null,
+    breeam_rating: zohoProperty.BREEAM_Rating || null,
+    zoho_created_at: zohoProperty.Created_Time || null,
+    zoho_modified_at: zohoProperty.Modified_Time || null,
+  };
+
+  const { error } = await supabase
+    .from('properties')
+    .upsert(property, { onConflict: 'zoho_id' });
+
+  if (error) {
+    console.error('Error upserting property:', error);
+    throw error;
+  }
+}
+
+// Handle unit create/update
+async function upsertUnit(zohoUnit: ZohoUnitRecord) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+
+  // Don't sync units without a property link
+  if (!zohoUnit.Property?.id) return;
+
+  const unit = {
+    zoho_id: zohoUnit.id,
+    property_zoho_id: zohoUnit.Property?.id,
+    code: zohoUnit.Name || 'Unnamed Unit',
+    floor: zohoUnit.Floor || null,
+    size_sqft: zohoUnit.Size_Sq_Ft || null,
+    desks: zohoUnit.Desks || null,
+    status: zohoUnit.Status || 'Available',
+    fit_out: zohoUnit.Fit_Out || null,
+    price_psf: zohoUnit.Price_Per_Sq_Ft || null,
+    price_pcm: zohoUnit.Price_Per_Month || null,
+    pipeline_stage: zohoUnit.Pipeline_Stage || null,
+    zoho_created_at: zohoUnit.Created_Time || null,
+    zoho_modified_at: zohoUnit.Modified_Time || null,
+  };
+
+  const { error } = await supabase
+    .from('units')
+    .upsert(unit, { onConflict: 'zoho_id' });
+
+  if (error) {
+    console.error('Error upserting unit:', error);
+    throw error;
+  }
+}
+
+// Handle property delete
+async function deleteProperty(zohoId: string) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+
+  const { error } = await supabase
+    .from('properties')
+    .delete()
+    .eq('zoho_id', zohoId);
+
+  if (error) {
+    console.error('Error deleting property:', error);
+    throw error;
+  }
+}
+
+// Handle unit delete
+async function deleteUnit(zohoId: string) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+
+  const { error } = await supabase
+    .from('units')
+    .delete()
+    .eq('zoho_id', zohoId);
+
+  if (error) {
+    console.error('Error deleting unit:', error);
     throw error;
   }
 }
@@ -240,6 +371,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           await logWebhook('Accounts', operation || 'unknown', id, payload, 'error', msg);
         }
       }
+    } else if (module === 'properties') {
+      for (const id of ids) {
+        try {
+          if (operation === 'delete') {
+            await deleteProperty(id);
+            await logWebhook('Properties', 'delete', id, payload, 'success');
+          } else {
+            const property = await fetchZohoProperty(id);
+            if (property) {
+              await upsertProperty(property);
+              await logWebhook('Properties', operation || 'update', id, payload, 'success');
+            }
+          }
+        } catch (error) {
+          const msg = error instanceof Error ? error.message : 'Unknown error';
+          await logWebhook('Properties', operation || 'unknown', id, payload, 'error', msg);
+        }
+      }
+    } else if (module === 'units') {
+      for (const id of ids) {
+        try {
+          if (operation === 'delete') {
+            await deleteUnit(id);
+            await logWebhook('Units', 'delete', id, payload, 'success');
+          } else {
+            const unit = await fetchZohoUnit(id);
+            if (unit) {
+              await upsertUnit(unit);
+              await logWebhook('Units', operation || 'update', id, payload, 'success');
+            }
+          }
+        } catch (error) {
+          const msg = error instanceof Error ? error.message : 'Unknown error';
+          await logWebhook('Units', operation || 'unknown', id, payload, 'error', msg);
+        }
+      }
     } else {
       console.log(`Ignoring webhook for module: ${module}`);
     }
@@ -257,4 +424,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 }
-

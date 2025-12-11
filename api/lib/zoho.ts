@@ -132,3 +132,45 @@ export interface ZohoAccountRecord {
   [key: string]: unknown;
 }
 
+export interface ZohoPropertyRecord {
+  id: string;
+  Name: string; // Property Name
+  Address_Line?: string;
+  Postcode?: string;
+  City?: string;
+  Country?: string;
+  Total_Size_Sq_Ft?: number;
+  Floor_Count?: number;
+  Lifts?: string;
+  Built_Year?: number;
+  Refurbished_Year?: number;
+  Parking?: string;
+  Marketing_Status?: string;
+  Marketing_Visibility?: string;
+  Marketing_Fit_Out?: string;
+  EPC_Rating?: string;
+  EPC_Ref?: string;
+  EPC_Expiry?: string;
+  BREEAM_Rating?: string;
+  Modified_Time?: string;
+  Created_Time?: string;
+  [key: string]: unknown;
+}
+
+export interface ZohoUnitRecord {
+  id: string;
+  Name: string; // Usually Unit Code
+  Property?: { id: string; name: string }; // Lookup to Property
+  Floor?: string;
+  Size_Sq_Ft?: number;
+  Desks?: number;
+  Status?: string;
+  Fit_Out?: string;
+  Price_Per_Sq_Ft?: number;
+  Price_Per_Month?: number;
+  Pipeline_Stage?: string;
+  Modified_Time?: string;
+  Created_Time?: string;
+  [key: string]: unknown;
+}
+

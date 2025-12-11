@@ -1,159 +1,62 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Property } from '../_lib/types';
+import { getSupabase, isSupabaseConfigured, DbProperty, DbUnit } from '../../lib/supabase.js';
+import type { Property } from '../../_lib/types';
 
-// Import the same seed data
-const seedProperties: Property[] = [
-  {
-    id: '99-bishopsgate',
-    name: '99 Bishopsgate',
-    addressLine: '99 Bishopsgate',
-    postcode: 'EC2M 3XD',
-    city: 'London',
-    country: 'United Kingdom',
-    geo: { lat: 51.5155, lng: -0.0815 },
-    submarket: 'City of London',
-    totalSizeSqFt: 45000,
-    floorCount: 10,
-    lifts: '2 passenger, 1 service',
-    builtYear: 1985,
-    refurbishedYear: 2020,
-    parking: 'No parking',
-    amenities: [
-      'Reception',
-      'Meeting rooms',
-      'Kitchen facilities',
-      'Bike storage',
-      'Shower facilities',
-      'Air conditioning',
-    ],
+// Helper to map DB property to Frontend Property
+function mapProperty(p: DbProperty & { units?: DbUnit[] }): Property {
+  return {
+    id: p.id,
+    name: p.name,
+    addressLine: p.address_line || '',
+    postcode: p.postcode || '',
+    city: p.city || '',
+    country: p.country || 'United Kingdom',
+    totalSizeSqFt: p.total_size_sqft || undefined,
+    floorCount: p.floor_count || undefined,
+    lifts: p.lifts || undefined,
+    builtYear: p.built_year || undefined,
+    refurbishedYear: p.refurbished_year || undefined,
+    parking: p.parking || undefined,
+    amenities: [],
     marketing: {
-      visibility: 'Public',
-      status: 'On Market',
-      fitOut: 'Cat A+',
+      visibility: (p.marketing_visibility as 'Private' | 'Public') || 'Private',
+      status: (p.marketing_status as 'Draft' | 'Broker-Ready' | 'On Market') || 'Draft',
+      fitOut: (p.marketing_fit_out as 'Shell' | 'Cat A' | 'Cat A+') || 'Shell',
     },
     compliance: {
-      epc: {
-        rating: 'B',
-        ref: 'EPC-99B-2024',
-        issued: '2024-01-15',
-        expires: '2034-01-15',
-      },
-      hsCertified: true,
-      breeam: 'Excellent',
+      epc: p.epc_rating ? {
+        rating: p.epc_rating,
+        ref: p.epc_ref || undefined,
+        expires: p.epc_expiry || undefined,
+      } : undefined,
+      breeam: p.breeam_rating || undefined,
     },
-    contacts: {
-      agent: {
-        name: 'Sarah Johnson',
-        firm: 'Knight Frank',
-        email: 'sarah.johnson@knightfrank.com',
-        phone: '+44 20 7629 8171',
-      },
-      landlord: {
-        name: 'British Land',
-        pmContact: 'property.management@britishland.com',
-      },
-    },
-    units: [
-      {
-        id: 'unit-1',
-        code: '99B-3-A',
-        floor: '3rd',
-        sizeSqFt: 2500,
-        desks: 12,
-        fitOut: 'Cat A+',
-        status: 'Available',
-        pricePsf: 65,
-        pricePcm: 13500,
-        pipelineStage: 'New',
-      },
-      {
-        id: 'unit-2',
-        code: '99B-5-B',
-        floor: '5th',
-        sizeSqFt: 3200,
-        desks: 16,
-        fitOut: 'Cat A+',
-        status: 'Under Offer',
-        pricePsf: 68,
-        pricePcm: 17400,
-        pipelineStage: 'HoTs',
-      },
-      {
-        id: 'unit-3',
-        code: '99B-7-C',
-        floor: '7th',
-        sizeSqFt: 1800,
-        desks: 9,
-        fitOut: 'Cat A',
-        status: 'Let',
-        pricePsf: 60,
-        pricePcm: 9000,
-        lease: '5 year lease, break at year 3',
-        pipelineStage: 'Closed',
-      },
-    ],
-    stats: {
-      occupancyPct: 33.3,
-      totalUnits: 3,
-      available: 1,
-      underOffer: 1,
-      let: 1,
-    },
-    updatedAt: '2024-12-15T10:30:00Z',
-  },
-  {
-    id: 'sample-2',
-    name: 'Sample Property 2',
-    addressLine: '123 Main Street',
-    postcode: 'SW1A 1AA',
-    city: 'London',
-    country: 'United Kingdom',
-    amenities: ['Reception', 'Kitchen'],
-    marketing: {
-      visibility: 'Private',
-      status: 'Draft',
-      fitOut: 'Shell',
-    },
-    units: [],
+    units: (p.units || []).map(u => ({
+      id: u.id,
+      code: u.code,
+      floor: u.floor || '',
+      sizeSqFt: u.size_sqft || 0,
+      desks: u.desks || 0,
+      fitOut: (u.fit_out as 'Shell' | 'Cat A' | 'Cat A+') || 'Shell',
+      status: (u.status as 'Available' | 'Under Offer' | 'Let' | 'Closed') || 'Available',
+      pricePsf: u.price_psf || undefined,
+      pricePcm: u.price_pcm || undefined,
+      pipelineStage: (u.pipeline_stage as 'New' | 'Viewing' | 'HoTs' | 'Legals' | 'Closed') || 'New',
+    })),
     stats: {
       occupancyPct: 0,
-      totalUnits: 0,
-      available: 0,
-      underOffer: 0,
-      let: 0,
+      totalUnits: (p.units || []).length,
+      available: (p.units || []).filter(u => u.status === 'Available').length,
+      underOffer: (p.units || []).filter(u => u.status === 'Under Offer').length,
+      let: (p.units || []).filter(u => u.status === 'Let').length,
     },
-    updatedAt: '2024-12-10T08:00:00Z',
-  },
-  {
-    id: 'sample-3',
-    name: 'Sample Property 3',
-    addressLine: '456 High Street',
-    postcode: 'W1K 6HR',
-    city: 'London',
-    country: 'United Kingdom',
-    amenities: ['Reception'],
-    marketing: {
-      visibility: 'Public',
-      status: 'Broker-Ready',
-      fitOut: 'Cat A',
-    },
-    units: [],
-    stats: {
-      occupancyPct: 0,
-      totalUnits: 0,
-      available: 0,
-      underOffer: 0,
-      let: 0,
-    },
-    updatedAt: '2024-12-12T14:20:00Z',
-  },
-];
+    updatedAt: p.updated_at,
+  };
+}
 
-const properties = [...seedProperties];
-
-export default function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { method, query } = req;
-  const { id } = query;
+  const id = query.id as string;
 
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -164,30 +67,71 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
+  const supabase = getSupabase();
+  if (!supabase || !isSupabaseConfigured()) {
+    return res.status(503).json({ error: 'Database not configured' });
+  }
+
   // GET /api/properties/:id
-  if (method === 'GET' && id) {
-    const property = properties.find((p) => p.id === id);
-    if (!property) {
+  if (method === 'GET') {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*, units(*)')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) {
+      console.error('Error fetching property:', error);
       return res.status(404).json({ error: 'Property not found' });
     }
+
+    const property = mapProperty(data as DbProperty & { units: DbUnit[] });
     return res.status(200).json(property);
   }
 
   // PATCH /api/properties/:id
-  if (method === 'PATCH' && id) {
-    const payload = req.body as Partial<Property>;
-    const index = properties.findIndex((p) => p.id === id);
-    if (index === -1) {
-      return res.status(404).json({ error: 'Property not found' });
+  if (method === 'PATCH') {
+    const payload = req.body;
+    
+    // Map frontend payload to DB fields
+    const updates: Partial<DbProperty> = {};
+    if (payload.name) updates.name = payload.name;
+    if (payload.addressLine) updates.address_line = payload.addressLine;
+    if (payload.postcode) updates.postcode = payload.postcode;
+    if (payload.city) updates.city = payload.city;
+    if (payload.totalSizeSqFt) updates.total_size_sqft = payload.totalSizeSqFt;
+    if (payload.floorCount) updates.floor_count = payload.floorCount;
+    if (payload.marketing) {
+      if (payload.marketing.status) updates.marketing_status = payload.marketing.status;
+      if (payload.marketing.visibility) updates.marketing_visibility = payload.marketing.visibility;
+      if (payload.marketing.fitOut) updates.marketing_fit_out = payload.marketing.fitOut;
     }
-    properties[index] = {
-      ...properties[index],
-      ...payload,
-      updatedAt: new Date().toISOString(),
-    };
-    return res.status(200).json(properties[index]);
+    
+    // ... add other fields as needed
+
+    const { error } = await supabase
+      .from('properties')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating property:', error);
+      return res.status(500).json({ error: 'Failed to update property' });
+    }
+
+    // Return the updated property (we might need to re-fetch to get units, or return partial)
+    // For simplicity, let's just return the updated property record mapped (missing units)
+    // or re-fetch. Re-fetching is safer to match return type.
+    const { data: refetched } = await supabase
+        .from('properties')
+        .select('*, units(*)')
+        .eq('id', id)
+        .single();
+        
+    return res.status(200).json(mapProperty(refetched as DbProperty & { units: DbUnit[] }));
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
 }
-

@@ -1,11 +1,57 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from './lib/supabase.js';
-import { zohoRequest, ZohoContactRecord, ZohoAccountRecord } from './lib/zoho.js';
+import { zohoRequest, ZohoContactRecord, ZohoAccountRecord, ZohoPropertyRecord, ZohoUnitRecord } from './lib/zoho.js';
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+}
+
+// Fetch all properties from Zoho (paginated)
+async function fetchAllZohoProperties(): Promise<ZohoPropertyRecord[]> {
+  const allProperties: ZohoPropertyRecord[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await zohoRequest<{
+      data?: ZohoPropertyRecord[];
+      info?: { more_records?: boolean };
+    }>(`/crm/v2/Properties?page=${page}&per_page=200`); // Assuming 'Properties' module
+
+    const records = response.data ?? [];
+    allProperties.push(...records);
+    hasMore = response.info?.more_records ?? false;
+    page++;
+
+    if (page > 100) break;
+  }
+
+  return allProperties;
+}
+
+// Fetch all units from Zoho (paginated)
+async function fetchAllZohoUnits(): Promise<ZohoUnitRecord[]> {
+  const allUnits: ZohoUnitRecord[] = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await zohoRequest<{
+      data?: ZohoUnitRecord[];
+      info?: { more_records?: boolean };
+    }>(`/crm/v2/Units?page=${page}&per_page=200`); // Assuming 'Units' module
+
+    const records = response.data ?? [];
+    allUnits.push(...records);
+    hasMore = response.info?.more_records ?? false;
+    page++;
+
+    if (page > 100) break;
+  }
+
+  return allUnits;
 }
 
 // Fetch all contacts from Zoho (paginated)
@@ -54,6 +100,141 @@ async function fetchAllZohoAccounts(): Promise<ZohoAccountRecord[]> {
   }
 
   return allAccounts;
+}
+
+// Sync properties from Zoho to Supabase
+async function syncProperties() {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase not configured');
+
+  await supabase.from('sync_status').insert({
+    entity_type: 'properties',
+    status: 'in_progress',
+    records_synced: 0,
+  });
+
+  try {
+    const zohoProperties = await fetchAllZohoProperties();
+    console.log(`Fetched ${zohoProperties.length} properties from Zoho`);
+
+    const propertiesToUpsert = zohoProperties.map((p) => ({
+      zoho_id: p.id,
+      name: p.Name || 'Unnamed Property',
+      address_line: p.Address_Line || null,
+      postcode: p.Postcode || null,
+      city: p.City || null,
+      country: p.Country || 'United Kingdom',
+      total_size_sqft: p.Total_Size_Sq_Ft || null,
+      floor_count: p.Floor_Count || null,
+      lifts: p.Lifts || null,
+      built_year: p.Built_Year || null,
+      refurbished_year: p.Refurbished_Year || null,
+      parking: p.Parking || null,
+      marketing_status: p.Marketing_Status || 'Draft',
+      marketing_visibility: p.Marketing_Visibility || 'Private',
+      marketing_fit_out: p.Marketing_Fit_Out || null,
+      epc_rating: p.EPC_Rating || null,
+      epc_ref: p.EPC_Ref || null,
+      epc_expiry: p.EPC_Expiry || null,
+      breeam_rating: p.BREEAM_Rating || null,
+      zoho_created_at: p.Created_Time || null,
+      zoho_modified_at: p.Modified_Time || null,
+    }));
+
+    const chunkSize = 100;
+    for (let i = 0; i < propertiesToUpsert.length; i += chunkSize) {
+      const chunk = propertiesToUpsert.slice(i, i + chunkSize);
+      const { error } = await supabase
+        .from('properties')
+        .upsert(chunk, { onConflict: 'zoho_id' });
+      
+      if (error) {
+        console.error('Error upserting properties chunk:', error);
+        throw error;
+      }
+    }
+
+    await supabase.from('sync_status').insert({
+      entity_type: 'properties',
+      status: 'success',
+      records_synced: zohoProperties.length,
+    });
+
+    return { synced: zohoProperties.length };
+  } catch (error) {
+    await supabase.from('sync_status').insert({
+      entity_type: 'properties',
+      status: 'error',
+      records_synced: 0,
+      error_message: error instanceof Error ? error.message : 'Unknown error',
+    });
+    throw error;
+  }
+}
+
+// Sync units from Zoho to Supabase
+async function syncUnits() {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase not configured');
+
+  await supabase.from('sync_status').insert({
+    entity_type: 'units',
+    status: 'in_progress',
+    records_synced: 0,
+  });
+
+  try {
+    const zohoUnits = await fetchAllZohoUnits();
+    console.log(`Fetched ${zohoUnits.length} units from Zoho`);
+
+    // Only sync units that have a valid property link
+    const unitsToUpsert = zohoUnits
+      .filter(u => u.Property?.id) // Filter out units without a property link
+      .map((u) => ({
+        zoho_id: u.id,
+        property_zoho_id: u.Property?.id,
+        code: u.Name || 'Unnamed Unit',
+        floor: u.Floor || null,
+        size_sqft: u.Size_Sq_Ft || null,
+        desks: u.Desks || null,
+        status: u.Status || 'Available',
+        fit_out: u.Fit_Out || null,
+        price_psf: u.Price_Per_Sq_Ft || null,
+        price_pcm: u.Price_Per_Month || null,
+        pipeline_stage: u.Pipeline_Stage || null,
+        zoho_created_at: u.Created_Time || null,
+        zoho_modified_at: u.Modified_Time || null,
+      }));
+
+    const chunkSize = 100;
+    for (let i = 0; i < unitsToUpsert.length; i += chunkSize) {
+      const chunk = unitsToUpsert.slice(i, i + chunkSize);
+      const { error } = await supabase
+        .from('units')
+        .upsert(chunk, { onConflict: 'zoho_id' });
+      
+      if (error) {
+        console.error('Error upserting units chunk:', error);
+        throw error;
+      }
+    }
+
+    await supabase.from('sync_status').insert({
+      entity_type: 'units',
+      status: 'success',
+      records_synced: unitsToUpsert.length,
+    });
+
+    return { synced: unitsToUpsert.length };
+  } catch (error) {
+    await supabase.from('sync_status').insert({
+      entity_type: 'units',
+      status: 'error',
+      records_synced: 0,
+      error_message: error instanceof Error ? error.message : 'Unknown error',
+    });
+    throw error;
+  }
 }
 
 // Sync contacts from Zoho to Supabase
@@ -233,12 +414,36 @@ async function getSyncStatus() {
     .limit(1)
     .single();
 
+  const { data: properties } = await supabase
+    .from('sync_status')
+    .select('*')
+    .eq('entity_type', 'properties')
+    .order('last_sync_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  const { data: units } = await supabase
+    .from('sync_status')
+    .select('*')
+    .eq('entity_type', 'units')
+    .order('last_sync_at', { ascending: false })
+    .limit(1)
+    .single();
+
   const { count: contactCount } = await supabase
     .from('contacts')
     .select('*', { count: 'exact', head: true });
 
   const { count: accountCount } = await supabase
     .from('accounts')
+    .select('*', { count: 'exact', head: true });
+
+  const { count: propertyCount } = await supabase
+    .from('properties')
+    .select('*', { count: 'exact', head: true });
+
+  const { count: unitCount } = await supabase
+    .from('units')
     .select('*', { count: 'exact', head: true });
 
   return {
@@ -251,6 +456,16 @@ async function getSyncStatus() {
       lastSync: accounts?.last_sync_at,
       status: accounts?.status,
       recordsInDb: accountCount ?? 0,
+    },
+    properties: {
+      lastSync: properties?.last_sync_at,
+      status: properties?.status,
+      recordsInDb: propertyCount ?? 0,
+    },
+    units: {
+      lastSync: units?.last_sync_at,
+      status: units?.status,
+      recordsInDb: unitCount ?? 0,
     },
   };
 }
@@ -290,7 +505,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
       const entity = body?.entity || 'all';
 
-      const results: { contacts?: { synced: number }; accounts?: { synced: number } } = {};
+      const results: { contacts?: { synced: number }; accounts?: { synced: number }; properties?: { synced: number }; units?: { synced: number } } = {};
 
       if (entity === 'contacts' || entity === 'all') {
         console.log('Starting contacts sync...');
@@ -300,6 +515,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (entity === 'accounts' || entity === 'all') {
         console.log('Starting accounts sync...');
         results.accounts = await syncAccounts();
+      }
+
+      if (entity === 'properties' || entity === 'all') {
+        console.log('Starting properties sync...');
+        results.properties = await syncProperties();
+      }
+
+      if (entity === 'units' || entity === 'all') {
+        console.log('Starting units sync...');
+        results.units = await syncUnits();
       }
 
       return res.status(200).json({

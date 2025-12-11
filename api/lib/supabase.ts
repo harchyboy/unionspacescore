@@ -50,11 +50,57 @@ export interface DbAccount {
 
 export interface DbSyncStatus {
   id: string;
-  entity_type: 'contacts' | 'accounts';
+  entity_type: 'contacts' | 'accounts' | 'properties' | 'units';
   last_sync_at: string;
   records_synced: number;
   status: 'success' | 'error' | 'in_progress';
   error_message: string | null;
+}
+
+export interface DbProperty {
+  id: string;
+  zoho_id: string;
+  name: string;
+  address_line: string | null;
+  postcode: string | null;
+  city: string | null;
+  country: string | null;
+  total_size_sqft: number | null;
+  floor_count: number | null;
+  lifts: string | null;
+  built_year: number | null;
+  refurbished_year: number | null;
+  parking: string | null;
+  marketing_status: string | null;
+  marketing_visibility: string | null;
+  marketing_fit_out: string | null;
+  epc_rating: string | null;
+  epc_ref: string | null;
+  epc_expiry: string | null;
+  breeam_rating: string | null;
+  zoho_created_at: string | null;
+  zoho_modified_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DbUnit {
+  id: string;
+  zoho_id: string;
+  property_zoho_id: string | null;
+  code: string;
+  floor: string | null;
+  size_sqft: number | null;
+  desks: number | null;
+  status: string | null;
+  fit_out: string | null;
+  price_psf: number | null;
+  price_pcm: number | null;
+  pipeline_stage: string | null;
+  zoho_created_at: string | null;
+  zoho_modified_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 let supabaseClient: SupabaseClient | null = null;
