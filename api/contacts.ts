@@ -365,7 +365,7 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
   // Update in Zoho first
   const zohoPayload: Record<string, unknown> = {};
   
-  // Helper to only add non-empty values
+  // Helper to only add non-empty values to Zoho
   const addIfNotEmpty = (key: string, value: unknown) => {
     if (value !== undefined && value !== null && value !== '') {
       zohoPayload[key] = value;
