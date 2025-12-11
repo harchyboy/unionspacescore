@@ -34,7 +34,8 @@ function mapDbContact(record: DbContact): ContactDto {
     lastName: record.last_name,
     name: record.full_name,
     email: record.email,
-    avatar: record.zoho_id ? `/api/contacts/${record.zoho_id}/photo?t=${new Date(record.zoho_modified_at || '').getTime()}` : null,
+    // Use a fresh cache-busting token so newly uploaded photos show immediately
+    avatar: record.zoho_id ? `/api/contacts/${record.zoho_id}/photo?t=${Date.now()}` : null,
     phone: record.phone,
     mobile: record.mobile,
     role: record.role,
@@ -78,7 +79,8 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
     lastName,
     name: fullName,
     email: record.Email || '',
-    avatar: record.id ? `/api/contacts/${record.id}/photo?t=${new Date(record.Modified_Time || '').getTime()}` : null,
+    // Use a fresh cache-busting token so newly uploaded photos show immediately
+    avatar: record.id ? `/api/contacts/${record.id}/photo?t=${Date.now()}` : null,
     phone: record.Phone ?? null,
     mobile: record.Mobile ?? null,
     role: record.Title ?? null,
