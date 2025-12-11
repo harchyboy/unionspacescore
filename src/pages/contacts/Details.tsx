@@ -82,15 +82,18 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
       });
       
       const text = await response.text();
-      let data;
+      console.log('linkedin-approve raw response:', response.status, text);
+
+      let data: any = null;
       try {
         data = JSON.parse(text);
       } catch (e) {
-        console.error('Invalid JSON response:', text);
-        throw new Error(`Server error: ${text.substring(0, 100)}...`);
+        // Non-JSON response
+        showToast(`Save failed (HTTP ${response.status}): ${text.substring(0, 200)}`, 'error');
+        return;
       }
       
-      if (data.success) {
+      if (response.ok && data?.success) {
         showToast('LinkedIn profile saved!', 'success');
         setShowLinkedInModal(false);
         setLinkedInCandidates([]);
@@ -111,7 +114,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         queryClient.invalidateQueries({ queryKey: ['linkedin-posts', url] });
         queryClient.invalidateQueries({ queryKey: ['linkedin-posts'] });
       } else {
-        showToast(data.error || data.message || 'Failed to save LinkedIn URL', 'error');
+        showToast(data?.error || data?.message || `Save failed (HTTP ${response.status})`, 'error');
       }
     } catch (error) {
       console.error('Error approving LinkedIn:', error);
