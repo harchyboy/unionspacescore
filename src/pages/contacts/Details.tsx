@@ -447,15 +447,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                   />
                   
                   <InlineEditField
-                    label="Phone"
-                    value={contact.phone}
-                    onSave={(value) => handleFieldUpdate('phone', value)}
-                    type="tel"
-                    copyable
-                    onCopy={() => showToast('Phone copied to clipboard')}
-                  />
-                  
-                  <InlineEditField
                     label="Company"
                     value={contact.company}
                     onSave={(value) => handleFieldUpdate('company', value)}
@@ -483,23 +474,9 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                   />
                   
                   <InlineEditField
-                    label="Territory"
-                    value={contact.territory}
-                    onSave={(value) => handleFieldUpdate('territory', value)}
-                    type="text"
-                  />
-                  
-                  <InlineEditField
                     label="Commission Structure"
                     value={contact.commissionStructure}
                     onSave={(value) => handleFieldUpdate('commissionStructure', value)}
-                    type="text"
-                  />
-                  
-                  <InlineEditField
-                    label="Referral Source"
-                    value={contact.referralSource}
-                    onSave={(value) => handleFieldUpdate('referralSource', value)}
                     type="text"
                   />
                   
