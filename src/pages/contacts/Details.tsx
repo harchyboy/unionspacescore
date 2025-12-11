@@ -138,20 +138,13 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   
   // Format date helper
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Recently';
-    try {
-      // Check if it's a relative date string (e.g. "2d", "1w")
-      if (dateString.match(/^\d+[dwhmy]$/)) return dateString; // Keep relative dates as is? Or user strictly wants Date Month Year?
-      // User said: "make sure that the timestamp is done as Date Month Year"
-      // If the API returns relative dates, we can't easily convert to exact date without knowing "now".
-      // But let's assume if it's parseable, we format it.
-      
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return dateString;
-      return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
-    } catch (e) {
-      return dateString;
-    }
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return '-';
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
   // Fetch LinkedIn posts if URL is available
@@ -365,7 +358,9 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                   
                   <div>
                     <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Last Contacted</label>
-                    <span className="text-sm text-primary">{contact.lastActivity || '-'}</span>
+                    <span className="text-sm text-primary">
+                      {formatDate(contact.lastContacted || contact.lastActivity)}
+                    </span>
                   </div>
                   
                   <div className="col-span-2">
