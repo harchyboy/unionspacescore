@@ -524,8 +524,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (error) {
     console.error('Contacts API error', error);
     const message = error instanceof Error ? error.message : 'Unexpected error';
-    const stack = error instanceof Error ? error.stack : undefined;
-    return res.status(500).json({ message, stack });
+    return res.status(500).json({ message });
   }
 }
 

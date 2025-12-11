@@ -1,6 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { isSupabaseConfigured } from '../lib/supabase.js';
-import { updateContact, deleteContactById, getContactFromDb, getContactFromZoho } from '../contacts';
+// Explicit .js extension to avoid ESM directory import issues in Vercel runtime
+import {
+  updateContact,
+  deleteContactById,
+  getContactFromDb,
+  getContactFromZoho,
+} from '../contacts.js';
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
