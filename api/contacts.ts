@@ -279,6 +279,51 @@ async function getContactFromZoho(id: string) {
   return record ? mapZohoContact(record) : null;
 }
 
+// Upsert a Zoho contact into the database cache
+async function upsertContactInDb(zoho: ZohoContactRecord) {
+  try {
+    const supabase = getSupabase();
+    if (!supabase) return;
+    await supabase.from('contacts').upsert(
+      {
+        zoho_id: zoho.id,
+        first_name: zoho.First_Name ?? '',
+        last_name: zoho.Last_Name ?? '',
+        full_name:
+          zoho.Full_Name || `${zoho.First_Name ?? ''} ${zoho.Last_Name ?? ''}`.trim(),
+        email: zoho.Email ?? '',
+        phone: zoho.Phone ?? null,
+        mobile: zoho.Mobile ?? null,
+        role: zoho.Title ?? null,
+        company_name: zoho.Account_Name?.name ?? null,
+        account_id: zoho.Account_Name?.id ?? null,
+        contact_type: zoho.Contact_Type ?? 'Broker',
+        territory: zoho.Territory ?? null,
+        relationship_health: zoho.Relationship_Health ?? 'good',
+        relationship_health_score: zoho.Relationship_Health_Score ?? null,
+        linkedin_url: zoho.LinkedIn_URL ?? null,
+        zoho_created_at: zoho.Created_Time ?? null,
+        zoho_modified_at: zoho.Modified_Time ?? null,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'zoho_id' }
+    );
+  } catch (error) {
+    console.warn('Failed to upsert contact to cache:', error);
+  }
+}
+
+// Fetch from Zoho and cache in DB if available
+async function fetchContactFromZohoAndCache(id: string) {
+  const response = await zohoRequest<{ data?: ZohoContactRecord[] }>(
+    `/crm/v2/Contacts/${id}`
+  );
+  const record = response.data?.[0];
+  if (!record) return null;
+  await upsertContactInDb(record);
+  return mapZohoContact(record);
+}
+
 // =====================================================
 // WRITE OPERATIONS (Zoho + Database)
 // =====================================================
@@ -380,17 +425,29 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
   if (payload.health !== undefined) zohoPayload.Relationship_Health = payload.health;
 
   const body = { data: [zohoPayload], trigger: [] };
+  let zohoSuccess = false;
 
-  const response = await zohoRequest<{
-    data?: { details?: { id: string }; status?: string; message?: string }[];
-  }>(`/crm/v2/Contacts/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await zohoRequest<{
+      data?: { details?: { id: string }; status?: string; message?: string }[];
+    }>(`/crm/v2/Contacts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
 
-  const details = response.data?.[0];
-  if (details?.status === 'error') {
-    throw new Error(details.message || 'Failed to update contact in Zoho');
+    const details = response.data?.[0];
+    if (details?.status === 'error') {
+      throw new Error(details.message || 'Failed to update contact in Zoho');
+    }
+    zohoSuccess = true;
+  } catch (error) {
+    // If rate limited, log and proceed to DB update so user doesn't lose data
+    const msg = error instanceof Error ? error.message : String(error);
+    if (msg.includes('too many requests') || msg.includes('Access Denied')) {
+      console.warn('Zoho rate limit hit during update, falling back to local DB update:', msg);
+    } else {
+      throw error;
+    }
   }
 
   // Also update in database if configured
@@ -416,7 +473,15 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
   }
 
   // Fetch and return the updated contact
-  return getContactFromZoho(id);
+  if (zohoSuccess) {
+    try {
+      return await fetchContactFromZohoAndCache(id);
+    } catch (e) {
+      console.warn('Failed to fetch from Zoho after update, returning from DB:', e);
+    }
+  }
+
+  return getContactFromDb(id);
 }
 
 async function deleteContactById(id: string) {

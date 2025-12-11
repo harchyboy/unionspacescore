@@ -23,7 +23,7 @@ async function getContact(id: string) {
   }
   
   // Fallback to Zoho
-  return getContactFromZoho(id);
+  return fetchContactFromZohoAndCache(id);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
