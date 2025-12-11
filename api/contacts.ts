@@ -362,10 +362,9 @@ async function createContact(payload: {
 }
 
 async function updateContact(id: string, payload: Record<string, unknown>) {
-  // Update in Zoho first
+  // Build Zoho payload with only non-empty values
   const zohoPayload: Record<string, unknown> = {};
 
-  // Only send non-empty values to Zoho
   const addIfNotEmpty = (key: string, value: unknown) => {
     if (value !== undefined && value !== null && value !== '') {
       zohoPayload[key] = value;
@@ -388,8 +387,9 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
       payload.accountId && payload.accountId !== '' ? { id: String(payload.accountId) } : null;
   }
 
-  // Support both health and relationshipHealth fields
-  const healthValue = payload.relationshipHealth ?? payload.health;
+  // Relationship health (normalize to lowercase)
+  const rawHealth = payload.relationshipHealth ?? payload.health;
+  const healthValue = typeof rawHealth === 'string' ? rawHealth.toLowerCase() : rawHealth;
   addIfNotEmpty('Relationship_Health', healthValue);
 
   if (payload.relationshipHealthScore !== undefined && payload.relationshipHealthScore !== null) {
@@ -427,7 +427,7 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
     throw error;
   }
 
-  // Also update in database if configured
+  // Update database if configured
   const supabase = getSupabase();
   if (supabase) {
     const dbPayload: Record<string, unknown> = {};
@@ -457,7 +457,6 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
     await supabase.from('contacts').update(dbPayload).eq('zoho_id', id);
   }
 
-  // Fetch and return the updated contact
   return getContactFromZoho(id);
 }
 
