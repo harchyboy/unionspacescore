@@ -6,6 +6,7 @@ import {
   deleteContactById,
   getContactFromDb,
   getContactFromZoho,
+  fetchContactFromZohoAndCache,
 } from '../contacts.js';
 
 function setCors(res: VercelResponse) {
@@ -40,7 +41,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     if (req.method === 'GET') {
-      const contact = await getContact(id);
+      const refresh =
+        typeof req.query.refresh === 'string' && req.query.refresh.toLowerCase() === 'true';
+      const contact = refresh
+        ? await fetchContactFromZohoAndCache(id)
+        : await getContact(id);
       
       if (!contact) {
         return res.status(404).json({ message: 'Contact not found' });

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { useDeleteContact, useContact } from '../../api/contacts';
+import { useDeleteContact, useContact, refreshContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
@@ -36,6 +36,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const [linkedInCandidates, setLinkedInCandidates] = useState<LinkedInCandidate[]>([]);
   const [showLinkedInModal, setShowLinkedInModal] = useState(false);
   const [approvingUrl, setApprovingUrl] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Search for LinkedIn profiles using Google Custom Search
   const handleFindLinkedIn = async () => {
@@ -182,6 +183,25 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
     }
   };
 
+  const handleRefresh = async () => {
+    if (!contact.id) return;
+    setIsRefreshing(true);
+    try {
+      const fresh = await refreshContact(contact.id);
+      queryClient.setQueryData(['contact', contact.id], fresh);
+      queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      showToast('Contact refreshed from Zoho', 'success');
+    } catch (error) {
+      console.error('Error refreshing contact:', error);
+      showToast(
+        error instanceof Error ? error.message : 'Failed to refresh contact',
+        'error'
+      );
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full bg-[#F0F0F0]">
       {/* Page Header */}
@@ -260,6 +280,23 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
             >
               <i className="fa-solid fa-plus"></i>
               <span>Add to Deal</span>
+            </button>
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="border border-[#E6E6E6] text-primary px-4 py-2 rounded-lg text-sm font-medium hover:bg-muted transition-all duration-200 flex items-center space-x-2 disabled:opacity-50"
+            >
+              {isRefreshing ? (
+                <>
+                  <i className="fa-solid fa-spinner fa-spin"></i>
+                  <span>Refreshing…</span>
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-rotate"></i>
+                  <span>Refresh from Zoho</span>
+                </>
+              )}
             </button>
             <button className="p-2.5 text-secondary hover:text-primary transition-all duration-200">
               <i className="fa-solid fa-ellipsis-vertical"></i>

@@ -104,6 +104,17 @@ async function fetchContact(id: string): Promise<Contact> {
   return transformContact(data);
 }
 
+// Force refresh contact from Zoho (bypasses cache on the server)
+export async function refreshContact(id: string): Promise<Contact> {
+  const response = await fetch(`${API_BASE}/${id}?refresh=true`);
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Failed to refresh contact' }));
+    throw new Error(error.message || 'Failed to refresh contact');
+  }
+  const data = await response.json();
+  return transformContact(data);
+}
+
 // Create contact
 export async function createContact(input: CreateContactInput): Promise<Contact> {
   const response = await fetch(API_BASE, {
