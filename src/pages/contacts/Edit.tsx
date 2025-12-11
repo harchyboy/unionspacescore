@@ -92,10 +92,12 @@ export function ContactEdit() {
         id,
         ...formData,
       });
+      // Ensure detail view shows fresh data without a full page reload
+      await queryClient.invalidateQueries({ queryKey: ['contact', id] });
+      await queryClient.invalidateQueries({ queryKey: ['contacts'] });
       showToast('Contact updated successfully', 'success');
-      setTimeout(() => {
-        navigate(`/contacts/${id}`);
-      }, 500);
+      // Close the slide-over back to the contact detail (same page), no full reload
+      navigate(`/contacts/${id}`, { replace: true });
     } catch (error) {
       console.error('Error updating contact:', error);
       showToast('Failed to update contact', 'error');
