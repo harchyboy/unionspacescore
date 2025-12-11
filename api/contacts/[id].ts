@@ -47,17 +47,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
       
       const contact = await updateContact(id, {
-        firstName: body?.firstName?.toString().trim(),
-        lastName: body?.lastName?.toString().trim(),
-        email: body?.email?.toString().trim(),
-        phone: body?.phone?.toString().trim(),
-        mobile: body?.mobile?.toString().trim(),
-        accountId: body?.accountId?.toString().trim(),
-        type: body?.type?.toString().trim(),
-        role: body?.role?.toString().trim(),
-        territory: body?.territory?.toString().trim(),
-        notes: body?.notes?.toString().trim(),
-        health: body?.health?.toString().trim(),
+        firstName: body?.firstName?.toString?.()?.trim?.(),
+        lastName: body?.lastName?.toString?.()?.trim?.(),
+        email: body?.email?.toString?.()?.trim?.(),
+        phone: body?.phone?.toString?.()?.trim?.(),
+        mobile: body?.mobile?.toString?.()?.trim?.(),
+        company: body?.company?.toString?.()?.trim?.(),
+        accountId: body?.accountId?.toString?.()?.trim?.(),
+        type: body?.type?.toString?.()?.trim?.(),
+        role: body?.role?.toString?.()?.trim?.(),
+        territory: body?.territory?.toString?.()?.trim?.(),
+        notes: body?.notes?.toString?.()?.trim?.(),
+        health: body?.health?.toString?.()?.trim?.(),
+        relationshipHealth: body?.relationshipHealth?.toString?.()?.trim?.(),
+        relationshipHealthScore: body?.relationshipHealthScore,
       });
       
       if (!contact) {

@@ -28,19 +28,14 @@ interface ContactDto {
 
 // Map database record to DTO
 function mapDbContact(record: DbContact): ContactDto {
-  const cacheBustSource = record.zoho_modified_at || record.zoho_created_at || undefined;
-  const cacheBust = cacheBustSource ? Date.parse(cacheBustSource) : undefined;
-
   return {
     id: record.zoho_id,
     firstName: record.first_name,
     lastName: record.last_name,
     name: record.full_name,
     email: record.email,
-    // Cache-bust only when the contact actually changes (modified/created timestamp)
-    avatar: record.zoho_id
-      ? `/api/contacts/${record.zoho_id}/photo${cacheBust ? `?t=${cacheBust}` : ''}`
-      : null,
+    // Use a fresh cache-busting token so newly uploaded photos show immediately
+    avatar: record.zoho_id ? `/api/contacts/${record.zoho_id}/photo?t=${Date.now()}` : null,
     phone: record.phone,
     mobile: record.mobile,
     role: record.role,
@@ -64,8 +59,6 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
   const firstName = record.First_Name || '';
   const lastName = record.Last_Name || '';
   const fullName = record.Full_Name || `${firstName} ${lastName}`.trim() || 'Unnamed Contact';
-  const cacheBustSource = record.Modified_Time || record.Created_Time || undefined;
-  const cacheBust = cacheBustSource ? Date.parse(cacheBustSource) : undefined;
   
   // Determine type: prefer Contact_Type field, fallback to Tag, default to Broker
   let type = record.Contact_Type;
@@ -86,10 +79,8 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
     lastName,
     name: fullName,
     email: record.Email || '',
-    // Cache-bust only when the contact actually changes (modified/created timestamp)
-    avatar: record.id
-      ? `/api/contacts/${record.id}/photo${cacheBust ? `?t=${cacheBust}` : ''}`
-      : null,
+    // Use a fresh cache-busting token so newly uploaded photos show immediately
+    avatar: record.id ? `/api/contacts/${record.id}/photo?t=${Date.now()}` : null,
     phone: record.Phone ?? null,
     mobile: record.Mobile ?? null,
     role: record.Title ?? null,
