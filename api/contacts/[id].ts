@@ -46,21 +46,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'PATCH' || req.method === 'PUT') {
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body;
       
+      // Helper function to safely extract and trim string values
+      const getStringValue = (value: unknown): string | undefined => {
+        if (value === null || value === undefined) return undefined;
+        const str = String(value).trim();
+        return str === '' ? undefined : str;
+      };
+      
       const contact = await updateContact(id, {
-        firstName: body?.firstName?.toString?.()?.trim?.(),
-        lastName: body?.lastName?.toString?.()?.trim?.(),
-        email: body?.email?.toString?.()?.trim?.(),
-        phone: body?.phone?.toString?.()?.trim?.(),
-        mobile: body?.mobile?.toString?.()?.trim?.(),
-        company: body?.company?.toString?.()?.trim?.(),
-        accountId: body?.accountId?.toString?.()?.trim?.(),
-        type: body?.type?.toString?.()?.trim?.(),
-        role: body?.role?.toString?.()?.trim?.(),
-        territory: body?.territory?.toString?.()?.trim?.(),
-        notes: body?.notes?.toString?.()?.trim?.(),
-        health: body?.health?.toString?.()?.trim?.(),
-        relationshipHealth: body?.relationshipHealth?.toString?.()?.trim?.(),
-        relationshipHealthScore: body?.relationshipHealthScore,
+        firstName: getStringValue(body?.firstName),
+        lastName: getStringValue(body?.lastName),
+        email: getStringValue(body?.email),
+        phone: getStringValue(body?.phone),
+        mobile: getStringValue(body?.mobile),
+        company: getStringValue(body?.company),
+        accountId: getStringValue(body?.accountId),
+        type: getStringValue(body?.type),
+        role: getStringValue(body?.role),
+        territory: getStringValue(body?.territory),
+        notes: getStringValue(body?.notes),
+        health: getStringValue(body?.health),
+        relationshipHealth: getStringValue(body?.relationshipHealth),
+        relationshipHealthScore: body?.relationshipHealthScore !== undefined && body?.relationshipHealthScore !== null 
+          ? Number(body.relationshipHealthScore) 
+          : undefined,
       });
       
       if (!contact) {

@@ -365,52 +365,97 @@ async function updateContact(id: string, payload: Record<string, unknown>) {
   // Update in Zoho first
   const zohoPayload: Record<string, unknown> = {};
   
-  if (payload.firstName !== undefined) zohoPayload.First_Name = payload.firstName;
-  if (payload.lastName !== undefined) zohoPayload.Last_Name = payload.lastName;
-  if (payload.email !== undefined) zohoPayload.Email = payload.email;
-  if (payload.phone !== undefined) zohoPayload.Phone = payload.phone;
-  if (payload.mobile !== undefined) zohoPayload.Mobile = payload.mobile;
-  if (payload.role !== undefined) zohoPayload.Title = payload.role;
-  if (payload.type !== undefined) zohoPayload.Contact_Type = payload.type;
-  if (payload.territory !== undefined) zohoPayload.Territory = payload.territory;
-  if (payload.notes !== undefined) zohoPayload.Description = payload.notes;
+  // Helper to only add non-empty values
+  const addIfNotEmpty = (key: string, value: unknown) => {
+    if (value !== undefined && value !== null && value !== '') {
+      zohoPayload[key] = value;
+    }
+  };
+  
+  addIfNotEmpty('First_Name', payload.firstName);
+  addIfNotEmpty('Last_Name', payload.lastName);
+  addIfNotEmpty('Email', payload.email);
+  addIfNotEmpty('Phone', payload.phone);
+  addIfNotEmpty('Mobile', payload.mobile);
+  addIfNotEmpty('Title', payload.role);
+  addIfNotEmpty('Contact_Type', payload.type);
+  addIfNotEmpty('Territory', payload.territory);
+  addIfNotEmpty('Description', payload.notes);
+  
+  // Handle accountId - can be set to null to unlink
   if (payload.accountId !== undefined) {
-    zohoPayload.Account_Name = payload.accountId ? { id: payload.accountId } : null;
+    zohoPayload.Account_Name = payload.accountId && payload.accountId !== '' 
+      ? { id: String(payload.accountId) } 
+      : null;
   }
-  if (payload.health !== undefined) zohoPayload.Relationship_Health = payload.health;
+  
+  // Handle both "health" and "relationshipHealth" field names
+  const healthValue = payload.relationshipHealth ?? payload.health;
+  addIfNotEmpty('Relationship_Health', healthValue);
+  
+  if (payload.relationshipHealthScore !== undefined && payload.relationshipHealthScore !== null) {
+    zohoPayload.Relationship_Health_Score = Number(payload.relationshipHealthScore);
+  }
 
   const body = { data: [zohoPayload], trigger: [] };
 
-  const response = await zohoRequest<{
-    data?: { details?: { id: string }; status?: string; message?: string }[];
-  }>(`/crm/v2/Contacts/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await zohoRequest<{
+      data?: { details?: { id: string }; status?: string; message?: string }[];
+    }>(`/crm/v2/Contacts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
 
-  const details = response.data?.[0];
-  if (details?.status === 'error') {
-    throw new Error(details.message || 'Failed to update contact in Zoho');
+    const details = response.data?.[0];
+    if (details?.status === 'error') {
+      const errorMessage = details.message || 'Failed to update contact in Zoho';
+      console.error('Zoho API error:', {
+        id,
+        payload: zohoPayload,
+        error: errorMessage,
+        fullResponse: response.data,
+      });
+      throw new Error(errorMessage);
+    }
+  } catch (error) {
+    console.error('Error updating contact in Zoho:', {
+      id,
+      payload: zohoPayload,
+      body,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw error;
   }
 
   // Also update in database if configured
   const supabase = getSupabase();
   if (supabase) {
     const dbPayload: Record<string, unknown> = {};
-    if (payload.firstName !== undefined) dbPayload.first_name = payload.firstName;
-    if (payload.lastName !== undefined) dbPayload.last_name = payload.lastName;
+    if (payload.firstName !== undefined) dbPayload.first_name = payload.firstName || null;
+    if (payload.lastName !== undefined) dbPayload.last_name = payload.lastName || null;
     if (payload.firstName !== undefined || payload.lastName !== undefined) {
-      dbPayload.full_name = `${payload.firstName ?? ''} ${payload.lastName ?? ''}`.trim();
+      const firstName = String(payload.firstName ?? '');
+      const lastName = String(payload.lastName ?? '');
+      dbPayload.full_name = `${firstName} ${lastName}`.trim() || null;
     }
-    if (payload.email !== undefined) dbPayload.email = payload.email;
-    if (payload.phone !== undefined) dbPayload.phone = payload.phone;
-    if (payload.mobile !== undefined) dbPayload.mobile = payload.mobile;
-    if (payload.role !== undefined) dbPayload.role = payload.role;
-    if (payload.type !== undefined) dbPayload.contact_type = payload.type;
-    if (payload.territory !== undefined) dbPayload.territory = payload.territory;
-    if (payload.notes !== undefined) dbPayload.description = payload.notes;
-    if (payload.accountId !== undefined) dbPayload.account_id = payload.accountId;
-    if (payload.health !== undefined) dbPayload.relationship_health = payload.health;
+    if (payload.email !== undefined) dbPayload.email = payload.email || null;
+    if (payload.phone !== undefined) dbPayload.phone = payload.phone || null;
+    if (payload.mobile !== undefined) dbPayload.mobile = payload.mobile || null;
+    if (payload.role !== undefined) dbPayload.role = payload.role || null;
+    if (payload.type !== undefined) dbPayload.contact_type = payload.type || null;
+    if (payload.territory !== undefined) dbPayload.territory = payload.territory || null;
+    if (payload.notes !== undefined) dbPayload.description = payload.notes || null;
+    if (payload.company !== undefined) dbPayload.company_name = payload.company || null;
+    if (payload.accountId !== undefined) dbPayload.account_id = payload.accountId || null;
+    // Handle both "health" and "relationshipHealth" field names
+    const dbHealthValue = payload.relationshipHealth ?? payload.health;
+    if (dbHealthValue !== undefined) dbPayload.relationship_health = dbHealthValue || null;
+    if (payload.relationshipHealthScore !== undefined) {
+      dbPayload.relationship_health_score = payload.relationshipHealthScore !== null 
+        ? Number(payload.relationshipHealthScore) 
+        : null;
+    }
 
     await supabase.from('contacts').update(dbPayload).eq('zoho_id', id);
   }
