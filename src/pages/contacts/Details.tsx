@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { useDeleteContact, useContact, refreshContact } from '../../api/contacts';
+import { useDeleteContact, useContact, refreshContact, useUpdateContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
+import { InlineEditField } from '../../components/ui/InlineEditField';
 import type { Contact } from '../../types/contact';
 
 const API_BASE = (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || '';
@@ -26,6 +27,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const deleteContact = useDeleteContact();
+  const updateContact = useUpdateContact();
   
   // Debug logging
   console.log('[ContactDetails] Initial contact:', {
@@ -143,7 +145,10 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         queryClient.invalidateQueries({ queryKey: ['linkedin-posts', url] });
         queryClient.invalidateQueries({ queryKey: ['linkedin-posts'] });
       } else {
-        showToast(data?.error || data?.message || `Save failed (HTTP ${response.status})`, 'error');
+        const errorMsg = typeof data?.error === 'string' ? data.error : 
+                        typeof data?.message === 'string' ? data.message : 
+                        `Save failed (HTTP ${response.status})`;
+        showToast(errorMsg, 'error');
       }
     } catch (error) {
       console.error('Error approving LinkedIn:', error);
@@ -240,6 +245,33 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
       );
     } finally {
       setIsRefreshing(false);
+    }
+  };
+
+  // Handle field updates
+  const handleFieldUpdate = async (field: string, value: string) => {
+    if (!contact.id) return;
+    
+    try {
+      await updateContact.mutateAsync({
+        id: contact.id,
+        [field]: value || undefined, // Convert empty string to undefined
+      });
+      
+      // Optimistically update the local cache
+      queryClient.setQueryData(['contact', contact.id], (old: Contact | undefined) => {
+        if (!old) return old;
+        return { ...old, [field]: value || undefined };
+      });
+      
+      showToast('Field updated successfully', 'success');
+    } catch (error) {
+      console.error('Error updating field:', error);
+      showToast(
+        error instanceof Error ? error.message : 'Failed to update field',
+        'error'
+      );
+      throw error; // Re-throw to keep the field in edit mode
     }
   };
 
@@ -375,58 +407,98 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
               <div id="contact-info-card" className="bg-white rounded-lg border border-[#E6E6E6] p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-primary">Contact Information</h2>
-                  <button 
-                    onClick={() => navigate(`/contacts/${contact.id}/edit`)}
-                    className="text-secondary hover:text-primary text-sm transition-colors"
-                  >
-                    <i className="fa-solid fa-pencil mr-1"></i>
-                    Edit
-                  </button>
+                  <div className="text-xs text-secondary">Click any field to edit</div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Email</label>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-primary">{contact.email}</span>
-                      <button 
-                        onClick={() => {
-                          navigator.clipboard.writeText(contact.email);
-                          showToast('Email copied to clipboard');
-                        }}
-                        className="text-secondary hover:text-primary transition-colors"
-                      >
-                        <i className="fa-solid fa-copy text-xs"></i>
-                      </button>
-                    </div>
-                  </div>
+                  <InlineEditField
+                    label="First Name"
+                    value={contact.firstName}
+                    onSave={(value) => handleFieldUpdate('firstName', value)}
+                    type="text"
+                    required
+                  />
                   
-                  <div>
-                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Mobile</label>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-primary">{contact.mobile || '-'}</span>
-                      {contact.mobile && (
-                        <button 
-                          onClick={() => {
-                            navigator.clipboard.writeText(contact.mobile!);
-                            showToast('Mobile copied to clipboard');
-                          }}
-                          className="text-secondary hover:text-primary transition-colors"
-                        >
-                          <i className="fa-solid fa-copy text-xs"></i>
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                  <InlineEditField
+                    label="Last Name"
+                    value={contact.lastName}
+                    onSave={(value) => handleFieldUpdate('lastName', value)}
+                    type="text"
+                    required
+                  />
                   
-                  <div>
-                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Commission Structure</label>
-                    <span className="text-sm text-primary">{contact.commissionStructure || '-'}</span>
-                  </div>
+                  <InlineEditField
+                    label="Email"
+                    value={contact.email}
+                    onSave={(value) => handleFieldUpdate('email', value)}
+                    type="email"
+                    copyable
+                    onCopy={() => showToast('Email copied to clipboard')}
+                    required
+                  />
+                  
+                  <InlineEditField
+                    label="Mobile"
+                    value={contact.mobile}
+                    onSave={(value) => handleFieldUpdate('mobile', value)}
+                    type="tel"
+                    copyable
+                    onCopy={() => showToast('Mobile copied to clipboard')}
+                  />
+                  
+                  <InlineEditField
+                    label="Phone"
+                    value={contact.phone}
+                    onSave={(value) => handleFieldUpdate('phone', value)}
+                    type="tel"
+                    copyable
+                    onCopy={() => showToast('Phone copied to clipboard')}
+                  />
+                  
+                  <InlineEditField
+                    label="Company"
+                    value={contact.company}
+                    onSave={(value) => handleFieldUpdate('company', value)}
+                    type="text"
+                  />
+                  
+                  <InlineEditField
+                    label="Role"
+                    value={contact.role}
+                    onSave={(value) => handleFieldUpdate('role', value)}
+                    type="text"
+                  />
+                  
+                  <InlineEditField
+                    label="Type"
+                    value={contact.type}
+                    onSave={(value) => handleFieldUpdate('type', value)}
+                    type="select"
+                    options={[
+                      { value: 'Broker', label: 'Broker' },
+                      { value: 'Disposal Agent', label: 'Disposal Agent' },
+                      { value: 'Tenant', label: 'Tenant' },
+                      { value: 'Other', label: 'Other' },
+                    ]}
+                  />
+                  
+                  <InlineEditField
+                    label="Territory"
+                    value={contact.territory}
+                    onSave={(value) => handleFieldUpdate('territory', value)}
+                    type="text"
+                  />
+                  
+                  <InlineEditField
+                    label="Commission Structure"
+                    value={contact.commissionStructure}
+                    onSave={(value) => handleFieldUpdate('commissionStructure', value)}
+                    type="text"
+                  />
                   
                   <div>
                     <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Health</label>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 py-1">
                       <div className="flex-1 bg-muted rounded-full h-2">
                         <div className="bg-primary h-2 rounded-full" style={{ width: `${healthScore}%` }}></div>
                       </div>
@@ -436,7 +508,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                   
                   <div>
                     <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Last Contacted</label>
-                    <span className="text-sm text-primary">
+                    <span className="text-sm text-primary py-1 block">
                       {formatDate(contact.lastContacted || contact.lastActivity)}
                     </span>
                   </div>
@@ -492,10 +564,13 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 </div>
                 
                 <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
-                  <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Notes</label>
-                  <p className="text-sm text-primary leading-relaxed">
-                    {contact.notes || '-'}
-                  </p>
+                  <InlineEditField
+                    label="Relationship Notes"
+                    value={contact.notes}
+                    onSave={(value) => handleFieldUpdate('notes', value)}
+                    type="textarea"
+                    multiline
+                  />
                 </div>
                 
                     <div className="mt-6 pt-6 border-t border-[#E6E6E6]">
@@ -710,64 +785,60 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
               </div>
               
               <div className="space-y-6">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-secondary uppercase tracking-wider">Referral Volume</span>
-                    <span className="text-lg font-semibold text-primary">{contact.referralVolume ?? '-'}</span>
-                  </div>
-                  <div className="text-xs text-secondary">-</div>
-                </div>
+                <InlineEditField
+                  label="Referral Volume"
+                  value={contact.referralVolume ?? undefined}
+                  onSave={(value) => handleFieldUpdate('referralVolume', value)}
+                  type="number"
+                  format={(val) => val?.toString() || '-'}
+                />
                 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-secondary uppercase tracking-wider">Conversion Rate</span>
-                    <span className="text-lg font-semibold text-primary">{contact.conversionRate != null ? `${contact.conversionRate}%` : '-'}</span>
+                <InlineEditField
+                  label="Conversion Rate (%)"
+                  value={contact.conversionRate ?? undefined}
+                  onSave={(value) => handleFieldUpdate('conversionRate', value)}
+                  type="number"
+                  format={(val) => val != null ? `${val}%` : '-'}
+                />
+                {contact.conversionRate != null && (
+                  <div className="flex-1 bg-muted rounded-full h-2 -mt-3">
+                    <div className="bg-primary h-2 rounded-full" style={{ width: `${contact.conversionRate}%` }}></div>
                   </div>
-                  {contact.conversionRate != null && (
-                    <div className="flex-1 bg-muted rounded-full h-2 mb-1">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: `${contact.conversionRate}%` }}></div>
-                    </div>
-                  )}
-                  <div className="text-xs text-secondary">-</div>
-                </div>
+                )}
                 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-secondary uppercase tracking-wider">Revenue Attribution</span>
-                    <span className="text-lg font-semibold text-primary">{contact.revenueAttribution != null ? `£${contact.revenueAttribution.toLocaleString()}` : '-'}</span>
-                  </div>
-                  <div className="text-xs text-secondary">-</div>
-                </div>
+                <InlineEditField
+                  label="Revenue Attribution (£)"
+                  value={contact.revenueAttribution ?? undefined}
+                  onSave={(value) => handleFieldUpdate('revenueAttribution', value)}
+                  type="number"
+                  format={(val) => val != null ? `£${Number(val).toLocaleString()}` : '-'}
+                />
                 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-secondary uppercase tracking-wider">Commission Paid</span>
-                    <span className="text-lg font-semibold text-primary">{contact.commissionPaid != null ? `£${contact.commissionPaid.toLocaleString()}` : '-'}</span>
-                  </div>
-                  <div className="text-xs text-secondary">-</div>
-                </div>
+                <InlineEditField
+                  label="Commission Paid (£)"
+                  value={contact.commissionPaid ?? undefined}
+                  onSave={(value) => handleFieldUpdate('commissionPaid', value)}
+                  type="number"
+                  format={(val) => val != null ? `£${Number(val).toLocaleString()}` : '-'}
+                />
                 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-secondary uppercase tracking-wider">Avg Deal Size</span>
-                    <span className="text-lg font-semibold text-primary">-</span>
-                  </div>
-                  <div className="text-xs text-secondary">-</div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-secondary uppercase tracking-wider">Quality Score</span>
-                    <span className="text-lg font-semibold text-primary">{contact.qualityScore != null ? `${contact.qualityScore}/5.0` : '-'}</span>
-                  </div>
-                  {contact.qualityScore != null && (
-                    <div className="flex items-center space-x-1 mb-1">
-                      {[1, 2, 3, 4].map(i => <i key={i} className="fa-solid fa-star text-primary text-xs"></i>)}
+                <InlineEditField
+                  label="Quality Score (out of 5.0)"
+                  value={contact.qualityScore ?? undefined}
+                  onSave={(value) => handleFieldUpdate('qualityScore', value)}
+                  type="number"
+                  format={(val) => val != null ? `${val}/5.0` : '-'}
+                />
+                {contact.qualityScore != null && (
+                  <div className="flex items-center space-x-1 -mt-3">
+                    {Array.from({ length: Math.floor(contact.qualityScore) }).map((_, i) => (
+                      <i key={i} className="fa-solid fa-star text-primary text-xs"></i>
+                    ))}
+                    {contact.qualityScore % 1 !== 0 && (
                       <i className="fa-solid fa-star-half-stroke text-primary text-xs"></i>
-                    </div>
-                  )}
-                  <div className="text-xs text-secondary">-</div>
-                </div>
+                    )}
+                  </div>
+                )}
               </div>
               
               <button className="w-full mt-6 pt-6 border-t border-[#E6E6E6] text-sm text-primary hover:underline font-medium">
