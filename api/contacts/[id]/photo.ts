@@ -49,15 +49,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const result = await fetchContactPhoto(id);
 
     if (result.status !== 200) {
+      // Do not cache missing images; this ensures a new photo in Zoho will be fetched next time
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(result.status).json({ message: 'Photo not found' });
     }
 
     res.setHeader('Content-Type', result.contentType);
-    res.setHeader('Cache-Control', 'public, max-age=3600');
+    // Allow short caching of successful images; clients revalidate via the cache-busting query param
+    res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
     return res.status(200).send(result.buffer);
   } catch (error) {
     console.error('Contact photo fetch error', error);
     const message = error instanceof Error ? error.message : 'Unexpected error';
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(500).json({ message });
   }
 }
