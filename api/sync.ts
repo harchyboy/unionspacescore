@@ -312,11 +312,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('Sync error:', error);
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === 'object' && error !== null && 'message' in error
+        ? String((error as { message?: unknown }).message)
+        : typeof error === 'string'
+        ? error
+        : 'Unknown error';
     const stack = error instanceof Error ? error.stack : undefined;
+    const details =
+      typeof error === 'object' && error !== null
+        ? JSON.stringify(error, Object.getOwnPropertyNames(error))
+        : undefined;
     return res.status(500).json({
       error: 'Sync failed',
       message,
+      details,
       stack,
     });
   }
