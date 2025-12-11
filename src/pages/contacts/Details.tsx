@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { useDeleteContact, useContact, useUpdateContact } from '../../api/contacts';
+import { useDeleteContact, useContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
 import { useToast } from '../../hooks/useToast';
 import { ToastContainer } from '../../components/ui/Toast';
 import type { Contact } from '../../types/contact';
 
-const API_BASE = import.meta.env.VITE_API_URL || '';
+const API_BASE = (import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || '';
 
 interface LinkedInCandidate {
   name: string;
@@ -26,7 +26,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const deleteContact = useDeleteContact();
-  const updateContact = useUpdateContact();
   const { data: contact = initialContact, refetch: refetchContact } = useContact(initialContact.id, initialContact);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { showToast, removeToast, toasts } = useToast();
@@ -44,7 +43,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
     setLinkedInCandidates([]);
     
     try {
-      const response = await fetch(`${API_BASE}/api/linkedin-search?id=${contact.zohoId || contact.id}`, {
+      const response = await fetch(`${API_BASE}/api/linkedin-search?id=${contact.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -61,7 +60,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         setLinkedInCandidates(data.candidates);
         setShowLinkedInModal(true);
       } else {
-        showToast('No LinkedIn profiles found', 'warning');
+        showToast('No LinkedIn profiles found', 'info');
       }
     } catch (error) {
       console.error('LinkedIn search error:', error);
@@ -76,7 +75,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
     setApprovingUrl(url);
     
     try {
-      const response = await fetch(`${API_BASE}/api/linkedin-approve?id=${contact.zohoId || contact.id}`, {
+      const response = await fetch(`${API_BASE}/api/linkedin-approve?id=${contact.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ linkedinUrl: url })
@@ -99,7 +98,11 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         queryClient.invalidateQueries({ queryKey: ['contacts'] });
         
         // Refetch current contact to be sure
-        refetchContact();
+        await refetchContact();
+        
+        // Invalidate and refetch LinkedIn posts now that URL is saved
+        queryClient.invalidateQueries({ queryKey: ['linkedin-posts', url] });
+        queryClient.invalidateQueries({ queryKey: ['linkedin-posts'] });
       } else {
         showToast(data.error || 'Failed to save LinkedIn URL', 'error');
       }

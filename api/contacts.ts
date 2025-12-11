@@ -148,15 +148,22 @@ async function listContactsFromDb(
   };
 }
 
-async function getContactFromDb(zohoId: string) {
+async function getContactFromDb(id: string) {
   const supabase = getSupabase();
   if (!supabase) return null;
 
-  const { data, error } = await supabase
-    .from('contacts')
-    .select('*')
-    .eq('zoho_id', zohoId)
-    .single();
+  // Check if ID is a UUID (Supabase ID)
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+  let query = supabase.from('contacts').select('*');
+  
+  if (isUuid) {
+    query = query.eq('id', id);
+  } else {
+    query = query.eq('zoho_id', id);
+  }
+
+  const { data, error } = await query.single();
 
   if (error || !data) return null;
   return mapDbContact(data as DbContact);

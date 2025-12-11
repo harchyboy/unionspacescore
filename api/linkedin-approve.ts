@@ -43,43 +43,58 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
     
     // Update in Supabase
-    if (supabase) {
-      const updateData = {
-        linkedin_url: linkedinUrl,
-        enrichment_status: 'enriched',
-        enriched_at: new Date().toISOString(),
-      };
+    if (!supabase) {
+      return res.status(500).json({
+        error: 'Database not configured',
+        message: 'Supabase client not available'
+      });
+    }
 
-      let query = supabase.from('contacts').update(updateData);
+    const updateData = {
+      linkedin_url: linkedinUrl,
+      enrichment_status: 'enriched',
+      enriched_at: new Date().toISOString(),
+    };
 
-      if (isUuid) {
-        query = query.eq('id', id);
-        // If it's a UUID, we need to fetch the Zoho ID for the CRM update
-        const { data: contact } = await supabase
-          .from('contacts')
-          .select('zoho_id')
-          .eq('id', id)
-          .single();
-          
-        if (contact?.zoho_id) {
-          zohoId = contact.zoho_id;
-        } else {
-          // If no zoho_id found, we can't update Zoho, but we continue
-          console.log(`No Zoho ID found for contact ${id}, skipping Zoho update`);
-          zohoId = undefined; 
-        }
+    let query = supabase.from('contacts').update(updateData);
+
+    if (isUuid) {
+      query = query.eq('id', id);
+      // If it's a UUID, we need to fetch the Zoho ID for the CRM update
+      const { data: contact } = await supabase
+        .from('contacts')
+        .select('zoho_id')
+        .eq('id', id)
+        .single();
+        
+      if (contact?.zoho_id) {
+        zohoId = contact.zoho_id;
       } else {
-        // If it's not a UUID, assume it's a Zoho ID
-        query = query.eq('zoho_id', id);
+        // If no zoho_id found, we can't update Zoho, but we continue
+        console.log(`No Zoho ID found for contact ${id}, skipping Zoho update`);
+        zohoId = undefined; 
       }
+    } else {
+      // If it's not a UUID, assume it's a Zoho ID
+      query = query.eq('zoho_id', id);
+    }
 
-      const { error: dbError } = await query;
+    const { error: dbError, data: updatedData } = await query;
 
-      if (dbError) {
-        console.error('Supabase update error:', dbError);
-        // We don't throw here to attempt Zoho update if possible, or return partial success?
-        // But if DB update fails, we probably should report it.
-      }
+    if (dbError) {
+      console.error('Supabase update error:', dbError);
+      return res.status(500).json({
+        error: 'Failed to save LinkedIn URL',
+        message: dbError.message || 'Database update failed'
+      });
+    }
+
+    // Check if any rows were updated
+    if (!updatedData || updatedData.length === 0) {
+      return res.status(404).json({
+        error: 'Contact not found',
+        message: 'No contact was updated. The contact may not exist.'
+      });
     }
 
     // Also update in Zoho CRM (if we have a valid Zoho ID)
