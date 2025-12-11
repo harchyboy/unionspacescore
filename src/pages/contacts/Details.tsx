@@ -496,13 +496,44 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                     type="text"
                   />
                   
+                  <InlineEditField
+                    label="Referral Source"
+                    value={contact.referralSource}
+                    onSave={(value) => handleFieldUpdate('referralSource', value)}
+                    type="text"
+                  />
+                  
                   <div>
-                    <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">Relationship Health</label>
-                    <div className="flex items-center space-x-2 py-1">
-                      <div className="flex-1 bg-muted rounded-full h-2">
-                        <div className="bg-primary h-2 rounded-full" style={{ width: `${healthScore}%` }}></div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-medium text-secondary uppercase tracking-wider">Relationship Health</label>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <InlineEditField
+                        label="Category"
+                        value={contact.relationshipHealth}
+                        onSave={(value) => handleFieldUpdate('relationshipHealth', value)}
+                        type="select"
+                        options={[
+                          { value: 'excellent', label: 'Excellent' },
+                          { value: 'good', label: 'Good' },
+                          { value: 'fair', label: 'Fair' },
+                          { value: 'needs-attention', label: 'Needs Attention' },
+                        ]}
+                      />
+                      
+                      <InlineEditField
+                        label="Score (0-100)"
+                        value={contact.relationshipHealthScore ?? 70}
+                        onSave={(value) => handleFieldUpdate('relationshipHealthScore', value)}
+                        type="number"
+                      />
+                      
+                      <div className="flex items-center space-x-2 py-1">
+                        <div className="flex-1 bg-muted rounded-full h-2">
+                          <div className="bg-primary h-2 rounded-full" style={{ width: `${contact.relationshipHealthScore || 70}%` }}></div>
+                        </div>
                       </div>
-                      <span className="text-xs text-secondary">{contact.relationshipHealth === 'excellent' ? 'Excellent' : 'Good'}</span>
                     </div>
                   </div>
                   
