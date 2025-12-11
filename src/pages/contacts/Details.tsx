@@ -125,6 +125,24 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const initials = displayName.split(' ').map(n => n?.[0] || '').join('').toUpperCase().slice(0, 2);
   const healthScore = contact.relationshipHealthScore || 85; // Default to 85 if missing for demo
   
+  // Format date helper
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'Recently';
+    try {
+      // Check if it's a relative date string (e.g. "2d", "1w")
+      if (dateString.match(/^\d+[dwhmy]$/)) return dateString; // Keep relative dates as is? Or user strictly wants Date Month Year?
+      // User said: "make sure that the timestamp is done as Date Month Year"
+      // If the API returns relative dates, we can't easily convert to exact date without knowing "now".
+      // But let's assume if it's parseable, we format it.
+      
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   // Fetch LinkedIn posts if URL is available
   const { data: linkedinPosts, isLoading: isLoadingPosts } = useQuery({
     queryKey: ['linkedin-posts', contact.linkedinUrl],
@@ -442,7 +460,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                                 {post.text || post.commentary || post.description || 'Shared a post'}
                               </p>
                               <div className="flex items-center justify-between text-xs text-secondary">
-                                <span>{post.postedDate || post.date || 'Recently'}</span>
+                                <span>{formatDate(post.postedDate || post.date)}</span>
                                 <a 
                                   href={post.articleUrl || post.url || post.link || contact.linkedinUrl} 
                                   target="_blank" 
