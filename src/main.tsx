@@ -6,7 +6,7 @@ import App from './App.tsx';
 async function enableMocking() {
   // Only enable MSW when explicitly opted-in.
   // This repo aims to use real data by default (Zoho→Supabase).
-  if (import.meta.env.VITE_ENABLE_MSW !== 'true') {
+  if (import.meta.env.VITE_ENABLE_MSW !== 'true' && import.meta.env.VITE_ENV !== 'local') {
     return;
   }
 
