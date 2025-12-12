@@ -138,17 +138,17 @@ export function PropertyHeader({ property, onBackClick }: PropertyHeaderProps) {
           
           {/* Action Buttons */}
           <div className="flex items-center space-x-3 ml-6">
-            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
               <i className="fa-solid fa-upload"></i>
               <span>Upload Doc</span>
             </button>
-            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
               <i className="fa-solid fa-share-nodes"></i>
               <span>Publish to Brokers</span>
             </button>
             <Link 
               to={`/properties/${property.id}?tab=units`}
-              className="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
+              className="bg-primary text-white px-6 py-2.5 rounded-[4px] font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
             >
               <i className="fa-solid fa-plus"></i>
               <span>Add Unit</span>

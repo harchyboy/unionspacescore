@@ -102,14 +102,14 @@ export function MultiSelect({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-left appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between min-w-[200px]"
+        className="w-full text-left appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-between min-w-[200px]"
       >
         <span className="truncate">{displayText}</span>
         <i className={`fa-solid fa-chevron-down text-secondary text-xs transition-transform ${isOpen ? 'transform rotate-180' : ''}`}></i>
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-[#E6E6E6] rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-[#E6E6E6] rounded-[4px] shadow-lg max-h-60 overflow-y-auto">
           <div 
             className="px-4 py-2 hover:bg-[#FAFAFA] cursor-pointer border-b border-[#E6E6E6]"
             onClick={handleSelectAll}

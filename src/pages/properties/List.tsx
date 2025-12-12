@@ -113,18 +113,18 @@ export function PropertiesList() {
                   alert('Sync failed. Check console for details.');
                 }
               }}
-              className="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2"
+              className="px-4 py-2.5 border border-[#E6E6E6] rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2"
             >
               <i className="fa-solid fa-rotate"></i>
               <span>Sync Zoho</span>
             </button>
-            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
               <i className="fa-solid fa-save"></i>
               <span>Save View</span>
             </button>
             <Link
               to="/properties/new"
-              className="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
+              className="bg-primary text-white px-6 py-2.5 rounded-[4px] font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
             >
               <i className="fa-solid fa-plus"></i>
               <span>Add Property</span>
@@ -167,7 +167,7 @@ export function PropertiesList() {
             <select
               value={visibilityFilter}
               onChange={(e) => setVisibilityFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Visibility</option>
               <option value="Public">Public</option>
@@ -180,7 +180,7 @@ export function PropertiesList() {
             <select
               value={agentFilter}
               onChange={(e) => setAgentFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Disposal Agents</option>
               <option value="Knight Frank">Knight Frank</option>
@@ -196,7 +196,7 @@ export function PropertiesList() {
             <select
               value={ownerFilter}
               onChange={(e) => setOwnerFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Owners</option>
               <option value="Tom">Tom</option>
@@ -211,7 +211,7 @@ export function PropertiesList() {
             <select
               value={networkFilter}
               onChange={(e) => setNetworkFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Broker Networks</option>
               <option value="Public Network">Public Network</option>
@@ -225,7 +225,7 @@ export function PropertiesList() {
             <select
               value={healthFilter}
               onChange={(e) => setHealthFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">Data Health</option>
               <option value="<50">&lt; 50%</option>
@@ -260,40 +260,40 @@ export function PropertiesList() {
           </div>
           <span className="text-sm text-secondary">{totalProperties} properties</span>
         </div>
-          <div className="flex items-center space-x-2">
-            <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
-              <i className="fa-solid fa-eye-slash"></i>
-              <span>Change Visibility</span>
+        <div className="flex items-center space-x-2">
+          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <i className="fa-solid fa-eye-slash"></i>
+            <span>Change Visibility</span>
+          </button>
+          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <i className="fa-solid fa-user-tie"></i>
+            <span>Assign Agent</span>
+          </button>
+          <div className="flex bg-white rounded-[4px] border border-[#E6E6E6] p-1">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded-[4px] transition-all ${
+                viewMode === 'list' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
+              }`}
+              title="List View"
+            >
+              <i className="fa-solid fa-list"></i>
             </button>
-            <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
-              <i className="fa-solid fa-user-tie"></i>
-              <span>Assign Agent</span>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-[4px] transition-all ${
+                viewMode === 'grid' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
+              }`}
+              title="Grid View"
+            >
+              <i className="fa-solid fa-grid-2"></i>
             </button>
-            <div className="flex bg-white rounded-lg border border-[#E6E6E6] p-1">
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded transition-all ${
-                  viewMode === 'list' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
-                }`}
-                title="List View"
-              >
-                <i className="fa-solid fa-list"></i>
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded transition-all ${
-                  viewMode === 'grid' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
-                }`}
-                title="Grid View"
-              >
-                <i className="fa-solid fa-grid-2"></i>
-              </button>
-            </div>
-            <div className="relative">
+          </div>
+          <div className="relative">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-white border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-white border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="last-updated">Sort by: Last Updated</option>
               <option value="name-asc">Sort by: Name A-Z</option>
@@ -512,7 +512,7 @@ export function PropertiesList() {
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-secondary hover:bg-[#FAFAFA] transition-all disabled:opacity-50"
+                  className="px-3 py-2 border border-[#E6E6E6] rounded-[4px] text-sm text-secondary hover:bg-[#FAFAFA] transition-all disabled:opacity-50"
                 >
                   <i className="fa-solid fa-chevron-left"></i>
                 </button>
@@ -522,7 +522,7 @@ export function PropertiesList() {
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page >= totalPages}
-                  className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all disabled:opacity-50"
+                  className="px-3 py-2 border border-[#E6E6E6] rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all disabled:opacity-50"
                 >
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
