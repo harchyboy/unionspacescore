@@ -32,7 +32,6 @@ export function InlineEditField({
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(null);
 
   // Format the display value
@@ -167,8 +166,6 @@ export function InlineEditField({
   return (
     <div
       className={`relative ${className}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <label className="block text-xs font-medium text-secondary uppercase tracking-wider mb-2">
         {label}

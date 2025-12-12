@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useProperties } from '../../api/properties';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 
@@ -11,6 +12,7 @@ const tabs = [
 ];
 
 export function PropertiesList() {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('all');
   const [submarketFilter, setSubmarketFilter] = useState('');
   const [visibilityFilter, setVisibilityFilter] = useState('');
@@ -20,15 +22,19 @@ export function PropertiesList() {
   const [healthFilter, setHealthFilter] = useState('');
   const [sortBy, setSortBy] = useState('last-updated');
   const [selectAll, setSelectAll] = useState(false);
+  const [page, setPage] = useState(1);
+  const limit = 50;
 
   const { data, isLoading, error } = useProperties({
-    page: 1,
-    limit: 50,
+    page,
+    limit,
     sortBy: 'updatedAt',
     sortOrder: 'desc',
   });
 
   const properties = data?.properties || [];
+  const totalProperties = data?.total || 0;
+  const totalPages = Math.ceil(totalProperties / limit);
 
   const clearFilters = () => {
     setSubmarketFilter('');
@@ -67,6 +73,40 @@ export function PropertiesList() {
             <p className="text-secondary text-sm">Portfolio control centre. Every building, readiness, and health in one place.</p>
           </div>
           <div className="flex items-center space-x-3">
+            <button
+              onClick={async () => {
+                if (!confirm('This will fetch all properties from Zoho. It may take a minute. Continue?')) return;
+                try {
+                  const response = await fetch('/api/sync', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ entity: 'properties' })
+                  });
+                  
+                  let result;
+                  try {
+                    result = await response.json();
+                  } catch {
+                    result = { message: await response.text() };
+                  }
+
+                  if (response.ok) {
+                    const synced = result?.results?.properties?.synced || 0;
+                    alert(`Sync complete! ${synced} properties synced from Zoho.`);
+                    queryClient.invalidateQueries({ queryKey: ['properties'] });
+                  } else {
+                    alert(`Sync failed: ${result.message || 'Unknown error'}`);
+                  }
+                } catch (error) {
+                  console.error('Sync failed', error);
+                  alert('Sync failed. Check console for details.');
+                }
+              }}
+              className="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2"
+            >
+              <i className="fa-solid fa-rotate"></i>
+              <span>Sync Zoho</span>
+            </button>
             <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
               <i className="fa-solid fa-save"></i>
               <span>Save View</span>
@@ -213,7 +253,7 @@ export function PropertiesList() {
             />
             <label className="text-sm text-secondary">Select All</label>
           </div>
-          <span className="text-sm text-secondary">{properties.length} properties</span>
+          <span className="text-sm text-secondary">{totalProperties} properties</span>
         </div>
         <div className="flex items-center space-x-2">
           <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
@@ -435,17 +475,24 @@ export function PropertiesList() {
             {/* Pagination */}
             <div className="mt-6 flex items-center justify-between">
               <div className="text-sm text-secondary">
-                Showing 1-{properties.length} of {properties.length} properties
+                Showing {totalProperties === 0 ? 0 : (page - 1) * limit + 1}-{Math.min(page * limit, totalProperties)} of {totalProperties} properties
               </div>
               <div className="flex items-center space-x-2">
-                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-secondary hover:bg-[#FAFAFA] transition-all disabled:opacity-50" disabled>
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-secondary hover:bg-[#FAFAFA] transition-all disabled:opacity-50"
+                >
                   <i className="fa-solid fa-chevron-left"></i>
                 </button>
-                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm bg-primary text-white">1</button>
-                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">2</button>
-                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">3</button>
-                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">4</button>
-                <button className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all">
+                <span className="px-3 py-2 text-sm text-secondary">
+                  Page {page} of {totalPages || 1}
+                </span>
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="px-3 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all disabled:opacity-50"
+                >
                   <i className="fa-solid fa-chevron-right"></i>
                 </button>
               </div>
@@ -462,7 +509,7 @@ export function PropertiesList() {
                       <i className="fa-solid fa-building text-primary"></i>
                     </div>
                   </div>
-                  <div className="text-3xl font-semibold text-primary mb-1">{properties.length}</div>
+                  <div className="text-3xl font-semibold text-primary mb-1">{totalProperties}</div>
                   <div className="flex items-center space-x-1 text-xs">
                     <i className="fa-solid fa-arrow-up text-primary"></i>
                     <span className="text-primary font-medium">+2</span>

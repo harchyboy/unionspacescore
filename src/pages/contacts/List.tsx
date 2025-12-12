@@ -290,11 +290,15 @@ export function ContactsList() {
                       if (response.ok) {
                         const contactsSynced = result?.results?.contacts?.synced || 0;
                         const accountsSynced = result?.results?.accounts?.synced || 0;
+                        const propertiesSynced = result?.results?.properties?.synced || 0;
+                        const unitsSynced = result?.results?.units?.synced || 0;
+                        
                         alert(
-                          `Sync complete! ${contactsSynced} contacts and ${accountsSynced} accounts synced from Zoho CRM.`
+                          `Sync complete! \nContacts: ${contactsSynced}\nAccounts: ${accountsSynced}\nProperties: ${propertiesSynced}\nUnits: ${unitsSynced}`
                         );
-                        // Refresh the contacts list without reloading the page
+                        // Refresh queries
                         queryClient.invalidateQueries({ queryKey: ['contacts'] });
+                        queryClient.invalidateQueries({ queryKey: ['properties'] });
                       } else {
                         const fallbackMessage = [
                           result?.message,

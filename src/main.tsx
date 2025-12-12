@@ -4,8 +4,9 @@ import './index.css';
 import App from './App.tsx';
 
 async function enableMocking() {
-  // Only enable MSW in development (not in production builds)
-  if (import.meta.env.PROD) {
+  // Only enable MSW when explicitly opted-in.
+  // This repo aims to use real data by default (Zoho→Supabase).
+  if (import.meta.env.VITE_ENABLE_MSW !== 'true') {
     return;
   }
 

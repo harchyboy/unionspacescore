@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getSupabase, isSupabaseConfigured } from './lib/supabase.js';
+import { getSupabase } from './lib/supabase.js';
 import { zohoRequest, ZohoContactRecord } from './lib/zoho.js';
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
@@ -63,7 +63,7 @@ async function searchLinkedInQuery(keywords: string): Promise<LinkedInSearchResu
   
   try {
     return JSON.parse(responseText) as LinkedInSearchResult;
-  } catch (e) {
+  } catch {
     console.error('Failed to parse RapidAPI response:', responseText);
     throw new Error(`Invalid RapidAPI response: ${responseText.substring(0, 200)}`);
   }

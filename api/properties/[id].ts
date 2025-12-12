@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured, DbProperty, DbUnit } from '../../lib/supabase.js';
-import type { Property } from '../../_lib/types';
+import type { Property } from '../../../src/types/property';
 
 // Helper to map DB property to Frontend Property
 function mapProperty(p: DbProperty & { units?: DbUnit[] }): Property {

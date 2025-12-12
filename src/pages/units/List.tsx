@@ -1,169 +1,93 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { useUnits, type UnitListItem } from '../../api/units';
 
-const tabs = [
-  { id: 'all', label: 'All Units (58)' },
-  { id: 'available', label: 'Available (32)' },
-  { id: 'under-offer', label: 'Under Offer (18)' },
-  { id: 'let', label: 'Let (8)' },
-  { id: 'viewing', label: 'Viewing Stage (14)' },
-  { id: 'hots', label: 'HoTs (6)' },
-];
+function formatMoneyGBP(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) return '—';
+  return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(value);
+}
 
-// Mock units data
-const mockUnits = [
-  {
-    id: '1',
-    code: '99B-3-01',
-    floor: 'Floor 3, Suite 01',
-    property: { name: '99 Bishopsgate', submarket: 'City Core' },
-    sizeSqFt: 2450,
-    desks: 18,
-    fitOut: 'Cat A+',
-    status: 'Available',
-    pricingMode: 'All-Inclusive',
-    guidePrice: '£8,400/mo',
-    visibility: 'Private',
-    pipeline: 'Viewing',
-    daysOnMarket: 42,
-    isConfidential: true,
-  },
-  {
-    id: '2',
-    code: 'TAA-2-05',
-    floor: 'Floor 2, Suite 05',
-    property: { name: 'The Tides At Arverne', submarket: 'Shoreditch' },
-    sizeSqFt: 3200,
-    desks: 24,
-    fitOut: 'Fitted',
-    status: 'Under Offer',
-    pricingMode: 'Bolt-On',
-    guidePrice: '£5,600/mo',
-    priceExtras: '+ SC + Rates',
-    visibility: 'Public',
-    pipeline: 'HoTs',
-    daysOnMarket: 28,
-    isConfidential: false,
-  },
-  {
-    id: '3',
-    code: 'OCS-15-02',
-    floor: 'Floor 15, Suite 02',
-    property: { name: 'One Canada Square', submarket: 'Canary Wharf' },
-    sizeSqFt: 1850,
-    desks: 14,
-    fitOut: 'Cat A',
-    status: 'Available',
-    pricingMode: 'All-Inclusive',
-    guidePrice: '£6,200/mo',
-    visibility: 'Public',
-    pipeline: null,
-    daysOnMarket: 14,
-    isConfidential: false,
-  },
-  {
-    id: '4',
-    code: 'TLB-8-03',
-    floor: 'Floor 8, Suite 03',
-    property: { name: 'The Leadenhall Building', submarket: 'City Core' },
-    sizeSqFt: 4100,
-    desks: 32,
-    fitOut: 'Cat A+',
-    status: 'Available',
-    pricingMode: 'Bolt-On',
-    guidePrice: '£9,800/mo',
-    priceExtras: '+ SC + Rates',
-    visibility: 'Private',
-    pipeline: 'Viewing',
-    daysOnMarket: 7,
-    isConfidential: false,
-  },
-  {
-    id: '5',
-    code: 'PP-4-12',
-    floor: 'Floor 4, Suite 12',
-    property: { name: 'Principal Place', submarket: 'Shoreditch' },
-    sizeSqFt: 2800,
-    desks: 20,
-    fitOut: 'Fitted',
-    status: 'Under Offer',
-    pricingMode: 'All-Inclusive',
-    guidePrice: '£7,800/mo',
-    visibility: 'Public',
-    pipeline: 'Legals',
-    daysOnMarket: 35,
-    isConfidential: false,
-  },
-  {
-    id: '6',
-    code: '99B-5-08',
-    floor: 'Floor 5, Suite 08',
-    property: { name: '99 Bishopsgate', submarket: 'City Core' },
-    sizeSqFt: 1500,
-    desks: 12,
-    fitOut: 'Cat A+',
-    status: 'Available',
-    pricingMode: 'All-Inclusive',
-    guidePrice: '£5,200/mo',
-    visibility: 'Public',
-    pipeline: null,
-    daysOnMarket: 3,
-    isConfidential: false,
-  },
-  {
-    id: '7',
-    code: 'OCS-22-06',
-    floor: 'Floor 22, Suite 06',
-    property: { name: 'One Canada Square', submarket: 'Canary Wharf' },
-    sizeSqFt: 5400,
-    desks: 42,
-    fitOut: 'Cat A',
-    status: 'Let',
-    pricingMode: 'Bolt-On',
-    guidePrice: '£12,800/mo',
-    priceExtras: '+ SC + Rates',
-    visibility: 'Private',
-    pipeline: null,
-    daysOnMarket: 62,
-    isConfidential: false,
-  },
-  {
-    id: '8',
-    code: 'TLB-12-01',
-    floor: 'Floor 12, Suite 01',
-    property: { name: 'The Leadenhall Building', submarket: 'City Core' },
-    sizeSqFt: 3600,
-    desks: 28,
-    fitOut: 'Cat A+',
-    status: 'Available',
-    pricingMode: 'All-Inclusive',
-    guidePrice: '£10,200/mo',
-    visibility: 'Public',
-    pipeline: 'Viewing',
-    daysOnMarket: 18,
-    isConfidential: false,
-  },
-];
+function daysSince(iso: string | null | undefined): number | null {
+  if (!iso) return null;
+  const t = new Date(iso).getTime();
+  if (Number.isNaN(t)) return null;
+  const diffMs = Date.now() - t;
+  return Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+}
 
 export function UnitsList() {
   const [activeTab, setActiveTab] = useState('all');
+  const [search, setSearch] = useState('');
   const [sizeFilter, setSizeFilter] = useState('');
   const [fitoutFilter, setFitoutFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [pricingFilter, setPricingFilter] = useState('');
-  const [visibilityFilter, setVisibilityFilter] = useState('');
-  const [submarketFilter, setSubmarketFilter] = useState('');
   const [pipelineFilter, setPipelineFilter] = useState('');
-  const [isLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const { data, isLoading, error } = useUnits({
+    search,
+    status: statusFilter || undefined,
+    fitOut: fitoutFilter || undefined,
+    pipelineStage: pipelineFilter || undefined,
+    limit: 200,
+    sortBy: 'updatedAt',
+    sortOrder: 'desc',
+  });
+
+  const units = data?.units ?? [];
+
+  const filteredUnits = useMemo(() => {
+    let list = units.slice();
+
+    // Tab filters (derived from real status/pipelineStage)
+    if (activeTab === 'available') list = list.filter((u) => (u.status || '').toLowerCase() === 'available');
+    if (activeTab === 'under-offer') list = list.filter((u) => (u.status || '').toLowerCase() === 'under offer');
+    if (activeTab === 'let') list = list.filter((u) => (u.status || '').toLowerCase() === 'let');
+    if (activeTab === 'viewing') list = list.filter((u) => (u.pipelineStage || '').toLowerCase() === 'viewing');
+    if (activeTab === 'hots') list = list.filter((u) => (u.pipelineStage || '').toLowerCase() === 'hots');
+
+    // Size band filter
+    if (sizeFilter) {
+      const parseBand = (band: string) => {
+        if (band === '0-1000') return [0, 1000] as const;
+        if (band === '1000-2500') return [1000, 2500] as const;
+        if (band === '2500-5000') return [2500, 5000] as const;
+        if (band === '5000-10000') return [5000, 10000] as const;
+        if (band === '10000+') return [10000, Infinity] as const;
+        return null;
+      };
+      const b = parseBand(sizeFilter);
+      if (b) {
+        const [min, max] = b;
+        list = list.filter((u) => {
+          const s = u.sizeSqFt ?? null;
+          if (s == null) return false;
+          return s >= min && s <= max;
+        });
+      }
+    }
+
+    return list;
+  }, [units, activeTab, sizeFilter]);
+
+  const counts = useMemo(() => {
+    const by = (pred: (u: UnitListItem) => boolean) => units.filter(pred).length;
+    return {
+      all: units.length,
+      available: by((u) => (u.status || '').toLowerCase() === 'available'),
+      underOffer: by((u) => (u.status || '').toLowerCase() === 'under offer'),
+      let: by((u) => (u.status || '').toLowerCase() === 'let'),
+      viewing: by((u) => (u.pipelineStage || '').toLowerCase() === 'viewing'),
+      hots: by((u) => (u.pipelineStage || '').toLowerCase() === 'hots'),
+    };
+  }, [units]);
 
   const clearFilters = () => {
+    setSearch('');
     setSizeFilter('');
     setFitoutFilter('');
     setStatusFilter('');
-    setPricingFilter('');
-    setVisibilityFilter('');
-    setSubmarketFilter('');
     setPipelineFilter('');
   };
 
@@ -208,6 +132,27 @@ export function UnitsList() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="bg-white border border-[#E6E6E6] rounded-lg p-6">
+          <h1 className="text-xl font-semibold text-primary mb-2">Units</h1>
+          <p className="text-secondary text-sm">Failed to load real unit data.</p>
+          <pre className="text-xs text-secondary mt-4 whitespace-pre-wrap">{String((error as Error).message || error)}</pre>
+        </div>
+      </div>
+    );
+  }
+
+  const tabs = [
+    { id: 'all', label: `All Units (${counts.all})` },
+    { id: 'available', label: `Available (${counts.available})` },
+    { id: 'under-offer', label: `Under Offer (${counts.underOffer})` },
+    { id: 'let', label: `Let (${counts.let})` },
+    { id: 'viewing', label: `Viewing (${counts.viewing})` },
+    { id: 'hots', label: `HoTs (${counts.hots})` },
+  ];
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Page Header */}
@@ -242,6 +187,14 @@ export function UnitsList() {
             </button>
           ))}
           <div className="flex-1"></div>
+          <div className="relative">
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search units / properties…"
+              className="bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary w-[280px]"
+            />
+          </div>
           <button className="text-secondary hover:text-primary text-sm flex items-center space-x-1">
             <i className="fa-solid fa-filter"></i>
             <span>Filters</span>
@@ -279,9 +232,9 @@ export function UnitsList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Fit-out</option>
+              <option value="Shell">Shell</option>
               <option value="Cat A">Cat A</option>
               <option value="Cat A+">Cat A+</option>
-              <option value="Fitted">Fitted</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -296,47 +249,7 @@ export function UnitsList() {
               <option value="Available">Available</option>
               <option value="Under Offer">Under Offer</option>
               <option value="Let">Let</option>
-            </select>
-            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
-          </div>
-          
-          <div className="relative">
-            <select
-              value={pricingFilter}
-              onChange={(e) => setPricingFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">All Pricing Modes</option>
-              <option value="All-Inclusive">All-Inclusive</option>
-              <option value="Bolt-On">Bolt-On</option>
-            </select>
-            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
-          </div>
-          
-          <div className="relative">
-            <select
-              value={visibilityFilter}
-              onChange={(e) => setVisibilityFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">All Visibility</option>
-              <option value="Public">Public</option>
-              <option value="Private">Private</option>
-            </select>
-            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
-          </div>
-          
-          <div className="relative">
-            <select
-              value={submarketFilter}
-              onChange={(e) => setSubmarketFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">All Submarkets</option>
-              <option value="City Core">City Core</option>
-              <option value="Shoreditch">Shoreditch</option>
-              <option value="Mayfair">Mayfair</option>
-              <option value="Canary Wharf">Canary Wharf</option>
+              <option value="Closed">Closed</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -348,9 +261,11 @@ export function UnitsList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Pipeline Stages</option>
+              <option value="New">New</option>
               <option value="Viewing">Viewing</option>
               <option value="HoTs">HoTs</option>
               <option value="Legals">Legals</option>
+              <option value="Closed">Closed</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -381,19 +296,19 @@ export function UnitsList() {
                   <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Desks</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Fit-out</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Pricing Mode</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Guide Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Visibility</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Price (pcm)</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-secondary uppercase tracking-wider">Pipeline</th>
                   <th className="px-6 py-3 text-right text-xs font-semibold text-secondary uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6E6E6]">
-                {mockUnits.map((unit) => (
+                {filteredUnits.map((unit) => {
+                  const daysOnMarket = daysSince(unit.zohoCreatedAt || unit.createdAt) ?? 0;
+                  return (
                   <tr 
                     key={unit.id} 
                     className="hover:bg-[#FAFAFA] transition-all cursor-pointer relative overflow-visible"
-                    onClick={() => window.location.href = `/units/${unit.id}`}
+                    onClick={() => navigate(`/units/${unit.id}`)}
                   >
                     <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                       <input type="checkbox" className="w-4 h-4 text-primary border-[#E6E6E6] rounded focus:ring-primary" />
@@ -401,45 +316,37 @@ export function UnitsList() {
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
                         <div className="font-semibold text-primary text-sm">{unit.code}</div>
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white ${getAgingBadgeColor(unit.daysOnMarket)} ${unit.daysOnMarket >= 25 ? 'animate-pulse' : ''}`}>
-                          {unit.daysOnMarket}d
-                        </span>
+                        {daysOnMarket ? (
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white ${getAgingBadgeColor(daysOnMarket)} ${daysOnMarket >= 25 ? 'animate-pulse' : ''}`}>
+                            {daysOnMarket}d
+                          </span>
+                        ) : null}
                       </div>
-                      <div className="text-xs text-secondary">{unit.floor}</div>
+                      <div className="text-xs text-secondary">{unit.floor || '—'}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-primary font-medium">{unit.property.name}</div>
-                      <div className="text-xs text-secondary">{unit.property.submarket}</div>
+                      <div className="text-sm text-primary font-medium">{unit.property?.name || '—'}</div>
+                      <div className="text-xs text-secondary">{unit.property?.city || unit.property?.postcode || '—'}</div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-primary">{unit.sizeSqFt.toLocaleString()} sq ft</td>
-                    <td className="px-6 py-4 text-sm text-primary">{unit.desks}</td>
+                    <td className="px-6 py-4 text-sm text-primary">{unit.sizeSqFt != null ? `${unit.sizeSqFt.toLocaleString()} sq ft` : '—'}</td>
+                    <td className="px-6 py-4 text-sm text-primary">{unit.desks != null ? unit.desks : '—'}</td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary">
-                        {unit.fitOut}
+                        {unit.fitOut || '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(unit.status)}`}>
-                        {unit.status}
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(unit.status || '')}`}>
+                        {unit.status || '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${unit.pricingMode === 'All-Inclusive' ? 'bg-primary text-white' : 'bg-secondary text-white'}`}>
-                        {unit.pricingMode}
-                      </span>
+                      <div className="text-sm text-primary font-medium">{formatMoneyGBP(unit.pricePcm)}</div>
+                      {unit.pricePsf != null ? <div className="text-xs text-secondary">{formatMoneyGBP(unit.pricePsf)} / sq ft</div> : null}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-primary font-medium">{unit.guidePrice}</div>
-                      {unit.priceExtras && <div className="text-xs text-secondary">{unit.priceExtras}</div>}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${unit.visibility === 'Public' ? 'bg-primary text-white' : 'bg-secondary text-white'}`}>
-                        {unit.visibility}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getPipelineBadgeStyle(unit.pipeline)}`}>
-                        {unit.pipeline || '—'}
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getPipelineBadgeStyle(unit.pipelineStage || null)}`}>
+                        {unit.pipelineStage || '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -447,13 +354,8 @@ export function UnitsList() {
                         <i className="fa-solid fa-ellipsis-vertical"></i>
                       </button>
                     </td>
-                    {unit.isConfidential && (
-                      <div className="absolute top-2 right-[-32px] bg-primary text-white px-10 py-0.5 text-[10px] font-semibold transform rotate-45 uppercase tracking-wider">
-                        Confidential
-                      </div>
-                    )}
                   </tr>
-                ))}
+                )})}
               </tbody>
             </table>
           </div>
@@ -462,7 +364,7 @@ export function UnitsList() {
         {/* Bulk Actions */}
         <div className="mt-6 flex items-center justify-between">
           <div className="text-sm text-secondary">
-            Showing {mockUnits.length} of 58 units
+            Showing {filteredUnits.length} of {counts.all} units
           </div>
           <div className="flex items-center space-x-2">
             <button className="px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
@@ -487,8 +389,8 @@ export function UnitsList() {
               <div className="text-secondary text-sm font-medium">Total Units</div>
               <i className="fa-solid fa-door-open text-primary"></i>
             </div>
-            <div className="text-3xl font-semibold text-primary">58</div>
-            <div className="text-xs text-secondary mt-2">Across 24 properties</div>
+            <div className="text-3xl font-semibold text-primary">{counts.all}</div>
+            <div className="text-xs text-secondary mt-2">Across {new Set(units.map(u => u.property?.id).filter(Boolean)).size} properties</div>
           </div>
           
           <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
@@ -496,8 +398,8 @@ export function UnitsList() {
               <div className="text-secondary text-sm font-medium">Available</div>
               <i className="fa-solid fa-check-circle text-green-600"></i>
             </div>
-            <div className="text-3xl font-semibold text-primary">32</div>
-            <div className="text-xs text-secondary mt-2">55% of inventory</div>
+            <div className="text-3xl font-semibold text-primary">{counts.available}</div>
+            <div className="text-xs text-secondary mt-2">{counts.all ? Math.round((counts.available / counts.all) * 100) : 0}% of inventory</div>
           </div>
           
           <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
@@ -505,17 +407,24 @@ export function UnitsList() {
               <div className="text-secondary text-sm font-medium">Under Offer</div>
               <i className="fa-solid fa-clock text-amber-600"></i>
             </div>
-            <div className="text-3xl font-semibold text-primary">18</div>
-            <div className="text-xs text-secondary mt-2">31% of inventory</div>
+            <div className="text-3xl font-semibold text-primary">{counts.underOffer}</div>
+            <div className="text-xs text-secondary mt-2">{counts.all ? Math.round((counts.underOffer / counts.all) * 100) : 0}% of inventory</div>
           </div>
           
           <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="text-secondary text-sm font-medium">Avg Time on Market</div>
+              <div className="text-secondary text-sm font-medium">Avg Days on Market</div>
               <i className="fa-solid fa-calendar text-primary"></i>
             </div>
-            <div className="text-3xl font-semibold text-primary">24d</div>
-            <div className="text-xs text-secondary mt-2">-3d vs last month</div>
+            <div className="text-3xl font-semibold text-primary">
+              {(() => {
+                const vals = units.map((u) => daysSince(u.zohoCreatedAt || u.createdAt)).filter((d): d is number => d != null);
+                if (!vals.length) return '—';
+                const avg = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+                return `${avg}d`;
+              })()}
+            </div>
+            <div className="text-xs text-secondary mt-2">Based on Zoho created date</div>
           </div>
           
           <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
@@ -523,8 +432,15 @@ export function UnitsList() {
               <div className="text-secondary text-sm font-medium">Avg Guide Price</div>
               <i className="fa-solid fa-sterling-sign text-primary"></i>
             </div>
-            <div className="text-3xl font-semibold text-primary">£7.2k</div>
-            <div className="text-xs text-secondary mt-2">Per month</div>
+            <div className="text-3xl font-semibold text-primary">
+              {(() => {
+                const vals = units.map((u) => u.pricePcm).filter((v): v is number => typeof v === 'number' && !Number.isNaN(v));
+                if (!vals.length) return '—';
+                const avg = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+                return formatMoneyGBP(avg);
+              })()}
+            </div>
+            <div className="text-xs text-secondary mt-2">Per month (from Zoho)</div>
           </div>
         </div>
 
@@ -539,22 +455,31 @@ export function UnitsList() {
               </button>
             </div>
             <div className="flex items-end justify-between h-[200px] px-8">
-              {[
-                { label: 'Available', value: 32, color: 'bg-green-500' },
-                { label: 'Viewing', value: 14, color: 'bg-blue-500' },
-                { label: 'HoTs', value: 6, color: 'bg-purple-500' },
-                { label: 'Legals', value: 0, color: 'bg-amber-500' },
-                { label: 'Let', value: 8, color: 'bg-gray-500' },
-              ].map((item) => (
+              {(() => {
+                const available = counts.available;
+                const viewing = counts.viewing;
+                const hots = counts.hots;
+                const legals = units.filter((u) => (u.pipelineStage || '').toLowerCase() === 'legals').length;
+                const letCount = counts.let;
+                const items = [
+                  { label: 'Available', value: available, color: 'bg-green-500' },
+                  { label: 'Viewing', value: viewing, color: 'bg-blue-500' },
+                  { label: 'HoTs', value: hots, color: 'bg-purple-500' },
+                  { label: 'Legals', value: legals, color: 'bg-amber-500' },
+                  { label: 'Let', value: letCount, color: 'bg-gray-500' },
+                ];
+                const max = Math.max(1, ...items.map((i) => i.value));
+                return items.map((item) => (
                 <div key={item.label} className="flex flex-col items-center">
                   <div 
                     className={`w-16 ${item.color} rounded-t`} 
-                    style={{ height: `${(item.value / 32) * 150}px`, minHeight: item.value > 0 ? '10px' : '0' }}
+                    style={{ height: `${(item.value / max) * 150}px`, minHeight: item.value > 0 ? '10px' : '0' }}
                   ></div>
                   <div className="text-xs text-secondary mt-2">{item.label}</div>
                   <div className="text-sm font-semibold text-primary">{item.value}</div>
                 </div>
-              ))}
+                ));
+              })()}
             </div>
           </div>
         </div>
@@ -562,79 +487,34 @@ export function UnitsList() {
         {/* Recent Activity & Top Performers */}
         <div className="grid grid-cols-2 gap-6 mt-8">
           <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
-            <h3 className="text-lg font-semibold text-primary mb-6">Recent Activity</h3>
-            <div className="space-y-4">
-              <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
-                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <i className="fa-solid fa-check text-white text-xs"></i>
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm text-primary font-medium">Unit marked available</div>
-                  <div className="text-xs text-secondary mt-1">99B-5-08 is now available for viewing</div>
-                  <div className="text-xs text-secondary mt-1">3 days ago</div>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
-                <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <i className="fa-solid fa-handshake text-white text-xs"></i>
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm text-primary font-medium">HoTs reached</div>
-                  <div className="text-xs text-secondary mt-1">TAA-2-05 progressed to Heads of Terms stage</div>
-                  <div className="text-xs text-secondary mt-1">5 days ago</div>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4 pb-4 border-b border-[#E6E6E6]">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <i className="fa-solid fa-calendar text-white text-xs"></i>
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm text-primary font-medium">Viewing scheduled</div>
-                  <div className="text-xs text-secondary mt-1">TLB-12-01 viewing booked for 15 Nov at 14:00</div>
-                  <div className="text-xs text-secondary mt-1">1 week ago</div>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                  <i className="fa-solid fa-pencil text-white text-xs"></i>
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm text-primary font-medium">Pricing updated</div>
-                  <div className="text-xs text-secondary mt-1">Guide price adjusted for OCS-15-02</div>
-                  <div className="text-xs text-secondary mt-1">2 weeks ago</div>
-                </div>
-              </div>
-            </div>
+            <h3 className="text-lg font-semibold text-primary mb-2">Data Source</h3>
+            <p className="text-sm text-secondary">
+              This page is backed by synced Zoho CRM unit records (Zoho → Supabase → API → UI).
+            </p>
+            <p className="text-xs text-secondary mt-3">
+              If the list is empty, run the sync endpoint and ensure Zoho Units have a linked Zoho Property.
+            </p>
           </div>
 
           <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
-            <h3 className="text-lg font-semibold text-primary mb-6">Top Performing Units</h3>
+            <h3 className="text-lg font-semibold text-primary mb-6">Newest Units</h3>
             <div className="space-y-4">
-              {[
-                { rank: 1, code: '99B-5-08', property: '99 Bishopsgate', size: '1,500 sq ft', days: 3 },
-                { rank: 2, code: 'TLB-8-03', property: 'The Leadenhall Building', size: '4,100 sq ft', days: 7 },
-                { rank: 3, code: 'OCS-15-02', property: 'One Canada Square', size: '1,850 sq ft', days: 14 },
-                { rank: 4, code: 'TLB-12-01', property: 'The Leadenhall Building', size: '3,600 sq ft', days: 18 },
-              ].map((item, idx) => (
-                <div key={item.code} className={`flex items-center justify-between ${idx < 3 ? 'pb-4 border-b border-[#E6E6E6]' : ''}`}>
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-10 h-10 ${item.rank === 1 ? 'bg-primary' : 'bg-secondary'} text-white rounded-full flex items-center justify-center font-semibold`}>
-                      {item.rank}
-                    </div>
+              {filteredUnits
+                .slice()
+                .sort((a, b) => (new Date(b.zohoCreatedAt || b.createdAt || 0).getTime() - new Date(a.zohoCreatedAt || a.createdAt || 0).getTime()))
+                .slice(0, 4)
+                .map((u, idx) => (
+                  <div key={u.id} className={`flex items-center justify-between ${idx < 3 ? 'pb-4 border-b border-[#E6E6E6]' : ''}`}>
                     <div>
-                      <div className="text-sm font-semibold text-primary">{item.code}</div>
-                      <div className="text-xs text-secondary">{item.property} • {item.size}</div>
+                      <div className="text-sm font-semibold text-primary">{u.code}</div>
+                      <div className="text-xs text-secondary">{u.property?.name || '—'}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-semibold text-primary">{u.sizeSqFt != null ? `${u.sizeSqFt.toLocaleString()} sq ft` : '—'}</div>
+                      <div className="text-xs text-secondary">{u.status || '—'}</div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm font-semibold text-primary">{item.days} days</div>
-                    <div className="text-xs text-secondary">Time to viewing</div>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
