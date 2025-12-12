@@ -3,12 +3,18 @@ import { getSupabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import formidable from 'formidable';
 import type { Fields, Files, File as FormidableFile } from 'formidable';
 import { promises as fs } from 'fs';
+import sharp from 'sharp';
 
 export const config = {
   api: {
     bodyParser: false, // Disable body parser to handle file uploads manually
   },
 };
+
+// Image optimization settings
+const IMAGE_MAX_WIDTH = 1920;  // Max width for property images
+const IMAGE_MAX_HEIGHT = 1080; // Max height for property images
+const WEBP_QUALITY = 80;       // WebP quality (0-100)
 
 // Helper to parse multipart form data
 async function parseForm(req: VercelRequest): Promise<{ fields: Fields; files: Files }> {
@@ -56,23 +62,53 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Read file content
-      const fileBuffer = await fs.readFile(file.filepath);
+      let fileBuffer = await fs.readFile(file.filepath);
       const originalName = file.originalFilename || 'unknown';
       const mimeType = file.mimetype || 'application/octet-stream';
       
-      // Generate unique filename
-      const timestamp = Date.now();
-      const safeName = originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const storagePath = `properties/${propertyId}/${timestamp}_${safeName}`;
-
       // Check if it's an image
       const isImage = mimeType.startsWith('image/');
+      
+      // Generate unique filename
+      const timestamp = Date.now();
+      const baseNameWithoutExt = originalName.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9.-]/g, '_');
+      
+      let finalMimeType = mimeType;
+      let finalFileName: string;
+      let optimizedSize = file.size;
+
+      // Optimize images: convert to WebP and resize if needed
+      if (isImage) {
+        try {
+          const optimizedBuffer = await sharp(fileBuffer)
+            .resize(IMAGE_MAX_WIDTH, IMAGE_MAX_HEIGHT, {
+              fit: 'inside',           // Maintain aspect ratio, fit within bounds
+              withoutEnlargement: true // Don't upscale small images
+            })
+            .webp({ quality: WEBP_QUALITY })
+            .toBuffer();
+          
+          fileBuffer = optimizedBuffer;
+          finalMimeType = 'image/webp';
+          finalFileName = `${baseNameWithoutExt}.webp`;
+          optimizedSize = optimizedBuffer.length;
+          
+          console.log(`Image optimized: ${originalName} (${file.size} bytes) -> ${finalFileName} (${optimizedSize} bytes) - ${Math.round((1 - optimizedSize / file.size) * 100)}% reduction`);
+        } catch (sharpError) {
+          console.warn('Image optimization failed, uploading original:', sharpError);
+          finalFileName = originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
+        }
+      } else {
+        finalFileName = originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
+      }
+
+      const storagePath = `properties/${propertyId}/${timestamp}_${finalFileName}`;
 
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('property-files')
         .upload(storagePath, fileBuffer, {
-          contentType: mimeType,
+          contentType: finalMimeType,
           upsert: false,
         });
 
@@ -120,11 +156,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Return uploaded file info
       return res.status(200).json({
-        id: `${timestamp}_${safeName}`,
+        id: `${timestamp}_${finalFileName}`,
         url: publicUrl,
         name: originalName,
-        size: file.size,
-        type: mimeType,
+        optimizedName: finalFileName,
+        originalSize: file.size,
+        optimizedSize,
+        type: finalMimeType,
         isImage,
         uploadedAt: new Date().toISOString(),
       });
