@@ -127,14 +127,28 @@ async function syncProperties() {
     const propertiesToUpsert = zohoProperties.map((p) => {
       // Helper to extract submarket value safely
       let submarketValue: string | null = null;
-      // Try known variations
-      const rawSubmarket = p.Submarkets || p.Submarket || p.Sub_Market || p.submarket;
+      
+      // Try known variations first
+      let rawSubmarket = p.Submarkets || p.Submarket || p.Sub_Market || p.submarket;
+      
+      // If not found, try case-insensitive regex match on all keys
+      if (rawSubmarket === undefined) {
+        const key = Object.keys(p).find(k => /sub[_]?market/i.test(k));
+        if (key) {
+          rawSubmarket = p[key as keyof ZohoPropertyRecord];
+        }
+      }
       
       if (typeof rawSubmarket === 'string') {
         submarketValue = rawSubmarket;
       } else if (Array.isArray(rawSubmarket)) {
-        // Handle multi-select picklist
-        submarketValue = rawSubmarket.join(', ');
+        // Handle multi-select picklist or array of objects
+        if (rawSubmarket.length > 0 && typeof rawSubmarket[0] === 'object' && rawSubmarket[0] !== null) {
+           // Extract name or value from objects
+           submarketValue = rawSubmarket.map((item: any) => item.name || item.value || JSON.stringify(item)).join(', ');
+        } else {
+           submarketValue = rawSubmarket.join(', ');
+        }
       } else if (typeof rawSubmarket === 'object' && rawSubmarket !== null) {
         // Handle lookup or other object
         submarketValue = (rawSubmarket as { name?: string }).name || JSON.stringify(rawSubmarket);
