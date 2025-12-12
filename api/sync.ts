@@ -119,18 +119,36 @@ async function syncProperties() {
     
     if (zohoProperties.length > 0) {
       console.log('Sample Property Keys:', Object.keys(zohoProperties[0]));
-      console.log('Sample Property Submarket:', zohoProperties[0].Submarket);
+      // Try to find the submarket field with case-insensitive search
+      const submarketKey = Object.keys(zohoProperties[0]).find(k => k.toLowerCase() === 'submarket' || k.toLowerCase() === 'submarkets' || k.toLowerCase() === 'sub_market');
+      console.log('Found Submarket Key:', submarketKey, 'Value:', zohoProperties[0][submarketKey || '']);
     }
 
-    const propertiesToUpsert = zohoProperties.map((p) => ({
-      zoho_id: p.id,
-      name: p.Name || 'Unnamed Property',
-      address_line: p.Address_Line || null,
-      postcode: p.Postcode || null,
-      city: p.City || null,
-      submarket: p.Submarkets || null,
-      country: p.Country || 'United Kingdom',
-      total_size_sqft: p.Total_Size_Sq_Ft || null,
+    const propertiesToUpsert = zohoProperties.map((p) => {
+      // Helper to extract submarket value safely
+      let submarketValue: string | null = null;
+      // Try known variations
+      const rawSubmarket = p.Submarkets || p.Submarket || p.Sub_Market || p.submarket;
+      
+      if (typeof rawSubmarket === 'string') {
+        submarketValue = rawSubmarket;
+      } else if (Array.isArray(rawSubmarket)) {
+        // Handle multi-select picklist
+        submarketValue = rawSubmarket.join(', ');
+      } else if (typeof rawSubmarket === 'object' && rawSubmarket !== null) {
+        // Handle lookup or other object
+        submarketValue = (rawSubmarket as { name?: string }).name || JSON.stringify(rawSubmarket);
+      }
+
+      return {
+        zoho_id: p.id,
+        name: p.Name || 'Unnamed Property',
+        address_line: p.Address_Line || null,
+        postcode: p.Postcode || null,
+        city: p.City || null,
+        submarket: submarketValue,
+        country: p.Country || 'United Kingdom',
+        total_size_sqft: p.Total_Size_Sq_Ft || null,
       floor_count: p.Floor_Count || null,
       lifts: p.Lifts || null,
       built_year: p.Built_Year || null,
@@ -145,7 +163,8 @@ async function syncProperties() {
       breeam_rating: p.BREEAM_Rating || null,
       zoho_created_at: p.Created_Time || null,
       zoho_modified_at: p.Modified_Time || null,
-    }));
+    };
+  });
 
     const chunkSize = 100;
     for (let i = 0; i < propertiesToUpsert.length; i += chunkSize) {

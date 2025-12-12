@@ -14,6 +14,15 @@ export interface Unit {
   pipelineStage?: 'New' | 'Viewing' | 'HoTs' | 'Legals' | 'Closed';
 }
 
+export interface PropertyDocument {
+  id: string;
+  name: string;
+  url: string;
+  size: string;
+  type: string;
+  uploadedAt: string;
+}
+
 export interface Property {
   id: PropertyId;
   name: string;
@@ -30,7 +39,8 @@ export interface Property {
   refurbishedYear?: number;
   parking?: string;
   amenities: string[];
-  images?: string[];
+  images?: string[]; // Array of image URLs
+  documents?: PropertyDocument[];
   dataHealth?: number;
   marketing: {
     visibility: 'Private' | 'Public';
@@ -60,4 +70,3 @@ export interface Property {
   };
   updatedAt?: string;
 }
-

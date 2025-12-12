@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Property, PropertyId } from '../types/property';
+import type { Property, PropertyId, PropertyDocument } from '../types/property';
 
 export interface ListPropertiesParams {
   search?: string;
@@ -83,7 +83,7 @@ export async function updateProperty(
 export async function uploadDocument(
   id: PropertyId,
   file: File
-): Promise<{ id: string; url: string; name: string }> {
+): Promise<PropertyDocument> {
   const formData = new FormData();
   formData.append('file', file);
 
@@ -97,6 +97,19 @@ export async function uploadDocument(
   }
 
   return response.json();
+}
+
+export async function deleteDocument(
+  propertyId: PropertyId,
+  documentId: string
+): Promise<void> {
+  const response = await fetch(`${API_BASE}/properties/${propertyId}/documents/${documentId}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error(`Delete error: ${response.statusText}`);
+  }
 }
 
 // React Query hooks
@@ -146,6 +159,18 @@ export function useUploadDocument() {
     mutationFn: ({ id, file }: { id: PropertyId; file: File }) => uploadDocument(id, file),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['property', variables.id] });
+    },
+  });
+}
+
+export function useDeleteDocument() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ propertyId, documentId }: { propertyId: PropertyId; documentId: string }) =>
+      deleteDocument(propertyId, documentId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['property', variables.propertyId] });
     },
   });
 }
@@ -209,4 +234,3 @@ export function useBulkPushToBrokerSet() {
     },
   });
 }
-

@@ -112,11 +112,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { data, error, count } = await query;
 
-    // Fetch submarket stats
-    const { data: submarketStats, error: statsError } = await supabase.rpc('get_submarket_stats');
+    // Fetch submarket stats (fallback to JS aggregation if RPC fails or returns empty)
+    let submarketStats: { submarket: string; count: number }[] = [];
     
-    if (statsError) {
-      console.error('Error fetching submarket stats:', statsError);
+    // Attempt RPC first
+    const { data: rpcStats, error: statsError } = await supabase.rpc('get_submarket_stats');
+    
+    if (!statsError && rpcStats && rpcStats.length > 0) {
+      submarketStats = rpcStats;
+    } else {
+      console.warn('RPC get_submarket_stats failed or empty, falling back to JS aggregation', statsError);
+      
+      // Fallback: Fetch all submarkets and aggregate
+      const { data: allProperties } = await supabase
+        .from('properties')
+        .select('submarket');
+      
+      if (allProperties) {
+        const statsMap = new Map<string, number>();
+        allProperties.forEach(p => {
+          // Normalize submarket: handle null/undefined as 'Unknown'
+          const sm = p.submarket ? p.submarket.trim() : 'Unknown';
+          // If empty string, treat as Unknown
+          const key = sm || 'Unknown';
+          statsMap.set(key, (statsMap.get(key) || 0) + 1);
+        });
+        
+        submarketStats = Array.from(statsMap.entries())
+          .map(([submarket, count]) => ({ submarket, count }))
+          .sort((a, b) => b.count - a.count);
+      }
     }
 
     if (error) {

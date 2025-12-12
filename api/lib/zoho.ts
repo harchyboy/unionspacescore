@@ -138,7 +138,10 @@ export interface ZohoPropertyRecord {
   Address_Line?: string;
   Postcode?: string;
   City?: string;
-  Submarkets?: string;
+  Submarkets?: string | string[] | { name?: string };
+  Submarket?: string | string[] | { name?: string };
+  Sub_Market?: string | string[] | { name?: string };
+  submarket?: string | string[] | { name?: string };
   Country?: string;
   Total_Size_Sq_Ft?: number;
   Floor_Count?: number;

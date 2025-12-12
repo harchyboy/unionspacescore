@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { Property } from '../../types/property';
+import type { Property, PropertyDocument } from '../../types/property';
 
 // Seed data: 99 Bishopsgate example
 export const seedProperties: Property[] = [
@@ -25,6 +25,29 @@ export const seedProperties: Property[] = [
       'Bike storage',
       'Shower facilities',
       'Air conditioning',
+    ],
+    images: [
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2070',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069',
+      'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80&w=2069'
+    ],
+    documents: [
+      {
+        id: 'doc-1',
+        name: 'Floor Plan Level 3.pdf',
+        url: '#',
+        size: '2.4 MB',
+        type: 'application/pdf',
+        uploadedAt: '2024-12-10T10:00:00Z'
+      },
+      {
+        id: 'doc-2',
+        name: 'EPC Certificate.pdf',
+        url: '#',
+        size: '1.1 MB',
+        type: 'application/pdf',
+        uploadedAt: '2024-01-15T09:30:00Z'
+      }
     ],
     marketing: {
       visibility: 'Public',
@@ -109,6 +132,8 @@ export const seedProperties: Property[] = [
     city: 'London',
     country: 'United Kingdom',
     amenities: ['Reception', 'Kitchen'],
+    images: [],
+    documents: [],
     marketing: {
       visibility: 'Private',
       status: 'Draft',
@@ -132,6 +157,8 @@ export const seedProperties: Property[] = [
     city: 'London',
     country: 'United Kingdom',
     amenities: ['Reception'],
+    images: [],
+    documents: [],
     marketing: {
       visibility: 'Public',
       status: 'Broker-Ready',
@@ -179,8 +206,6 @@ export const propertyHandlers = [
       if (brokerSet && p.marketing.brokerSet !== brokerSet) {
         return false;
       }
-      // Note: missingMedia and brokerReadyThisWeek would need additional property fields to filter properly
-      // For now, we'll skip these filters in the mock
       return true;
     });
 
@@ -238,6 +263,8 @@ export const propertyHandlers = [
       city: payload.city || '',
       country: payload.country || 'United Kingdom',
       amenities: payload.amenities || [],
+      images: [],
+      documents: [],
       marketing: payload.marketing || {
         visibility: 'Private',
         status: 'Draft',
@@ -348,12 +375,86 @@ export const propertyHandlers = [
       return HttpResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Mock response
+    const property = properties.find((p) => p.id === id);
+    if (!property) {
+      return HttpResponse.json({ error: 'Property not found' }, { status: 404 });
+    }
+
+    // Mock file processing
+    const isImage = file.type.startsWith('image/');
+    const mockUrl = URL.createObjectURL(file);
+    
+    // In a real app we'd upload to S3/Storage. Here we simulate it.
+    
+    if (isImage) {
+      if (!property.images) property.images = [];
+      property.images.push(mockUrl);
+    } else {
+      if (!property.documents) property.documents = [];
+      const newDoc: PropertyDocument = {
+        id: `doc-${Date.now()}`,
+        name: file.name,
+        url: mockUrl,
+        size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+        type: file.type,
+        uploadedAt: new Date().toISOString(),
+      };
+      property.documents.push(newDoc);
+      
+      return HttpResponse.json(newDoc);
+    }
+
+    // For images we return a dummy doc structure or just success. 
+    // The API expects PropertyDocument but for images we might just return the URL wrapper?
+    // Let's return a PropertyDocument even for images to satisfy the type, 
+    // but the frontend will know it's an image by mime type if needed, 
+    // though for images we just pushed to images array.
+    
     return HttpResponse.json({
-      id: `doc-${Date.now()}`,
-      url: `/documents/${id}/${file.name}`,
+      id: `img-${Date.now()}`,
       name: file.name,
+      url: mockUrl,
+      size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+      type: file.type,
+      uploadedAt: new Date().toISOString(),
     });
   }),
-];
 
+  // Delete document
+  http.delete('/api/properties/:id/documents/:docId', ({ params }) => {
+    const { id, docId } = params;
+    const property = properties.find((p) => p.id === id);
+
+    if (!property) {
+      return HttpResponse.json({ error: 'Property not found' }, { status: 404 });
+    }
+
+    // Check if it's in documents
+    if (property.documents) {
+      const docIndex = property.documents.findIndex(d => d.id === docId);
+      if (docIndex !== -1) {
+        property.documents.splice(docIndex, 1);
+        return HttpResponse.json({ success: true });
+      }
+    }
+
+    // If not found in documents, check if it's an image URL (though docId is ID not URL)
+    // For images, we stored them as strings in `images`. 
+    // If the frontend sends the URL as docId (encoded), we could delete it.
+    // Or we should have stored images as objects too. 
+    // Given the current structure `images: string[]`, we can't delete by ID easily unless we use the URL as ID.
+    // Let's assume for images, we pass the index or the URL.
+    // But for now let's support deleting from documents properly.
+    
+    // If the docId looks like an image URL (or we change the frontend to pass URL)
+    if (property.images) {
+        const imgIndex = property.images.findIndex(url => url === docId || url.includes(docId as string));
+        if (imgIndex !== -1) {
+            property.images.splice(imgIndex, 1);
+            return HttpResponse.json({ success: true });
+        }
+    }
+
+    return HttpResponse.json({ error: 'Document not found' }, { status: 404 });
+  }),
+];
