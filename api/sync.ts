@@ -535,6 +535,45 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     if (req.method === 'GET') {
+      const action = req.query.action as string;
+
+      if (action === 'sync') {
+        // Enforce API key for GET sync (Cron jobs)
+        if (!expectedKey || apiKey !== expectedKey) {
+           return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const entity = (req.query.entity as string) || 'all';
+        const results: { contacts?: { synced: number }; accounts?: { synced: number }; properties?: { synced: number }; units?: { synced: number } } = {};
+
+        if (entity === 'contacts' || entity === 'all') {
+          console.log('Starting contacts sync (cron)...');
+          results.contacts = await syncContacts();
+        }
+
+        if (entity === 'accounts' || entity === 'all') {
+          console.log('Starting accounts sync (cron)...');
+          results.accounts = await syncAccounts();
+        }
+
+        if (entity === 'properties' || entity === 'all') {
+          console.log('Starting properties sync (cron)...');
+          results.properties = await syncProperties();
+        }
+
+        if (entity === 'units' || entity === 'all') {
+          console.log('Starting units sync (cron)...');
+          results.units = await syncUnits();
+        }
+
+        return res.status(200).json({
+          success: true,
+          results,
+          timestamp: new Date().toISOString(),
+          trigger: 'cron'
+        });
+      }
+
       // Get sync status
       const status = await getSyncStatus();
       return res.status(200).json(status);

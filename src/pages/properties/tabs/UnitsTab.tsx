@@ -66,7 +66,7 @@ export function UnitsTab({ property }: UnitsTabProps) {
           </div>
           <Link
             to={`/properties/${property.id}?tab=units`}
-            className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
+            className="bg-[#252525] text-white px-5 py-2.5 rounded font-medium hover:bg-[#252525]/90 transition-all flex items-center space-x-2"
           >
             <i className="fa-solid fa-plus"></i>
             <span>Add Unit</span>
