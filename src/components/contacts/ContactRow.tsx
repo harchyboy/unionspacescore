@@ -78,11 +78,18 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
 
   const getHealthBadgeColor = (health: string) => {
     switch (health) {
-      case 'excellent': return 'bg-green-100 text-green-800';
-      case 'good': return 'bg-green-100 text-green-800';
-      case 'fair': return 'bg-yellow-100 text-yellow-800';
-      case 'needs-attention': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      // Excellent/Good -> Active style (Slate background, Stone text)
+      case 'excellent': return 'bg-primary text-[#F0F0F0]';
+      case 'good': return 'bg-primary text-[#F0F0F0]';
+      
+      // Fair -> Pending style (Stone background, Slate text, Concrete border)
+      case 'fair': return 'bg-[#F0F0F0] text-primary border border-secondary';
+      
+      // Needs Attention -> Confirmed style (White background, Slate text, Concrete border)
+      // using border-primary to emphasize "attention" within monochromatic constraints
+      case 'needs-attention': return 'bg-white text-primary border border-primary';
+      
+      default: return 'bg-[#F0F0F0] text-primary';
     }
   };
 

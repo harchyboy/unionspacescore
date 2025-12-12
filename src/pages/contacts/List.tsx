@@ -255,7 +255,7 @@ export function ContactsList() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Page Header */}
-      <div className="bg-white border-b border-[#E6E6E6] px-8 py-6">
+      <div className="bg-white border-b border-[#E6E6E6] px-[25px] py-[25px]">
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-semibold text-primary mb-2">Contacts</h1>
@@ -345,7 +345,7 @@ export function ContactsList() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
+      <div className="bg-white border-b border-[#E6E6E6] px-[25px] py-4">
         <div className="flex items-center space-x-3">
           <div className="relative flex-shrink-0">
             <select
@@ -416,7 +416,7 @@ export function ContactsList() {
       </div>
 
       {/* Contacts List */}
-      <div className="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
+      <div className="flex-1 overflow-y-auto bg-[#F0F0F0] px-[25px] py-[25px]">
         {isLoading ? (
           <div className="flex items-center justify-center h-64">
             <LoadingSpinner size="lg" />
@@ -536,9 +536,9 @@ export function ContactsList() {
             </div>
 
             {/* Quick Stats */}
-            <div className="mt-8 grid grid-cols-4 gap-6">
+            <div className="mt-8 grid grid-cols-4 gap-[25px]">
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-[32px]">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-secondary text-sm font-medium">
                       Total {
@@ -557,7 +557,7 @@ export function ContactsList() {
               </Card>
 
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-[32px]">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-secondary text-sm font-medium">Active Brokers</div>
                     <i className="fa-solid fa-handshake text-primary"></i>
@@ -568,7 +568,7 @@ export function ContactsList() {
               </Card>
 
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-[32px]">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-secondary text-sm font-medium">Active Tenants</div>
                     <i className="fa-solid fa-user-tie text-primary"></i>
@@ -579,7 +579,7 @@ export function ContactsList() {
               </Card>
 
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-[32px]">
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-secondary text-sm font-medium">Avg Response Time</div>
                     <i className="fa-solid fa-clock text-primary"></i>
@@ -591,7 +591,7 @@ export function ContactsList() {
             </div>
 
             {/* Top Broker Performance & Relationship Health */}
-            <div className="mt-8 grid grid-cols-2 gap-6">
+            <div className="mt-8 grid grid-cols-2 gap-[25px]">
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">

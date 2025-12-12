@@ -19,36 +19,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   if (method === 'GET') {
+    let rawStats: { submarket: string; count: number }[] = [];
+
     // Attempt RPC first
     const { data: rpcStats, error: statsError } = await supabase.rpc('get_submarket_stats');
     
     if (!statsError && rpcStats && rpcStats.length > 0) {
-      return res.status(200).json(rpcStats);
-    } 
-    
-    console.warn('RPC get_submarket_stats failed or empty, falling back to JS aggregation', statsError);
-    
-    // Fallback: Fetch all submarkets and aggregate
-    const { data: allProperties, error } = await supabase
-      .from('properties')
-      .select('submarket');
-    
-    if (error) {
-      console.error('Error fetching properties for submarkets:', error);
-      return res.status(500).json({ error: 'Failed to fetch submarkets' });
+      rawStats = rpcStats;
+    } else {
+      console.warn('RPC get_submarket_stats failed or empty, falling back to JS aggregation', statsError);
+      
+      // Fallback: Fetch all submarkets and aggregate
+      const { data: allProperties, error } = await supabase
+        .from('properties')
+        .select('submarket');
+      
+      if (error) {
+        console.error('Error fetching properties for submarkets:', error);
+        return res.status(500).json({ error: 'Failed to fetch submarkets' });
+      }
+
+      if (allProperties) {
+         const tempMap = new Map<string, number>();
+         allProperties.forEach(p => {
+            const val = p.submarket || 'Unknown';
+            tempMap.set(val, (tempMap.get(val) || 0) + 1);
+         });
+         rawStats = Array.from(tempMap.entries()).map(([submarket, count]) => ({ submarket, count }));
+      }
     }
     
-    let submarketStats: { submarket: string; count: number }[] = [];
+    // Process and Clean Stats (Merging duplicates after cleaning)
+    const mergedStatsMap = new Map<string, number>();
     
-    if (allProperties) {
-      const statsMap = new Map<string, number>();
-      
-      allProperties.forEach(p => {
-        const raw = p.submarket;
-        if (!raw) return;
-
+    rawStats.forEach(stat => {
+        const raw = stat.submarket;
         let values: string[] = [];
-        
+
         // Check if string looks like a JSON array
         const trimmed = raw.trim();
         if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
@@ -64,14 +71,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
              values = [trimmed];
           }
         } else {
-          // Treat as simple string (could be comma separated if legacy sync)
           values = [trimmed];
         }
 
         values.forEach(v => {
-          // Clean up any remaining artifacts if necessary
+          // Clean up any remaining artifacts
           let clean = v.replace(/^"|"$/g, '').trim(); 
-          // If it still looks like ["Name"], strip brackets and quotes
           if (clean.startsWith('["') && clean.endsWith('"]')) {
              clean = clean.slice(2, -2).trim();
           } else if (clean.startsWith('[') && clean.endsWith(']')) {
@@ -79,15 +84,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           }
           
           if (clean) {
-             statsMap.set(clean, (statsMap.get(clean) || 0) + 1);
+             mergedStatsMap.set(clean, (mergedStatsMap.get(clean) || 0) + stat.count);
           }
         });
-      });
-      
-      submarketStats = Array.from(statsMap.entries())
-        .map(([submarket, count]) => ({ submarket, count }))
-        .sort((a, b) => b.count - a.count);
-    }
+    });
+
+    const submarketStats = Array.from(mergedStatsMap.entries())
+      .map(([submarket, count]) => ({ submarket, count }))
+      .sort((a, b) => b.count - a.count);
 
     return res.status(200).json(submarketStats);
   }
