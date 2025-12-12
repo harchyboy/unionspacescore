@@ -23,42 +23,74 @@ export function MultiSelect({
   className = '',
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [tempValue, setTempValue] = useState<string[]>(value);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Sync tempValue when opening or when props change (if closed)
+  useEffect(() => {
+    if (isOpen) {
+      setTempValue(value);
+    }
+  }, [isOpen, value]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        if (isOpen) {
+          onChange(tempValue); // Apply changes on close
+          setIsOpen(false);
+        }
+      }
+    }
+
+    // Handle Enter key to apply
+    function handleKeyDown(event: KeyboardEvent) {
+      if (isOpen && event.key === 'Enter') {
+        onChange(tempValue);
         setIsOpen(false);
       }
     }
 
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [isOpen, tempValue, onChange]);
 
   const toggleOption = (optionValue: string) => {
-    if (value.includes(optionValue)) {
-      onChange(value.filter((v) => v !== optionValue));
+    if (tempValue.includes(optionValue)) {
+      setTempValue(tempValue.filter((v) => v !== optionValue));
     } else {
-      onChange([...value, optionValue]);
+      setTempValue([...tempValue, optionValue]);
     }
   };
 
   const handleSelectAll = () => {
-    if (value.length === options.length) {
-      onChange([]);
+    if (tempValue.length === options.length) {
+      setTempValue([]);
     } else {
-      onChange(options.map(o => o.value));
+      setTempValue(options.map(o => o.value));
     }
   };
 
-  const displayText = value.length === 0 
+  // Display text should reflect tempValue while open, or value while closed?
+  // Usually it reflects what's currently checked in the dropdown.
+  // But the trigger button should probably reflect the *applied* value until applied?
+  // Let's make the trigger reflect the *checked* state if open, to show what will be applied?
+  // No, standard is: Trigger shows applied. Dropdown shows pending.
+  // Actually, if I select items, I want to see "2 selected" in the box?
+  // If the box is what I click to open, it's fine.
+  // Let's stick to: Trigger shows `value` (applied). Dropdown items show `tempValue` (pending).
+  
+  const displayValue = isOpen ? tempValue : value;
+  
+  const displayText = displayValue.length === 0 
     ? placeholder 
-    : value.length === 1 
-      ? options.find(o => o.value === value[0])?.label || value[0]
-      : `${value.length} selected`;
+    : displayValue.length === 1 
+      ? options.find(o => o.value === displayValue[0])?.label || displayValue[0]
+      : `${displayValue.length} selected`;
 
   return (
     <div className={`relative ${className}`} ref={containerRef}>
@@ -85,14 +117,14 @@ export function MultiSelect({
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                checked={value.length > 0 && value.length === options.length}
+                checked={tempValue.length > 0 && tempValue.length === options.length}
                 ref={input => {
                   if (input) {
-                    input.indeterminate = value.length > 0 && value.length < options.length;
+                    input.indeterminate = tempValue.length > 0 && tempValue.length < options.length;
                   }
                 }}
                 readOnly
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="w-4 h-4 rounded border-[#E6E6E6] text-primary focus:ring-primary accent-primary cursor-pointer"
               />
               <span className="text-sm font-medium text-primary">All Submarkets</span>
             </div>
@@ -105,9 +137,9 @@ export function MultiSelect({
             >
               <input
                 type="checkbox"
-                checked={value.includes(option.value)}
+                checked={tempValue.includes(option.value)}
                 readOnly
-                className="rounded border-gray-300 text-primary focus:ring-primary"
+                className="w-4 h-4 rounded border-[#E6E6E6] text-primary focus:ring-primary accent-primary cursor-pointer"
               />
               <span className="text-sm text-primary">{option.label}</span>
             </div>

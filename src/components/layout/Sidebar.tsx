@@ -63,15 +63,13 @@ export function Sidebar() {
       {/* Logo */}
       <div className="p-[25px] border-b border-[#E6E6E6]">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-white rounded flex items-center justify-center">
-            <img
-              src="/union-logo.svg"
-              alt="UNION Logo"
-              className="w-full h-full object-contain"
-            />
-          </div>
+          <img
+            src="/union-logo.svg"
+            alt="UNION Logo"
+            className="h-8 w-auto object-contain"
+          />
           <div>
-            <div className="font-semibold text-primary text-lg">UNION</div>
+            <div className="font-semibold text-primary text-lg leading-tight">UNION</div>
             <div className="text-xs text-secondary">Core Dashboard</div>
           </div>
         </div>
@@ -118,7 +116,7 @@ export function Sidebar() {
       </nav>
 
       {/* User section */}
-      <div className="p-4 border-t border-[#E6E6E6]">
+      <div className="p-[25px] border-t border-[#E6E6E6]">
         <div className="flex items-center space-x-3">
           <img
             src="https://hartzai.com/wp-content/uploads/2025/10/Tom.jpg"
