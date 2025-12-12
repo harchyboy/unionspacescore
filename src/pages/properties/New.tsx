@@ -96,10 +96,11 @@ export function PropertyNew() {
           <form onSubmit={handleBasicsSubmit(onBasicsSubmit)} className="space-y-4">
             <h2 className="text-xl font-semibold text-[#252525] mb-4">Basics</h2>
             <div>
-              <label className="block text-sm font-medium text-[#252525] mb-2">
+              <label htmlFor="property-name" className="block text-sm font-medium text-[#252525] mb-2">
                 Property Name <span className="text-red-500">*</span>
               </label>
               <input
+                id="property-name"
                 {...registerBasics('name')}
                 type="text"
                 className="w-full px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
@@ -110,10 +111,11 @@ export function PropertyNew() {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#252525] mb-2">
+              <label htmlFor="property-address-line" className="block text-sm font-medium text-[#252525] mb-2">
                 Address Line <span className="text-red-500">*</span>
               </label>
               <input
+                id="property-address-line"
                 {...registerBasics('addressLine')}
                 type="text"
                 className="w-full px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
@@ -125,10 +127,11 @@ export function PropertyNew() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-[#252525] mb-2">
+                <label htmlFor="property-city" className="block text-sm font-medium text-[#252525] mb-2">
                   City <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="property-city"
                   {...registerBasics('city')}
                   type="text"
                   className="w-full px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
@@ -139,10 +142,11 @@ export function PropertyNew() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#252525] mb-2">
+                <label htmlFor="property-postcode" className="block text-sm font-medium text-[#252525] mb-2">
                   Postcode <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="property-postcode"
                   {...registerBasics('postcode')}
                   type="text"
                   className="w-full px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"
@@ -154,10 +158,11 @@ export function PropertyNew() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#252525] mb-2">
+              <label htmlFor="property-country" className="block text-sm font-medium text-[#252525] mb-2">
                 Country <span className="text-red-500">*</span>
               </label>
               <input
+                id="property-country"
                 {...registerBasics('country')}
                 type="text"
                 className="w-full px-4 py-2 border border-[#E6E6E6] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#252525]"

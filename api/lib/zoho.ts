@@ -83,6 +83,52 @@ export async function zohoRequest<T>(path: string, init: FetchOptions = {}): Pro
   }
 }
 
+/**
+ * Low-level Zoho fetch that returns the raw `Response`.
+ * Use this for binary endpoints (e.g. attachment downloads) where JSON parsing is not appropriate.
+ */
+export async function zohoFetchRaw(path: string, init: FetchOptions = {}): Promise<Response> {
+  const token = await getZohoAccessToken();
+  const headers = new Headers(init.headers);
+  headers.set('Authorization', `Zoho-oauthtoken ${token}`);
+  return fetch(`${API_BASE}${path}`, { ...init, headers });
+}
+
+// Field metadata (used to dynamically identify custom field API names)
+export interface ZohoFieldMeta {
+  api_name: string;
+  field_label?: string;
+  display_label?: string;
+  data_type?: string;
+  json_type?: string;
+  visible?: boolean;
+  [key: string]: unknown;
+}
+
+export async function zohoGetModuleFields(moduleApiName: string): Promise<ZohoFieldMeta[]> {
+  const response = await zohoRequest<{ fields?: ZohoFieldMeta[] }>(
+    `/crm/v2/settings/fields?module=${encodeURIComponent(moduleApiName)}`
+  );
+  return response.fields ?? [];
+}
+
+// Attachments
+export interface ZohoAttachment {
+  id: string;
+  File_Name?: string;
+  file_name?: string;
+  Size?: string;
+  size?: string;
+  [key: string]: unknown;
+}
+
+export async function zohoListAttachments(moduleApiName: string, recordId: string): Promise<ZohoAttachment[]> {
+  const response = await zohoRequest<{ data?: ZohoAttachment[] }>(
+    `/crm/v2/${encodeURIComponent(moduleApiName)}/${encodeURIComponent(recordId)}/Attachments`
+  );
+  return response.data ?? [];
+}
+
 // Zoho record types
 export interface ZohoContactRecord {
   id: string;

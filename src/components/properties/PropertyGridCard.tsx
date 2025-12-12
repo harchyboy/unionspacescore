@@ -8,12 +8,6 @@ interface PropertyGridCardProps {
 export function PropertyGridCard({ property }: PropertyGridCardProps) {
   const occupancyPct = property.stats?.occupancyPct || 0;
   
-  // Determine badge text and style
-  // Default to marketing status if no explicit "Union Managed" flag
-  // In a real scenario, this might come from a specific field like property.managementStatus
-  const isUnionManaged = property.marketing?.brokerSet?.includes('Union') || false; // Placeholder logic
-  const badgeText = isUnionManaged ? 'UNION MANAGED' : 'STANDARD'; // Simplified for now based on request
-  
   // Use marketing status for now as that's what we have
   const badgeLabel = property.marketing.status === 'On Market' ? 'UNION MANAGED' : 'STANDARD'; // Just mapping for visual demo
   const isDarkBadge = badgeLabel === 'UNION MANAGED';

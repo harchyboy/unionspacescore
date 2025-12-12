@@ -1,4 +1,4 @@
-import type { ContactType, Contact } from '../types/contact';
+import type { Contact } from '../types/contact';
 
 // Tab values that map to ContactType (matching Zoho CRM values)
 export const CONTACT_TAB_BROKERS = 'Broker' as const;

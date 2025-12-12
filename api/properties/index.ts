@@ -28,6 +28,7 @@ function mapProperty(p: DbProperty & { units?: DbUnit[] }): Property {
     refurbishedYear: p.refurbished_year || undefined,
     parking: p.parking || undefined,
     amenities: [], // TODO: store amenities in DB
+    images: p.images || [],
     marketing: {
       visibility: (p.marketing_visibility as 'Private' | 'Public') || 'Private',
       status: (p.marketing_status as 'Draft' | 'Broker-Ready' | 'On Market') || 'Draft',

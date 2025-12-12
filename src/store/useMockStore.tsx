@@ -1,5 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import type { AppState, DealRoomStatus, AgreementPlan, Agreement, FileDoc, ActivityItem, TaskItem, HeadsOfTerms } from '../types/dealRoom';
+import type { AppState, DealRoomStatus, AgreementPlan, Agreement, FileDoc, ActivityItem, TaskItem } from '../types/dealRoom';
 
 const STORAGE_KEY = 'union.dealroom.mock';
 

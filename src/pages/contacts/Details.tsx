@@ -194,7 +194,6 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   // Generate display values
   const displayName = contact.fullName || `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || 'Unnamed Contact';
   const initials = displayName.split(' ').map(n => n?.[0] || '').join('').toUpperCase().slice(0, 2);
-  const healthScore = contact.relationshipHealthScore || 85; // Default to 85 if missing for demo
   
   // Format date helper
   const formatDate = (dateString?: string) => {

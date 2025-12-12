@@ -1,4 +1,4 @@
-import type { Property, PropertyId, Unit } from './property';
+import type { Property, Unit } from './property';
 import type { DealId } from './deal';
 
 export type MatchCategory = 'best-match' | 'good-match' | 'fair-match';

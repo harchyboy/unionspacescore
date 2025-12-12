@@ -186,8 +186,6 @@ export const propertyHandlers = [
     const marketingStatus = url.searchParams.get('marketingStatus') || '';
     const visibility = url.searchParams.get('visibility') || '';
     const brokerSet = url.searchParams.get('brokerSet') || '';
-    const missingMedia = url.searchParams.get('missingMedia') === 'true';
-    const brokerReadyThisWeek = url.searchParams.get('brokerReadyThisWeek') === 'true';
     const page = parseInt(url.searchParams.get('page') || '1', 10);
     const limit = parseInt(url.searchParams.get('limit') || '10', 10);
     const sortBy = url.searchParams.get('sortBy') || 'updatedAt';

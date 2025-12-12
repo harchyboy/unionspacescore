@@ -66,7 +66,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
              } else {
                values = [trimmed];
              }
-          } catch (e) {
+          } catch {
              // Failed to parse, treat as literal string
              values = [trimmed];
           }

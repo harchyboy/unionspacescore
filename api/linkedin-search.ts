@@ -244,8 +244,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const searchResults = await searchGoogleCSE(searchQuery);
     const debugQueries: string[] = [searchQuery];
-    let debugRawItems: any[] = searchResults.items ? searchResults.items.map(i => ({ title: i.title, link: i.link, query: 'initial' })) : [];
-    const debugInfo: any[] = [{ query: searchQuery, info: searchResults.searchInformation }];
+    type DebugRawItem = { title?: string; link?: string; query: string };
+    type DebugInfo = { query: string; info: unknown };
+
+    let debugRawItems: DebugRawItem[] = searchResults.items
+      ? searchResults.items.map((i) => ({ title: i.title, link: i.link, query: 'initial' }))
+      : [];
+    const debugInfo: DebugInfo[] = [{ query: searchQuery, info: searchResults.searchInformation }];
     
     let candidates: LinkedInCandidate[] = [];
     

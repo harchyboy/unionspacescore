@@ -35,7 +35,7 @@ interface TabsListProps {
 
 export function TabsList({ children, className = '' }: TabsListProps) {
   return (
-    <div className={`flex space-x-1 border-b border-[#E6E6E6] ${className}`}>
+    <div role="tablist" className={`flex space-x-1 border-b border-[#E6E6E6] ${className}`}>
       {children}
     </div>
   );
@@ -56,7 +56,11 @@ export function TabsTrigger({ value, children, className = '' }: TabsTriggerProp
 
   return (
     <button
+      type="button"
       onClick={() => setActiveTab(value)}
+      role="tab"
+      aria-selected={isActive}
+      aria-controls={`tab-panel-${value}`}
       className={`px-4 py-2 text-sm font-medium transition-all-smooth border-b-2 -mb-px ${
         isActive
           ? 'text-primary border-primary'
@@ -81,6 +85,10 @@ export function TabsContent({ value, children, className = '' }: TabsContentProp
   const { activeTab } = context;
   if (activeTab !== value) return null;
 
-  return <div className={className}>{children}</div>;
+  return (
+    <div role="tabpanel" id={`tab-panel-${value}`} className={className}>
+      {children}
+    </div>
+  );
 }
 

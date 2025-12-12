@@ -3,9 +3,10 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App', () => {
-  it('renders UNION is running banner', () => {
+  it('renders the app shell', () => {
     render(<App />);
-    expect(screen.getByText('UNION is running')).toBeInTheDocument();
+    expect(screen.getByText('UNION')).toBeInTheDocument();
+    expect(screen.getByText(/Core Dashboard/i)).toBeInTheDocument();
   });
 });
 

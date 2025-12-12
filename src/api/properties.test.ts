@@ -2,12 +2,13 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { listProperties, getProperty, createProperty, updateProperty, uploadDocument } from './properties';
 import type { Property } from '../types/property';
 
-// Mock fetch
-global.fetch = vi.fn();
+let fetchMock: ReturnType<typeof vi.fn>;
 
 describe('properties API', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock as unknown as typeof fetch);
   });
 
   describe('listProperties', () => {
@@ -19,14 +20,14 @@ describe('properties API', () => {
         limit: 10,
       };
 
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
 
       const result = await listProperties();
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/properties?', expect.any(Object));
+      expect(fetchMock).toHaveBeenCalledWith('/api/properties?', expect.any(Object));
       expect(result).toEqual(mockResponse);
     });
 
@@ -38,7 +39,7 @@ describe('properties API', () => {
         limit: 10,
       };
 
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -50,22 +51,22 @@ describe('properties API', () => {
         limit: 20,
       });
 
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         expect.stringContaining('search=test'),
         expect.any(Object)
       );
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         expect.stringContaining('marketingStatus=On+Market'),
         expect.any(Object)
       );
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         expect.stringContaining('page=2'),
         expect.any(Object)
       );
     });
 
     it('should throw error on failed request', async () => {
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: false,
         statusText: 'Not Found',
       });
@@ -92,14 +93,14 @@ describe('properties API', () => {
         units: [],
       };
 
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockProperty,
       });
 
       const result = await getProperty('test-id');
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/properties/test-id', expect.any(Object));
+      expect(fetchMock).toHaveBeenCalledWith('/api/properties/test-id', expect.any(Object));
       expect(result).toEqual(mockProperty);
     });
   });
@@ -126,14 +127,14 @@ describe('properties API', () => {
         ...payload,
       } as Property;
 
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockCreated,
       });
 
       const result = await createProperty(payload);
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/properties', {
+      expect(fetchMock).toHaveBeenCalledWith('/api/properties', {
         method: 'POST',
         headers: expect.objectContaining({
           'Content-Type': 'application/json',
@@ -166,14 +167,14 @@ describe('properties API', () => {
         units: [],
       };
 
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockUpdated,
       });
 
       const result = await updateProperty('test-id', updates);
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/properties/test-id', {
+      expect(fetchMock).toHaveBeenCalledWith('/api/properties/test-id', {
         method: 'PATCH',
         headers: expect.objectContaining({
           'Content-Type': 'application/json',
@@ -193,14 +194,14 @@ describe('properties API', () => {
         name: 'test.pdf',
       };
 
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
 
       const result = await uploadDocument('test-id', file);
 
-      expect(global.fetch).toHaveBeenCalledWith('/api/properties/test-id/documents', {
+      expect(fetchMock).toHaveBeenCalledWith('/api/properties/test-id/documents', {
         method: 'POST',
         body: expect.any(FormData),
       });
@@ -210,7 +211,7 @@ describe('properties API', () => {
     it('should throw error on failed upload', async () => {
       const file = new File(['test'], 'test.pdf', { type: 'application/pdf' });
 
-      (global.fetch as unknown as jest.Mock).mockResolvedValueOnce({
+      fetchMock.mockResolvedValueOnce({
         ok: false,
         statusText: 'Upload Failed',
       });

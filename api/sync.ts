@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from './lib/supabase.js';
-import { zohoRequest, ZohoContactRecord, ZohoAccountRecord, ZohoPropertyRecord, ZohoUnitRecord } from './lib/zoho.js';
+import { zohoRequest, zohoGetModuleFields, zohoListAttachments, ZohoContactRecord, ZohoAccountRecord, ZohoPropertyRecord, ZohoUnitRecord } from './lib/zoho.js';
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -114,28 +114,134 @@ async function syncProperties() {
   });
 
   try {
+    // Fetch field metadata once, to reliably map custom fields (e.g. Submarket)
+    const propertyFields = await zohoGetModuleFields('Properties').catch((e) => {
+      console.warn('Failed to fetch Zoho field metadata for Properties; falling back to heuristics.', e);
+      return [];
+    });
+
+    const submarketFieldApiName =
+      propertyFields.find((f) => (f.field_label || '').toLowerCase() === 'submarket')?.api_name ||
+      propertyFields.find((f) => (f.display_label || '').toLowerCase() === 'submarket')?.api_name ||
+      propertyFields.find((f) => /sub[_\s-]?market/i.test(f.api_name || ''))?.api_name ||
+      null;
+
     const zohoProperties = await fetchAllZohoProperties();
     console.log(`Fetched ${zohoProperties.length} properties from Zoho`);
     
     if (zohoProperties.length > 0) {
-      console.log('Sample Property Keys:', Object.keys(zohoProperties[0]));
-      // Try to find the submarket field with case-insensitive search
-      const submarketKey = Object.keys(zohoProperties[0]).find(k => k.toLowerCase() === 'submarket' || k.toLowerCase() === 'submarkets' || k.toLowerCase() === 'sub_market');
-      console.log('Found Submarket Key:', submarketKey, 'Value:', zohoProperties[0][submarketKey || '']);
+      console.log('Sample Property Keys (ALL):', JSON.stringify(Object.keys(zohoProperties[0])));
+      const sampleP = zohoProperties[0];
+      
+      // Debug: Check for submarket-like keys
+      const submarketKeys = Object.keys(sampleP).filter(k => /(sub[_]?market|neighborhood|area|location)/i.test(k));
+      console.log('Potential Submarket Keys:', submarketKeys);
+      submarketKeys.forEach(k => console.log(`  ${k}:`, sampleP[k as keyof ZohoPropertyRecord]));
+
+      // Debug: Check for image-like keys
+      const imgKeys = Object.keys(sampleP).filter(k => /image|photo|picture|gallery|url/i.test(k));
+      console.log('Potential Image Keys:', imgKeys);
+      imgKeys.forEach(k => console.log(`  ${k}:`, sampleP[k as keyof ZohoPropertyRecord]));
     }
 
-    const propertiesToUpsert = zohoProperties.map((p) => {
+    const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+    const getFirstStringField = (obj: Record<string, unknown>, keys: string[]): string | undefined => {
+      for (const key of keys) {
+        const value = obj[key];
+        if (typeof value === 'string' && value.trim()) return value;
+      }
+      return undefined;
+    };
+
+    const extractUrl = (v: unknown): string | undefined => {
+      if (typeof v === 'string') {
+        const s = v.trim();
+        if (!s) return undefined;
+        if (s.startsWith('http')) return s;
+        if (/\.(jpeg|jpg|png|gif|webp)$/i.test(s)) return s;
+        return undefined;
+      }
+      if (!isRecord(v)) return undefined;
+      return getFirstStringField(v, ['url', 'Url', 'URL', 'link', 'Link', 'src', 'download_url', 'file_Url']);
+    };
+
+    const extractSubmarketLabel = (v: unknown): string | undefined => {
+      if (typeof v === 'string') {
+        const s = v.trim();
+        return s || undefined;
+      }
+      if (!isRecord(v)) return undefined;
+      return getFirstStringField(v, ['name', 'value', 'display_value', 'label']);
+    };
+
+    type PropertyUpsert = {
+      zoho_id: string;
+      name: string;
+      address_line: string | null;
+      postcode: string | null;
+      city: string | null;
+      submarket: string | null;
+      images: string[] | null;
+      country: string;
+      total_size_sqft: number | null;
+      floor_count: number | null;
+      lifts: string | null;
+      built_year: number | null;
+      refurbished_year: number | null;
+      parking: string | null;
+      marketing_status: string | null;
+      marketing_visibility: string | null;
+      marketing_fit_out: string | null;
+      epc_rating: string | null;
+      epc_ref: string | null;
+      epc_expiry: string | null;
+      breeam_rating: string | null;
+      zoho_created_at: string | null;
+      zoho_modified_at: string | null;
+    };
+
+    // Helper: concurrency-limited mapping (Zoho attachments require extra API calls per property)
+    const CONCURRENCY = 5;
+    const propertiesToUpsert: PropertyUpsert[] = [];
+
+    for (let i = 0; i < zohoProperties.length; i += CONCURRENCY) {
+      const chunk = zohoProperties.slice(i, i + CONCURRENCY);
+      const mapped = await Promise.all(
+        chunk.map(async (p) => {
       // Helper to extract submarket value safely
       let submarketValue: string | null = null;
       
       // Try known variations first
-      let rawSubmarket = p.Submarkets || p.Submarket || p.Sub_Market || p.submarket;
+      let rawSubmarket: unknown = p.Submarkets || p.Submarket || p.Sub_Market || p.submarket;
+
+      // If we discovered the exact field API name from metadata, try that too
+      if (!rawSubmarket && submarketFieldApiName) {
+        const rec = p as unknown as Record<string, unknown>;
+        rawSubmarket = rec[submarketFieldApiName];
+      }
       
-      // If not found, try case-insensitive regex match on all keys
-      if (rawSubmarket === undefined) {
-        const key = Object.keys(p).find(k => /sub[_]?market/i.test(k));
-        if (key) {
-          rawSubmarket = p[key as keyof ZohoPropertyRecord];
+      // If not found or null/empty, try case-insensitive regex match on all keys
+      if (!rawSubmarket) {
+        // Find all keys matching submarket or related location terms
+        const potentialKeys = Object.keys(p).filter(k => /(sub[_]?market|neighborhood|area|location)/i.test(k));
+        
+        // Prefer the one that has a non-null/non-empty value
+        // Prioritize keys that actually contain "submarket"
+        potentialKeys.sort((a, b) => {
+             const aHasSub = /sub[_]?market/i.test(a);
+             const bHasSub = /sub[_]?market/i.test(b);
+             if (aHasSub && !bHasSub) return -1;
+             if (!aHasSub && bHasSub) return 1;
+             return 0;
+        });
+
+        const bestKey = potentialKeys.find(k => {
+           const val = p[k as keyof ZohoPropertyRecord];
+           return val !== null && val !== undefined && val !== '';
+        });
+
+        if (bestKey) {
+          rawSubmarket = p[bestKey as keyof ZohoPropertyRecord];
         }
       }
       
@@ -143,15 +249,58 @@ async function syncProperties() {
         submarketValue = rawSubmarket;
       } else if (Array.isArray(rawSubmarket)) {
         // Handle multi-select picklist or array of objects
-        if (rawSubmarket.length > 0 && typeof rawSubmarket[0] === 'object' && rawSubmarket[0] !== null) {
-           // Extract name or value from objects
-           submarketValue = rawSubmarket.map((item: any) => item.name || item.value || JSON.stringify(item)).join(', ');
-        } else {
-           submarketValue = rawSubmarket.join(', ');
-        }
+        const labels = (rawSubmarket as unknown[])
+          .map((item) => extractSubmarketLabel(item))
+          .filter((x): x is string => typeof x === 'string' && x.trim().length > 0);
+        if (labels.length > 0) submarketValue = labels.join(', ');
       } else if (typeof rawSubmarket === 'object' && rawSubmarket !== null) {
-        // Handle lookup or other object
-        submarketValue = (rawSubmarket as { name?: string }).name || JSON.stringify(rawSubmarket);
+        submarketValue = extractSubmarketLabel(rawSubmarket) || JSON.stringify(rawSubmarket);
+      }
+
+      // Helper to extract images
+      let images: string[] = [];
+      // Find all keys that look like image fields
+      // Expanded to include 'url' to catch generic URL fields that might contain images
+      const imageKeys = Object.keys(p).filter(k => /image|photo|picture|gallery|url/i.test(k));
+      
+      for (const key of imageKeys) {
+        const val = p[key as keyof ZohoPropertyRecord];
+        if (Array.isArray(val)) {
+            // Check if array of strings or objects
+            (val as unknown[]).forEach((item) => {
+              const url = extractUrl(item);
+              if (url) images.push(url);
+            });
+        } else if (typeof val === 'string') {
+             const url = extractUrl(val);
+             if (url) images.push(url);
+        } else if (typeof val === 'object' && val !== null) {
+             const url = extractUrl(val);
+             if (url) images.push(url);
+        }
+      }
+      
+      // Deduplicate found images
+      images = [...new Set(images)];
+
+      // If no image URLs found in record fields, fall back to Zoho Attachments list
+      // (Zoho commonly stores images as attachments which are not public URLs)
+      if (images.length === 0) {
+        try {
+          const attachments = await zohoListAttachments('Properties', p.id);
+          const imageAttachments = attachments.filter((a) => {
+            const name = String(a.File_Name || a.file_name || '');
+            return /\.(png|jpe?g|gif|webp)$/i.test(name);
+          });
+
+          // Store proxy URLs so the browser can load them without Zoho auth
+          images = imageAttachments.slice(0, 5).map((a) => {
+            const attachmentId = a.id;
+            return `/api/zoho/attachment?module=Properties&recordId=${encodeURIComponent(p.id)}&attachmentId=${encodeURIComponent(attachmentId)}`;
+          });
+        } catch (e) {
+          console.warn('Failed to list attachments for property', p.id, e);
+        }
       }
 
       return {
@@ -161,6 +310,7 @@ async function syncProperties() {
         postcode: p.Postcode || null,
         city: p.City || null,
         submarket: submarketValue,
+        images: images.length > 0 ? images : null,
         country: p.Country || 'United Kingdom',
         total_size_sqft: p.Total_Size_Sq_Ft || null,
       floor_count: p.Floor_Count || null,
@@ -178,7 +328,11 @@ async function syncProperties() {
       zoho_created_at: p.Created_Time || null,
       zoho_modified_at: p.Modified_Time || null,
     };
-  });
+        })
+      );
+
+      propertiesToUpsert.push(...mapped);
+    }
 
     const chunkSize = 100;
     for (let i = 0; i < propertiesToUpsert.length; i += chunkSize) {
