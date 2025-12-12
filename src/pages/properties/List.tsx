@@ -34,6 +34,7 @@ export function PropertiesList() {
 
   const properties = data?.properties || [];
   const totalProperties = data?.total || 0;
+  const submarketStats = data?.submarketStats || [];
   const totalPages = Math.ceil(totalProperties / limit);
 
   const clearFilters = () => {
@@ -149,11 +150,11 @@ export function PropertiesList() {
               className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">All Submarkets</option>
-              <option value="City Core">City Core</option>
-              <option value="Shoreditch">Shoreditch</option>
-              <option value="Mayfair">Mayfair</option>
-              <option value="Canary Wharf">Canary Wharf</option>
-              <option value="King's Cross">King's Cross</option>
+              {submarketStats.map((stat) => (
+                <option key={stat.submarket} value={stat.submarket}>
+                  {stat.submarket}
+                </option>
+              ))}
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
           </div>
@@ -565,23 +566,24 @@ export function PropertiesList() {
               <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
                 <h3 className="text-lg font-semibold text-primary mb-6">Submarket Breakdown</h3>
                 <div className="space-y-4">
-                  {[
-                    { name: 'City Core', count: 8, pct: 33 },
-                    { name: 'Shoreditch', count: 6, pct: 25 },
-                    { name: 'Canary Wharf', count: 5, pct: 21 },
-                    { name: 'Mayfair', count: 3, pct: 12.5 },
-                    { name: "King's Cross", count: 2, pct: 8.5 },
-                  ].map((submarket) => (
-                    <div key={submarket.name}>
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-primary font-medium">{submarket.name}</span>
-                        <span className="text-sm text-secondary">{submarket.count} properties</span>
+                  {submarketStats.length === 0 ? (
+                    <div className="text-sm text-secondary">No submarket data available</div>
+                  ) : (
+                    submarketStats.slice(0, 5).map((stat) => (
+                      <div key={stat.submarket}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-primary font-medium">{stat.submarket}</span>
+                          <span className="text-sm text-secondary">{stat.count} properties</span>
+                        </div>
+                        <div className="w-full bg-[#FAFAFA] rounded-full h-2">
+                          <div 
+                            className="bg-primary h-2 rounded-full" 
+                            style={{ width: `${(stat.count / totalProperties) * 100}%` }}
+                          ></div>
+                        </div>
                       </div>
-                      <div className="w-full bg-[#FAFAFA] rounded-full h-2">
-                        <div className="bg-primary h-2 rounded-full" style={{ width: `${submarket.pct}%` }}></div>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
               

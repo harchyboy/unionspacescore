@@ -17,6 +17,7 @@ export interface ListPropertiesParams {
 export interface ListPropertiesResponse {
   properties: Property[];
   total: number;
+  submarketStats?: { submarket: string; count: number }[];
   page: number;
   limit: number;
 }

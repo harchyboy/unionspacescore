@@ -10,6 +10,7 @@ function mapProperty(p: DbProperty & { units?: DbUnit[] }): Property {
     addressLine: p.address_line || '',
     postcode: p.postcode || '',
     city: p.city || '',
+    submarket: p.submarket || undefined,
     country: p.country || 'United Kingdom',
     totalSizeSqFt: p.total_size_sqft || undefined,
     floorCount: p.floor_count || undefined,
@@ -111,6 +112,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { data, error, count } = await query;
 
+    // Fetch submarket stats
+    const { data: submarketStats } = await supabase.rpc('get_submarket_stats');
+
     if (error) {
       console.error('Error fetching properties:', error);
       return res.status(500).json({ error: 'Failed to fetch properties' });
@@ -121,6 +125,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({
       properties,
       total: count || 0,
+      submarketStats: submarketStats || [],
       page,
       limit,
     });
