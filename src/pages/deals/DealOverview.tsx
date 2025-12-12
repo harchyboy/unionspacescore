@@ -341,7 +341,7 @@ export function DealOverview() {
             <div>
               <div className="text-xs text-[#8E8E8E] uppercase tracking-wide mb-1">Stage</div>
               <div className="flex items-center">
-                <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-full">
+                <span className="inline-flex items-center px-3 py-1 bg-[#252525] text-white text-[11px] font-bold uppercase tracking-wider rounded">
                   <i className="fa-solid fa-eye mr-2"></i>
                   {deal.stage || '2nd Viewing'}
                 </span>
@@ -403,7 +403,7 @@ export function DealOverview() {
               <div className="bg-white rounded-lg border border-[#8E8E8E]/30 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-[#252525] uppercase tracking-wide">Tenant Contacts</h3>
-                  <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">
+                  <span className="inline-flex items-center px-3 py-1 bg-[#252525] text-white text-[11px] font-bold uppercase tracking-wider rounded">
                     Primary
                   </span>
                 </div>
@@ -438,7 +438,7 @@ export function DealOverview() {
               <div className="bg-white rounded-lg border border-[#8E8E8E]/30 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-[#252525] uppercase tracking-wide">Broker Team</h3>
-                  <span className="inline-flex items-center px-2 py-1 bg-[#F0F0F0] text-[#252525] text-xs font-semibold rounded">
+                  <span className="inline-flex items-center px-3 py-1 bg-[#F0F0F0] text-[#252525] text-[11px] font-bold uppercase tracking-wider rounded">
                     External
                   </span>
                 </div>
@@ -473,7 +473,7 @@ export function DealOverview() {
               <div className="bg-white rounded-lg border border-[#8E8E8E]/30 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-[#252525] uppercase tracking-wide">Disposal Agent</h3>
-                  <span className="inline-flex items-center px-2 py-1 bg-[#F0F0F0] text-[#252525] text-xs font-semibold rounded">
+                  <span className="inline-flex items-center px-3 py-1 bg-[#F0F0F0] text-[#252525] text-[11px] font-bold uppercase tracking-wider rounded">
                     External
                   </span>
                 </div>
@@ -508,7 +508,7 @@ export function DealOverview() {
               <div className="bg-white rounded-lg border border-[#8E8E8E]/30 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm font-semibold text-[#252525] uppercase tracking-wide">Landlord</h3>
-                  <span className="inline-flex items-center px-2 py-1 bg-[#F0F0F0] text-[#252525] text-xs font-semibold rounded">
+                  <span className="inline-flex items-center px-3 py-1 bg-[#F0F0F0] text-[#252525] text-[11px] font-bold uppercase tracking-wider rounded">
                     External
                   </span>
                 </div>
@@ -719,13 +719,13 @@ export function DealOverview() {
                           </div>
                           <p className="text-sm text-[#8E8E8E] mb-3">{item.description}</p>
                           <div className="flex items-center space-x-3">
-                            <span className={`inline-flex items-center px-2 py-1 ${
+                            <span className={`inline-flex items-center px-3 py-1 text-[11px] font-bold uppercase tracking-wider rounded ${
                               item.type === 'viewing' || item.type === 'viewing-completed'
-                                ? 'bg-blue-100 text-blue-800'
+                                ? 'bg-[#252525] text-white'
                                 : item.type === 'proposal'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-[#252525] text-white'
                                 : 'bg-[#F0F0F0] text-[#252525]'
-                            } text-xs font-semibold rounded`}>
+                            }`}>
                               {item.type === 'viewing-completed' && <i className="fa-solid fa-circle-check mr-1"></i>}
                               {item.badge}
                             </span>

@@ -100,27 +100,27 @@ export function UnitsList() {
   const getStatusBadgeStyle = (status: string) => {
     switch (status) {
       case 'Available':
-        return 'bg-green-100 text-green-800';
+        return 'bg-[#252525] text-white';
       case 'Under Offer':
-        return 'bg-amber-100 text-amber-800';
+        return 'bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]';
       case 'Let':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[#F0F0F0] text-[#252525]';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[#F0F0F0] text-[#252525]';
     }
   };
 
   const getPipelineBadgeStyle = (pipeline: string | null) => {
-    if (!pipeline) return 'bg-gray-100 text-gray-800';
+    if (!pipeline) return 'bg-[#F0F0F0] text-[#252525]';
     switch (pipeline) {
       case 'Viewing':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]';
       case 'HoTs':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-[#F0F0F0] text-[#252525] border border-[#252525]';
       case 'Legals':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-[#252525] text-white';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[#F0F0F0] text-[#252525]';
     }
   };
 
@@ -331,12 +331,12 @@ export function UnitsList() {
                     <td className="px-6 py-4 text-sm text-primary">{unit.sizeSqFt != null ? `${unit.sizeSqFt.toLocaleString()} sq ft` : '—'}</td>
                     <td className="px-6 py-4 text-sm text-primary">{unit.desks != null ? unit.desks : '—'}</td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary">
+                      <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#FAFAFA] text-primary">
                         {unit.fitOut || '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(unit.status || '')}`}>
+                      <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${getStatusBadgeStyle(unit.status || '')}`}>
                         {unit.status || '—'}
                       </span>
                     </td>
@@ -345,7 +345,7 @@ export function UnitsList() {
                       {unit.pricePsf != null ? <div className="text-xs text-secondary">{formatMoneyGBP(unit.pricePsf)} / sq ft</div> : null}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getPipelineBadgeStyle(unit.pipelineStage || null)}`}>
+                      <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${getPipelineBadgeStyle(unit.pipelineStage || null)}`}>
                         {unit.pipelineStage || '—'}
                       </span>
                     </td>

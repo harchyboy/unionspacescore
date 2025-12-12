@@ -68,18 +68,18 @@ export function PropertyHeader({ property, onBackClick }: PropertyHeaderProps) {
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
                 <h1 className="text-3xl font-semibold text-primary">{property.name}</h1>
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                  property.marketing.status === 'On Market' ? 'bg-primary text-white' :
-                  property.marketing.status === 'Broker-Ready' ? 'bg-primary text-white' :
-                  'bg-[#FAFAFA] text-primary border border-[#E6E6E6]'
+                <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${
+                  property.marketing.status === 'On Market' ? 'bg-[#252525] text-white' :
+                  property.marketing.status === 'Broker-Ready' ? 'bg-[#252525] text-white' :
+                  'bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]'
                 }`}>
                   {property.marketing.status}
                 </span>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary border border-[#E6E6E6]">
+                <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]">
                   {property.marketing.fitOut}
                 </span>
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                  property.marketing.visibility === 'Public' ? 'bg-primary text-white' : 'bg-secondary text-white'
+                <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${
+                  property.marketing.visibility === 'Public' ? 'bg-[#252525] text-white' : 'bg-[#8E8E8E] text-white'
                 }`}>
                   {property.marketing.visibility}
                 </span>

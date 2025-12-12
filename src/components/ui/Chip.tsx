@@ -6,18 +6,18 @@ interface ChipProps {
 
 export function Chip({ children, variant = 'default', className = '' }: ChipProps) {
   const variants = {
-    default: 'bg-gray-100 text-gray-800',
+    default: 'bg-[#F0F0F0] text-[#252525]',
     primary: 'bg-[#252525] text-white',
-    secondary: 'bg-[#8e8e8e] text-white',
-    accent: 'bg-green-500 text-white',
-    success: 'bg-green-600 text-white',
-    warning: 'bg-yellow-500 text-black',
-    destructive: 'bg-red-500 text-white',
+    secondary: 'bg-[#8E8E8E] text-white',
+    accent: 'bg-[#252525] text-white', // Consolidated to primary brand color
+    success: 'bg-[#252525] text-white', // Consolidated to primary brand color
+    warning: 'bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]',
+    destructive: 'bg-white text-[#252525] border border-[#252525]',
   };
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${variants[variant]} ${className}`}
+      className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${variants[variant]} ${className}`}
     >
       {children}
     </span>

@@ -17,31 +17,31 @@ export function UnitsTab({ property }: UnitsTabProps) {
   const getStatusVariant = (status: Unit['status']) => {
     switch (status) {
       case 'Available':
-        return 'bg-accent text-white';
+        return 'bg-[#252525] text-white';
       case 'Under Offer':
-        return 'bg-primary text-white';
+        return 'bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]';
       case 'Let':
-        return 'bg-secondary text-white';
+        return 'bg-[#F0F0F0] text-[#252525]';
       case 'Closed':
-        return 'bg-accent text-white';
+        return 'bg-[#F0F0F0] text-[#252525]';
       default:
-        return 'bg-[#FAFAFA] text-primary';
+        return 'bg-[#F0F0F0] text-[#252525]';
     }
   };
 
   const getPipelineStyle = (pipeline?: Unit['pipelineStage']) => {
-    if (!pipeline) return 'bg-[#FAFAFA] text-primary';
+    if (!pipeline) return 'bg-[#F0F0F0] text-[#252525]';
     switch (pipeline) {
       case 'Viewing':
-        return 'bg-[#FAFAFA] text-primary underline';
+        return 'bg-[#F0F0F0] text-[#252525] underline';
       case 'HoTs':
-        return 'bg-primary text-white underline';
+        return 'bg-[#F0F0F0] text-[#252525] border border-[#252525] underline';
       case 'Legals':
-        return 'bg-accent text-white';
+        return 'bg-[#252525] text-white';
       case 'Closed':
-        return 'bg-accent text-white';
+        return 'bg-[#252525] text-white';
       default:
-        return 'bg-[#FAFAFA] text-primary';
+        return 'bg-[#F0F0F0] text-[#252525]';
     }
   };
 
@@ -108,12 +108,12 @@ export function UnitsTab({ property }: UnitsTabProps) {
                   <td className="px-4 py-4 text-sm text-primary">{unit.sizeSqFt.toLocaleString()} sq ft</td>
                   <td className="px-4 py-4 text-sm text-primary">{unit.desks}</td>
                   <td className="px-4 py-4">
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary">
+                    <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#FAFAFA] text-primary">
                       {unit.fitOut}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusVariant(unit.status)}`}>
+                    <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${getStatusVariant(unit.status)}`}>
                       {unit.status}
                     </span>
                   </td>
@@ -127,12 +127,12 @@ export function UnitsTab({ property }: UnitsTabProps) {
                     {unit.pipelineStage ? (
                       <a 
                         href="#deal-room" 
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getPipelineStyle(unit.pipelineStage)}`}
+                        className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${getPipelineStyle(unit.pipelineStage)}`}
                       >
                         {unit.pipelineStage}
                       </a>
                     ) : (
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary">—</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#FAFAFA] text-primary">—</span>
                     )}
                   </td>
                   <td className="px-4 py-4 text-right">

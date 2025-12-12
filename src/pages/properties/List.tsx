@@ -5,6 +5,7 @@ import { useProperties } from '../../api/properties';
 import { useSubmarkets } from '../../api/submarkets';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { MultiSelect } from '../../components/ui/MultiSelect';
+import { PropertyGridCard } from '../../components/properties/PropertyGridCard';
 
 const tabs = [
   { id: 'all', label: 'All Properties' },
@@ -16,6 +17,7 @@ const tabs = [
 export function PropertiesList() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('all');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [submarketFilter, setSubmarketFilter] = useState<string[]>([]);
   const [visibilityFilter, setVisibilityFilter] = useState('');
   const [agentFilter, setAgentFilter] = useState('');
@@ -258,16 +260,36 @@ export function PropertiesList() {
           </div>
           <span className="text-sm text-secondary">{totalProperties} properties</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
-            <i className="fa-solid fa-eye-slash"></i>
-            <span>Change Visibility</span>
-          </button>
-          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
-            <i className="fa-solid fa-user-tie"></i>
-            <span>Assign Agent</span>
-          </button>
-          <div className="relative">
+          <div className="flex items-center space-x-2">
+            <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+              <i className="fa-solid fa-eye-slash"></i>
+              <span>Change Visibility</span>
+            </button>
+            <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-lg text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+              <i className="fa-solid fa-user-tie"></i>
+              <span>Assign Agent</span>
+            </button>
+            <div className="flex bg-white rounded-lg border border-[#E6E6E6] p-1">
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-1.5 rounded transition-all ${
+                  viewMode === 'list' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
+                }`}
+                title="List View"
+              >
+                <i className="fa-solid fa-list"></i>
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-1.5 rounded transition-all ${
+                  viewMode === 'grid' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
+                }`}
+                title="Grid View"
+              >
+                <i className="fa-solid fa-grid-2"></i>
+              </button>
+            </div>
+            <div className="relative">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -299,6 +321,12 @@ export function PropertiesList() {
             >
               Add Your First Property
             </Link>
+          </div>
+        ) : viewMode === 'grid' ? (
+          <div className="grid grid-cols-3 gap-6">
+            {properties.map((property) => (
+              <PropertyGridCard key={property.id} property={property} />
+            ))}
           </div>
         ) : (
           <>
@@ -425,7 +453,7 @@ export function PropertiesList() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary border border-[#E6E6E6]">
+                          <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#FAFAFA] text-primary border border-[#E6E6E6]">
                             {property.marketing?.visibility || 'Private'}
                           </span>
                         </td>
