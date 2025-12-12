@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useProperties } from '../../api/properties';
 import { useSubmarkets } from '../../api/submarkets';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import { MultiSelect } from '../../components/ui/MultiSelect';
 
 const tabs = [
   { id: 'all', label: 'All Properties' },
@@ -15,7 +16,7 @@ const tabs = [
 export function PropertiesList() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('all');
-  const [submarketFilter, setSubmarketFilter] = useState('');
+  const [submarketFilter, setSubmarketFilter] = useState<string[]>([]);
   const [visibilityFilter, setVisibilityFilter] = useState('');
   const [agentFilter, setAgentFilter] = useState('');
   const [ownerFilter, setOwnerFilter] = useState('');
@@ -31,6 +32,9 @@ export function PropertiesList() {
     limit,
     sortBy: 'updatedAt',
     sortOrder: 'desc',
+    submarkets: submarketFilter.length > 0 ? submarketFilter.join(',') : undefined,
+    visibility: visibilityFilter || undefined,
+    brokerSet: agentFilter || undefined,
   });
 
   const { data: submarketStatsData } = useSubmarkets();
@@ -41,7 +45,7 @@ export function PropertiesList() {
   const totalPages = Math.ceil(totalProperties / limit);
 
   const clearFilters = () => {
-    setSubmarketFilter('');
+    setSubmarketFilter([]);
     setVisibilityFilter('');
     setAgentFilter('');
     setOwnerFilter('');
@@ -147,19 +151,13 @@ export function PropertiesList() {
       <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
         <div className="flex items-center space-x-3 flex-wrap gap-2">
           <div className="relative">
-            <select
+            <MultiSelect
+              options={submarketStats.map(s => ({ value: s.submarket, label: s.submarket }))}
               value={submarketFilter}
-              onChange={(e) => setSubmarketFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-lg px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">All Submarkets</option>
-              {submarketStats.map((stat) => (
-                <option key={stat.submarket} value={stat.submarket}>
-                  {stat.submarket}
-                </option>
-              ))}
-            </select>
-            <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-secondary text-xs pointer-events-none"></i>
+              onChange={setSubmarketFilter}
+              placeholder="All Submarkets"
+              className="min-w-[200px]"
+            />
           </div>
           
           <div className="relative">

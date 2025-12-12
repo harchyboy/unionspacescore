@@ -42,12 +42,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     if (allProperties) {
       const statsMap = new Map<string, number>();
+      
       allProperties.forEach(p => {
-        // Normalize submarket: handle null/undefined as 'Unknown'
-        const sm = p.submarket ? p.submarket.trim() : 'Unknown';
-        // If empty string, treat as Unknown
-        const key = sm || 'Unknown';
-        statsMap.set(key, (statsMap.get(key) || 0) + 1);
+        const raw = p.submarket;
+        if (!raw) return;
+
+        let values: string[] = [];
+        
+        // Check if string looks like a JSON array
+        const trimmed = raw.trim();
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+          try {
+             const parsed = JSON.parse(trimmed);
+             if (Array.isArray(parsed)) {
+               values = parsed.map(v => String(v).trim());
+             } else {
+               values = [trimmed];
+             }
+          } catch (e) {
+             // Failed to parse, treat as literal string
+             values = [trimmed];
+          }
+        } else {
+          // Treat as simple string (could be comma separated if legacy sync)
+          values = [trimmed];
+        }
+
+        values.forEach(v => {
+          // Clean up any remaining artifacts if necessary
+          const clean = v.replace(/^"|"$/g, '').trim(); // Remove surrounding quotes if they somehow remain
+          if (clean) {
+             statsMap.set(clean, (statsMap.get(clean) || 0) + 1);
+          }
+        });
       });
       
       submarketStats = Array.from(statsMap.entries())

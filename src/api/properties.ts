@@ -5,6 +5,7 @@ export interface ListPropertiesParams {
   search?: string;
   marketingStatus?: string;
   visibility?: string;
+  submarkets?: string;
   brokerSet?: string;
   missingMedia?: boolean;
   brokerReadyThisWeek?: boolean;
@@ -47,6 +48,7 @@ export async function listProperties(
   if (params.search) searchParams.set('search', params.search);
   if (params.marketingStatus) searchParams.set('marketingStatus', params.marketingStatus);
   if (params.visibility) searchParams.set('visibility', params.visibility);
+  if (params.submarkets) searchParams.set('submarkets', params.submarkets);
   if (params.brokerSet) searchParams.set('brokerSet', params.brokerSet);
   if (params.missingMedia) searchParams.set('missingMedia', 'true');
   if (params.brokerReadyThisWeek) searchParams.set('brokerReadyThisWeek', 'true');

@@ -80,6 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const search = (req.query.search as string)?.toLowerCase() || '';
     const marketingStatus = (req.query.marketingStatus as string) || '';
     const visibility = (req.query.visibility as string) || '';
+    const submarkets = (req.query.submarkets as string) || '';
     const page = parseInt((req.query.page as string) || '1', 10);
     const limit = parseInt((req.query.limit as string) || '10', 10);
     const sortBy = (req.query.sortBy as string) || 'updated_at';
@@ -98,6 +99,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     if (visibility) {
       query = query.eq('marketing_visibility', visibility);
+    }
+    if (submarkets) {
+      // Split by comma and trim
+      const submarketList = submarkets.split(',').map(s => s.trim()).filter(Boolean);
+      if (submarketList.length > 0) {
+        // Construct OR filter for LIKE match on submarket JSON/String column
+        // Since submarket might be stored as `["City"]` or `City`, we use ILIKE with wildcards
+        // For accurate matching of JSON array contents without proper JSONB column, it's tricky.
+        // But for "contains", ILIKE '%"City"%' or ILIKE '%City%' might work.
+        
+        // Better approach:
+        // property.submarket ILIKE '%City%' OR property.submarket ILIKE '%Midtown%'
+        const orConditions = submarketList.map(s => `submarket.ilike.%${s}%`).join(',');
+        query = query.or(orConditions);
+      }
     }
 
     // Sorting
