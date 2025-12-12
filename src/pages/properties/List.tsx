@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProperties } from '../../api/properties';
+import { useSubmarkets } from '../../api/submarkets';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 
 const tabs = [
@@ -32,9 +33,11 @@ export function PropertiesList() {
     sortOrder: 'desc',
   });
 
+  const { data: submarketStatsData } = useSubmarkets();
+
   const properties = data?.properties || [];
   const totalProperties = data?.total || 0;
-  const submarketStats = data?.submarketStats || [];
+  const submarketStats = submarketStatsData || [];
   const totalPages = Math.ceil(totalProperties / limit);
 
   const clearFilters = () => {
