@@ -116,6 +116,11 @@ async function syncProperties() {
   try {
     const zohoProperties = await fetchAllZohoProperties();
     console.log(`Fetched ${zohoProperties.length} properties from Zoho`);
+    
+    if (zohoProperties.length > 0) {
+      console.log('Sample Property Keys:', Object.keys(zohoProperties[0]));
+      console.log('Sample Property Submarket:', zohoProperties[0].Submarket);
+    }
 
     const propertiesToUpsert = zohoProperties.map((p) => ({
       zoho_id: p.id,

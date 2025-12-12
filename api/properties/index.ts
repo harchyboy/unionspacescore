@@ -113,7 +113,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { data, error, count } = await query;
 
     // Fetch submarket stats
-    const { data: submarketStats } = await supabase.rpc('get_submarket_stats');
+    const { data: submarketStats, error: statsError } = await supabase.rpc('get_submarket_stats');
+    
+    if (statsError) {
+      console.error('Error fetching submarket stats:', statsError);
+    }
 
     if (error) {
       console.error('Error fetching properties:', error);
