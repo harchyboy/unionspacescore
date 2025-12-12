@@ -138,7 +138,7 @@ export interface ZohoPropertyRecord {
   Address_Line?: string;
   Postcode?: string;
   City?: string;
-  Submarket?: string;
+  Submarkets?: string;
   Country?: string;
   Total_Size_Sq_Ft?: number;
   Floor_Count?: number;

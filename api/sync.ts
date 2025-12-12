@@ -128,7 +128,7 @@ async function syncProperties() {
       address_line: p.Address_Line || null,
       postcode: p.Postcode || null,
       city: p.City || null,
-      submarket: p.Submarket || null,
+      submarket: p.Submarkets || null,
       country: p.Country || 'United Kingdom',
       total_size_sqft: p.Total_Size_Sq_Ft || null,
       floor_count: p.Floor_Count || null,
