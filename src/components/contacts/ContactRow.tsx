@@ -158,7 +158,7 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
       
       {/* Health badge with circle indicator */}
       <TableCell>
-        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getHealthBadgeColor(contact.relationshipHealth)}`}>
+        <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${getHealthBadgeColor(contact.relationshipHealth)}`}>
           <i className="fa-solid fa-circle mr-1.5 text-[6px]"></i>
           {contact.relationshipHealth === 'needs-attention' ? 'Needs Attention' : 
            contact.relationshipHealth.charAt(0).toUpperCase() + contact.relationshipHealth.slice(1)}

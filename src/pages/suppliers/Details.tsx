@@ -50,17 +50,17 @@ export function SupplierDetails({ supplier, onBack }: SupplierDetailsProps) {
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'In Progress':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]';
       case 'Scheduled':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-[#F0F0F0] text-[#252525] border border-[#252525]';
       case 'Awaiting Parts':
-        return 'bg-red-100 text-red-800';
+        return 'bg-white text-[#252525] border border-[#252525]';
       case 'Completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-[#252525] text-white';
       case 'Pending':
-        return 'bg-secondary/10 text-secondary';
+        return 'bg-[#F0F0F0] text-[#252525]';
       default:
-        return 'bg-muted text-primary';
+        return 'bg-[#F0F0F0] text-[#252525]';
     }
   };
 
@@ -284,7 +284,7 @@ export function SupplierDetails({ supplier, onBack }: SupplierDetailsProps) {
                           </TableCell>
                           <TableCell>
                             <span
-                              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(
+                              className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${getStatusBadgeClass(
                                 wo.status
                               )}`}
                             >
@@ -749,7 +749,7 @@ export function SupplierDetails({ supplier, onBack }: SupplierDetailsProps) {
                             )}
                             {comm.status && (
                               <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(
+                                className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${getStatusBadgeClass(
                                   comm.status
                                 )}`}
                               >

@@ -126,11 +126,11 @@ export function UnitDetails() {
           <div className="flex-1">
             <div className="flex items-center space-x-3 mb-3">
               <h1 className="text-3xl font-semibold text-primary">{unit.code}</h1>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary text-white">
+              <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#252525] text-white">
                 {unit.status || '—'}
               </span>
               {unit.pipelineStage ? (
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#FAFAFA] text-primary">
+                <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#F0F0F0] text-[#252525]">
                   {unit.pipelineStage}
                 </span>
               ) : null}

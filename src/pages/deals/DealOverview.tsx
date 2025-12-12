@@ -783,7 +783,9 @@ export function DealOverview() {
                             <i className="fa-solid fa-user mr-2"></i>
                             <span>{step.assignee}</span>
                           </div>
-                          <span className={`inline-flex items-center px-2 py-1 ${step.priorityColor} text-xs font-semibold rounded`}>
+                          <span className={`inline-flex items-center px-3 py-1 ${
+                            step.priority === 'High Priority' ? 'bg-[#252525] text-white' : 'bg-[#F0F0F0] text-[#252525]'
+                          } text-[11px] font-bold uppercase tracking-wider rounded`}>
                             {step.priority}
                           </span>
                         </div>

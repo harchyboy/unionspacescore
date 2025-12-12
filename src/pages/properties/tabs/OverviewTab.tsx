@@ -336,25 +336,25 @@ export function OverviewTab({ property }: OverviewTabProps) {
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-[#FAFAFA] rounded-lg">
               <div className="text-sm text-primary">Visibility</div>
-              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                property.marketing.visibility === 'Public' ? 'bg-primary text-white' : 'bg-secondary text-white'
+              <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${
+                property.marketing.visibility === 'Public' ? 'bg-[#252525] text-white' : 'bg-[#8E8E8E] text-white'
               }`}>
                 {property.marketing.visibility}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-[#FAFAFA] rounded-lg">
               <div className="text-sm text-primary">Status</div>
-              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+              <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${
                 property.marketing.status === 'On Market' || property.marketing.status === 'Broker-Ready' 
-                  ? 'bg-primary text-white' 
-                  : 'bg-[#FAFAFA] text-primary'
+                  ? 'bg-[#252525] text-white' 
+                  : 'bg-[#F0F0F0] text-[#252525] border border-[#8E8E8E]'
               }`}>
                 {property.marketing.status}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-[#FAFAFA] rounded-lg">
               <div className="text-sm text-primary">Fit-out</div>
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#FAFAFA] text-primary">
+              <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#FAFAFA] text-primary">
                 {property.marketing.fitOut}
               </span>
             </div>

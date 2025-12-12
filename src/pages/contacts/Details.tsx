@@ -306,11 +306,11 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
             <div>
               <div className="flex items-center space-x-3 mb-1">
                 <h1 className="text-2xl font-semibold text-primary">{displayName}</h1>
-                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                  contact.type === 'Broker' ? 'bg-black text-white' :
-                  contact.type === 'Disposal Agent' ? 'bg-secondary text-white' :
-                  contact.type === 'Tenant' ? 'bg-accent text-white' :
-                  'bg-muted text-primary'
+                <span className={`inline-flex items-center px-3 py-1 text-[11px] font-bold uppercase tracking-wider rounded ${
+                  contact.type === 'Broker' ? 'bg-[#252525] text-white' :
+                  contact.type === 'Disposal Agent' ? 'bg-[#8E8E8E] text-white' :
+                  contact.type === 'Tenant' ? 'bg-[#252525] text-white' :
+                  'bg-[#F0F0F0] text-[#252525]'
                 }`}>
                   {contact.type || 'Contact'}
                 </span>
@@ -999,7 +999,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                           </div>
                           <div className="flex flex-col items-end space-y-2 ml-3">
                             {candidate.matchScore >= 70 && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                              <span className="inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider bg-[#252525] text-white">
                                 Best Match
                               </span>
                             )}
