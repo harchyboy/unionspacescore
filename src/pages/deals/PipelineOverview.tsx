@@ -36,17 +36,17 @@ export function PipelineOverview() {
             <p className="text-sm text-[#8E8E8E] mt-0.5">Control centre for all active deals and opportunities</p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-lg transition-colors">
+            <button className="px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-[4px] transition-colors">
               <i className="fa-solid fa-floppy-disk mr-2"></i>
               Save View
             </button>
-            <button className="px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-lg transition-colors">
+            <button className="px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-[4px] transition-colors">
               <i className="fa-solid fa-download mr-2"></i>
               Export
             </button>
             <Link
               to="/deals/qualification"
-              className="px-4 py-2 bg-[#252525] text-white hover:bg-[#252525]/90 rounded-lg transition-colors text-sm font-semibold"
+              className="px-4 py-2 bg-[#252525] text-white hover:bg-[#252525]/90 rounded-[4px] transition-colors text-sm font-semibold"
             >
               <i className="fa-solid fa-plus mr-2"></i>
               New Requirement
@@ -59,7 +59,7 @@ export function PipelineOverview() {
       <div className="bg-white border-b border-[#E6E6E6] px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button className="flex items-center px-4 py-2 bg-white border border-[#E6E6E6] rounded-lg text-sm font-semibold text-[#252525] hover:bg-[#F0F0F0] transition-colors">
+            <button className="flex items-center px-4 py-2 bg-white border border-[#E6E6E6] rounded-[4px] text-sm font-semibold text-[#252525] hover:bg-[#F0F0F0] transition-colors">
               <i className="fa-solid fa-table-columns mr-2"></i>
               Board View
               <i className="fa-solid fa-chevron-down ml-2 text-xs"></i>
@@ -68,19 +68,19 @@ export function PipelineOverview() {
             <div className="h-8 w-px bg-[#E6E6E6]"></div>
             
             <div className="flex items-center space-x-2">
-              <button className="flex items-center px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-lg transition-colors">
+              <button className="flex items-center px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-[4px] transition-colors">
                 <i className="fa-solid fa-sort mr-2"></i>
                 Sorted by
                 <span className="font-semibold text-[#252525] ml-1">Stage</span>
               </button>
               
-              <button className="flex items-center px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-lg transition-colors border border-[#E6E6E6]">
+              <button className="flex items-center px-3 py-2 text-sm text-[#8E8E8E] hover:text-[#252525] hover:bg-[#F0F0F0] rounded-[4px] transition-colors border border-[#E6E6E6]">
                 <i className="fa-solid fa-filter mr-2"></i>
                 Filter
               </button>
               
               <div className="relative">
-                <select className="appearance-none bg-white border border-[#E6E6E6] rounded-lg px-3 py-2 pr-8 text-sm text-[#252525] focus:outline-none focus:ring-2 focus:ring-[#252525]">
+                <select className="appearance-none bg-white border border-[#E6E6E6] rounded-[4px] px-3 py-2 pr-8 text-sm text-[#252525] focus:outline-none focus:ring-2 focus:ring-[#252525]">
                   <option>All Brokers</option>
                   <option>Knight Frank</option>
                   <option>CBRE</option>
@@ -90,7 +90,7 @@ export function PipelineOverview() {
               </div>
               
               <div className="relative">
-                <select className="appearance-none bg-white border border-[#E6E6E6] rounded-lg px-3 py-2 pr-8 text-sm text-[#252525] focus:outline-none focus:ring-2 focus:ring-[#252525]">
+                <select className="appearance-none bg-white border border-[#E6E6E6] rounded-[4px] px-3 py-2 pr-8 text-sm text-[#252525] focus:outline-none focus:ring-2 focus:ring-[#252525]">
                   <option>All Properties</option>
                 </select>
                 <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8E8E8E] text-xs pointer-events-none"></i>
@@ -104,7 +104,7 @@ export function PipelineOverview() {
       <div className="px-8 py-6 bg-white border-b border-[#E6E6E6]">
         <div className="grid grid-cols-6 gap-4">
           {stats.map((stat) => (
-            <div key={stat.label} className="bg-[#F0F0F0] rounded-lg p-4">
+            <div key={stat.label} className="bg-[#F0F0F0] rounded-[4px] p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-[#8E8E8E] uppercase tracking-wide">{stat.label}</span>
                 <i className={`fa-solid ${stat.icon} ${stat.iconColor || 'text-[#8E8E8E]'}`}></i>
@@ -121,7 +121,7 @@ export function PipelineOverview() {
         <div className="flex space-x-4 h-full min-w-max">
           {stages.map((stage) => (
             <div key={stage.id} className="flex-shrink-0 w-80">
-              <div className="bg-white rounded-lg border border-[#E6E6E6] h-full flex flex-col">
+              <div className="bg-white rounded-[4px] border border-[#E6E6E6] h-full flex flex-col">
                 <div className="px-4 py-3 border-b border-[#E6E6E6] flex items-center justify-between">
                   <div className="flex items-center">
                     <div className={`w-3 h-3 ${stage.color} rounded-full mr-2`}></div>
@@ -145,7 +145,7 @@ export function PipelineOverview() {
                       <Link
                         key={deal.id}
                         to={`/deals/${deal.id}`}
-                        className="block bg-[#F0F0F0] rounded-lg p-4 border border-[#E6E6E6]/20 hover:border-[#252525]/50 transition-colors"
+                        className="block bg-[#F0F0F0] rounded-[4px] p-4 border border-[#E6E6E6]/20 hover:border-[#252525]/50 transition-colors"
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div>
@@ -153,7 +153,7 @@ export function PipelineOverview() {
                             <p className="text-xs text-[#8E8E8E]">Via: {deal.broker}</p>
                           </div>
                           {deal.hot && (
-                            <span className="inline-flex items-center px-2 py-0.5 bg-red-100 text-red-800 text-xs font-semibold rounded">
+                            <span className="inline-flex items-center px-2 py-0.5 bg-red-100 text-red-800 text-xs font-semibold rounded-[4px]">
                               Hot
                             </span>
                           )}
