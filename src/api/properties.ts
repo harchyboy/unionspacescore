@@ -114,6 +114,20 @@ export async function deleteDocument(
   }
 }
 
+export async function deleteImage(
+  propertyId: PropertyId,
+  imageUrl: string
+): Promise<void> {
+  const response = await fetch(
+    `${API_BASE}/properties/${propertyId}/documents?url=${encodeURIComponent(imageUrl)}`,
+    { method: 'DELETE' }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Delete error: ${response.statusText}`);
+  }
+}
+
 // React Query hooks
 export function useProperties(params: ListPropertiesParams = {}) {
   return useQuery({
@@ -172,6 +186,18 @@ export function useDeleteDocument() {
   return useMutation({
     mutationFn: ({ propertyId, documentId }: { propertyId: PropertyId; documentId: string }) =>
       deleteDocument(propertyId, documentId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['property', variables.propertyId] });
+    },
+  });
+}
+
+export function useDeleteImage() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ propertyId, imageUrl }: { propertyId: PropertyId; imageUrl: string }) =>
+      deleteImage(propertyId, imageUrl),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['property', variables.propertyId] });
     },

@@ -351,7 +351,7 @@ export function ContactsList() {
             <select
               value={firmFilter}
               onChange={(e) => setFirmFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
               disabled={companiesLoading}
             >
               <option value="all">All Companies</option>
@@ -367,7 +367,7 @@ export function ContactsList() {
             <select
               value={submarketFilter}
               onChange={(e) => setSubmarketFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="all">All Submarkets</option>
               <option value="city-core">City Core</option>
@@ -381,7 +381,7 @@ export function ContactsList() {
             <select
               value={activityFilter}
               onChange={(e) => setActivityFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="all">All Activity</option>
               <option value="7d">Last 7 days</option>
@@ -395,7 +395,7 @@ export function ContactsList() {
             <select
               value={healthFilter}
               onChange={(e) => handleHealthFilter(e.target.value)}
-              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-[#FAFAFA] border border-[#E6E6E6] rounded px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="all">All Relationship Health</option>
               <option value="excellent">Excellent</option>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Property } from '../../../types/property';
 import { FileRow } from '../../../components/ui/FileRow';
-import { useUploadDocument, useDeleteDocument } from '../../../api/properties';
+import { useUploadDocument, useDeleteDocument, useDeleteImage } from '../../../api/properties';
 
 interface DocumentsMediaTabProps {
   property: Property;
@@ -12,6 +12,7 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
   const [uploadingImg, setUploadingImg] = useState(false);
   const uploadDocument = useUploadDocument();
   const deleteDocument = useDeleteDocument();
+  const deleteImage = useDeleteImage();
 
   const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,10 +58,20 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
     }
   };
 
-  const handleDelete = async (docId: string) => {
-    if (!confirm('Are you sure you want to delete this file?')) return;
+  const handleDocDelete = async (docId: string) => {
+    if (!confirm('Are you sure you want to delete this document?')) return;
     try {
       await deleteDocument.mutateAsync({ propertyId: property.id, documentId: docId });
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert('Delete failed. Please try again.');
+    }
+  };
+
+  const handleImageDelete = async (imageUrl: string) => {
+    if (!confirm('Are you sure you want to delete this image?')) return;
+    try {
+      await deleteImage.mutateAsync({ propertyId: property.id, imageUrl });
     } catch (error) {
       console.error('Delete failed:', error);
       alert('Delete failed. Please try again.');
@@ -107,7 +118,7 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
               size={doc.size}
               uploadedAt={doc.uploadedAt}
               onDownload={() => window.open(doc.url, '_blank')}
-              onDelete={() => handleDelete(doc.id)}
+              onDelete={() => handleDocDelete(doc.id)}
             />
           ))}
         </div>
@@ -147,7 +158,7 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
               <img src={url} alt={`Property ${index + 1}`} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                 <button
-                  onClick={() => handleDelete(url)}
+                  onClick={() => handleImageDelete(url)}
                   className="p-2 bg-white rounded-full text-red-600 hover:bg-red-50"
                   title="Delete Image"
                 >

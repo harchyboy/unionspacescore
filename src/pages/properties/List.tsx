@@ -113,18 +113,18 @@ export function PropertiesList() {
                   alert('Sync failed. Check console for details.');
                 }
               }}
-              className="px-4 py-2.5 border border-[#E6E6E6] rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2"
+              className="px-5 py-2.5 border border-[#E6E6E6] rounded text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2"
             >
               <i className="fa-solid fa-rotate"></i>
               <span>Sync Zoho</span>
             </button>
-            <button className="px-4 py-2.5 border border-[#E6E6E6] rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+            <button className="px-5 py-2.5 border border-[#E6E6E6] rounded text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
               <i className="fa-solid fa-save"></i>
               <span>Save View</span>
             </button>
             <Link
               to="/properties/new"
-              className="bg-primary text-white px-6 py-2.5 rounded-[4px] font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2"
+              className="bg-[#252525] text-white px-5 py-2.5 rounded font-medium hover:bg-[#252525]/90 transition-all flex items-center space-x-2"
             >
               <i className="fa-solid fa-plus"></i>
               <span>Add Property</span>
@@ -261,18 +261,18 @@ export function PropertiesList() {
           <span className="text-sm text-secondary">{totalProperties} properties</span>
         </div>
         <div className="flex items-center space-x-2">
-          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
             <i className="fa-solid fa-eye-slash"></i>
             <span>Change Visibility</span>
           </button>
-          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded-[4px] text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
+          <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
             <i className="fa-solid fa-user-tie"></i>
             <span>Assign Agent</span>
           </button>
-          <div className="flex bg-white rounded-[4px] border border-[#E6E6E6] p-1">
+          <div className="flex bg-white rounded border border-[#E6E6E6] p-1">
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-[4px] transition-all ${
+              className={`p-1.5 rounded transition-all ${
                 viewMode === 'list' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
               }`}
               title="List View"
@@ -281,7 +281,7 @@ export function PropertiesList() {
             </button>
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-[4px] transition-all ${
+              className={`p-1.5 rounded transition-all ${
                 viewMode === 'grid' ? 'bg-[#F0F0F0] text-primary' : 'text-secondary hover:text-primary'
               }`}
               title="Grid View"
@@ -293,7 +293,7 @@ export function PropertiesList() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-white border border-[#E6E6E6] rounded-[4px] px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="appearance-none bg-white border border-[#E6E6E6] rounded px-4 py-2 pr-8 text-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="last-updated">Sort by: Last Updated</option>
               <option value="name-asc">Sort by: Name A-Z</option>
@@ -317,7 +317,7 @@ export function PropertiesList() {
             <p className="text-sm text-secondary mb-6">Add a building to start matching spaces</p>
             <Link
               to="/properties/new"
-              className="bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-opacity-90 transition-all inline-block"
+              className="bg-[#252525] text-white px-5 py-2.5 rounded font-medium hover:bg-[#252525]/90 transition-all inline-block"
             >
               Add Your First Property
             </Link>
