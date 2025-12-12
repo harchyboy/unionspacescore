@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from '../../lib/supabase.js';
-import * as formidable from 'formidable';
+import formidable from 'formidable';
+import type { Fields, Files, File as FormidableFile } from 'formidable';
 import { promises as fs } from 'fs';
 
 export const config = {
@@ -10,9 +11,9 @@ export const config = {
 };
 
 // Helper to parse multipart form data
-async function parseForm(req: VercelRequest): Promise<{ fields: formidable.Fields; files: formidable.Files }> {
+async function parseForm(req: VercelRequest): Promise<{ fields: Fields; files: Files }> {
   return new Promise((resolve, reject) => {
-    const form = formidable.default({ maxFileSize: 10 * 1024 * 1024 }); // 10MB max
+    const form = formidable({ maxFileSize: 10 * 1024 * 1024 }); // 10MB max
     form.parse(req, (err, fields, files) => {
       if (err) reject(err);
       else resolve({ fields, files });
@@ -48,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       
       // Get the uploaded file (formidable returns array)
       const fileArray = files.file;
-      const file = Array.isArray(fileArray) ? fileArray[0] : fileArray;
+      const file: FormidableFile | undefined = Array.isArray(fileArray) ? fileArray[0] : fileArray;
       
       if (!file) {
         return res.status(400).json({ error: 'No file provided' });
