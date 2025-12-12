@@ -374,3 +374,361 @@ The app can be easily deployed to various platforms. See [DEPLOYMENT.md](./DEPLO
 ## License
 
 [Add your license here]
+
+## Design System & Specifications
+
+This document provides complete specifications for implementing the UNION+ platform frontend. Every measurement, color, font size, spacing value, and interaction is defined for pixel-perfect implementation.
+
+**For:** Frontend developers, design QA, product team
+
+**Based on:** Approved wireframes + UNION Visual Identity Guidelines v1.
+
+**Platform:** Web application (desktop-first, responsive)
+
+### 1. DESIGN TOKENS
+
+#### 1.1 Color System
+UNION+ uses a refined monochromatic palette designed for calm, professional sophistication.
+
+**Core Palette:**
+- **Stone**: `#F0F0F0` (Light warm grey - 50% usage)
+- **Slate**: `#252525` (Deep rich grey - 25% usage)
+- **Concrete**: `#8E8E8E` (Mid supportive grey - 25% usage)
+- **White**: `#FFFFFF` (Pure white)
+- **Black**: `#000000` (Pure black - minimal use)
+
+**CRITICAL RULES:**
+- Never use bright colors (no greens, blues, yellows, reds, oranges)
+- Maintain 50/25/25 ratio: Stone (50%), Slate (25%), Concrete (25%)
+- All UI must use only these defined colors
+
+#### 1.2 Typography System
+All text must use the Haltung typeface with precise sizing and spacing.
+
+**Font Weights:**
+- **Haltung Book (400)** - Body text
+- **Haltung SemiBold (600)** - Headlines
+
+**Type Scale:**
+- **Hero**: 64px (User greeting)
+- **H1**: 48px (Page titles)
+- **H2**: 30px (Section headers)
+- **H3**: 20px (Card titles)
+- **Body**: 16px (Body text)
+- **Caption**: 14px (Small text)
+
+#### 1.3 Spacing System
+**Spacing Principles:**
+- Base grid: 25px
+- Page margins: 25px
+- Card internal padding: 32px
+- Gap between cards: 25px
+- Gap between major sections: 48px
+
+### 2. COMPONENT SPECIFICATIONS
+
+#### 2.1 Logo Component
+**Specifications:**
+- Width: 120px (optimal header size)
+- Height: Auto (maintain aspect ratio)
+- Minimum width: 100px (digital minimum)
+- Color: Slate #252525
+
+**Placement:**
+- Location: Top-left of header/sidebar
+- Margin: 25px from edges
+- Clear space: 25px on all sides
+
+**CRITICAL:** Never distort, recolor, or recreate logo
+
+#### 2.2 Button Components
+**Primary Button:**
+- Height: 48px
+- Padding: 16px 32px
+- Border radius: 4px
+- Background: Slate #252525
+- Text color: White #FFFFFF
+- Font: Haltung SemiBold 16px
+- Usage: Primary actions (Manage, Add Service, New Request, Make Payment)
+
+**Secondary Button:**
+- Height: 48px
+- Padding: 16px 32px
+- Border: 1px solid Slate #252525
+- Background: White #FFFFFF
+- Text color: Slate #252525
+- Usage: Secondary actions (Add to Plan, Manage in list view)
+
+#### 2.3 Card Component
+**Structure:**
+- Background: White #FFFFFF
+- Border: 1px solid #E6E6E6 (optional)
+- Border radius: 4px
+- Padding: 32px
+- Shadow: 0 1px 3px rgba(37, 37, 37, 0.08)
+- Usage: Service cards, info cards, content containers
+
+#### 2.4 Status Pills
+**Specifications:**
+- Padding: 6px 16px
+- Border radius: 4px
+- Font: Haltung SemiBold 12px uppercase
+
+**Status Variants:**
+- **Active**: Slate background, Stone text
+- **Pending**: Stone background, Slate text, Concrete border
+- **Confirmed**: White background, Slate text, Concrete border
+
+**CRITICAL:** Status must always include text label, never color alone
+
+#### 2.5 Sidebar Navigation
+**Specifications:**
+- Width: 240px
+- Background: Stone #F0F0F0
+- Height: Full viewport (100vh)
+- Position: Fixed left
+
+**Navigation Items:**
+- Padding: 12px 16px
+- Border radius: 4px
+- Active state: White background, 3px left border (Slate)
+- Hover state: Semi-transparent white background
+
+#### 2.6 Maintenance Timeline Item
+**Specifications:**
+- Background: White #FFFFFF
+- Border radius: 4px
+- Padding: 20px 24px
+- Left border: 4px solid (status color)
+
+**Status Border Colors:**
+- **Confirmed**: Slate #252525
+- **Pending**: Concrete #8E8E8E
+- **Cancelled**: Stone #F0F0F0 (with opacity)
+
+**CRITICAL:** 4px left border indicates status through color
+
+#### 2.7 Table Component
+**Header:**
+- Background: Stone #F0F0F0
+- Font: Haltung SemiBold 14px uppercase
+- Padding: 12px 16px
+- Border bottom: 1px solid Concrete
+
+**Rows:**
+- Border bottom: 1px solid Stone
+- Padding: 16px
+- Hover: Light Stone background (rgba)
+- Usage: Invoice History, Requests & Tickets
+
+#### 2.8 Financial Callout Card
+**Specifications:**
+- Background: Slate #252525
+- Border radius: 4px
+- Padding: 32px
+- Amount text: Haltung SemiBold 64px, Stone color
+- Label text: Haltung Book 16px, Concrete color
+- Usage: Dashboard billing widget, Billing & Invoices page
+
+### 3. LAYOUT SYSTEM
+
+#### 3.1 Grid Structure
+- Container max-width: 1600px
+- Container padding: 25px
+- Grid gap: 25px
+
+**Grid Options:**
+- 2 columns: `repeat(2, 1fr)`
+- 3 columns: `repeat(3, 1fr)`
+- 4 columns: `repeat(4, 1fr)`
+
+#### 3.2 Page Layout
+**Structure:**
+- Sidebar: 240px fixed width
+- Main content: Flexible width with 25px padding
+- Background: Stone #F0F0F0
+
+#### 3.3 Dashboard Layout
+**Sections:**
+- Greeting: Hero text section with 48px bottom margin
+- Services: 2-column grid with 25px gap
+- Bottom section: 2-column grid (Maintenance + Requests)
+
+### 4. RESPONSIVE BREAKPOINTS
+
+**Breakpoints:**
+- Mobile: 375px
+- Tablet: 768px
+- Desktop: 1024px
+- Wide: 1440px
+
+**Mobile Adjustments:**
+- Sidebar: Hidden or converted to bottom nav
+- Main content: No left margin, 16px padding
+- All grids: Single column layout
+- Hero text: 48px (reduced from 64px)
+
+### 5. ICON SYSTEM
+**Specifications:**
+- Default size: 20px × 20px
+- Stroke width: 1.5px
+- Style: Line icons (outline style)
+- Color: Inherits from text or explicitly set
+
+**Size Variants:**
+- Small: 16px × 16px
+- Large: 32px × 32px
+- Extra Large: 48px × 48px
+
+**Recommended library:** Lucide Icons or Heroicons
+
+### 6. INTERACTION STATES
+
+#### 6.1 Hover States
+**Principle:** Always increase visual weight, never decrease
+
+**Examples:**
+- Cards: Enhanced shadow on hover
+- Primary buttons: Background darkens to Black
+- Secondary buttons: Background becomes Stone
+- Links: Underline appears
+
+#### 6.2 Focus States
+- Outline: 2px solid Slate #252525
+- Outline offset: 2px
+- On dark backgrounds: Use Stone #F0F0F0 for outline color
+
+#### 6.3 Loading States
+Use skeleton screens with shimmer animation:
+- Background: Linear gradient (Stone → White → Stone)
+- Animation: 1.5s infinite shimmer
+
+### 7. ACCESSIBILITY REQUIREMENTS
+
+#### 7.1 Color Contrast (WCAG AA)
+**Compliant Combinations:**
+- Slate on White: 14.6:1 (AAA) ✓
+- Slate on Stone: 8.8:1 (AAA) ✓
+- Concrete on White: 4.6:1 (AA) ✓
+
+**FAILS:**
+- Concrete on Stone: 3.2:1 ✗
+
+**WARNING:** Never use Concrete text on Stone backgrounds
+
+#### 7.2 Interactive Elements
+- Minimum touch target: 44×44px
+- All interactive elements must have focus indicators
+- Keyboard navigation must be fully supported
+- Tab order must be logical
+
+#### 7.3 ARIA Labels
+**Required for:**
+- Icon-only buttons
+- Status indicators
+- Navigation landmarks
+
+### 8. IMPLEMENTATION PRIORITIES
+**Phase 1: Foundation (Week 1)**
+- Set up design tokens (CSS variables)
+- Import Haltung font files
+- Create base layout structure
+- Implement logo component
+
+**Phase 2: Core Components (Week 2)**
+- Button system (primary, secondary, link)
+- Card component
+- Status pills
+- Form inputs
+
+**Phase 3: Navigation (Week 3)**
+- Sidebar navigation
+- Page headers
+
+**Phase 4: Complex Components (Week 4)**
+- Service cards
+- Maintenance timeline
+- Tables
+- Financial callout cards
+
+**Phase 5: Pages (Week 5-6)**
+- Dashboard
+- Active Services
+- Service Store
+- Billing & Invoices
+
+**Phase 6: Polish (Week 7)**
+- Hover states
+- Loading states
+- Responsive breakpoints
+- Accessibility audit
+
+### 9. QUALITY ASSURANCE CHECKLIST
+Before marking implementation complete, verify all items below:
+
+**Design Tokens:**
+- [ ] All colors match exact hex values
+- [ ] Haltung font loading correctly
+- [ ] Spacing uses defined variables
+
+**Components:**
+- [ ] UNION logo on every page, correct size
+- [ ] All buttons use exact specifications
+- [ ] Status pills monochromatic only
+- [ ] Cards have 32px padding
+
+**Typography:**
+- [ ] All text uses Haltung
+- [ ] Headlines use SemiBold weight
+- [ ] Body text uses Book weight
+
+**Colors:**
+- [ ] Stone #F0F0F0 for backgrounds (50%)
+- [ ] Slate #252525 for primary elements (25%)
+- [ ] Concrete #8E8E8E for secondary (25%)
+- [ ] NO bright colors anywhere
+
+**Accessibility:**
+- [ ] Color contrast passes WCAG AA
+- [ ] Focus indicators on all interactive elements
+- [ ] Keyboard navigation works
+
+### 10. BROWSER SUPPORT
+**Target Browsers:**
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+**Testing Required On:**
+- macOS (Safari, Chrome)
+- Windows (Edge, Chrome, Firefox)
+- iOS Safari
+- Android Chrome
+
+### 11. PERFORMANCE TARGETS
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 3.5s
+- Lighthouse Performance Score: > 90
+- Bundle size: < 500KB (gzipped)
+
+### 12. ASSETS REQUIRED
+**Fonts:**
+- Haltung-Book.woff
+- Haltung-SemiBold.woff
+
+**Logos:**
+- union-wordmark.svg
+- union-wordmark@2x.png
+- union-symbol.svg
+
+**Icons:**
+- Icon library (Lucide/Heroicons) or custom SVG set
+
+### 13. HANDOFF NOTES
+**Design → Development:**
+- All measurements in this document are exact
+- CSS variables provided can be used as-is
+- Component structure matches approved designs
+- Any deviations should be flagged for design review
+- Questions or clarifications: Contact design team before implementing alternative solutions

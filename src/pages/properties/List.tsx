@@ -53,7 +53,8 @@ export function PropertiesList() {
     setHealthFilter('');
   };
 
-  if (isLoading) {
+  // Only show full page spinner on initial load, not refetching
+  if (isLoading && !data) {
     return (
       <div className="flex items-center justify-center h-64">
         <LoadingSpinner size="lg" />

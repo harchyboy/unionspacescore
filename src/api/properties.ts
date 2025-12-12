@@ -119,6 +119,7 @@ export function useProperties(params: ListPropertiesParams = {}) {
   return useQuery({
     queryKey: ['properties', params],
     queryFn: () => listProperties(params),
+    keepPreviousData: true,
   });
 }
 

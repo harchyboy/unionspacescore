@@ -70,7 +70,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         values.forEach(v => {
           // Clean up any remaining artifacts if necessary
-          const clean = v.replace(/^"|"$/g, '').trim(); // Remove surrounding quotes if they somehow remain
+          let clean = v.replace(/^"|"$/g, '').trim(); 
+          // If it still looks like ["Name"], strip brackets and quotes
+          if (clean.startsWith('["') && clean.endsWith('"]')) {
+             clean = clean.slice(2, -2).trim();
+          } else if (clean.startsWith('[') && clean.endsWith(']')) {
+             clean = clean.slice(1, -1).trim();
+          }
+          
           if (clean) {
              statsMap.set(clean, (statsMap.get(clean) || 0) + 1);
           }
