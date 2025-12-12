@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import type { Property, PropertyId, PropertyDocument } from '../types/property';
 
 export interface ListPropertiesParams {
@@ -119,7 +119,7 @@ export function useProperties(params: ListPropertiesParams = {}) {
   return useQuery({
     queryKey: ['properties', params],
     queryFn: () => listProperties(params),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 }
 

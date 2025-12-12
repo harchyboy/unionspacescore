@@ -23,7 +23,7 @@ const navSections: NavSection[] = [
     title: 'Deal Flow',
     items: [
       { to: '/deals', icon: 'fa-handshake', label: 'Pipeline', badge: 12 },
-      { to: '/leads', icon: 'fa-address-card', label: 'Leads', badge: '4 HOT', badgeColor: 'bg-teal-600' },
+      { to: '/leads', icon: 'fa-address-card', label: 'Leads', badge: '4 HOT', badgeColor: 'bg-[#8E8E8E]' },
       { to: '/viewings', icon: 'fa-calendar-days', label: 'Viewing Planner' },
       { to: '/properties', icon: 'fa-building', label: 'Properties', badge: 24 },
       { to: '/units', icon: 'fa-door-open', label: 'Units', badge: 58 },
@@ -35,7 +35,7 @@ const navSections: NavSection[] = [
     items: [
       { to: '/onboarding', icon: 'fa-rocket', label: 'Onboarding', badge: 5 },
       { to: '/services', icon: 'fa-layer-group', label: 'Services' },
-      { to: '/tickets', icon: 'fa-ticket', label: 'Tickets', badge: 8, badgeColor: 'bg-red-600' },
+      { to: '/tickets', icon: 'fa-ticket', label: 'Tickets', badge: 8, badgeColor: 'bg-[#252525]' },
       { to: '/suppliers', icon: 'fa-truck', label: 'Suppliers' },
     ],
   },
@@ -59,9 +59,9 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-[#E6E6E6] flex flex-col">
+    <aside className="w-[240px] bg-[#F0F0F0] border-r border-[#E6E6E6] flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-[#E6E6E6]">
+      <div className="p-[25px] border-b border-[#E6E6E6]">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-white rounded flex items-center justify-center">
             <img
@@ -93,10 +93,10 @@ export function Sidebar() {
                 <NavLink
                   key={item.to}
                   to={item.to}
-                  className={`flex items-center px-3 py-2 text-sm rounded transition-all-smooth ${
+                  className={`flex items-center px-4 py-3 text-sm rounded transition-all-smooth border-l-[3px] ${
                     isActive(item.to)
-                      ? 'bg-primary text-white'
-                      : 'text-[#252525] hover:bg-[#F0F0F0]'
+                      ? 'bg-white border-[#252525] text-[#252525]'
+                      : 'border-transparent text-[#252525] hover:bg-white/50'
                   }`}
                 >
                   <i className={`fa-solid ${item.icon} w-5 mr-3`}></i>

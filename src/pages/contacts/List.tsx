@@ -738,22 +738,31 @@ export function ContactsList() {
               <CardHeader>
                 <CardTitle>Communication Insights</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-6">
+              <CardContent className="p-[32px]">
+                <div className="grid grid-cols-3 gap-[25px]">
                   <div className="text-center">
                     <div className="text-3xl font-semibold text-primary mb-2">284</div>
                     <div className="text-sm text-secondary">Emails This Month</div>
-                    <div className="text-xs text-green-600 mt-1">+12% vs last month</div>
+                    <div className="text-xs text-primary mt-1 font-medium">
+                      <i className="fa-solid fa-arrow-up mr-1"></i>
+                      12% vs last month
+                    </div>
                   </div>
                   <div className="text-center border-l border-r border-[#E6E6E6]">
                     <div className="text-3xl font-semibold text-primary mb-2">127</div>
                     <div className="text-sm text-secondary">Calls Logged</div>
-                    <div className="text-xs text-green-600 mt-1">+8% vs last month</div>
+                    <div className="text-xs text-primary mt-1 font-medium">
+                      <i className="fa-solid fa-arrow-up mr-1"></i>
+                      8% vs last month
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-semibold text-primary mb-2">45</div>
                     <div className="text-sm text-secondary">Meetings Scheduled</div>
-                    <div className="text-xs text-red-600 mt-1">-3% vs last month</div>
+                    <div className="text-xs text-secondary mt-1 font-medium">
+                      <i className="fa-solid fa-arrow-down mr-1"></i>
+                      3% vs last month
+                    </div>
                   </div>
                 </div>
               </CardContent>
