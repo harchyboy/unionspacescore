@@ -62,7 +62,7 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
   const getTypeMeta = (type: string) => {
     switch (type) {
       case 'Broker':
-        return { label: 'Broker', icon: 'fa-briefcase', badgeClass: 'bg-black text-white' };
+        return { label: 'Broker', icon: 'fa-briefcase', badgeClass: 'bg-[#252525] text-white' };
       case 'Disposal Agent':
         return { label: 'Disposal Agent', icon: 'fa-building', badgeClass: 'bg-secondary text-white' };
       case 'Tenant':
@@ -132,10 +132,9 @@ export function ContactRow({ contact, onSelect }: ContactRowProps) {
         </div>
       </TableCell>
       
-      {/* Type badge - rounded-full with icon and colored background */}
+      {/* Type badge - rounded with uppercase text (no icon) */}
       <TableCell>
-        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${typeMeta.badgeClass}`}>
-          <i className={`fa-solid ${typeMeta.icon} mr-1.5`}></i>
+        <span className={`inline-flex items-center px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${typeMeta.badgeClass}`}>
           {typeMeta.label}
         </span>
       </TableCell>

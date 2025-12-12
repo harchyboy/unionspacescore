@@ -10,7 +10,16 @@ function mapProperty(p: DbProperty & { units?: DbUnit[] }): Property {
     addressLine: p.address_line || '',
     postcode: p.postcode || '',
     city: p.city || '',
-    submarket: p.submarket || undefined,
+    submarket: (() => {
+      if (!p.submarket) return undefined;
+      let clean = p.submarket.replace(/^"|"$/g, '').trim(); 
+      if (clean.startsWith('["') && clean.endsWith('"]')) {
+         clean = clean.slice(2, -2).trim();
+      } else if (clean.startsWith('[') && clean.endsWith(']')) {
+         clean = clean.slice(1, -1).trim();
+      }
+      return clean || undefined;
+    })(),
     country: p.country || 'United Kingdom',
     totalSizeSqFt: p.total_size_sqft || undefined,
     floorCount: p.floor_count || undefined,
