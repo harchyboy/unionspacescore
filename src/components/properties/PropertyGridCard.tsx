@@ -21,7 +21,7 @@ export function PropertyGridCard({ property }: PropertyGridCardProps) {
   return (
     <Link
       to={`/properties/${property.id}`}
-      className="block bg-white border border-[#E6E6E6] rounded-lg overflow-hidden hover:shadow-lg transition-all group h-full flex flex-col"
+      className="block bg-white border border-[#E6E6E6] rounded-[4px] overflow-hidden hover:shadow-lg transition-all group h-full flex flex-col"
     >
       {/* Hero Image */}
       <div className="h-48 bg-[#FAFAFA] relative overflow-hidden group">
