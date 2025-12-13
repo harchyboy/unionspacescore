@@ -74,7 +74,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const id = typeof req.query.id === 'string' ? req.query.id : undefined;
-  const { linkedinUrl } = req.body as { linkedinUrl?: string };
+  const { linkedinUrl, imageUrl } = req.body as { linkedinUrl?: string; imageUrl?: string };
 
   if (!id) {
     return res.status(400).json({ error: 'Contact ID required' });
@@ -113,7 +113,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (isUuid) {
       query = query.eq('id', id);
-      // If it's a UUID, fetch zoho_id for CRM update
+      // If it's a UUID, fetch zoho_id for CRM update and photo storage
       const { data: contact } = await supabase
         .from('contacts')
         .select('zoho_id')
@@ -130,6 +130,44 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Non-UUID: treat as Zoho ID
       query = query.eq('zoho_id', id);
       zohoId = id;
+    }
+
+    // Process image upload if provided and we have a valid Zoho ID
+    if (imageUrl && zohoId) {
+      try {
+        console.log(`[LinkedIn Approve] Fetching LinkedIn profile image from: ${imageUrl} for contact ${zohoId}`);
+        const imageResponse = await fetch(imageUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          }
+        });
+        
+        if (imageResponse.ok) {
+          const contentType = imageResponse.headers.get('content-type') || 'image/jpeg';
+          const arrayBuffer = await imageResponse.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          
+          console.log(`[LinkedIn Approve] Downloaded image, size: ${buffer.length} bytes, type: ${contentType}`);
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('property-files')
+            .upload(`contacts/${zohoId}`, buffer, {
+              contentType,
+              upsert: true
+            });
+            
+          if (uploadError) {
+             console.error(`[LinkedIn Approve] Supabase upload failed:`, uploadError);
+          } else {
+             console.log(`[LinkedIn Approve] Successfully cached contact photo for ${zohoId} to Supabase Storage`, uploadData);
+          }
+        } else {
+          console.warn(`[LinkedIn Approve] Failed to fetch LinkedIn image: ${imageResponse.status} ${imageResponse.statusText}`);
+        }
+      } catch (imgError) {
+        console.error('[LinkedIn Approve] Error saving LinkedIn profile image:', imgError);
+        // Don't fail the whole request just because image failed
+      }
     }
 
     // Request updated rows so we know if the update affected anything

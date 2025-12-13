@@ -107,9 +107,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // 2. If not in Supabase (or stale), fetch from Zoho
+    console.log(`[Photo] Fetching from Zoho for ${id}...`);
     const result = await fetchContactPhoto(id);
 
     if (!('buffer' in result)) {
+      // Zoho failed or returned 404.
+      // If we had a "stale" file in Supabase, we should probably serve it as a fallback
+      // because it's better than nothing.
+      if (!shouldServeFromCache && supabase) {
+         console.log(`[Photo] Zoho returned ${result.status}, falling back to 'stale' Supabase file for ${id}`);
+         const { data: fileData, error: fileError } = await supabase.storage
+          .from('property-files')
+          .download(filePath);
+
+        if (!fileError && fileData) {
+          const arrayBuffer = await fileData.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          const contentType = fileData.type || 'image/jpeg';
+          res.setHeader('Content-Type', contentType);
+          res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600');
+          return res.status(200).send(buffer);
+        }
+      }
+
       // Do not cache errors/missing images; allows retry when rate limit clears or photo is added
       res.setHeader('Cache-Control', 'no-store');
       let message = 'Photo not found';
@@ -127,6 +147,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 3. Save to Supabase Storage for next time
     if (supabase) {
       try {
+        console.log(`[Photo] Caching contact photo for ${id} to Supabase Storage. Size: ${result.buffer.length}, Type: ${result.contentType}`);
         await supabase.storage
           .from('property-files')
           .upload(filePath, result.buffer, {
@@ -134,9 +155,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             upsert: true
           });
           
-        console.log(`Cached contact photo for ${id} to Supabase Storage`);
+        console.log(`[Photo] Successfully cached contact photo for ${id} to Supabase Storage`);
       } catch (uploadError) {
-        console.warn('Failed to upload contact photo to Supabase:', uploadError);
+        console.warn('[Photo] Failed to upload contact photo to Supabase:', uploadError);
       }
     }
 

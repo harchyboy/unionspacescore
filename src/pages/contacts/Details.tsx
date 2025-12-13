@@ -102,14 +102,17 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   };
 
   // Approve and save a LinkedIn candidate
-  const handleApproveLinkedIn = async (url: string) => {
-    setApprovingUrl(url);
+  const handleApproveLinkedIn = async (candidate: LinkedInCandidate) => {
+    setApprovingUrl(candidate.url);
     
     try {
       const response = await fetch(`${API_BASE}/api/linkedin-approve?id=${contact.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ linkedinUrl: url })
+        body: JSON.stringify({ 
+          linkedinUrl: candidate.url, 
+          imageUrl: candidate.imageUrl 
+        })
       });
       
       const text = await response.text();
@@ -132,7 +135,12 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         // Optimistically update cache
         queryClient.setQueryData(['contact', contact.id], (old: Contact | undefined) => {
             if (!old) return old;
-            return { ...old, linkedinUrl: url };
+            return { 
+              ...old, 
+              linkedinUrl: candidate.url,
+              // Force avatar refresh if we updated the image
+              ...(candidate.imageUrl ? { avatar: `${API_BASE || ''}/api/contacts/${contact.id}/photo?t=${Date.now()}` } : {})
+            };
         });
 
         // Also invalidate contacts list
@@ -142,7 +150,7 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         await refetchContact();
         
         // Invalidate and refetch LinkedIn posts now that URL is saved
-        queryClient.invalidateQueries({ queryKey: ['linkedin-posts', url] });
+        queryClient.invalidateQueries({ queryKey: ['linkedin-posts', candidate.url] });
         queryClient.invalidateQueries({ queryKey: ['linkedin-posts'] });
       } else {
         const errorMsg = typeof data?.error === 'string' ? data.error : 
@@ -1002,11 +1010,11 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                                 Best Match
                               </span>
                             )}
-                            <button
-                              onClick={() => handleApproveLinkedIn(candidate.url)}
-                              disabled={approvingUrl !== null}
-                              className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 rounded-lg transition-colors"
-                            >
+                          <button
+                            onClick={() => handleApproveLinkedIn(candidate)}
+                            disabled={approvingUrl !== null}
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-[#0077B5] hover:bg-[#005885] disabled:opacity-50 rounded-lg transition-colors"
+                          >
                               {approvingUrl === candidate.url ? (
                                 <i className="fa-solid fa-spinner fa-spin"></i>
                               ) : (
