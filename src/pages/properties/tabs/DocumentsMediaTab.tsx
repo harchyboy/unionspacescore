@@ -44,7 +44,8 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
       toast({ title: 'Success', description: 'Document uploaded successfully.', type: 'success' });
     } catch (error) {
       console.error('Upload failed:', error);
-      toast({ title: 'Error', description: 'Upload failed. Please try again.', type: 'error' });
+      const errorMessage = error instanceof Error ? error.message : 'Upload failed. Please try again.';
+      toast({ title: 'Error', description: errorMessage, type: 'error' });
     } finally {
       setUploadingDoc(false);
       setUploadProgress(0);
@@ -76,7 +77,8 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
       toast({ title: 'Success', description: 'Image uploaded successfully.', type: 'success' });
     } catch (error) {
       console.error('Upload failed:', error);
-      toast({ title: 'Error', description: 'Upload failed. Please try again.', type: 'error' });
+      const errorMessage = error instanceof Error ? error.message : 'Upload failed. Please try again.';
+      toast({ title: 'Error', description: errorMessage, type: 'error' });
     } finally {
       setUploadingImg(false);
       setUploadProgress(0);
