@@ -156,7 +156,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       
       if (allProperties) {
         const statsMap = new Map<string, number>();
-        allProperties.forEach(p => {
+        allProperties.forEach((p: { submarket: string | null }) => {
           // Normalize submarket: handle null/undefined as 'Unknown'
           const sm = p.submarket ? p.submarket.trim() : 'Unknown';
           // If empty string, treat as Unknown

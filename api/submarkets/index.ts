@@ -41,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (allProperties) {
          const tempMap = new Map<string, number>();
-         allProperties.forEach(p => {
+         allProperties.forEach((p: { submarket: string | null }) => {
             const val = p.submarket || 'Unknown';
             tempMap.set(val, (tempMap.get(val) || 0) + 1);
          });

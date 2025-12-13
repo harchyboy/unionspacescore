@@ -27,6 +27,9 @@ async function parseForm(req: VercelRequest): Promise<{ fields: Fields; files: F
   });
 }
 
+// SharedBuffer type definition for TS compatibility
+type NonSharedBuffer = Buffer;
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
