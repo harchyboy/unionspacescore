@@ -127,25 +127,30 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
       <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#252525]">Documents</h2>
-          <label className={`inline-flex items-center justify-center font-medium rounded transition-all-smooth focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#252525] px-5 py-2.5 text-sm gap-2 bg-[#252525] text-white hover:bg-[#252525]/90 cursor-pointer ${
-            uploadingDoc ? 'opacity-50 cursor-not-allowed' : ''
+          <label className={`relative overflow-hidden inline-flex items-center justify-center font-medium rounded transition-all-smooth focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#252525] px-5 py-2.5 text-sm gap-2 bg-[#252525] text-white hover:bg-[#252525]/90 cursor-pointer ${
+            uploadingDoc ? 'opacity-90 cursor-not-allowed' : ''
           }`}>
-            {uploadingDoc ? (
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
+            {uploadingDoc && (
+              <div 
+                className="absolute left-0 bottom-0 top-0 bg-[#3a3a3a] transition-all duration-200 ease-linear"
+                style={{ width: `${uploadProgress}%`, zIndex: 0 }}
+              />
             )}
-            <span>{uploadingDoc ? 'Uploading...' : 'Upload Document'}</span>
+            <div className="relative z-10 flex items-center gap-2">
+              {uploadingDoc ? (
+                <span className="text-xs">{Math.round(uploadProgress)}%</span>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+              )}
+              <span>{uploadingDoc ? 'Uploading...' : 'Upload Document'}</span>
+            </div>
             <input
               type="file"
               accept=".pdf,.docx"
