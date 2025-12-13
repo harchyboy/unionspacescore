@@ -1,8 +1,9 @@
-
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { getSupabase } from './lib/supabase.js';
 
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 const RAPIDAPI_HOST = 'professional-network-data.p.rapidapi.com';
+const CACHE_DURATION_HOURS = 24;
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,8 +26,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
-  const { url } = req.query as { url?: string };
+  const { url, force } = req.query as { url?: string; force?: string };
   const linkedinUrl = url || (req.body && req.body.url);
+  const forceRefresh = force === 'true';
 
   if (!linkedinUrl) {
     return res.status(400).json({ error: 'LinkedIn URL required' });
@@ -41,11 +43,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(503).json({ error: 'RAPIDAPI_KEY not configured' });
   }
 
+  const supabase = getSupabase();
+
   try {
+    // 1. Check cache if database is available
+    if (supabase) {
+      const { data: contact } = await supabase
+        .from('contacts')
+        .select('id, linkedin_posts_data, linkedin_posts_fetched_at')
+        .eq('linkedin_url', linkedinUrl) // We match by exact URL string as stored
+        .single();
+
+      if (contact && contact.linkedin_posts_data && !forceRefresh) {
+        const lastFetched = new Date(contact.linkedin_posts_fetched_at);
+        const now = new Date();
+        const diffHours = (now.getTime() - lastFetched.getTime()) / (1000 * 60 * 60);
+
+        if (diffHours < CACHE_DURATION_HOURS) {
+          console.log(`[LinkedIn Posts] Serving cached posts for ${username} (Age: ${diffHours.toFixed(1)}h)`);
+          return res.status(200).json({ 
+            success: true, 
+            data: contact.linkedin_posts_data, 
+            cached: true, 
+            lastFetched: contact.linkedin_posts_fetched_at 
+          });
+        }
+      }
+    }
+
+    // 2. Fetch from RapidAPI
     // Note: Endpoint might vary based on specific API subscription. 
     // trying /get-profile-posts which is common for this API provider
     const apiUrl = `https://${RAPIDAPI_HOST}/get-profile-posts?username=${encodeURIComponent(username)}`;
-    console.log(`Fetching posts for ${username} from ${apiUrl}`);
+    console.log(`[LinkedIn Posts] Fetching posts for ${username} from API`);
 
     const response = await fetch(apiUrl, {
       method: 'GET',
@@ -62,7 +92,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const data = await response.json();
-    return res.status(200).json({ success: true, data });
+
+    // 3. Update cache
+    if (supabase) {
+      // Find contact to update (we might need to search by partial URL match if exact match failed above, but sticking to exact for safety)
+      // Actually, let's just try to update any contact with this URL
+      const { error: updateError } = await supabase
+        .from('contacts')
+        .update({
+          linkedin_posts_data: data,
+          linkedin_posts_fetched_at: new Date().toISOString()
+        })
+        .eq('linkedin_url', linkedinUrl);
+
+      if (updateError) {
+        console.warn('[LinkedIn Posts] Failed to update cache:', updateError);
+      } else {
+        console.log(`[LinkedIn Posts] Cache updated for ${username}`);
+      }
+    }
+
+    return res.status(200).json({ 
+      success: true, 
+      data, 
+      cached: false, 
+      lastFetched: new Date().toISOString() 
+    });
 
   } catch (error) {
     console.error('LinkedIn posts error:', error);
@@ -72,4 +127,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 }
-

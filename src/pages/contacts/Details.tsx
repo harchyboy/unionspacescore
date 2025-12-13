@@ -55,6 +55,8 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
   const [approvingUrl, setApprovingUrl] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const [isRefreshingPosts, setIsRefreshingPosts] = useState(false);
+
   // Fetch LinkedIn posts if URL is available (must be before any conditional returns)
   const { data: linkedinPosts, isLoading: isLoadingPosts } = useQuery({
     queryKey: ['linkedin-posts', contact?.linkedinUrl],
@@ -67,6 +69,27 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
     enabled: !!contact?.linkedinUrl && activeTab === 'Overview',
     staleTime: 1000 * 60 * 60, // 1 hour
   });
+
+  const handleRefreshPosts = async () => {
+    if (!contact?.linkedinUrl) return;
+    setIsRefreshingPosts(true);
+    try {
+        await queryClient.fetchQuery({
+            queryKey: ['linkedin-posts', contact.linkedinUrl],
+            queryFn: async () => {
+                const res = await fetch(`${API_BASE}/api/linkedin-posts?url=${encodeURIComponent(contact.linkedinUrl!)}&force=true`);
+                if (!res.ok) throw new Error('Failed to fetch posts');
+                return res.json();
+            }
+        });
+        showToast('LinkedIn posts updated', 'success');
+    } catch (error) {
+        console.error('Error refreshing posts:', error);
+        showToast('Failed to update posts', 'error');
+    } finally {
+        setIsRefreshingPosts(false);
+    }
+  };
 
   // Search for LinkedIn profiles using Google Custom Search
   const handleFindLinkedIn = async () => {
@@ -635,6 +658,19 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                         <div className="flex items-center space-x-2">
                           <i className="fa-brands fa-linkedin text-[#0077B5] text-lg"></i>
                           <h2 className="text-lg font-semibold text-primary">Recent LinkedIn Activity</h2>
+                          {linkedinPosts?.lastFetched && (
+                            <span className="text-xs text-secondary ml-2">
+                                (Last synced: {formatDate(linkedinPosts.lastFetched)})
+                            </span>
+                          )}
+                          <button 
+                            onClick={handleRefreshPosts}
+                            disabled={isRefreshingPosts || isLoadingPosts}
+                            className="text-secondary hover:text-primary transition-colors ml-2 p-1"
+                            title="Refresh posts"
+                          >
+                            <i className={`fa-solid fa-rotate ${isRefreshingPosts ? 'fa-spin' : ''} text-xs`}></i>
+                          </button>
                         </div>
                         <a 
                           href={contact.linkedinUrl} 
