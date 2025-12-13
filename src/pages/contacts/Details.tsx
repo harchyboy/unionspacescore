@@ -433,7 +433,9 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
         </div>
         
         <div className="flex items-center space-x-4">
-          {['Overview', 'Relationship Graph', 'Performance', 'Communications', 'Documents'].map((tab) => (
+          {['Overview', 'Relationship Graph', 'Performance', 'Communications', 'Documents']
+            .filter(tab => !(tab === 'Documents' && contact.type === 'Broker'))
+            .map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
