@@ -4,10 +4,11 @@ interface FileRowProps {
   uploadedAt?: string;
   onDownload?: () => void;
   onDelete?: () => void;
+  actions?: React.ReactNode;
   className?: string;
 }
 
-export function FileRow({ name, size, uploadedAt, onDownload, onDelete, className = '' }: FileRowProps) {
+export function FileRow({ name, size, uploadedAt, onDownload, onDelete, actions, className = '' }: FileRowProps) {
   return (
     <div className={`flex items-center justify-between p-3 bg-white border border-[#E6E6E6] rounded-lg ${className}`}>
       <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -39,6 +40,7 @@ export function FileRow({ name, size, uploadedAt, onDownload, onDelete, classNam
         </div>
       </div>
       <div className="flex items-center space-x-2 ml-4">
+        {actions}
         {onDownload && (
           <button
             onClick={onDownload}

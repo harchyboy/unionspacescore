@@ -204,6 +204,31 @@ export function useDeleteImage() {
   });
 }
 
+export async function extractBrochureData(
+  id: PropertyId,
+  documentUrl: string
+): Promise<{ success: boolean; data: unknown }> {
+  return fetchJson<{ success: boolean; data: unknown }>(
+    `${API_BASE}/properties/${id}/extract-brochure`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ documentUrl }),
+    }
+  );
+}
+
+export function useExtractBrochureData() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, documentUrl }: { id: PropertyId; documentUrl: string }) =>
+      extractBrochureData(id, documentUrl),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['property', variables.id] });
+    },
+  });
+}
+
 // Bulk actions
 export async function bulkUpdateProperties(
   propertyIds: PropertyId[],

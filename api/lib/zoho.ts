@@ -129,7 +129,13 @@ export async function zohoListAttachments(moduleApiName: string, recordId: strin
   return response.data ?? [];
 }
 
-// Zoho record types
+// Update a property
+export async function zohoUpdateProperty(id: string, data: Record<string, unknown>): Promise<void> {
+  await zohoRequest(`/crm/v2/Properties/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ data: [data] }),
+  });
+}
 export interface ZohoContactRecord {
   id: string;
   First_Name?: string;
@@ -222,5 +228,23 @@ export interface ZohoUnitRecord {
   Modified_Time?: string;
   Created_Time?: string;
   [key: string]: unknown;
+}
+
+export function normalizeAccountType(type: string | undefined | null): string | null {
+  if (!type) return null;
+  const t = type.trim();
+  if (t === 'Broker' || t === 'Broker Firm' || t === 'Agency') return 'Brokerage';
+  if (t === 'Landlord' || t === 'Investor' || t === 'Developer') return 'Landlord';
+  if (t === 'Tenant' || t === 'Occupier') return 'Tenant';
+  if (t === 'Supplier' || t === 'Vendor') return 'Supplier';
+  return t;
+}
+
+export function mapAccountTypeToZoho(type: string): string[] {
+  if (type === 'Brokerage') return ['Broker', 'Broker Firm', 'Agency'];
+  if (type === 'Landlord') return ['Landlord', 'Investor', 'Developer'];
+  if (type === 'Tenant') return ['Tenant', 'Occupier'];
+  if (type === 'Supplier') return ['Supplier', 'Vendor'];
+  return [type];
 }
 

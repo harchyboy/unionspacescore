@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { Property } from '../../../types/property';
 import { FileRow } from '../../../components/ui/FileRow';
-import { useUploadDocument, useDeleteDocument, useDeleteImage } from '../../../api/properties';
+import { useUploadDocument, useDeleteDocument, useDeleteImage, useExtractBrochureData } from '../../../api/properties';
+import { useToast } from '../../../hooks/useToast';
 
 interface DocumentsMediaTabProps {
   property: Property;
@@ -10,9 +11,13 @@ interface DocumentsMediaTabProps {
 export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadingImg, setUploadingImg] = useState(false);
+  const [extractingDocId, setExtractingDocId] = useState<string | null>(null);
+  
   const uploadDocument = useUploadDocument();
   const deleteDocument = useDeleteDocument();
   const deleteImage = useDeleteImage();
+  const extractBrochure = useExtractBrochureData();
+  const { toast } = useToast();
 
   const handleDocumentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -20,16 +25,17 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
 
     const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     if (!allowedTypes.includes(file.type)) {
-      alert('Please upload PDF or DOCX files for documents.');
+      toast({ title: 'Invalid file type', description: 'Please upload PDF or DOCX files for documents.', type: 'error' });
       return;
     }
 
     setUploadingDoc(true);
     try {
       await uploadDocument.mutateAsync({ id: property.id, file });
+      toast({ title: 'Success', description: 'Document uploaded successfully.', type: 'success' });
     } catch (error) {
       console.error('Upload failed:', error);
-      alert('Upload failed. Please try again.');
+      toast({ title: 'Error', description: 'Upload failed. Please try again.', type: 'error' });
     } finally {
       setUploadingDoc(false);
       e.target.value = '';
@@ -42,16 +48,17 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
 
     const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      alert('Please upload PNG, JPG or WebP files for images.');
+      toast({ title: 'Invalid file type', description: 'Please upload PNG, JPG or WebP files for images.', type: 'error' });
       return;
     }
 
     setUploadingImg(true);
     try {
       await uploadDocument.mutateAsync({ id: property.id, file });
+      toast({ title: 'Success', description: 'Image uploaded successfully.', type: 'success' });
     } catch (error) {
       console.error('Upload failed:', error);
-      alert('Upload failed. Please try again.');
+      toast({ title: 'Error', description: 'Upload failed. Please try again.', type: 'error' });
     } finally {
       setUploadingImg(false);
       e.target.value = '';
@@ -62,9 +69,10 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
     if (!confirm('Are you sure you want to delete this document?')) return;
     try {
       await deleteDocument.mutateAsync({ propertyId: property.id, documentId: docId });
+      toast({ title: 'Success', description: 'Document deleted successfully.', type: 'success' });
     } catch (error) {
       console.error('Delete failed:', error);
-      alert('Delete failed. Please try again.');
+      toast({ title: 'Error', description: 'Delete failed. Please try again.', type: 'error' });
     }
   };
 
@@ -72,9 +80,25 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
     if (!confirm('Are you sure you want to delete this image?')) return;
     try {
       await deleteImage.mutateAsync({ propertyId: property.id, imageUrl });
+      toast({ title: 'Success', description: 'Image deleted successfully.', type: 'success' });
     } catch (error) {
       console.error('Delete failed:', error);
-      alert('Delete failed. Please try again.');
+      toast({ title: 'Error', description: 'Delete failed. Please try again.', type: 'error' });
+    }
+  };
+  
+  const handleExtractData = async (docId: string, docUrl: string) => {
+    if (!confirm('This will analyze the brochure using AI and update property details. Continue?')) return;
+    
+    setExtractingDocId(docId);
+    try {
+      await extractBrochure.mutateAsync({ id: property.id, documentUrl: docUrl });
+      toast({ title: 'Success', description: 'Data extracted and property updated successfully.', type: 'success' });
+    } catch (error) {
+      console.error('Extraction failed:', error);
+      toast({ title: 'Error', description: 'Failed to extract data. Please try again.', type: 'error' });
+    } finally {
+      setExtractingDocId(null);
     }
   };
 
@@ -117,10 +141,36 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
               uploadedAt={doc.uploadedAt}
               onDownload={() => window.open(doc.url, '_blank')}
               onDelete={() => handleDocDelete(doc.id)}
+              actions={
+                doc.type === 'application/pdf' && (
+                  <button
+                    onClick={() => handleExtractData(doc.id, doc.url)}
+                    disabled={extractingDocId === doc.id}
+                    className={`p-1.5 rounded-md transition-colors ${
+                      extractingDocId === doc.id
+                        ? 'text-indigo-400 cursor-not-allowed'
+                        : 'text-indigo-600 hover:bg-indigo-50'
+                    }`}
+                    title="Extract Data using AI"
+                  >
+                    {extractingDocId === doc.id ? (
+                      <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                      </svg>
+                    )}
+                  </button>
+                )
+              }
             />
           ))}
         </div>
       </div>
+
 
       {/* Media Gallery Section */}
       <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">

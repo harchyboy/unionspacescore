@@ -66,6 +66,7 @@ export interface DbProperty {
   city: string | null;
   submarket: string | null;
   images: string[] | null;
+  documents: { name: string; url: string; type: string; uploaded_at: string }[] | null;
   country: string | null;
   total_size_sqft: number | null;
   floor_count: number | null;

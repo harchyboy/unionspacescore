@@ -19,7 +19,7 @@ const WEBP_QUALITY = 80;       // WebP quality (0-100)
 // Helper to parse multipart form data
 async function parseForm(req: VercelRequest): Promise<{ fields: Fields; files: Files }> {
   return new Promise((resolve, reject) => {
-    const form = formidable({ maxFileSize: 10 * 1024 * 1024 }); // 10MB max
+    const form = formidable({ maxFileSize: 25 * 1024 * 1024 }); // 25MB max
     form.parse(req, (err, fields, files) => {
       if (err) reject(err);
       else resolve({ fields, files });
@@ -152,6 +152,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           console.error('Error updating property images:', updateError);
           return res.status(500).json({ error: 'Failed to update property images' });
         }
+      } else {
+        // Add to documents array
+        const { data: property, error: fetchError } = await supabase
+          .from('properties')
+          .select('documents')
+          .eq('id', propertyId)
+          .single();
+
+        if (fetchError) {
+          console.error('Error fetching property:', fetchError);
+          return res.status(500).json({ error: 'Failed to fetch property' });
+        }
+
+        const currentDocs = property.documents || [];
+        const newDoc = {
+          name: originalName,
+          url: publicUrl,
+          type: finalMimeType,
+          uploaded_at: new Date().toISOString()
+        };
+        const updatedDocs = [...currentDocs, newDoc];
+
+        const { error: updateError } = await supabase
+          .from('properties')
+          .update({ documents: updatedDocs })
+          .eq('id', propertyId);
+
+        if (updateError) {
+          console.error('Error updating property documents:', updateError);
+          return res.status(500).json({ error: 'Failed to update property documents' });
+        }
       }
 
       // Return uploaded file info
@@ -216,6 +247,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           await supabase
             .from('properties')
             .update({ images: updatedImages })
+            .eq('id', propertyId);
+        }
+      } else {
+        // Remove from documents
+        const { data: property } = await supabase
+          .from('properties')
+          .select('documents')
+          .eq('id', propertyId)
+          .single();
+
+        if (property && property.documents) {
+          const updatedDocs = property.documents.filter((doc: { url: string }) => doc.url !== imageUrl);
+          
+          await supabase
+            .from('properties')
+            .update({ documents: updatedDocs })
             .eq('id', propertyId);
         }
       }

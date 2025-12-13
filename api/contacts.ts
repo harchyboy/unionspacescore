@@ -67,10 +67,10 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
     const tags = record.Tag as { name: string }[];
     // Check for known types in tags
     const typeTag = tags.find(t => 
-      ['Broker', 'Disposal Agent', 'Tenant', 'Landlord', 'Supplier'].includes(t.name)
+      ['Broker', 'Disposal Agent', 'Disposal Agents', 'Tenant', 'Landlord', 'Supplier'].includes(t.name)
     );
     if (typeTag) {
-      type = typeTag.name;
+      type = typeTag.name === 'Disposal Agents' ? 'Disposal Agent' : typeTag.name;
     }
   }
 
@@ -196,6 +196,11 @@ function buildCriteria(typeFilter?: string, healthFilter?: string, query?: strin
 
     // Also try matching Tags (if user used tags instead of field)
     orConditions.push(`(Tag:equals:${typeFilter})`);
+    
+    // Also try matching plural Tags
+    if (!typeFilter.endsWith('s')) {
+      orConditions.push(`(Tag:equals:${typeFilter}s)`);
+    }
     
     conditions.push(`(${orConditions.join('or')})`);
   }
