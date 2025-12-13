@@ -80,13 +80,13 @@ async function searchGoogleCSE(query: string): Promise<GoogleSearchResponse> {
   return data;
 }
 
-function extractLinkedInProfile(
+async function extractLinkedInProfile(
   item: GoogleSearchItem, 
   targetFirstName: string, 
   targetLastName: string, 
   targetCompany?: string,
   context: { city?: string; role?: string } = {}
-): LinkedInCandidate | null {
+): Promise<LinkedInCandidate | null> {
   // Only accept linkedin.com/in/ URLs (personal profiles)
   if (!item.link.includes('linkedin.com/in/')) {
     return null;
@@ -106,15 +106,66 @@ function extractLinkedInProfile(
     headline = item.snippet.split('·')[0].trim();
   }
   
-  // Try to get image from pagemap
-  let imageUrl = item.pagemap?.metatags?.[0]?.['og:image'];
+  // Get image by scraping the LinkedIn profile page directly
+  let imageUrl: string | undefined = undefined;
   
-  if (!imageUrl && item.pagemap?.cse_image && item.pagemap.cse_image.length > 0) {
-    imageUrl = item.pagemap.cse_image[0].src;
+  // Try scraping the actual LinkedIn profile page for og:image
+  try {
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    
+    const profileResponse = await fetch(item.link, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (profileResponse.ok) {
+      const html = await profileResponse.text();
+      
+      // Look for og:image meta tag
+      const ogImageMatch = html.match(/<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/i);
+      if (ogImageMatch && ogImageMatch[1]) {
+        const scrapedImageUrl = ogImageMatch[1];
+        
+        // Filter out generic/ghost profile images
+        if (!scrapedImageUrl.includes('static.licdn.com/aero-v1/sc/h/') && 
+            !scrapedImageUrl.includes('/ghost_') &&
+            !scrapedImageUrl.includes('static-exp1')) {
+          imageUrl = scrapedImageUrl;
+          console.log(`[LinkedIn Search] Scraped profile image from ${item.link}: ${imageUrl}`);
+        } else {
+          console.log(`[LinkedIn Search] Ignored generic profile image from ${item.link}`);
+        }
+      }
+    }
+  } catch (scrapeError) {
+    // Silently handle errors (including timeouts) and fall back to pagemap
+    if ((scrapeError as Error).name !== 'AbortError') {
+      console.warn(`[LinkedIn Search] Failed to scrape profile page ${item.link}:`, scrapeError);
+    }
   }
   
-  if (!imageUrl && item.pagemap?.cse_thumbnail && item.pagemap.cse_thumbnail.length > 0) {
-    imageUrl = item.pagemap.cse_thumbnail[0].src;
+  // Fallback to pagemap if scraping failed
+  if (!imageUrl) {
+    imageUrl = item.pagemap?.metatags?.[0]?.['og:image'];
+    
+    if (!imageUrl && item.pagemap?.cse_image && item.pagemap.cse_image.length > 0) {
+      imageUrl = item.pagemap.cse_image[0].src;
+    }
+    
+    if (!imageUrl && item.pagemap?.cse_thumbnail && item.pagemap.cse_thumbnail.length > 0) {
+      imageUrl = item.pagemap.cse_thumbnail[0].src;
+    }
   }
   
   // Calculate match score
@@ -382,8 +433,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (searchResults.items && searchResults.items.length > 0) {
           debugRawItems = [...debugRawItems, ...searchResults.items.map(i => ({ ...i, queryType: type }))];
           
-          const newCandidates = searchResults.items
-            .map(item => extractLinkedInProfile(item, firstName, lastName, company || undefined, context))
+          // Only scrape the first 3 results to avoid rate limiting and improve performance
+          const itemsToScrape = searchResults.items.slice(0, 3);
+          const candidatePromises = itemsToScrape.map(item => 
+            extractLinkedInProfile(item, firstName, lastName, company || undefined, context)
+          );
+          const resolvedCandidates = await Promise.all(candidatePromises);
+          
+          const newCandidates = resolvedCandidates
             .filter((c): c is LinkedInCandidate => c !== null)
             .filter(c => !seenUrls.has(c.url)); // Deduplicate
             
