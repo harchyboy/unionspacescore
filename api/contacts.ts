@@ -28,14 +28,15 @@ interface ContactDto {
 
 // Map database record to DTO
 function mapDbContact(record: DbContact): ContactDto {
+  const cacheBust = record.zoho_modified_at ? new Date(record.zoho_modified_at).getTime() : '';
   return {
     id: record.zoho_id,
     firstName: record.first_name,
     lastName: record.last_name,
     name: record.full_name,
     email: record.email,
-    // Use a fresh cache-busting token so newly uploaded photos show immediately
-    avatar: record.zoho_id ? `/api/contacts/${record.zoho_id}/photo?t=${Date.now()}` : null,
+    // Use modification time for cache busting
+    avatar: record.zoho_id ? `/api/contacts/${record.zoho_id}/photo${cacheBust ? `?t=${cacheBust}` : ''}` : null,
     phone: record.phone,
     mobile: record.mobile,
     role: record.role,
@@ -73,14 +74,16 @@ function mapZohoContact(record: ZohoContactRecord): ContactDto {
     }
   }
 
+  const cacheBust = record.Modified_Time ? new Date(record.Modified_Time).getTime() : '';
+
   return {
     id: record.id,
     firstName,
     lastName,
     name: fullName,
     email: record.Email || '',
-    // Use a fresh cache-busting token so newly uploaded photos show immediately
-    avatar: record.id ? `/api/contacts/${record.id}/photo?t=${Date.now()}` : null,
+    // Use modification time for cache busting
+    avatar: record.id ? `/api/contacts/${record.id}/photo${cacheBust ? `?t=${cacheBust}` : ''}` : null,
     phone: record.Phone ?? null,
     mobile: record.Mobile ?? null,
     role: record.Title ?? null,

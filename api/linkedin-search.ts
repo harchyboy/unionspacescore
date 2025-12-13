@@ -78,7 +78,13 @@ async function searchGoogleCSE(query: string): Promise<GoogleSearchResponse> {
   return data;
 }
 
-function extractLinkedInProfile(item: GoogleSearchItem, targetFirstName: string, targetLastName: string, targetCompany?: string): LinkedInCandidate | null {
+function extractLinkedInProfile(
+  item: GoogleSearchItem, 
+  targetFirstName: string, 
+  targetLastName: string, 
+  targetCompany?: string,
+  context: { city?: string; role?: string } = {}
+): LinkedInCandidate | null {
   // Only accept linkedin.com/in/ URLs (personal profiles)
   if (!item.link.includes('linkedin.com/in/')) {
     return null;
@@ -105,6 +111,8 @@ function extractLinkedInProfile(item: GoogleSearchItem, targetFirstName: string,
   let matchScore = 0;
   const nameLower = name.toLowerCase();
   const targetFullName = `${targetFirstName} ${targetLastName}`.toLowerCase();
+  const snippetLower = (item.snippet || '').toLowerCase();
+  const headlineLower = headline.toLowerCase();
   
   // Name match (most important)
   if (nameLower === targetFullName) {
@@ -118,8 +126,6 @@ function extractLinkedInProfile(item: GoogleSearchItem, targetFirstName: string,
   // Company match
   if (targetCompany) {
     const companyLower = targetCompany.toLowerCase();
-    const snippetLower = (item.snippet || '').toLowerCase();
-    const headlineLower = headline.toLowerCase();
     
     // Try variations of company name
     const companyVariations = [
@@ -135,9 +141,25 @@ function extractLinkedInProfile(item: GoogleSearchItem, targetFirstName: string,
       }
     }
   }
+
+  // City match
+  if (context.city) {
+    const cityLower = context.city.toLowerCase();
+    if (snippetLower.includes(cityLower) || headlineLower.includes(cityLower)) {
+      matchScore += 15;
+    }
+  }
+
+  // Role match
+  if (context.role) {
+    const roleLower = context.role.toLowerCase();
+    if (headlineLower.includes(roleLower) || snippetLower.includes(roleLower)) {
+      matchScore += 15;
+    }
+  }
   
   // Boost if headline looks professional
-  if (headline && (headline.includes('Director') || headline.includes('Manager') || headline.includes('Partner') || headline.includes('Associate'))) {
+  if (headline && (headline.includes('Director') || headline.includes('Manager') || headline.includes('Partner') || headline.includes('Associate') || headline.includes('MRICS') || headline.includes('Surveyor'))) {
     matchScore += 5;
   }
   
@@ -156,8 +178,21 @@ async function getContactFromDb(zohoId: string) {
 
   const { data } = await supabase
     .from('contacts')
-    .select('zoho_id, first_name, last_name, company_name, linkedin_url')
+    .select('zoho_id, first_name, last_name, company_name, linkedin_url, role, contact_type, account_id')
     .eq('zoho_id', zohoId)
+    .single();
+
+  return data;
+}
+
+async function getAccountFromDb(accountId: string) {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+
+  const { data } = await supabase
+    .from('accounts')
+    .select('city, name')
+    .eq('zoho_id', accountId)
     .single();
 
   return data;
@@ -234,92 +269,121 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const firstName = contact.first_name;
     const lastName = contact.last_name;
     const company = contact.company_name;
-
-    // Build search query
-    const searchQuery = company 
-      ? `"${firstName} ${lastName}" "${company}" site:linkedin.com/in/`
-      : `"${firstName} ${lastName}" site:linkedin.com/in/`;
-
-    console.log(`Searching Google CSE for: ${firstName} ${lastName} at ${company || 'unknown company'}`);
-
-    const searchResults = await searchGoogleCSE(searchQuery);
-    const debugQueries: string[] = [searchQuery];
-    type DebugRawItem = { title?: string; link?: string; query: string };
-    type DebugInfo = { query: string; info: unknown };
-
-    let debugRawItems: DebugRawItem[] = searchResults.items
-      ? searchResults.items.map((i) => ({ title: i.title, link: i.link, query: 'initial' }))
-      : [];
-    const debugInfo: DebugInfo[] = [{ query: searchQuery, info: searchResults.searchInformation }];
+    const role = contact.role;
     
-    let candidates: LinkedInCandidate[] = [];
+    let city: string | undefined = undefined;
+    if (contact.account_id) {
+       const account = await getAccountFromDb(contact.account_id);
+       if (account && account.city) {
+         city = account.city;
+       }
+    }
     
-    if (searchResults.items && searchResults.items.length > 0) {
-      candidates = searchResults.items
-        .map(item => extractLinkedInProfile(item, firstName, lastName, company || undefined))
-        .filter((c): c is LinkedInCandidate => c !== null);
+    const context = { city, role };
+
+    // Build search queries strategy
+    const queriesToTry: { query: string; type: string }[] = [];
+    
+    // 1. Strict company search
+    if (company) {
+       queriesToTry.push({ 
+         query: `"${firstName} ${lastName}" "${company}" site:linkedin.com/in/`,
+         type: 'company_strict'
+       });
+       
+       const cleaned = cleanCompanyName(company);
+       if (cleaned !== company && cleaned.length > 2) {
+         queriesToTry.push({
+           query: `"${firstName} ${lastName}" "${cleaned}" site:linkedin.com/in/`,
+           type: 'company_cleaned'
+         });
+       }
+    }
+    
+    // 2. Location search (High confidence if city matches)
+    if (city) {
+      queriesToTry.push({
+        query: `"${firstName} ${lastName}" "${city}" site:linkedin.com/in/`,
+        type: 'city_match'
+      });
+    }
+    
+    // 3. Role search
+    if (role) {
+      queriesToTry.push({
+        query: `"${firstName} ${lastName}" "${role}" site:linkedin.com/in/`,
+        type: 'role_match'
+      });
     }
 
-    if (candidates.length === 0) {
-      // Try with cleaned company name if original had suffixes
-      if (company) {
-        const cleanedCompany = cleanCompanyName(company);
-        
-        if (cleanedCompany !== company && cleanedCompany.length > 2) {
-           console.log(`Retrying with cleaned company name: ${cleanedCompany}`);
-           const retryQuery = `"${firstName} ${lastName}" "${cleanedCompany}" site:linkedin.com/in/`;
-           debugQueries.push(retryQuery);
-           const retryResults = await searchGoogleCSE(retryQuery);
-           debugInfo.push({ query: retryQuery, info: retryResults.searchInformation });
-           
-           if (retryResults.items) {
-             debugRawItems = [...debugRawItems, ...retryResults.items.map(i => ({ title: i.title, link: i.link, query: 'retry_clean_company' }))];
-           }
-           
-           if (retryResults.items && retryResults.items.length > 0) {
-             candidates = retryResults.items
-              .map(item => extractLinkedInProfile(item, firstName, lastName, cleanedCompany))
-              .filter((c): c is LinkedInCandidate => c !== null);
-           }
-        }
-      }
+    // 4. Industry search (Contextual)
+    queriesToTry.push({
+      query: `"${firstName} ${lastName}" "Real Estate" site:linkedin.com/in/`,
+      type: 'industry_real_estate'
+    });
+    
+    queriesToTry.push({
+      query: `"${firstName} ${lastName}" "Property" site:linkedin.com/in/`,
+      type: 'industry_property'
+    });
+    
+    // 5. Fallback (Name only) - Last resort
+    queriesToTry.push({
+      query: `"${firstName} ${lastName}" site:linkedin.com/in/`,
+      type: 'name_only_fallback'
+    });
 
-      // If still no candidates, try without company name (fallback)
-      if (candidates.length === 0 && company) {
-        console.log('Retrying without company name...');
-        const fallbackQuery = `"${firstName} ${lastName}" site:linkedin.com/in/`;
-        debugQueries.push(fallbackQuery);
-        const fallbackResults = await searchGoogleCSE(fallbackQuery);
-        debugInfo.push({ query: fallbackQuery, info: fallbackResults.searchInformation });
-        
-        if (fallbackResults.items) {
-             debugRawItems = [...debugRawItems, ...fallbackResults.items.map(i => ({ title: i.title, link: i.link, query: 'fallback_name_only' }))];
-        }
-        
-        if (fallbackResults.items && fallbackResults.items.length > 0) {
-          candidates = fallbackResults.items
-            .map(item => extractLinkedInProfile(item, firstName, lastName, company)) // Still pass company for scoring
-            .filter((c): c is LinkedInCandidate => c !== null);
-        }
-      }
+    // 6. Broad fallback
+    queriesToTry.push({
+      query: `"${firstName} ${lastName}" LinkedIn`,
+      type: 'broad_fallback'
+    });
 
-      // Final fallback: Try broad search without site: operator
-      if (candidates.length === 0) {
-        console.log('Retrying broad search...');
-        const broadQuery = `"${firstName} ${lastName}" LinkedIn`;
-        debugQueries.push(broadQuery);
-        const broadResults = await searchGoogleCSE(broadQuery);
-        debugInfo.push({ query: broadQuery, info: broadResults.searchInformation });
-        
-        if (broadResults.items) {
-             debugRawItems = [...debugRawItems, ...broadResults.items.map(i => ({ title: i.title, link: i.link, query: 'broad_linkedin' }))];
-        }
+    const debugQueries: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const debugInfo: any[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let debugRawItems: any[] = [];
+    let candidates: LinkedInCandidate[] = [];
+    const seenUrls = new Set<string>();
 
-        if (broadResults.items && broadResults.items.length > 0) {
-          candidates = broadResults.items
-            .map(item => extractLinkedInProfile(item, firstName, lastName, company))
-            .filter((c): c is LinkedInCandidate => c !== null);
+    console.log(`Starting LinkedIn search for: ${firstName} ${lastName} (Company: ${company}, City: ${city}, Role: ${role})`);
+
+    // Execute searches sequentially until we find good candidates
+    for (const { query, type } of queriesToTry) {
+      // Don't run too many searches if we already have candidates from better queries
+      if (candidates.length >= 3 && type.includes('fallback')) break;
+      
+      console.log(`Trying search strategy: ${type} - Query: ${query}`);
+      debugQueries.push(query);
+      
+      try {
+        const searchResults = await searchGoogleCSE(query);
+        debugInfo.push({ query, type, info: searchResults.searchInformation });
+        
+        if (searchResults.items && searchResults.items.length > 0) {
+          debugRawItems = [...debugRawItems, ...searchResults.items.map(i => ({ ...i, queryType: type }))];
+          
+          const newCandidates = searchResults.items
+            .map(item => extractLinkedInProfile(item, firstName, lastName, company || undefined, context))
+            .filter((c): c is LinkedInCandidate => c !== null)
+            .filter(c => !seenUrls.has(c.url)); // Deduplicate
+            
+          for (const c of newCandidates) {
+            seenUrls.add(c.url);
+            candidates.push(c);
+          }
+          
+          // If we found a really good match (high score), we can stop
+          // Score > 60 means name match + (company OR city OR role match)
+          const hasGoodMatch = newCandidates.some(c => c.matchScore >= 60);
+          if (hasGoodMatch) {
+            console.log('Found high confidence match, stopping search.');
+            break;
+          }
         }
+      } catch (err) {
+        console.error(`Search failed for query: ${query}`, err);
       }
     }
 
@@ -332,7 +396,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).json({
       success: true,
       candidates,
-      searchedFor: { firstName, lastName, company },
+      searchedFor: { firstName, lastName, company, city, role },
       debug: { queries: debugQueries, rawItems: debugRawItems, info: debugInfo }
     });
 
