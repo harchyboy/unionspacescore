@@ -84,11 +84,9 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
       <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#252525]">Documents</h2>
-          <label
-            className={`bg-[#252525] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all cursor-pointer flex items-center space-x-2 ${
-              uploadingDoc ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
+          <label className={`inline-flex items-center justify-center font-medium rounded transition-all-smooth focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#252525] px-5 py-2.5 text-sm gap-2 bg-[#252525] text-white hover:bg-[#252525]/90 cursor-pointer ${
+            uploadingDoc ? 'opacity-50 cursor-not-allowed' : ''
+          }`}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -128,11 +126,9 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
       <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#252525]">Media Gallery</h2>
-          <label
-            className={`bg-[#252525] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all cursor-pointer flex items-center space-x-2 ${
-              uploadingImg ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
+          <label className={`inline-flex items-center justify-center font-medium rounded transition-all-smooth focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#252525] px-5 py-2.5 text-sm gap-2 bg-[#252525] text-white hover:bg-[#252525]/90 cursor-pointer ${
+            uploadingImg ? 'opacity-50 cursor-not-allowed' : ''
+          }`}>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"

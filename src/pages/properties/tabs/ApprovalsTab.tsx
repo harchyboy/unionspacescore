@@ -1,6 +1,7 @@
 import type { Property } from '../../../types/property';
 import { Table, TableHeader, TableHeaderCell, TableBody, TableRow, TableCell } from '../../../components/ui/Table';
 import { Chip } from '../../../components/ui/Chip';
+import { Button } from '../../../components/ui/Button';
 
 interface ApprovalsTabProps {
   property: Property;
@@ -25,12 +26,12 @@ export function ApprovalsTab(_props: ApprovalsTabProps) {
     <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-[#252525]">Approvals</h2>
-        <button className="bg-[#252525] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all flex items-center space-x-2">
+        <Button variant="primary" size="md">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           <span>Request Approval</span>
-        </button>
+        </Button>
       </div>
 
       {approvals.length === 0 ? (

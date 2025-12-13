@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import type { Property } from '../../types/property';
+import { useUploadDocument } from '../../api/properties';
 
 interface PropertyHeaderProps {
   property: Property;
@@ -10,6 +12,8 @@ export function PropertyHeader({ property, onBackClick }: PropertyHeaderProps) {
   const stats = property.stats;
   const dataHealth = property.dataHealth || 92;
   const navigate = useNavigate();
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const uploadDocument = useUploadDocument();
 
   const handleBackClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -20,6 +24,28 @@ export function PropertyHeader({ property, onBackClick }: PropertyHeaderProps) {
     setTimeout(() => {
       navigate('/properties');
     }, 300);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Please upload PNG, JPG or WebP files for images.');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      await uploadDocument.mutateAsync({ id: property.id, file });
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Upload failed. Please try again.');
+    } finally {
+      setUploadingImage(false);
+      e.target.value = '';
+    }
   };
 
   return (
@@ -50,20 +76,40 @@ export function PropertyHeader({ property, onBackClick }: PropertyHeaderProps) {
       <section className="px-8 py-6">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-start space-x-6 flex-1">
-            {/* Property Image */}
-            <div className="w-32 h-32 bg-[#FAFAFA] rounded-lg overflow-hidden flex-shrink-0">
+            {/* Property Image - Clickable to Upload */}
+            <label className="w-32 h-32 bg-[#FAFAFA] rounded-lg overflow-hidden flex-shrink-0 cursor-pointer group relative">
               {property.images?.[0] ? (
-                <img 
-                  className="w-full h-full object-cover" 
-                  src={property.images[0]} 
-                  alt={`${property.name} hero`} 
-                />
+                <>
+                  <img 
+                    className="w-full h-full object-cover" 
+                    src={property.images[0]} 
+                    alt={`${property.name} hero`} 
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <div className="text-white text-center">
+                      <i className="fa-solid fa-camera text-2xl mb-1"></i>
+                      <div className="text-xs font-medium">
+                        {uploadingImage ? 'Uploading...' : 'Change Photo'}
+                      </div>
+                    </div>
+                  </div>
+                </>
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <i className="fa-solid fa-building text-4xl text-secondary"></i>
+                <div className="w-full h-full flex flex-col items-center justify-center group-hover:bg-[#F0F0F0] transition-all">
+                  <i className="fa-solid fa-building text-4xl text-secondary group-hover:text-primary transition-all"></i>
+                  <div className="text-xs text-secondary group-hover:text-primary mt-2 font-medium">
+                    {uploadingImage ? 'Uploading...' : 'Upload Photo'}
+                  </div>
                 </div>
               )}
-            </div>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleImageUpload}
+                disabled={uploadingImage}
+                className="hidden"
+              />
+            </label>
             
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">

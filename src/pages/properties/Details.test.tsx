@@ -35,6 +35,15 @@ vi.mock('../../api/properties', () => ({
     isLoading: false,
     error: null,
   }),
+  useUploadDocument: () => ({
+    mutateAsync: vi.fn(),
+  }),
+  useDeleteDocument: () => ({
+    mutateAsync: vi.fn(),
+  }),
+  useDeleteImage: () => ({
+    mutateAsync: vi.fn(),
+  }),
 }));
 
 const renderWithProviders = (ui: React.ReactElement, initialEntries = ['/properties/test-id']) => {
