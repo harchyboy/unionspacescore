@@ -104,7 +104,7 @@ export async function uploadDocument(
       const storagePath = `properties/${id}/${folder}${finalFileName}`;
 
       // Show some progress to indicate upload started
-      if (onProgress) {
+      if (typeof onProgress === 'function') {
         onProgress(10);
       }
 
@@ -126,7 +126,7 @@ export async function uploadDocument(
       console.log('Upload successful, getting public URL');
 
       // Show progress after upload completes
-      if (onProgress) {
+      if (typeof onProgress === 'function') {
         onProgress(80);
       }
 
@@ -160,7 +160,7 @@ export async function uploadDocument(
       }
 
       // Complete
-      if (onProgress) {
+      if (typeof onProgress === 'function') {
         onProgress(100);
       }
 
@@ -187,7 +187,7 @@ export async function uploadDocument(
     throw new Error('File too large. Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables in Vercel for large file uploads.');
   }
 
-  if (onProgress) {
+  if (typeof onProgress === 'function') {
     onProgress(10);
   }
 
@@ -204,7 +204,7 @@ export async function uploadDocument(
     throw new Error(errorData.error || `Upload error: ${response.statusText}`);
   }
 
-  if (onProgress) {
+  if (typeof onProgress === 'function') {
     onProgress(100);
   }
 
