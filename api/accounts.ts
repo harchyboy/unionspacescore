@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured, DbAccount } from './lib/supabase.js';
-import { zohoRequest, ZohoAccountRecord } from './lib/zoho.js';
+import { zohoRequest, ZohoAccountRecord, normalizeAccountType, mapAccountTypeToZoho } from './lib/zoho.js';
 
 interface ContactDto {
   id: string;
@@ -57,7 +57,7 @@ function mapZohoAccount(record: ZohoAccountRecord, contacts?: ContactDto[]): Acc
   return {
     id: record.id,
     name: record.Account_Name || 'Unnamed Account',
-    type: record.Account_Type ?? null,
+    type: normalizeAccountType(record.Account_Type) ?? null,
     industry: record.Industry ?? null,
     address: record.Billing_Street ?? null,
     city: record.Billing_City ?? null,
@@ -204,18 +204,29 @@ async function getTotalCountFromZoho(typeFilter?: string, search?: string): Prom
   let page = 1;
   let hasMore = true;
   
+  // Construct type criteria if needed
+  let typeCriteriaString = '';
+  if (typeFilter) {
+    const zohoTypes = mapAccountTypeToZoho(typeFilter);
+    if (zohoTypes.length === 1) {
+      typeCriteriaString = `(Account_Type:equals:${zohoTypes[0]})`;
+    } else {
+      const orGroup = zohoTypes.map(t => `(Account_Type:equals:${t})`).join('or');
+      typeCriteriaString = `(${orGroup})`;
+    }
+  }
+
   while (hasMore) {
     let apiPath: string;
     
     if (search && search.trim().length >= 2) {
       let criteria = `(Account_Name:contains:${search.trim()})`;
       if (typeFilter) {
-        criteria = `((Account_Name:contains:${search.trim()})and(Account_Type:equals:${typeFilter}))`;
+        criteria = `((Account_Name:contains:${search.trim()})and${typeCriteriaString})`;
       }
       apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=200`;
     } else if (typeFilter) {
-      const criteria = `(Account_Type:equals:${typeFilter})`;
-      apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=200`;
+      apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(typeCriteriaString)}&page=${page}&per_page=200`;
     } else {
       apiPath = `/crm/v2/Accounts?page=${page}&per_page=200`;
     }
@@ -237,16 +248,27 @@ async function getTotalCountFromZoho(typeFilter?: string, search?: string): Prom
 async function listAccountsFromZoho(page: number, perPage: number, typeFilter?: string, search?: string) {
   let apiPath: string;
   
+  // Construct type criteria if needed
+  let typeCriteriaString = '';
+  if (typeFilter) {
+    const zohoTypes = mapAccountTypeToZoho(typeFilter);
+    if (zohoTypes.length === 1) {
+      typeCriteriaString = `(Account_Type:equals:${zohoTypes[0]})`;
+    } else {
+      const orGroup = zohoTypes.map(t => `(Account_Type:equals:${t})`).join('or');
+      typeCriteriaString = `(${orGroup})`;
+    }
+  }
+
   const trimmed = search?.trim();
   if (trimmed && trimmed.length >= 2) {
     let criteria = `(Account_Name:contains:${trimmed})`;
     if (typeFilter) {
-      criteria = `((Account_Name:contains:${trimmed})and(Account_Type:equals:${typeFilter}))`;
+      criteria = `((Account_Name:contains:${trimmed})and${typeCriteriaString})`;
     }
     apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
   } else if (typeFilter) {
-    const criteria = `(Account_Type:equals:${typeFilter})`;
-    apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(criteria)}&page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
+    apiPath = `/crm/v2/Accounts/search?criteria=${encodeURIComponent(typeCriteriaString)}&page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
   } else {
     apiPath = `/crm/v2/Accounts?page=${page}&per_page=${perPage}&sort_order=desc&sort_by=Modified_Time`;
   }

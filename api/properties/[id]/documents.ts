@@ -102,7 +102,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         finalFileName = originalName.replace(/[^a-zA-Z0-9.-]/g, '_');
       }
 
-      const storagePath = `properties/${propertyId}/${timestamp}_${finalFileName}`;
+      // Use 'documents' folder for non-image files
+      const folder = isImage ? '' : 'documents/';
+      const storagePath = `properties/${propertyId}/${folder}${timestamp}_${finalFileName}`;
 
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
@@ -214,6 +216,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     try {
       // Extract storage path from URL
       // URL format: https://xxx.supabase.co/storage/v1/object/public/property-files/properties/{id}/{filename}
+      // OR properties/{id}/documents/{filename}
       const pathMatch = imageUrl.match(/property-files\/(.+)$/);
       if (!pathMatch) {
         return res.status(400).json({ error: 'Invalid file URL' });

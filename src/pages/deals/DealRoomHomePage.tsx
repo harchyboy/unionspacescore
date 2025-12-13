@@ -74,10 +74,16 @@ export function DealRoomHomePage() {
   };
 
   const handleUploadDoc = () => {
-    const name = `Document_${Date.now()}.pdf`;
-    const tag = docFilter !== 'All' ? docFilter : 'Other';
-    uploadDocument(name, tag);
-    showToast('Document uploaded', 'success');
+    // Simulate upload delay
+    const toastId = showToast('Uploading document...', 'info');
+    
+    setTimeout(() => {
+      const name = `Document_${Date.now()}.pdf`;
+      const tag = docFilter !== 'All' ? docFilter : 'Other';
+      uploadDocument(name, tag);
+      if (toastId) removeToast(toastId);
+      showToast('Document uploaded', 'success');
+    }, 1500);
   };
 
   const handleSaveHots = () => {

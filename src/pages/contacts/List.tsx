@@ -356,7 +356,7 @@ export function ContactsList() {
             >
               <option value="all">All Companies</option>
               {sortedCompanies.map((company) => (
-                <option key={company.id} value={company.name}>
+                <option key={company.id} value={company.id}>
                   {company.name}
                 </option>
               ))}

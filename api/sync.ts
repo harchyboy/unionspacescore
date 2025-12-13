@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from './lib/supabase.js';
-import { zohoRequest, zohoGetModuleFields, zohoListAttachments, ZohoContactRecord, ZohoAccountRecord, ZohoPropertyRecord, ZohoUnitRecord } from './lib/zoho.js';
+import { zohoRequest, zohoGetModuleFields, zohoListAttachments, ZohoContactRecord, ZohoAccountRecord, ZohoPropertyRecord, ZohoUnitRecord, normalizeAccountType } from './lib/zoho.js';
 
 function setCors(res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -537,7 +537,7 @@ async function syncAccounts() {
     const accountsToUpsert = zohoAccounts.map((a) => ({
       zoho_id: a.id,
       name: a.Account_Name || 'Unnamed Account',
-      account_type: a.Account_Type || null,
+      account_type: normalizeAccountType(a.Account_Type) || null,
       industry: a.Industry || null,
       address: a.Billing_Street || null,
       city: a.Billing_City || null,

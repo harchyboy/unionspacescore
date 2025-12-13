@@ -244,6 +244,36 @@ async function getTotalCountFromZoho(typeFilter?: string, healthFilter?: string,
   return total;
 }
 
+async function resolveCompanyName(id: string): Promise<string> {
+  // If not digits, assume it's already a name (or we can't resolve it)
+  if (!/^\d+$/.test(id)) return id;
+
+  // Try DB first
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data } = await supabase
+      .from('accounts')
+      .select('name')
+      .eq('zoho_id', id)
+      .single();
+    if (data?.name) return data.name;
+  }
+
+  // Try Zoho
+  try {
+    const response = await zohoRequest<{ data?: { Account_Name: string }[] }>(
+      `/crm/v2/Accounts/${id}`
+    );
+    if (response.data?.[0]?.Account_Name) {
+      return response.data[0].Account_Name;
+    }
+  } catch (e) {
+    console.warn('Failed to resolve company name from Zoho:', e);
+  }
+
+  return id;
+}
+
 async function listContactsFromZoho(
   page: number,
   perPage: number,
@@ -254,7 +284,13 @@ async function listContactsFromZoho(
   sortBy?: string,
   sortOrder?: string
 ) {
-  const criteria = buildCriteria(typeFilter, healthFilter, query, companyFilter);
+  // Resolve company ID to name for Zoho search
+  let effectiveCompanyFilter = companyFilter;
+  if (companyFilter) {
+    effectiveCompanyFilter = await resolveCompanyName(companyFilter);
+  }
+
+  const criteria = buildCriteria(typeFilter, healthFilter, query, effectiveCompanyFilter);
   const zohoSortField = sortBy === 'name' ? 'Full_Name' : 
                         sortBy === 'lastActivity' ? 'Modified_Time' :
                         sortBy === 'company' ? 'Account_Name' : 'Full_Name';
@@ -270,7 +306,7 @@ async function listContactsFromZoho(
   }>(apiPath);
 
   const records = response.data ?? [];
-  const total = await getTotalCountFromZoho(typeFilter, healthFilter, query, companyFilter);
+  const total = await getTotalCountFromZoho(typeFilter, healthFilter, query, effectiveCompanyFilter);
 
   return {
     items: records.map(mapZohoContact),
