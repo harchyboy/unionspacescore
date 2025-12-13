@@ -2,7 +2,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getSupabase, isSupabaseConfigured } from '../../lib/supabase.js';
 import { zohoUpdateProperty } from '../../lib/zoho.js';
 import OpenAI from 'openai';
-import pdf from 'pdf-parse/lib/pdf-parse.js';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const pdf = require('pdf-parse');
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers

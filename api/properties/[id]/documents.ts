@@ -193,7 +193,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Read file content
-      let fileBuffer = await fs.readFile(file.filepath);
+      let fileBuffer: Buffer = await fs.readFile(file.filepath);
       const originalName = file.originalFilename || 'unknown';
       const mimeType = file.mimetype || 'application/octet-stream';
       
