@@ -137,7 +137,11 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
       }
       
       if (response.ok && data?.success) {
-        showToast('LinkedIn profile saved!', 'success');
+        if (data.imageSaved === false) {
+             showToast('LinkedIn profile saved, but could not download profile image.', 'warning');
+        } else {
+             showToast('LinkedIn profile and image saved!', 'success');
+        }
         setShowLinkedInModal(false);
         setLinkedInCandidates([]);
         

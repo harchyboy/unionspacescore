@@ -16,6 +16,8 @@ interface GoogleSearchItem {
       'og:description'?: string;
       'og:image'?: string;
     }>;
+    cse_image?: Array<{ src: string }>;
+    cse_thumbnail?: Array<{ src: string }>;
     person?: Array<{
       name?: string;
       jobtitle?: string;
@@ -105,7 +107,15 @@ function extractLinkedInProfile(
   }
   
   // Try to get image from pagemap
-  const imageUrl = item.pagemap?.metatags?.[0]?.['og:image'];
+  let imageUrl = item.pagemap?.metatags?.[0]?.['og:image'];
+  
+  if (!imageUrl && item.pagemap?.cse_image && item.pagemap.cse_image.length > 0) {
+    imageUrl = item.pagemap.cse_image[0].src;
+  }
+  
+  if (!imageUrl && item.pagemap?.cse_thumbnail && item.pagemap.cse_thumbnail.length > 0) {
+    imageUrl = item.pagemap.cse_thumbnail[0].src;
+  }
   
   // Calculate match score
   let matchScore = 0;
