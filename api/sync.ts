@@ -213,7 +213,7 @@ async function syncProperties() {
       
       // Try known variations first
       let rawSubmarket: unknown = p.Submarkets || p.Submarket || p.Sub_Market || p.submarket;
-
+      
       // If we discovered the exact field API name from metadata, try that too
       if (!rawSubmarket && submarketFieldApiName) {
         const rec = p as unknown as Record<string, unknown>;

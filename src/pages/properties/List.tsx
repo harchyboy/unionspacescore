@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProperties } from '../../api/properties';
@@ -6,6 +6,23 @@ import { useSubmarkets } from '../../api/submarkets';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import { MultiSelect } from '../../components/ui/MultiSelect';
 import { PropertyGridCard } from '../../components/properties/PropertyGridCard';
+
+// Custom hook for debouncing search input
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 const tabs = [
   { id: 'all', label: 'All Properties' },
@@ -30,11 +47,24 @@ export function PropertiesList() {
   const [searchQuery, setSearchQuery] = useState('');
   const limit = 50;
 
+  // Debounce search query for server-side search (300ms delay)
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
+  // Server-side search: when searching, fetch ALL results (no pagination)
+  // Otherwise, use normal pagination
+  const isSearching = debouncedSearch.trim().length > 0;
+  
   const { data, isLoading, error } = useProperties({
-    page,
-    limit,
+    page: isSearching ? 1 : page,
+    limit: isSearching ? 1000 : limit, // Fetch more results when searching
     sortBy: 'updatedAt',
     sortOrder: 'desc',
+    search: debouncedSearch.trim() || undefined,
     submarkets: submarketFilter.length > 0 ? submarketFilter.join(',') : undefined,
     visibility: visibilityFilter || undefined,
     brokerSet: agentFilter || undefined,
@@ -42,32 +72,13 @@ export function PropertiesList() {
 
   const { data: submarketStatsData } = useSubmarkets();
 
-  const allProperties = data?.properties || [];
+  const properties = data?.properties || [];
   const totalProperties = data?.total || 0;
   const submarketStats = submarketStatsData || [];
   const totalPages = Math.ceil(totalProperties / limit);
-
-  // Client-side search filter for instant feedback
-  const properties = useMemo(() => {
-    if (!searchQuery.trim()) return allProperties;
-    
-    const query = searchQuery.toLowerCase().trim();
-    return allProperties.filter((property) => {
-      const name = property.name?.toLowerCase() || '';
-      const address = property.addressLine?.toLowerCase() || '';
-      const city = property.city?.toLowerCase() || '';
-      const submarket = property.submarket?.toLowerCase() || '';
-      const postcode = property.postcode?.toLowerCase() || '';
-      
-      return (
-        name.includes(query) ||
-        address.includes(query) ||
-        city.includes(query) ||
-        submarket.includes(query) ||
-        postcode.includes(query)
-      );
-    });
-  }, [allProperties, searchQuery]);
+  
+  // Memoize to avoid unnecessary re-renders
+  const displayedProperties = useMemo(() => properties, [properties]);
 
   const clearFilters = () => {
     setSubmarketFilter([]);
@@ -305,7 +316,7 @@ export function PropertiesList() {
           </div>
           
           <span className="text-sm text-secondary">
-            {searchQuery ? `${properties.length} of ${totalProperties}` : `${totalProperties}`} properties
+            {isSearching ? `${displayedProperties.length} of ${totalProperties}` : `${totalProperties}`} properties
           </span>
         </div>
         <div className="flex items-center space-x-2">
@@ -356,7 +367,7 @@ export function PropertiesList() {
 
       {/* Properties Table & Content */}
       <div className="flex-1 overflow-y-auto bg-[#F0F0F0] px-8 py-6">
-        {properties.length === 0 ? (
+        {displayedProperties.length === 0 ? (
           <div className="bg-white rounded-lg border border-[#E6E6E6] p-12 text-center">
             <div className="w-16 h-16 bg-[#FAFAFA] rounded-full flex items-center justify-center mx-auto mb-4">
               <i className="fa-solid fa-building text-secondary text-2xl"></i>
@@ -372,7 +383,7 @@ export function PropertiesList() {
           </div>
         ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-3 gap-6">
-            {properties.map((property) => (
+            {displayedProperties.map((property) => (
               <PropertyGridCard key={property.id} property={property} />
             ))}
           </div>
@@ -456,7 +467,7 @@ export function PropertiesList() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E6E6E6]">
-                    {properties.map((property) => (
+                    {displayedProperties.map((property) => (
                       <tr 
                         key={property.id} 
                         className="hover:bg-[#FAFAFA] transition-all cursor-pointer"

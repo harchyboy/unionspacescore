@@ -100,9 +100,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .from('properties')
       .select('*, units(*)', { count: 'exact' });
 
-    // Filters
+    // Filters - search across multiple fields
     if (search) {
-      query = query.or(`name.ilike.%${search}%,address_line.ilike.%${search}%`);
+      query = query.or(`name.ilike.%${search}%,address_line.ilike.%${search}%,city.ilike.%${search}%,submarket.ilike.%${search}%,postcode.ilike.%${search}%`);
     }
     if (marketingStatus) {
       query = query.eq('marketing_status', marketingStatus);

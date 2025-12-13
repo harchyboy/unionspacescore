@@ -192,8 +192,15 @@ export const propertyHandlers = [
     const sortOrder = url.searchParams.get('sortOrder') || 'desc';
 
     const filtered = properties.filter((p) => {
-      if (search && !p.name.toLowerCase().includes(search) && !p.addressLine.toLowerCase().includes(search)) {
-        return false;
+      if (search) {
+        const matchesName = p.name.toLowerCase().includes(search);
+        const matchesAddress = p.addressLine.toLowerCase().includes(search);
+        const matchesCity = p.city?.toLowerCase().includes(search);
+        const matchesSubmarket = p.submarket?.toLowerCase().includes(search);
+        const matchesPostcode = p.postcode?.toLowerCase().includes(search);
+        if (!matchesName && !matchesAddress && !matchesCity && !matchesSubmarket && !matchesPostcode) {
+          return false;
+        }
       }
       if (marketingStatus && p.marketing.status !== marketingStatus) {
         return false;
