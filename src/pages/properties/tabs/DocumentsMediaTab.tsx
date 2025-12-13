@@ -11,6 +11,7 @@ interface DocumentsMediaTabProps {
 export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const [uploadingImg, setUploadingImg] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [extractingDocId, setExtractingDocId] = useState<string | null>(null);
   
   const uploadDocument = useUploadDocument();
@@ -30,17 +31,23 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
     }
 
     setUploadingDoc(true);
+    setUploadProgress(0);
     // Show loading feedback
     toast({ title: 'Uploading...', description: `Uploading ${file.name}...`, type: 'info' });
     
     try {
-      await uploadDocument.mutateAsync({ id: property.id, file });
+      await uploadDocument.mutateAsync({ 
+        id: property.id, 
+        file,
+        onProgress: (p) => setUploadProgress(p)
+      });
       toast({ title: 'Success', description: 'Document uploaded successfully.', type: 'success' });
     } catch (error) {
       console.error('Upload failed:', error);
       toast({ title: 'Error', description: 'Upload failed. Please try again.', type: 'error' });
     } finally {
       setUploadingDoc(false);
+      setUploadProgress(0);
       e.target.value = '';
     }
   };
@@ -56,17 +63,23 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
     }
 
     setUploadingImg(true);
+    setUploadProgress(0);
     // Show loading feedback
     toast({ title: 'Uploading...', description: `Uploading ${file.name}...`, type: 'info' });
 
     try {
-      await uploadDocument.mutateAsync({ id: property.id, file });
+      await uploadDocument.mutateAsync({ 
+        id: property.id, 
+        file,
+        onProgress: (p) => setUploadProgress(p)
+      });
       toast({ title: 'Success', description: 'Image uploaded successfully.', type: 'success' });
     } catch (error) {
       console.error('Upload failed:', error);
       toast({ title: 'Error', description: 'Upload failed. Please try again.', type: 'error' });
     } finally {
       setUploadingImg(false);
+      setUploadProgress(0);
       e.target.value = '';
     }
   };
@@ -189,25 +202,30 @@ export function DocumentsMediaTab({ property }: DocumentsMediaTabProps) {
       <div className="bg-white rounded-lg border border-[#E6E6E6] p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#252525]">Media Gallery</h2>
-          <label className={`inline-flex items-center justify-center font-medium rounded transition-all-smooth focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#252525] px-5 py-2.5 text-sm gap-2 bg-[#252525] text-white hover:bg-[#252525]/90 cursor-pointer ${
-            uploadingImg ? 'opacity-50 cursor-not-allowed' : ''
+          <label className={`relative overflow-hidden inline-flex items-center justify-center font-medium rounded transition-all-smooth focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#252525] px-5 py-2.5 text-sm gap-2 bg-[#252525] text-white hover:bg-[#252525]/90 cursor-pointer ${
+            uploadingImg ? 'opacity-90 cursor-not-allowed' : ''
           }`}>
-            {uploadingImg ? (
-              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+            {uploadingImg && (
+              <div 
+                className="absolute left-0 bottom-0 top-0 bg-[#3a3a3a] transition-all duration-200 ease-linear"
+                style={{ width: `${uploadProgress}%`, zIndex: 0 }}
+              />
             )}
-            <span>{uploadingImg ? 'Uploading...' : 'Upload Image'}</span>
+            <div className="relative z-10 flex items-center gap-2">
+              {uploadingImg ? (
+                <span className="text-xs">{Math.round(uploadProgress)}%</span>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              )}
+              <span>{uploadingImg ? 'Uploading...' : 'Upload Image'}</span>
+            </div>
             <input
               type="file"
               accept="image/png,image/jpeg,image/webp"

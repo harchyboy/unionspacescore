@@ -84,7 +84,8 @@ export async function updateProperty(
 
 export async function uploadDocument(
   id: PropertyId,
-  file: File
+  file: File,
+  onProgress?: (progress: number) => void
 ): Promise<PropertyDocument> {
   // Step 1: Get Signed URL from Backend
   const initResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
@@ -103,16 +104,32 @@ export async function uploadDocument(
 
   const { signedUrl, path, publicUrl } = await initResponse.json();
 
-  // Step 2: Upload directly to Supabase Storage via Signed URL
-  const uploadResponse = await fetch(signedUrl, {
-    method: 'PUT',
-    headers: { 'Content-Type': file.type },
-    body: file
-  });
+  // Step 2: Upload directly to Supabase Storage via Signed URL (using XHR for progress)
+  await new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', signedUrl);
+    xhr.setRequestHeader('Content-Type', file.type);
 
-  if (!uploadResponse.ok) {
-    throw new Error('Failed to upload file to storage');
-  }
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
+          onProgress(percentComplete);
+        }
+      };
+    }
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve();
+      } else {
+        reject(new Error('Failed to upload file to storage'));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error('Network error during upload'));
+    xhr.send(file);
+  });
 
   // Step 3: Link file to property in DB
   const linkResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
@@ -214,7 +231,8 @@ export function useUploadDocument() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, file }: { id: PropertyId; file: File }) => uploadDocument(id, file),
+    mutationFn: ({ id, file, onProgress }: { id: PropertyId; file: File; onProgress?: (progress: number) => void }) => 
+      uploadDocument(id, file, onProgress),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['property', variables.id] });
     },
