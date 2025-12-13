@@ -82,8 +82,17 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
       const data = await response.json();
       
       if (data.alreadyLinked) {
-        showToast('Contact already has LinkedIn URL', 'info');
-        refetchContact();
+        // If already linked, we still might want to show candidates if we found any (e.g. for photo update)
+        // But the backend currently returns empty candidates if alreadyLinked is true (unless we changed it).
+        // If we want to allow updating, we should handle the case where we get candidates back even if linked.
+        
+        // Backend update: now returns candidates even if linked, but still sets alreadyLinked=true
+        if (data.candidates && data.candidates.length > 0) {
+            setLinkedInCandidates(data.candidates);
+            setShowLinkedInModal(true);
+        } else {
+            showToast('Contact already linked and no better matches found to update.', 'info');
+        }
         return;
       }
       
@@ -550,6 +559,14 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                             className="text-secondary hover:text-primary transition-colors"
                           >
                             <i className="fa-solid fa-copy text-xs"></i>
+                          </button>
+                          <button
+                            onClick={handleFindLinkedIn}
+                            disabled={isSearchingLinkedIn}
+                            className="text-secondary hover:text-primary transition-colors ml-2"
+                            title="Update LinkedIn Photo/Profile"
+                          >
+                             <i className={`fa-solid fa-sync ${isSearchingLinkedIn ? 'fa-spin' : ''} text-xs`}></i>
                           </button>
                         </>
                       ) : (

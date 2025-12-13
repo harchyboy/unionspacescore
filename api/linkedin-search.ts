@@ -256,15 +256,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(404).json({ error: 'Contact not found' });
     }
 
-    // If already has LinkedIn, return it
     if (contact.linkedin_url) {
-      return res.status(200).json({
-        success: true,
-        alreadyLinked: true,
-        linkedinUrl: contact.linkedin_url,
-        candidates: []
-      });
+       // We still return 'alreadyLinked' so the frontend knows, but we populate candidates
+       // so the user can re-select/refresh if they want to.
+       // Note: Frontend currently checks if (data.alreadyLinked) and shows a toast.
+       // We should update frontend to handle this if we want seamless updates.
+       // For now, let's keep the backend behaving as "Search" but include the flag.
     }
+    const existingLinkedinUrl = contact.linkedin_url;
 
     const firstName = contact.first_name;
     const lastName = contact.last_name;
@@ -283,7 +282,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Build search queries strategy
     const queriesToTry: { query: string; type: string }[] = [];
-    
+
+    // 0. If existing URL, search specifically for it to refresh metadata/image
+    if (existingLinkedinUrl) {
+       console.log(`Contact already has LinkedIn URL: ${existingLinkedinUrl}. Searching for it to update metadata...`);
+       queriesToTry.push({
+           query: `site:${existingLinkedinUrl}`,
+           type: 'existing_url_lookup'
+       });
+    }
+
     // 1. Strict company search
     if (company) {
        queriesToTry.push({ 
