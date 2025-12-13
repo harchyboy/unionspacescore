@@ -88,6 +88,9 @@ export async function uploadDocument(
   file: File,
   onProgress?: (progress: number) => void
 ): Promise<PropertyDocument> {
+  console.log('Starting upload:', { id, fileName: file.name, fileSize: file.size, fileType: file.type });
+  console.log('Supabase configured:', isSupabaseConfigured(), 'Client exists:', !!supabase);
+  
   // Try to use Supabase client directly (recommended for large files)
   if (supabase && isSupabaseConfigured()) {
     const timestamp = Date.now();
@@ -98,6 +101,13 @@ export async function uploadDocument(
     const isImage = file.type.startsWith('image/');
     const folder = isImage ? '' : 'documents/';
     const storagePath = `properties/${id}/${folder}${finalFileName}`;
+
+    // Show some progress to indicate upload started
+    if (onProgress) {
+      onProgress(10);
+    }
+
+    console.log('Uploading to Supabase Storage:', storagePath);
 
     // Upload directly to Supabase Storage
     const { error: uploadError } = await supabase.storage
@@ -112,9 +122,11 @@ export async function uploadDocument(
       throw new Error(`Upload failed: ${uploadError.message}`);
     }
 
-    // Simulate progress completion (Supabase JS SDK doesn't support progress natively)
+    console.log('Upload successful, getting public URL');
+
+    // Show progress after upload completes
     if (onProgress) {
-      onProgress(100);
+      onProgress(80);
     }
 
     // Get public URL
@@ -123,8 +135,10 @@ export async function uploadDocument(
       .getPublicUrl(storagePath);
 
     const publicUrl = urlData.publicUrl;
+    console.log('Public URL:', publicUrl);
 
     // Link file to property via API
+    console.log('Linking file to property...');
     const linkResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -139,8 +153,17 @@ export async function uploadDocument(
     });
 
     if (!linkResponse.ok) {
+      const errorText = await linkResponse.text();
+      console.error('Link error:', errorText);
       throw new Error('Failed to link file to property');
     }
+
+    // Complete
+    if (onProgress) {
+      onProgress(100);
+    }
+
+    console.log('Upload complete!');
 
     return {
       id: storagePath,
@@ -152,9 +175,15 @@ export async function uploadDocument(
     };
   }
 
+  console.log('Supabase not configured, using fallback...');
+
   // Fallback: Use API proxy for smaller files (< 4.5MB due to Vercel limits)
   if (file.size >= 4.5 * 1024 * 1024) {
     throw new Error('File too large. Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for large file uploads.');
+  }
+
+  if (onProgress) {
+    onProgress(10);
   }
 
   const formData = new FormData();
