@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProperties } from '../../api/properties';
@@ -27,6 +27,7 @@ export function PropertiesList() {
   const [sortBy, setSortBy] = useState('last-updated');
   const [selectAll, setSelectAll] = useState(false);
   const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const limit = 50;
 
   const { data, isLoading, error } = useProperties({
@@ -41,10 +42,32 @@ export function PropertiesList() {
 
   const { data: submarketStatsData } = useSubmarkets();
 
-  const properties = data?.properties || [];
+  const allProperties = data?.properties || [];
   const totalProperties = data?.total || 0;
   const submarketStats = submarketStatsData || [];
   const totalPages = Math.ceil(totalProperties / limit);
+
+  // Client-side search filter for instant feedback
+  const properties = useMemo(() => {
+    if (!searchQuery.trim()) return allProperties;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return allProperties.filter((property) => {
+      const name = property.name?.toLowerCase() || '';
+      const address = property.addressLine?.toLowerCase() || '';
+      const city = property.city?.toLowerCase() || '';
+      const submarket = property.submarket?.toLowerCase() || '';
+      const postcode = property.postcode?.toLowerCase() || '';
+      
+      return (
+        name.includes(query) ||
+        address.includes(query) ||
+        city.includes(query) ||
+        submarket.includes(query) ||
+        postcode.includes(query)
+      );
+    });
+  }, [allProperties, searchQuery]);
 
   const clearFilters = () => {
     setSubmarketFilter([]);
@@ -53,6 +76,7 @@ export function PropertiesList() {
     setOwnerFilter('');
     setNetworkFilter('');
     setHealthFilter('');
+    setSearchQuery('');
   };
 
   // Only show full page spinner on initial load, not refetching
@@ -258,7 +282,31 @@ export function PropertiesList() {
             />
             <label className="text-sm text-secondary">Select All</label>
           </div>
-          <span className="text-sm text-secondary">{totalProperties} properties</span>
+          
+          {/* Quick Search */}
+          <div className="relative">
+            <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-secondary text-sm"></i>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search properties..."
+              className="pl-9 pr-8 py-1.5 bg-white border border-[#E6E6E6] rounded-[4px] text-sm text-primary placeholder:text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent w-64 transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-secondary hover:text-primary transition-colors"
+                title="Clear search"
+              >
+                <i className="fa-solid fa-times text-xs"></i>
+              </button>
+            )}
+          </div>
+          
+          <span className="text-sm text-secondary">
+            {searchQuery ? `${properties.length} of ${totalProperties}` : `${totalProperties}`} properties
+          </span>
         </div>
         <div className="flex items-center space-x-2">
           <button className="px-4 py-2 border border-[#E6E6E6] bg-white rounded text-sm text-primary hover:bg-[#FAFAFA] transition-all flex items-center space-x-2">
