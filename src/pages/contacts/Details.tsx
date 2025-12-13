@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useDeleteContact, useContact, refreshContact, useUpdateContact } from '../../api/contacts';
 import { ConfirmModal } from '../../components/ui/Modal';
@@ -70,11 +70,18 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
     staleTime: 1000 * 60 * 60, // 1 hour
   });
 
+  // Alert on new posts
+  useEffect(() => {
+    if (linkedinPosts?.newPostsCount && linkedinPosts.newPostsCount > 0) {
+        showToast(`Found ${linkedinPosts.newPostsCount} new LinkedIn post(s)!`, 'success');
+    }
+  }, [linkedinPosts?.newPostsCount, linkedinPosts?.lastFetched, showToast]);
+
   const handleRefreshPosts = async () => {
     if (!contact?.linkedinUrl) return;
     setIsRefreshingPosts(true);
     try {
-        await queryClient.fetchQuery({
+        const data = await queryClient.fetchQuery({
             queryKey: ['linkedin-posts', contact.linkedinUrl],
             queryFn: async () => {
                 const res = await fetch(`${API_BASE}/api/linkedin-posts?url=${encodeURIComponent(contact.linkedinUrl!)}&force=true`);
@@ -82,7 +89,12 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                 return res.json();
             }
         });
-        showToast('LinkedIn posts updated', 'success');
+        
+        if (data.newPostsCount && data.newPostsCount > 0) {
+            showToast(`Found ${data.newPostsCount} new LinkedIn post(s)!`, 'success');
+        } else {
+            showToast('LinkedIn posts updated', 'success');
+        }
     } catch (error) {
         console.error('Error refreshing posts:', error);
         showToast('Failed to update posts', 'error');
@@ -658,9 +670,14 @@ export function ContactDetails({ contact: initialContact, onBack }: ContactDetai
                         <div className="flex items-center space-x-2">
                           <i className="fa-brands fa-linkedin text-[#0077B5] text-lg"></i>
                           <h2 className="text-lg font-semibold text-primary">Recent LinkedIn Activity</h2>
+                          {linkedinPosts?.newPostsCount > 0 && (
+                            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full ml-2 animate-pulse font-bold">
+                                {linkedinPosts.newPostsCount} NEW
+                            </span>
+                          )}
                           {linkedinPosts?.lastFetched && (
                             <span className="text-xs text-secondary ml-2">
-                                (Last synced: {formatDate(linkedinPosts.lastFetched)})
+                                (Synced: {formatDate(linkedinPosts.lastFetched)})
                             </span>
                           )}
                           <button 
