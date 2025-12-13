@@ -11,7 +11,10 @@ function setCors(res: VercelResponse) {
 }
 
 function extractUsername(url: string): string | null {
-  const match = url.match(/linkedin\.com\/in\/([^/]+)/);
+  // Handle: linkedin.com/in/username
+  // Handle: linkedin.com/in/username/
+  // Handle: www.linkedin.com/in/username
+  const match = url.match(/linkedin\.com\/in\/([^/?]+)/);
   return match ? match[1] : null;
 }
 

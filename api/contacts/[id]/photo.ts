@@ -148,14 +148,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (supabase) {
       try {
         console.log(`[Photo] Caching contact photo for ${id} to Supabase Storage. Size: ${result.buffer.length}, Type: ${result.contentType}`);
-        await supabase.storage
+        // Add a small buffer to the timestamp to avoid race conditions with immediately subsequent reads
+        const { error: uploadError } = await supabase.storage
           .from('property-files')
           .upload(filePath, result.buffer, {
             contentType: result.contentType,
             upsert: true
           });
           
-        console.log(`[Photo] Successfully cached contact photo for ${id} to Supabase Storage`);
+        if (uploadError) {
+             console.warn('[Photo] Failed to upload contact photo to Supabase:', uploadError);
+        } else {
+             console.log(`[Photo] Successfully cached contact photo for ${id} to Supabase Storage`);
+        }
       } catch (uploadError) {
         console.warn('[Photo] Failed to upload contact photo to Supabase:', uploadError);
       }
