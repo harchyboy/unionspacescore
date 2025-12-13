@@ -27,9 +27,6 @@ async function parseForm(req: VercelRequest): Promise<{ fields: Fields; files: F
   });
 }
 
-// SharedBuffer type definition for TS compatibility
-type NonSharedBuffer = Buffer;
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -57,7 +54,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const contentType = req.headers['content-type'] || '';
     if (contentType.includes('application/json')) {
       // Parse JSON body
-      const body = await new Promise<any>((resolve, reject) => {
+      interface RequestBody {
+        action?: string;
+        filename?: string;
+        contentType?: string;
+        storagePath?: string;
+        size?: number;
+        type?: string;
+        publicUrl?: string;
+      }
+      const body = await new Promise<RequestBody>((resolve, reject) => {
         let data = '';
         req.on('data', chunk => data += chunk);
         req.on('end', () => {
@@ -71,7 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Action: Generate Signed Upload URL
       if (body.action === 'get-upload-url') {
-        const { filename, contentType } = body;
+        const { filename, contentType: bodyContentType } = body;
         if (!filename) return res.status(400).json({ error: 'Filename required' });
 
         const timestamp = Date.now();
@@ -79,7 +85,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const ext = filename.split('.').pop();
         const finalFileName = `${timestamp}_${baseNameWithoutExt}.${ext}`;
         
-        const isImage = contentType?.startsWith('image/');
+        const isImage = bodyContentType?.startsWith('image/');
         const folder = isImage ? '' : 'documents/';
         const storagePath = `properties/${propertyId}/${folder}${finalFileName}`;
 
@@ -108,7 +114,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Action: Link uploaded file to property
       if (body.action === 'link-file') {
-        const { storagePath, filename, size, type, publicUrl } = body;
+        const { storagePath, filename, type, publicUrl } = body;
         
         if (!storagePath || !publicUrl) {
           return res.status(400).json({ error: 'Storage path and URL required' });

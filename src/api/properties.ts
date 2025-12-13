@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import type { Property, PropertyId, PropertyDocument } from '../types/property';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export interface ListPropertiesParams {
   search?: string;
@@ -87,100 +88,93 @@ export async function uploadDocument(
   file: File,
   onProgress?: (progress: number) => void
 ): Promise<PropertyDocument> {
-  // Step 1: Get Signed URL from Backend
-  const initResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'get-upload-url',
-      filename: file.name,
-      contentType: file.type
-    })
-  });
-
-  if (!initResponse.ok) {
-    throw new Error('Failed to initiate upload');
-  }
-
-  const { signedUrl, path, publicUrl } = await initResponse.json();
-
-  // Step 2: Upload directly to Supabase Storage via Signed URL (using XHR for progress)
-  try {
-    await new Promise<void>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('PUT', signedUrl);
-      xhr.setRequestHeader('Content-Type', file.type);
-
-      if (onProgress) {
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            const percentComplete = (event.loaded / event.total) * 100;
-            onProgress(percentComplete);
-          }
-        };
-      }
-
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve();
-        } else {
-          reject(new Error(`Failed to upload file to storage. Status: ${xhr.status} ${xhr.statusText}`));
-        }
-      };
-
-      xhr.onerror = () => reject(new Error('Network error during upload (possible CORS issue)'));
-      xhr.send(file);
-    });
-  } catch (error) {
-    console.error('Direct upload failed:', error);
+  // Try to use Supabase client directly (recommended for large files)
+  if (supabase && isSupabaseConfigured()) {
+    const timestamp = Date.now();
+    const baseNameWithoutExt = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9.-]/g, '_');
+    const ext = file.name.split('.').pop() || 'bin';
+    const finalFileName = `${timestamp}_${baseNameWithoutExt}.${ext}`;
     
-    // Fallback for smaller files if direct upload fails (e.g. due to CORS)
-    if (file.size < 4.5 * 1024 * 1024) {
-      console.warn('Falling back to proxy upload...');
-      const formData = new FormData();
-      formData.append('file', file);
+    const isImage = file.type.startsWith('image/');
+    const folder = isImage ? '' : 'documents/';
+    const storagePath = `properties/${id}/${folder}${finalFileName}`;
 
-      const response = await fetch(`${API_BASE}/properties/${id}/documents`, {
-        method: 'POST',
-        body: formData,
+    // Upload directly to Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from('property-files')
+      .upload(storagePath, file, {
+        contentType: file.type,
+        upsert: false,
       });
 
-      if (!response.ok) {
-        throw new Error(`Fallback upload error: ${response.statusText}`);
-      }
-
-      return response.json();
+    if (uploadError) {
+      console.error('Supabase upload error:', uploadError);
+      throw new Error(`Upload failed: ${uploadError.message}`);
     }
-    
-    throw error;
+
+    // Simulate progress completion (Supabase JS SDK doesn't support progress natively)
+    if (onProgress) {
+      onProgress(100);
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('property-files')
+      .getPublicUrl(storagePath);
+
+    const publicUrl = urlData.publicUrl;
+
+    // Link file to property via API
+    const linkResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'link-file',
+        storagePath,
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+        publicUrl
+      })
+    });
+
+    if (!linkResponse.ok) {
+      throw new Error('Failed to link file to property');
+    }
+
+    return {
+      id: storagePath,
+      name: file.name,
+      url: publicUrl,
+      type: file.type,
+      size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+      uploadedAt: new Date().toISOString()
+    };
   }
 
-  // Step 3: Link file to property in DB
-  const linkResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
+  // Fallback: Use API proxy for smaller files (< 4.5MB due to Vercel limits)
+  if (file.size >= 4.5 * 1024 * 1024) {
+    throw new Error('File too large. Please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for large file uploads.');
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${API_BASE}/properties/${id}/documents`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'link-file',
-      storagePath: path,
-      filename: file.name,
-      size: file.size,
-      type: file.type,
-      publicUrl
-    })
+    body: formData,
   });
 
-  if (!linkResponse.ok) {
-    throw new Error('Failed to link file to property');
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `Upload error: ${response.statusText}`);
   }
 
-  return {
-    id: path,
-    name: file.name,
-    url: publicUrl,
-    type: file.type,
-    size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
-    uploadedAt: new Date().toISOString()
-  };
+  if (onProgress) {
+    onProgress(100);
+  }
+
+  return response.json();
 }
 
 export async function deleteDocument(

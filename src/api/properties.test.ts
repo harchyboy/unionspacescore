@@ -214,9 +214,10 @@ describe('properties API', () => {
       fetchMock.mockResolvedValueOnce({
         ok: false,
         statusText: 'Upload Failed',
+        json: async () => ({ error: 'Upload Failed' }),
       });
 
-      await expect(uploadDocument('test-id', file)).rejects.toThrow('Upload error: Upload Failed');
+      await expect(uploadDocument('test-id', file)).rejects.toThrow('Upload Failed');
     });
   });
 });
