@@ -86,19 +86,60 @@ export async function uploadDocument(
   id: PropertyId,
   file: File
 ): Promise<PropertyDocument> {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  const response = await fetch(`${API_BASE}/properties/${id}/documents`, {
+  // Step 1: Get Signed URL from Backend
+  const initResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
     method: 'POST',
-    body: formData,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'get-upload-url',
+      filename: file.name,
+      contentType: file.type
+    })
   });
 
-  if (!response.ok) {
-    throw new Error(`Upload error: ${response.statusText}`);
+  if (!initResponse.ok) {
+    throw new Error('Failed to initiate upload');
   }
 
-  return response.json();
+  const { signedUrl, path, publicUrl } = await initResponse.json();
+
+  // Step 2: Upload directly to Supabase Storage via Signed URL
+  const uploadResponse = await fetch(signedUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': file.type },
+    body: file
+  });
+
+  if (!uploadResponse.ok) {
+    throw new Error('Failed to upload file to storage');
+  }
+
+  // Step 3: Link file to property in DB
+  const linkResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'link-file',
+      storagePath: path,
+      filename: file.name,
+      size: file.size,
+      type: file.type,
+      publicUrl
+    })
+  });
+
+  if (!linkResponse.ok) {
+    throw new Error('Failed to link file to property');
+  }
+
+  return {
+    id: path,
+    name: file.name,
+    url: publicUrl,
+    type: file.type,
+    size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+    uploadedAt: new Date().toISOString()
+  };
 }
 
 export async function deleteDocument(

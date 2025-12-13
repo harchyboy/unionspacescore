@@ -48,8 +48,130 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(503).json({ error: 'Database not configured' });
   }
 
-  // POST /api/properties/:id/documents - Upload document/image
+  // POST /api/properties/:id/documents - Upload document/image or generate signed URL
   if (req.method === 'POST') {
+    // Check if JSON request (for Signed URL generation or linking)
+    const contentType = req.headers['content-type'] || '';
+    if (contentType.includes('application/json')) {
+      // Parse JSON body
+      const body = await new Promise<any>((resolve, reject) => {
+        let data = '';
+        req.on('data', chunk => data += chunk);
+        req.on('end', () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+
+      // Action: Generate Signed Upload URL
+      if (body.action === 'get-upload-url') {
+        const { filename, contentType } = body;
+        if (!filename) return res.status(400).json({ error: 'Filename required' });
+
+        const timestamp = Date.now();
+        const baseNameWithoutExt = filename.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9.-]/g, '_');
+        const ext = filename.split('.').pop();
+        const finalFileName = `${timestamp}_${baseNameWithoutExt}.${ext}`;
+        
+        const isImage = contentType?.startsWith('image/');
+        const folder = isImage ? '' : 'documents/';
+        const storagePath = `properties/${propertyId}/${folder}${finalFileName}`;
+
+        const { data, error } = await supabase.storage
+          .from('property-files')
+          .createSignedUploadUrl(storagePath);
+
+        if (error) {
+          console.error('Error creating signed URL:', error);
+          return res.status(500).json({ error: 'Failed to create upload URL' });
+        }
+
+        // Get public URL for later use
+        const { data: urlData } = supabase.storage
+          .from('property-files')
+          .getPublicUrl(storagePath);
+
+        return res.status(200).json({
+          signedUrl: data?.signedUrl,
+          path: storagePath,
+          publicUrl: urlData.publicUrl,
+          token: data?.token,
+          finalFileName
+        });
+      }
+
+      // Action: Link uploaded file to property
+      if (body.action === 'link-file') {
+        const { storagePath, filename, size, type, publicUrl } = body;
+        
+        if (!storagePath || !publicUrl) {
+          return res.status(400).json({ error: 'Storage path and URL required' });
+        }
+
+        const isImage = type?.startsWith('image/');
+
+        if (isImage) {
+          // Get current property
+          const { data: property, error: fetchError } = await supabase
+            .from('properties')
+            .select('images')
+            .eq('id', propertyId)
+            .single();
+
+          if (fetchError) {
+            return res.status(500).json({ error: 'Failed to fetch property' });
+          }
+
+          const currentImages = property.images || [];
+          const updatedImages = [...currentImages, publicUrl];
+
+          const { error: updateError } = await supabase
+            .from('properties')
+            .update({ images: updatedImages })
+            .eq('id', propertyId);
+
+          if (updateError) {
+            return res.status(500).json({ error: 'Failed to update property images' });
+          }
+        } else {
+          // Get current property
+          const { data: property, error: fetchError } = await supabase
+            .from('properties')
+            .select('documents')
+            .eq('id', propertyId)
+            .single();
+
+          if (fetchError) {
+            return res.status(500).json({ error: 'Failed to fetch property' });
+          }
+
+          const currentDocs = property.documents || [];
+          const newDoc = {
+            name: filename,
+            url: publicUrl,
+            type: type || 'application/octet-stream',
+            uploaded_at: new Date().toISOString()
+          };
+          const updatedDocs = [...currentDocs, newDoc];
+
+          const { error: updateError } = await supabase
+            .from('properties')
+            .update({ documents: updatedDocs })
+            .eq('id', propertyId);
+
+          if (updateError) {
+            return res.status(500).json({ error: 'Failed to update property documents' });
+          }
+        }
+
+        return res.status(200).json({ success: true, url: publicUrl });
+      }
+    }
+
+    // Fallback to legacy multipart upload
     try {
       const { files } = await parseForm(req);
       
