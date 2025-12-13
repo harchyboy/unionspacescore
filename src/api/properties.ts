@@ -105,31 +105,55 @@ export async function uploadDocument(
   const { signedUrl, path, publicUrl } = await initResponse.json();
 
   // Step 2: Upload directly to Supabase Storage via Signed URL (using XHR for progress)
-  await new Promise<void>((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', signedUrl);
-    xhr.setRequestHeader('Content-Type', file.type);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', signedUrl);
+      xhr.setRequestHeader('Content-Type', file.type);
 
-    if (onProgress) {
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = (event.loaded / event.total) * 100;
-          onProgress(percentComplete);
+      if (onProgress) {
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            onProgress(percentComplete);
+          }
+        };
+      }
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve();
+        } else {
+          reject(new Error(`Failed to upload file to storage. Status: ${xhr.status} ${xhr.statusText}`));
         }
       };
-    }
 
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve();
-      } else {
-        reject(new Error('Failed to upload file to storage'));
+      xhr.onerror = () => reject(new Error('Network error during upload (possible CORS issue)'));
+      xhr.send(file);
+    });
+  } catch (error) {
+    console.error('Direct upload failed:', error);
+    
+    // Fallback for smaller files if direct upload fails (e.g. due to CORS)
+    if (file.size < 4.5 * 1024 * 1024) {
+      console.warn('Falling back to proxy upload...');
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`${API_BASE}/properties/${id}/documents`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Fallback upload error: ${response.statusText}`);
       }
-    };
 
-    xhr.onerror = () => reject(new Error('Network error during upload'));
-    xhr.send(file);
-  });
+      return response.json();
+    }
+    
+    throw error;
+  }
 
   // Step 3: Link file to property in DB
   const linkResponse = await fetch(`${API_BASE}/properties/${id}/documents`, {
