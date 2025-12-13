@@ -56,12 +56,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const supabase = getSupabase();
   const filePath = `contacts/${id}`;
+  
+  // Default to serving from cache unless we find a reason not to
+  let shouldServeFromCache = true;
 
   try {
     // 1. Try to serve from Supabase Storage first
     if (supabase) {
-      let shouldServeFromCache = true;
-
       // If client provided a timestamp (record modification time), check if cache is stale
       // This handles the "User updated photo in Zoho" case
       if (t) {
@@ -72,7 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .from('property-files')
             .list('contacts', { search: id, limit: 10 }); // limit 10 to be safe with partial matches
 
-          const fileMeta = listData?.find(f => f.name === id);
+          const fileMeta = listData?.find((f: { name: string; updated_at?: string }) => f.name === id);
           
           if (fileMeta && fileMeta.updated_at) {
             const fileModTime = new Date(fileMeta.updated_at).getTime();
@@ -147,12 +148,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 3. Save to Supabase Storage for next time
     if (supabase) {
       try {
-        console.log(`[Photo] Caching contact photo for ${id} to Supabase Storage. Size: ${result.buffer.length}, Type: ${result.contentType}`);
+        const successResult = result as { status: 200; contentType: string; buffer: Buffer };
+        console.log(`[Photo] Caching contact photo for ${id} to Supabase Storage. Size: ${successResult.buffer.length}, Type: ${successResult.contentType}`);
         // Add a small buffer to the timestamp to avoid race conditions with immediately subsequent reads
         const { error: uploadError } = await supabase.storage
           .from('property-files')
-          .upload(filePath, result.buffer, {
-            contentType: result.contentType,
+          .upload(filePath, successResult.buffer, {
+            contentType: successResult.contentType,
             upsert: true
           });
           
@@ -166,10 +168,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    res.setHeader('Content-Type', result.contentType);
+    const successResult = result as { status: 200; contentType: string; buffer: Buffer };
+    res.setHeader('Content-Type', successResult.contentType || 'image/jpeg');
     // Allow caching of successful images
     res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600');
-    return res.status(200).send(result.buffer);
+    return res.status(200).send(successResult.buffer);
   } catch (error) {
     console.error('Contact photo fetch error', error);
     const message = error instanceof Error ? error.message : 'Unexpected error';
