@@ -35,6 +35,14 @@ async function fetchImageFromRapidApi(linkedinUrl: string): Promise<Buffer | nul
     }
 
     const data = await response.json();
+    
+    // Check for quota error in response body if status was 200 (some APIs do this)
+    // or if status was 429 (handled above, but let's be safe)
+    if (data.message && typeof data.message === 'string' && data.message.includes('quota')) {
+        console.warn('[LinkedIn Approve] RapidAPI quota exceeded.');
+        return null;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const items = (data as any).data?.items || (data as any).items || [];
     
@@ -83,11 +91,12 @@ async function fetchImageFromScraping(linkedinUrl: string): Promise<Buffer | nul
     const ogImageMatch = text.match(/<meta property="og:image" content="([^"]+)"/);
     if (ogImageMatch && ogImageMatch[1]) {
       const imageUrl = ogImageMatch[1];
-      // Filter out known generic images if possible (optional)
-      if (imageUrl.includes('sc/h/')) {
-         console.log(`[LinkedIn Approve] Scraped image appears to be generic placeholder: ${imageUrl}`);
-         // We might still return it if it's better than nothing, or return null to avoid overriding with ghost
-         // The ghost image usually has specific hashes. Let's return it and let the user decide or overwrite later.
+      
+      // Filter out known generic images / ghosts
+      // "static.licdn.com/aero-v1/sc/h/" is the path for static assets like the ghost profile pic
+      if (imageUrl.includes('static.licdn.com/aero-v1/sc/h/') || imageUrl.includes('/ghost_')) {
+         console.log(`[LinkedIn Approve] Scraped image ignored (generic/ghost): ${imageUrl}`);
+         return null;
       }
       
       console.log(`[LinkedIn Approve] Scraped og:image: ${imageUrl}`);
@@ -262,11 +271,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       // Fallback 2: Try RapidAPI if no image yet
       if (!imageBuffer && RAPIDAPI_KEY) {
-         console.log('[LinkedIn Approve] No image from Google/Frontend, trying RapidAPI fallback...');
-         const rapidApiBuffer = await fetchImageFromRapidApi(linkedinUrl);
-         if (rapidApiBuffer) {
-           imageBuffer = rapidApiBuffer;
-           console.log(`[LinkedIn Approve] Got image from RapidAPI, size: ${imageBuffer.length}`);
+         try {
+            console.log('[LinkedIn Approve] No image from Google/Frontend, trying RapidAPI fallback...');
+            const rapidApiBuffer = await fetchImageFromRapidApi(linkedinUrl);
+            if (rapidApiBuffer) {
+              imageBuffer = rapidApiBuffer;
+              console.log(`[LinkedIn Approve] Got image from RapidAPI, size: ${imageBuffer.length}`);
+            }
+         } catch (err) {
+            console.error('[LinkedIn Approve] RapidAPI check failed:', err);
          }
       }
 
